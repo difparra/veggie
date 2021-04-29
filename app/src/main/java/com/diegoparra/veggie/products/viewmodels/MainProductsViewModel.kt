@@ -1,49 +1,50 @@
 package com.diegoparra.veggie.products.viewmodels
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
-import com.diegoparra.veggie.core.Either
+import androidx.lifecycle.*
+import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
 import com.diegoparra.veggie.products.domain.usecases.GetMainProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
 @HiltViewModel
 class MainProductsViewModel @Inject constructor(
     private val getMainProductsUseCase: GetMainProductsUseCase,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val tagId : MutableStateFlow<String> = MutableStateFlow(savedStateHandle.get(TAG_ID_SAVED_STATE_KEY) ?: "")
+    private val tagId = savedStateHandle.get<String>(TAG_ID_SAVED_STATE_KEY)!!  //  Must be set when instantiating the fragment in the tabs adapter.
+
+    private val _loading = MutableLiveData(false)
+    val loading: LiveData<Boolean> = _loading
+
+    private val _failure = MutableLiveData<Failure>()
+    val failure: LiveData<Failure> = _failure
+
+    private val _products = MutableLiveData<List<MainProdWithQuantity>>(listOf())
+    val products: LiveData<List<MainProdWithQuantity>> = _products
+
     init {
         viewModelScope.launch {
-            tagId.collect { newTagId ->
-                savedStateHandle.set(TAG_ID_SAVED_STATE_KEY, newTagId)
-            }
+            _loading.value = true
+            getMainProductsUseCase(GetMainProductsUseCase.Params.ForTag(tagId))
+                .collect { prodsEither ->
+                    prodsEither.fold({
+                        _failure.value = it
+                        true
+                    }, {
+                        _products.value = it
+                        true
+                    })
+                }
+            _loading.value = false
         }
-        /*savedStateHandle.getLiveData<String>(TAG_ID_SAVED_STATE_KEY).switchMap {
-            getMainProductsUseCase(GetMainProductsUseCase.Params.ForTag(it)).asLiveData()
-        }*/
     }
-
-
-    fun setTagId(tagId: String){
-        this.tagId.value = tagId
-    }
-
-    private val prodsEither = tagId.flatMapLatest { tagId ->
-        getMainProductsUseCase(GetMainProductsUseCase.Params.ForTag(tagId))
-    }
-    val products = prodsEither.filter { it.isRight }.map { (it as Either.Right).b }.asLiveData()
-    val failure = prodsEither.filter { it.isLeft }.map { (it as Either.Left).a }.asLiveData()
 
     companion object {
-        private const val TAG_ID_SAVED_STATE_KEY = "tagId"
+        const val TAG_ID_SAVED_STATE_KEY = "tagId"
     }
 
 }

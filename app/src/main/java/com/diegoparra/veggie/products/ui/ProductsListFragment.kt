@@ -9,15 +9,13 @@ import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.databinding.FragmentProductsListBinding
 import com.diegoparra.veggie.products.viewmodels.MainProductsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class ProductsListFragment : Fragment() {
 
     private var _binding : FragmentProductsListBinding? = null
     private val binding get() = _binding!!
-
+    private val viewModel : MainProductsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,18 +26,14 @@ class ProductsListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        arguments?.takeIf { it.containsKey(ARG_TAG_ID) }?.apply {
-            binding.text.text = getString(ARG_TAG_ID)
+        viewModel.products.observe(viewLifecycleOwner) { prodsList ->
+            binding.text.text = prodsList.joinToString("\n") { it.name }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object{
-        const val ARG_TAG_ID = "tagId"
     }
 
 }
