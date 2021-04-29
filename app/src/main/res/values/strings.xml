@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Veggie</string>
+
+    <!-- Main navigation -->
+    <string name="menu_home">Inicio</string>
+    <string name="menu_search">Buscar</string>
+    <string name="menu_cart">Carrito</string>
+    <string name="menu_user">Usuario</string>
+
+
+</resources>
