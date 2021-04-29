@@ -1,0 +1,54 @@
+package com.diegoparra.veggie.products.ui
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import com.diegoparra.veggie.databinding.FragmentHomeBinding
+import com.diegoparra.veggie.products.viewmodels.TagsViewModel
+import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class HomeFragment : Fragment() {
+
+    private var _binding : FragmentHomeBinding? = null
+    private val binding get() = _binding!!
+    private val viewModel: TagsViewModel by viewModels()
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        //  TODO:   Deal with failures and loading tagsViewModel
+
+        viewModel.tags.observe(viewLifecycleOwner) { tags ->
+            if(tags.isNullOrEmpty())    return@observe
+
+            val adapter = TabsAdapter(this, tags.map { it.id })
+            binding.viewPager.adapter = adapter
+
+            TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+                tab.text = tags[position].name
+            }.attach()
+
+        }
+
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+}
