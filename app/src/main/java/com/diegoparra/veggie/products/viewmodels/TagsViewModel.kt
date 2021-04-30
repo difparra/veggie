@@ -16,30 +16,32 @@ class TagsViewModel @Inject constructor(
     private val getTagsUseCase: GetTagsUseCase
 ) : ViewModel() {
 
-    private val _loading = MutableLiveData(false)
-    val loading: LiveData<Boolean> = _loading
-
-    private val _failure = MutableLiveData<Failure>()
-    val failure: LiveData<Failure> = _failure
+    private val _status = MutableLiveData<TagsStatus>()
+    val status : LiveData<TagsStatus> = _status
 
     private val _tags = MutableLiveData<List<Tag>>(listOf())
     val tags: LiveData<List<Tag>> = _tags
 
+    private val _failure = MutableLiveData<Failure>()
+    val failure: LiveData<Failure> = _failure
 
     init {
         viewModelScope.launch {
-            _loading.value = true
+            _status.value = TagsStatus.LOADING
             getTagsUseCase().fold(::handleFailureTags, ::handleTags)
-            _loading.value = false
         }
     }
 
     private fun handleFailureTags(failure: Failure) {
+        _status.value = TagsStatus.ERROR
         _failure.value = failure
     }
 
     private fun handleTags(tags: List<Tag>){
         _tags.value = tags
+        _status.value = TagsStatus.DONE
     }
 
 }
+
+enum class TagsStatus { LOADING, ERROR, DONE }
