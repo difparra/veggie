@@ -4,6 +4,5 @@
         android:state_selected="true"
         android:drawable="@drawable/ic_person_filled" />
     <item
-        android:state_selected="false"
         android:drawable="@drawable/ic_person_outline" />
 </selector>

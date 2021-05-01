@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="QtyButton">
+        <attr name="qty_btn_type" format="enum">
+            <enum name="add" value="0"/>
+            <enum name="reduce" value="1"/>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="qty_states">
+        <attr name="state_qty_zero" format="boolean" />
+        <attr name="state_qty_one" format="boolean" />
+        <attr name="state_qty_normal" format="boolean" />
+        <attr name="state_qty_max" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="additional_theme_colors">
+        <attr name="colorsRandom" format="reference" /> <!-- colors for labels -->
+        <attr name="colorWarning" format="reference" />
+        <attr name="colorOnWarning" format="reference" />
+    </declare-styleable>
+</resources>

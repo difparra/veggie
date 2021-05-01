@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.products.fakedata
 
+import com.diegoparra.veggie.core.Constants
 import com.diegoparra.veggie.core.trimAllSpaces
 import com.diegoparra.veggie.products.domain.entities.*
 
@@ -12,7 +13,7 @@ object FakeProductsDatabase {
     }
 
     sealed class FakeDetail(val detail: String) {
-        object NoDetail: FakeDetail(ConstantsProducts.NoDetail)
+        object NoDetail: FakeDetail(Constants.Products.NoDetail)
         object Maduro: FakeDetail("Maduro")
         object Verde: FakeDetail("Verde")
     }
@@ -28,7 +29,7 @@ object FakeProductsDatabase {
     sealed class FakeLabel(val str : String){
         object Recomendado : FakeLabel("Recomendado")
         object Popular : FakeLabel("Popular")
-        object None : FakeLabel(ConstantsProducts.NoLabel)
+        object None : FakeLabel(Constants.Products.NoLabel)
     }
 
 

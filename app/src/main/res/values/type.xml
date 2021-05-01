@@ -64,12 +64,15 @@
 
     <style name="TextAppearance.Veggie.Body1" parent="TextAppearance.MaterialComponents.Body1">
         <item name="fontFamily">@font/graphik_regular</item>
-        <item name="android:textSize">16sp</item>
+        <!--<item name="fontFamily">@font/graphik</item>    &lt;!&ndash; regular &ndash;&gt;
+        <item name="android:textStyle">normal</item>-->
+        <item name="android:textSize">14sp</item> <!-- 16sp -->
+        <item name="android:elegantTextHeight">true</item>
     </style>
 
     <style name="TextAppearance.Veggie.Body2" parent="TextAppearance.MaterialComponents.Body2">
         <item name="fontFamily">@font/graphik_regular</item>
-        <item name="android:textSize">14sp</item> <!-- 14sp -->
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TextAppearance.Veggie.Button" parent="TextAppearance.MaterialComponents.Button">

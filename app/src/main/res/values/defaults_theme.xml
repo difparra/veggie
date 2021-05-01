@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--    Insert defaults mandatory custom defined attributes  -->
+    <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <!-- Base -->
+        <!--<item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        &lt;!&ndash;<item name="android:navigationBarColor">?attr/colorSurface</item>&ndash;&gt;-->
+        <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
+        <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
+        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">?attr/colorControlHighlight</item>
+
+        <!-- Additional custom defined colors:  MANDATORY -->
+        <item name="colorWarning">@color/orange</item>
+        <item name="colorOnWarning">@color/white</item>
+        <item name="colorsRandom">@array/dark_colors</item> <!-- onRandomDark will be onSecondary -->
+
+    </style>
+
+</resources>

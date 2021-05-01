@@ -12,5 +12,20 @@
     <color name="green_200">#B1De94</color>     <!-- Color Primary (Dark) -->
     <color name="red_700">#DA291C</color>       <!-- Color Secondary & Error -->
     <color name="red_200">#F69993</color>       <!-- Color Secondary & Error (Dark) -->
+    <color name="black_light">#B31F1D1D</color>
+    <color name="orange">#FB923B</color>
+
+    <integer-array name="dark_colors">
+        <item>@android:color/holo_blue_dark</item>
+        <item>@android:color/holo_orange_dark</item>
+        <item>@android:color/holo_purple</item>
+    </integer-array>
+
+    <integer-array name="light_colors">
+        <item>@android:color/holo_green_light</item>
+        <item>@android:color/holo_blue_light</item>
+        <item>@android:color/holo_purple</item>
+    </integer-array>
+
 
 </resources>

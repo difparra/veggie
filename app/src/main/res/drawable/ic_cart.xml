@@ -4,6 +4,5 @@
         android:state_selected="true"
         android:drawable="@drawable/ic_cart_filled" />
     <item
-        android:state_selected="false"
         android:drawable="@drawable/ic_cart_outline" />
 </selector>
