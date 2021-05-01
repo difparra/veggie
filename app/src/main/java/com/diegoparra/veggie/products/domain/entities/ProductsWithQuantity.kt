@@ -1,5 +1,9 @@
 package com.diegoparra.veggie.products.domain.entities
 
+/*
+    Products that will be used in the viewModel / ui layer
+ */
+
 data class MainProdWithQuantity(
     val mainProduct: MainProduct,
     val quantity: Int

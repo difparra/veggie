@@ -63,9 +63,9 @@
     </style>
 
     <style name="TextAppearance.Veggie.Body1" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="fontFamily">@font/graphik_regular</item>
-        <!--<item name="fontFamily">@font/graphik</item>    &lt;!&ndash; regular &ndash;&gt;
-        <item name="android:textStyle">normal</item>-->
+        <!--<item name="fontFamily">@font/graphik_regular</item>-->
+        <item name="fontFamily">@font/graphik</item>    <!-- regular -->
+        <item name="android:textStyle">normal</item>
         <item name="android:textSize">14sp</item> <!-- 16sp -->
         <item name="android:elegantTextHeight">true</item>
     </style>

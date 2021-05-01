@@ -105,6 +105,9 @@ dependencies {
 
     //  RecyclerView
     implementation "androidx.recyclerview:recyclerview:1.2.0"
+    
+    //  Coil - ImageLoader
+    implementation "io.coil-kt:coil:1.2.1"
 
 
     //  ----------       Testing       --------------------------------------------------

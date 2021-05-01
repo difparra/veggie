@@ -17,34 +17,34 @@ class ProductsListViewModel @Inject constructor(
 
     private val tagId = savedStateHandle.get<String>(TAG_ID_SAVED_STATE_KEY)!!  //  Must be set when instantiating the fragment in the tabs adapter.
 
-    private val _status = MutableLiveData<ProductsListStatus>()
-    val status : LiveData<ProductsListStatus> = _status
-
-    private val _products = MutableLiveData<List<MainProdWithQuantity>>(listOf())
-    val products: LiveData<List<MainProdWithQuantity>> = _products
-
-    private val _failure = MutableLiveData<Failure>()
-    val failure: LiveData<Failure> = _failure
-
+    private val _productsListState = MutableLiveData<ProductsListState>()
+    val productsListState: LiveData<ProductsListState> = _productsListState
 
     init {
         viewModelScope.launch {
-            _status.value = ProductsListStatus.LOADING
+            _productsListState.value = ProductsListState.Loading
             getMainProductsUseCase(GetMainProductsUseCase.Params.ForTag(tagId))
                 .collect { prodsEither ->
-                    if(_status.value != ProductsListStatus.LOADING){
-                        _status.value = ProductsListStatus.LOADING
-                    }
-                    prodsEither.fold({
-                        _status.value = ProductsListStatus.ERROR
-                        _failure.value = it
-                        true
-                    }, {
-                        _products.value = it
-                        _status.value = ProductsListStatus.DONE
-                        true
-                    })
+                    //_productsListState.value = ProductsListState.Loading
+                    prodsEither.fold(::handleFailure, ::handleProductsList)
                 }
+        }
+    }
+
+    private fun handleProductsList(productsList: List<MainProdWithQuantity>){
+        if(productsList.isNullOrEmpty()){
+            _productsListState.value = ProductsListState.EmptyProductsList
+        }else{
+            _productsListState.value = ProductsListState.Success(productsList)
+        }
+    }
+
+    private fun handleFailure(failure: Failure){
+        _productsListState.value = when(failure){
+            is Failure.ProductsFailure.ProductsNotFound ->
+                ProductsListState.EmptyProductsList
+            else ->
+                ProductsListState.UnknownError(failure, failure.toString())
         }
     }
 
@@ -54,5 +54,9 @@ class ProductsListViewModel @Inject constructor(
 
 }
 
-
-enum class ProductsListStatus { LOADING, ERROR, DONE }
+sealed class ProductsListState {
+    object Loading : ProductsListState()
+    class Success(val data: List<MainProdWithQuantity>) : ProductsListState()
+    object EmptyProductsList : ProductsListState()
+    class UnknownError(val failure: Failure, val message: String? = null) : ProductsListState()
+}

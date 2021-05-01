@@ -16,32 +16,38 @@ class TagsViewModel @Inject constructor(
     private val getTagsUseCase: GetTagsUseCase
 ) : ViewModel() {
 
-    private val _status = MutableLiveData<TagsStatus>()
-    val status : LiveData<TagsStatus> = _status
-
-    private val _tags = MutableLiveData<List<Tag>>(listOf())
-    val tags: LiveData<List<Tag>> = _tags
-
-    private val _failure = MutableLiveData<Failure>()
-    val failure: LiveData<Failure> = _failure
+    private val _tagsState = MutableLiveData<TagsState>(TagsState.Loading)
+    val tagsState : LiveData<TagsState> = _tagsState
 
     init {
         viewModelScope.launch {
-            _status.value = TagsStatus.LOADING
             getTagsUseCase().fold(::handleFailureTags, ::handleTags)
         }
     }
 
-    private fun handleFailureTags(failure: Failure) {
-        _status.value = TagsStatus.ERROR
-        _failure.value = failure
-    }
 
     private fun handleTags(tags: List<Tag>){
-        _tags.value = tags
-        _status.value = TagsStatus.DONE
+        if(tags.isNullOrEmpty()){
+            _tagsState.value = TagsState.EmptyTagsList
+        }else{
+            _tagsState.value = TagsState.Success(tags)
+        }
+    }
+
+    private fun handleFailureTags(failure: Failure) {
+        _tagsState.value = when(failure) {
+            is Failure.ProductsFailure.TagsNotFound ->
+                TagsState.EmptyTagsList
+            else ->
+                TagsState.UnknownError(failure, failure.toString())
+        }
     }
 
 }
 
-enum class TagsStatus { LOADING, ERROR, DONE }
+sealed class TagsState {
+    object Loading : TagsState()
+    class Success(val data: List<Tag>) : TagsState()
+    object EmptyTagsList : TagsState()
+    class UnknownError(val failure: Failure, val message: String?) : TagsState()
+}

@@ -1,12 +1,13 @@
 package com.diegoparra.veggie.products.ui
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.diegoparra.veggie.core.Constants
 import com.diegoparra.veggie.core.QtyButton
 import com.diegoparra.veggie.databinding.ListItemMainProductBinding
 import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
@@ -30,26 +31,67 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
 
     class ProductViewHolder(private var binding: ListItemMainProductBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: MainProdWithQuantity){
-            binding.name.text = item.name
+            loadImage(item.imageUrl)
+            loadName(item.name)
+            loadDescription(item.price, item.discount, item.unit)
+            loadQtyButton(item.quantity)
+            loadLabel(item.stock, item.discount, item.suggestedLabel)
+        }
 
-            when(item.quantity){
+
+        private fun loadImage(imageUrl: String){
+            binding.image.load(imageUrl)
+        }
+
+        private fun loadName(name: String){
+            binding.name.text = name
+        }
+
+        private fun loadDescription(price: Int, discount: Float, unit: String){
+            val descriptionState : DescriptionState =
+                if(discount>0){
+                    DescriptionState.Discounted(finalPrice = price, discount = discount, unit = unit, context = binding.description.context)
+                }else{
+                    DescriptionState.NormalState(price = price, unit = unit)
+                }
+            binding.description.text = getDescriptionText(descriptionState)
+        }
+
+        private fun loadQtyButton(quantity: Int){
+            when(quantity){
                 0 -> {
                     binding.btnQty.setQuantityState(QtyButton.Companion.QtyStates.ZERO)
                     binding.btnQty.text = ""
                 }
                 else -> {
                     binding.btnQty.setQuantityState(QtyButton.Companion.QtyStates.NORMAL)
-                    binding.btnQty.text = item.quantity.toString()
+                    binding.btnQty.text = quantity.toString()
                 }
             }
+        }
 
-            val label = binding.label.context.getLabel(item.stock, item.discount, item.suggestedLabel)
-            if(label == null){
-                binding.label.visibility = View.GONE
-            }else{
-                binding.label.text = label.first
-                binding.label.chipBackgroundColor = label.second
-                binding.label.visibility = View.VISIBLE
+        private fun loadLabel(stock: Boolean, discount: Float, suggestedLabel: String){
+            val labelState : LabelState =
+                if(!stock){
+                    LabelState.NoStock
+                }else if(discount > 0){
+                    LabelState.Discounted(discount)
+                }else if(suggestedLabel == Constants.Products.NoLabel){
+                    LabelState.Hidden
+                }else{
+                    LabelState.DisplayLabel(suggestedLabel)
+                }
+
+            when(labelState){
+                is LabelState.Hidden -> {
+                    binding.label.visibility = View.GONE
+                }
+                else -> {
+                    val labelProps = getLabelProps(labelState = labelState, context = binding.label.context)
+                    binding.label.text = labelProps?.first
+                    binding.label.chipBackgroundColor = labelProps?.second
+                    binding.label.visibility = View.VISIBLE
+                }
             }
         }
     }

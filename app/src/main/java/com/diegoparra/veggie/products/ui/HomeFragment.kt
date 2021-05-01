@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.databinding.FragmentHomeBinding
+import com.diegoparra.veggie.products.domain.entities.Tag
+import com.diegoparra.veggie.products.viewmodels.TagsState
 import com.diegoparra.veggie.products.viewmodels.TagsViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,20 +32,34 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        //  TODO:   Deal with failures and loading tagsViewModel
-
-        viewModel.tags.observe(viewLifecycleOwner) { tags ->
-            if(tags.isNullOrEmpty())    return@observe
-
-            val adapter = TabsAdapter(this, tags.map { it.id })
-            binding.viewPager.adapter = adapter
-
-            TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-                tab.text = tags[position].name
-            }.attach()
-
+        viewModel.tagsState.observe(viewLifecycleOwner) {
+            when(it){
+                is TagsState.Loading -> renderLoadingTags()
+                is TagsState.Success -> renderTags(it.data)
+                is TagsState.EmptyTagsList -> renderEmptyTagsList()
+                is TagsState.UnknownError -> renderFailure(it.failure, it.message)
+            }
         }
+    }
 
+    private fun renderLoadingTags(){
+        //  TODO()
+    }
+
+    private fun renderTags(tags: List<Tag>){
+        val adapter = TabsAdapter(this, tags.map { it.id })
+        binding.viewPager.adapter = adapter
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = tags[position].name
+        }.attach()
+    }
+
+    private fun renderEmptyTagsList(){
+        TODO()
+    }
+
+    private fun renderFailure(failure: Failure, message: String?){
+        TODO()
     }
 
 
