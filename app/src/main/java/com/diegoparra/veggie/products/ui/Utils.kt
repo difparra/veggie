@@ -12,6 +12,8 @@ import android.util.TypedValue
 import androidx.annotation.AttrRes
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Constants
+import com.diegoparra.veggie.products.domain.entities.Description
+import com.diegoparra.veggie.products.domain.entities.Label
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.ceil
@@ -68,50 +70,40 @@ fun SpannableStringBuilder.appendMultipleSpans(text: CharSequence, what: List<An
 //      MAIN PRODUCTS ADAPTER HELPERS       --------------------------------------------------------
 
 
-sealed class LabelState {
-    object NoStock : LabelState()
-    class Discounted(val discount: Float) : LabelState()
-    class DisplayLabel(val suggestedLabel: String) : LabelState()
-    object Hidden : LabelState()
-}
-
-fun getLabelProps(labelState: LabelState, context: Context) : Pair<String, ColorStateList>? {
+fun getLabelProps(label: Label, context: Context) : Pair<String, ColorStateList>? {
     /*val colorNoStock = ResourcesCompat.getColor(resources, R.color.black_light, theme)
     val colorDiscount = ResourcesCompat.getColor(resources, R.color.red_700, theme)
     val additionalColors = resources.getIntArray(R.array.dark_colors)*/
-    return when(labelState){
-        is LabelState.NoStock -> {
+    return when(label){
+        is Label.NoStock -> {
             val colorNoStock = context.getResourceFromAttr(R.attr.colorOnSurface)
             Pair(first = "Agotado", second = ColorStateList.valueOf(colorNoStock))
         }
-        is LabelState.Discounted -> {
+        is Label.Discounted -> {
             val colorDiscount = context.getResourceFromAttr(R.attr.colorSecondary)
-            Pair(first = "${(labelState.discount*100).toInt()}% Off", second = ColorStateList.valueOf(colorDiscount))
+            Pair(first = "${(label.discount*100).toInt()}% Off", second = ColorStateList.valueOf(colorDiscount))
         }
-        is LabelState.DisplayLabel -> {
+        is Label.DisplayLabel -> {
             val additionalColors = context.resources.getIntArray(context.getResourceFromAttr(R.attr.colorsRandom))
-            val color = when(labelState.suggestedLabel.toLowerCase(Locale.ROOT)){
+            val color = when(label.suggestedLabel.toLowerCase(Locale.ROOT)){
                 "recomendado" -> additionalColors[0]
                 "popular" -> additionalColors.getOrElse(1) { additionalColors[0] }
                 else -> additionalColors.getOrElse(2) { additionalColors[0] }
             }
-            Pair(first = labelState.suggestedLabel, second = ColorStateList.valueOf(color))
+            Pair(first = label.suggestedLabel, second = ColorStateList.valueOf(color))
         }
-        is LabelState.Hidden -> null
+        is Label.Hidden -> null
     }
 }
 
 
-sealed class DescriptionState {
-    class Discounted(val finalPrice: Int, val discount: Float, val unit: String, val context: Context) : DescriptionState()
-    class NormalState(val price: Int, val unit: String) : DescriptionState()
-}
 
-fun getDescriptionText(descriptionState: DescriptionState) : Spannable {
-    with(descriptionState){
+
+fun getDescriptionText(description: Description, context: Context) : Spannable {
+    with(description){
         return when(this){
-            is DescriptionState.Discounted -> getDescriptionDiscounted(finalPrice, discount, unit, context)
-            is DescriptionState.NormalState -> getDescriptionSimple(price, unit)
+            is Description.Discounted -> getDescriptionDiscounted(finalPrice, discount, unit, context)
+            is Description.Basic -> getDescriptionSimple(price, unit)
         }
     }
 }
@@ -141,4 +133,3 @@ private fun getDescriptionSimple(price: Int, unit: String) : Spannable {
     text.append(" /${abbreviatedUnit(unit)}")
     return text
 }
-

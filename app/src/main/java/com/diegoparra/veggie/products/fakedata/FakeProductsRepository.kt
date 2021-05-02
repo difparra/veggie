@@ -3,7 +3,7 @@ package com.diegoparra.veggie.products.fakedata
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.products.domain.entities.MainProduct
-import com.diegoparra.veggie.products.domain.entities.ProductAdmin
+import com.diegoparra.veggie.products.domain.entities.AdminProduct
 import com.diegoparra.veggie.products.domain.entities.Tag
 import com.diegoparra.veggie.products.domain.entities.VariationProduct
 import com.diegoparra.veggie.products.domain.repositories.ProductsRepository
@@ -14,7 +14,7 @@ import java.util.*
 
 class FakeProductsRepository(
     private val tags: List<Tag> = FakeProductsDatabase.tags,
-    private val products: List<ProductAdmin> = FakeProductsDatabase.products
+    private val products: List<AdminProduct> = FakeProductsDatabase.products
 ) : ProductsRepository {
 
     override suspend fun getTags(forceUpdate: Boolean, expirationTimeMillis: Long): Either<Failure, List<Tag>> {

@@ -4,11 +4,11 @@ import com.diegoparra.veggie.products.domain.entities.*
 
 object UtilsFakes {
 
-    private fun ProductAdmin.getMainVariationInfo() =
+    private fun AdminProduct.getMainVariationInfo() =
         this.variations.find { it.varId == mainData.mainVariationId }
             ?: throw Exception("mainVariationId does not match any variation.")
 
-    fun ProductAdmin.toMainProduct() = MainProduct(
+    fun AdminProduct.toMainProduct() = MainProduct(
         mainId = mainData.mainId,
         name = mainData.name,
         imageUrl = mainData.imageUrl,
@@ -20,13 +20,13 @@ object UtilsFakes {
         suggestedLabel = getMainVariationInfo().suggestedLabel
     )
 
-    fun VariationDataAdmin.toVariationProduct() = VariationProduct(
+    fun AdminVariationData.toVariationProduct() = VariationProduct(
         varId = varId, unit = unit, weightGr = weightGr, details = detailOptions,
         price = price, discount = discount, stock = stock, maxOrder = maxOrder,
         suggestedLabel = suggestedLabel
     )
 
-    fun ProductAdmin.getIdTest(detail: String = getMainVariationInfo().detailOptions[0]) =
+    fun AdminProduct.getIdTest(detail: String = getMainVariationInfo().detailOptions[0]) =
         ProductId(mainId = mainData.mainId,
             varId = getMainVariationInfo().varId,
             detail = detail

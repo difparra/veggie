@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.diegoparra.veggie.core.Constants
 import com.diegoparra.veggie.core.QtyButton
 import com.diegoparra.veggie.databinding.ListItemMainProductBinding
+import com.diegoparra.veggie.products.domain.entities.Description
+import com.diegoparra.veggie.products.domain.entities.Label
 import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
 import com.google.android.material.color.MaterialColors
 
@@ -34,35 +35,32 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
 
     class ProductViewHolder(private var binding: ListItemMainProductBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: MainProdWithQuantity){
-            if(!product.stock){
-                binding.root.isEnabled = false
-                binding.root.children.forEach {
-                    //it.isEnabled = false
-                    it.alpha = MaterialColors.ALPHA_DISABLED
-                }
-            }else{
-                if(!binding.root.isEnabled){
-                    binding.root.isEnabled = true
-                    binding.root.children.forEach {
-                        //it.isEnabled = true
-                        it.alpha = MaterialColors.ALPHA_FULL
-                    }
-                }
-                binding.root.setOnClickListener {
-                    navigateToProductDetails(product, it)
-                }
+            loadEnabledState(enabled = product.stock)
+            binding.root.setOnClickListener {
+                navigateToProductDetails(product, it)
             }
 
             loadImage(product.imageUrl)
             loadName(product.name)
-            loadDescription(product.price, product.discount, product.unit)
+            loadDescription(product.description)
             loadQtyButton(product.quantity)
-            loadLabel(product.stock, product.discount, product.suggestedLabel)
+            loadLabel(product.label)
         }
 
         private fun navigateToProductDetails(product: MainProdWithQuantity, view: View) {
             val action = HomeFragmentDirections.actionNavHomeToProductDetailsFragment(mainId = product.mainId)
             view.findNavController().navigate(action)
+        }
+
+        private fun loadEnabledState(enabled: Boolean){
+            val currentEnabledState = binding.root.isEnabled
+            if(enabled != currentEnabledState){
+                binding.root.isEnabled = enabled
+                binding.root.children.forEach {
+                    //it.isEnabled = enabled
+                    it.alpha = if(enabled) MaterialColors.ALPHA_FULL else MaterialColors.ALPHA_DISABLED
+                }
+            }
         }
 
         private fun loadImage(imageUrl: String){
@@ -74,14 +72,8 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
             binding.image.contentDescription = name
         }
 
-        private fun loadDescription(price: Int, discount: Float, unit: String){
-            val descriptionState : DescriptionState =
-                if(discount>0){
-                    DescriptionState.Discounted(finalPrice = price, discount = discount, unit = unit, context = binding.description.context)
-                }else{
-                    DescriptionState.NormalState(price = price, unit = unit)
-                }
-            binding.description.text = getDescriptionText(descriptionState)
+        private fun loadDescription(description: Description){
+            binding.description.text = getDescriptionText(description = description, context = binding.description.context)
         }
 
         private fun loadQtyButton(quantity: Int){
@@ -97,24 +89,13 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
             }
         }
 
-        private fun loadLabel(stock: Boolean, discount: Float, suggestedLabel: String){
-            val labelState : LabelState =
-                if(!stock){
-                    LabelState.NoStock
-                }else if(discount > 0){
-                    LabelState.Discounted(discount)
-                }else if(suggestedLabel == Constants.Products.NoLabel){
-                    LabelState.Hidden
-                }else{
-                    LabelState.DisplayLabel(suggestedLabel)
-                }
-
-            when(labelState){
-                is LabelState.Hidden -> {
+        private fun loadLabel(label: Label){
+            when(label){
+                is Label.Hidden -> {
                     binding.label.visibility = View.GONE
                 }
                 else -> {
-                    val labelProps = getLabelProps(labelState = labelState, context = binding.label.context)
+                    val labelProps = getLabelProps(label = label, context = binding.label.context)
                     binding.label.text = labelProps?.first
                     binding.label.chipBackgroundColor = labelProps?.second
                     binding.label.visibility = View.VISIBLE

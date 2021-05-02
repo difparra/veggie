@@ -14,20 +14,20 @@ import com.diegoparra.veggie.core.Constants
     important, and admin should be able to change it without requiring users to reinstall the app.
  */
 
-data class ProductAdmin(
+data class AdminProduct(
     val tagId: String,
-    val mainData: MainDataAdmin,
-    val variations: List<VariationDataAdmin>
+    val mainData: AdminMainData,
+    val variations: List<AdminVariationData>
 )
 
-data class MainDataAdmin(
+data class AdminMainData(
     val mainId: String,
     val name: String,
     val imageUrl: String,
     val mainVariationId: String
 )
 
-data class VariationDataAdmin(
+data class AdminVariationData(
     val varId: String,
     val unit: String,       //  UnitOptions as well as labelOptions could be fetched from remoteConfig.
     val weightGr: Int = Constants.Products.NoWeightGr,

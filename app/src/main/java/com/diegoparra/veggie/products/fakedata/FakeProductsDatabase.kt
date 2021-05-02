@@ -36,11 +36,11 @@ object FakeProductsDatabase {
 
     private fun createProduct(tag: FakeTag,
                               name: String, urlImage: String,
-                              variations: List<VariationDataAdmin>,
-                              mainVarId: String = variations[0].varId) : ProductAdmin {
-        return ProductAdmin(
+                              variations: List<AdminVariationData>,
+                              mainVarId: String = variations[0].varId) : AdminProduct {
+        return AdminProduct(
             tagId = tag.tag.id,
-            mainData = MainDataAdmin(
+            mainData = AdminMainData(
                 mainId = name.trimAllSpaces(),
                 name = name,
                 imageUrl = urlImage,
@@ -54,8 +54,8 @@ object FakeProductsDatabase {
                                 price: Int, discount: Float = 0.0f,
                                 stock: Boolean = true, maxOrder: Int = 10,
                                 label: FakeLabel = FakeLabel.None,
-                                details: List<FakeDetail> = listOf(FakeDetail.NoDetail)) : VariationDataAdmin {
-        return VariationDataAdmin(
+                                details: List<FakeDetail> = listOf(FakeDetail.NoDetail)) : AdminVariationData {
+        return AdminVariationData(
             varId = varId,
             unit = unit.unit, weightGr = unit.weightGr,
             price = price, discount = discount,
