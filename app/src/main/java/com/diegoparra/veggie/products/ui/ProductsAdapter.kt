@@ -3,6 +3,8 @@ package com.diegoparra.veggie.products.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.children
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +13,7 @@ import com.diegoparra.veggie.core.Constants
 import com.diegoparra.veggie.core.QtyButton
 import com.diegoparra.veggie.databinding.ListItemMainProductBinding
 import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
+import com.google.android.material.color.MaterialColors
 
 class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.ProductViewHolder>(DiffCallback) {
 
@@ -30,14 +33,37 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
     }
 
     class ProductViewHolder(private var binding: ListItemMainProductBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: MainProdWithQuantity){
-            loadImage(item.imageUrl)
-            loadName(item.name)
-            loadDescription(item.price, item.discount, item.unit)
-            loadQtyButton(item.quantity)
-            loadLabel(item.stock, item.discount, item.suggestedLabel)
+        fun bind(product: MainProdWithQuantity){
+            if(!product.stock){
+                binding.root.isEnabled = false
+                binding.root.children.forEach {
+                    //it.isEnabled = false
+                    it.alpha = MaterialColors.ALPHA_DISABLED
+                }
+            }else{
+                if(!binding.root.isEnabled){
+                    binding.root.isEnabled = true
+                    binding.root.children.forEach {
+                        //it.isEnabled = true
+                        it.alpha = MaterialColors.ALPHA_FULL
+                    }
+                }
+                binding.root.setOnClickListener {
+                    navigateToProductDetails(product, it)
+                }
+            }
+
+            loadImage(product.imageUrl)
+            loadName(product.name)
+            loadDescription(product.price, product.discount, product.unit)
+            loadQtyButton(product.quantity)
+            loadLabel(product.stock, product.discount, product.suggestedLabel)
         }
 
+        private fun navigateToProductDetails(product: MainProdWithQuantity, view: View) {
+            val action = HomeFragmentDirections.actionNavHomeToProductDetailsFragment(mainId = product.mainId)
+            view.findNavController().navigate(action)
+        }
 
         private fun loadImage(imageUrl: String){
             binding.image.load(imageUrl)
@@ -45,6 +71,7 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
 
         private fun loadName(name: String){
             binding.name.text = name
+            binding.image.contentDescription = name
         }
 
         private fun loadDescription(price: Int, discount: Float, unit: String){
@@ -111,6 +138,26 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
         ): Boolean {
             return oldItem == newItem
         }
+
+        /*  TODO:   Deal with payloads, as quantity is the only value that changes
+        override fun getChangePayload(oldItem: MainProdWithQuantity, newItem: MainProdWithQuantity): Any? {
+            return super.getChangePayload(oldItem, newItem)
+        }
+
+        <-override fun onBindViewHolder(holder: ProductViewHolder, position: Int, payloads: MutableList<Any>) {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+        if(!payloads.isEmpty()){
+            Log.d(TAG, "onBindViewHolder() called with: holder = [" + holder + "], position = [" + position + "], payloads = [" + payloads + "]");
+            Bundle payload = (Bundle) payloads.get(payloads.size() - 1);
+            int qtyState = payload.getInt("qtyState");
+            int quantity = payload.getInt("quantity");
+            loadQuantityViews(holder, qtyState, quantity);
+        }else{
+            Log.d(TAG, "emptyPayload/onBindViewHolder() called with: holder = [" + holder + "], position = [" + position + "], payloads = [" + payloads + "]");
+            super.onBindViewHolder(holder, position, payloads);
+        }
+        */
 
     }
 }

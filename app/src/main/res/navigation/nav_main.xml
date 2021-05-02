@@ -9,7 +9,12 @@
         android:id="@+id/nav_home"
         android:name="com.diegoparra.veggie.products.ui.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment">
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/nav_search"
         android:name="com.diegoparra.veggie.SearchFragment"
@@ -25,6 +30,14 @@
         android:name="com.diegoparra.veggie.UserFragment"
         android:label="fragment_user"
         tools:layout="@layout/fragment_user" />
+    <dialog
+        android:id="@+id/productDetailsFragment"
+        android:name="com.diegoparra.veggie.products.ui.ProductDetailsFragment"
+        android:label="ProductDetailsFragment" >
+        <argument
+            android:name="mainId"
+            app:argType="string" />
+    </dialog>
 
 
 </navigation>

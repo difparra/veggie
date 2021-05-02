@@ -81,7 +81,7 @@ fun getLabelProps(labelState: LabelState, context: Context) : Pair<String, Color
     val additionalColors = resources.getIntArray(R.array.dark_colors)*/
     return when(labelState){
         is LabelState.NoStock -> {
-            val colorNoStock = context.getResourceFromAttr(R.attr.colorControlNormal)
+            val colorNoStock = context.getResourceFromAttr(R.attr.colorOnSurface)
             Pair(first = "Agotado", second = ColorStateList.valueOf(colorNoStock))
         }
         is LabelState.Discounted -> {
@@ -119,10 +119,11 @@ fun getDescriptionText(descriptionState: DescriptionState) : Spannable {
 private fun getDescriptionDiscounted(finalPrice: Int, discount: Float, unit: String, context: Context) : Spannable {
     val text = SpannableStringBuilder()
     text.append(
-        getPriceBeforeDiscount(finalPrice, discount).addThousandSeparator() + " ",
-        StrikethroughSpan(),
-        Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-    text.appendMultipleSpans(finalPrice.addThousandSeparator(),
+            getPriceBeforeDiscount(finalPrice, discount).addThousandSeparator() + " ",
+            StrikethroughSpan(),
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+    text.appendMultipleSpans(
+            "$" + finalPrice.addThousandSeparator(),
             listOf(StyleSpan(Typeface.BOLD), ForegroundColorSpan(context.getResourceFromAttr(R.attr.colorSecondary))),
             Spannable.SPAN_INCLUSIVE_EXCLUSIVE
     )
@@ -133,7 +134,7 @@ private fun getDescriptionDiscounted(finalPrice: Int, discount: Float, unit: Str
 private fun getDescriptionSimple(price: Int, unit: String) : Spannable {
     val text = SpannableStringBuilder()
     text.append(
-        price.addThousandSeparator(),
+        "$" + price.addThousandSeparator(),
         StyleSpan(Typeface.BOLD),
         Spannable.SPAN_INCLUSIVE_EXCLUSIVE
     )
