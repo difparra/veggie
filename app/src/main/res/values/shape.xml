@@ -18,19 +18,20 @@
     <!--cornerFamilyBottomRight and cornerSizeTopRight, cornerSizeTopLeft, cornerSizeBottomLeft -->
     <!--and cornerSizeBottomRight.-->
 
-    <!--Shape Appearance for small components like chips, buttons, text fields and FABs-->
+    <!-- Button, FAB, chips(with 50% cornerSize), DatePicker(dateSelected), Menu(TextField), NavDrawer(TextOverlay/Selection), TextField -->
     <style name="ShapeAppearance.Veggie.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <!--Your custom shape here-->
     </style>
 
-    <!--Shape Appearance for medium components like cards, alert dialogs-->
+    <!-- Cards, Dialogs, AlertDialogs, DatePicker(dialog) -->
     <style name="ShapeAppearance.Veggie.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <!--Your custom shape here-->
     </style>
 
     <!--Shape Appearance for large components like side and bottom navigation drawers-->
     <style name="ShapeAppearance.Veggie.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
-        <!--Your custom shape here-->
+        <item name="cornerSizeTopLeft">25%</item>
+        <item name="cornerSizeTopRight">25%</item>
     </style>
 
     <!--Shape Appearance overlay for ShapeableImageView -->

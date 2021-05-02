@@ -23,7 +23,7 @@ class ProductDetailsFragment : BottomSheetDialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.text.text = viewModel.publicProductId
+        binding.title.text = viewModel.publicProductId
     }
 
     override fun onDestroyView() {

@@ -47,10 +47,26 @@
 
 
     <style name="Widget.Veggie.TextView" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textAppearance">?attr/textAppearanceBody1</item>
+        <item name="android:textAppearance">?attr/textAppearanceBody2</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
     </style>
+
+    <style name="Widget.Veggie.Divider" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.75dp</item>
+        <item name="android:background">?attr/colorOnSurface</item>
+        <item name="android:alpha">0.4</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <!--
+        Checkbox:       Type: inherits from AppCompatCheckBox / Shape is not supported
+        RadioButtons:   Type: inherits from AppCompatRadioButton / Shape is not supported
+        Slider:         Type: TextAppearance.App.Tooltip (used just for example to show 20 in a slider of 100)
+        Switch:         Type: inherits from SwitchCompat
+     -->
 
 </resources>

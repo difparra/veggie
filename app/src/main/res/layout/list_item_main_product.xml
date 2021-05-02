@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/image"
         android:layout_toStartOf="@id/btn_qty"
+        android:elegantTextHeight="true"
         tools:text="Description"/>
 
     <TextView
@@ -30,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/description"
+        android:elegantTextHeight="true"
         tools:text="Name" />
 
     <com.diegoparra.veggie.core.QtyButton
