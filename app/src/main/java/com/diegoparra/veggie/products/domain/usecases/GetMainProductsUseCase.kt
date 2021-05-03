@@ -21,10 +21,10 @@ class GetMainProductsUseCase @Inject constructor(
         return when(val products = getProducts(params)){
             is Either.Left -> flow { emit(Either.Left(products.a)) }
             is Either.Right -> {
-                val cartProdsFlows = products.b.map {
-                    getCartProduct(it)
+                val mainProdsQtyFlows = products.b.map {
+                    addQuantityToProduct(it)
                 }
-                combine(cartProdsFlows){
+                combine(mainProdsQtyFlows){
                     it.toList().customTransformListToEither()
                 }
             }
@@ -38,7 +38,7 @@ class GetMainProductsUseCase @Inject constructor(
         }
     }
 
-    private fun getCartProduct(product: MainProduct) : Flow<Either<Failure, MainProdWithQuantity>> {
+    private fun addQuantityToProduct(product: MainProduct) : Flow<Either<Failure, MainProdWithQuantity>> {
         val quantity = cartRepository.getQuantityByMainId(product.mainId)
         return quantity.map { qtyEither ->
             qtyEither.map {

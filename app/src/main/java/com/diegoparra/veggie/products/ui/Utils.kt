@@ -11,7 +11,6 @@ import android.text.style.StyleSpan
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.Constants
 import com.diegoparra.veggie.products.domain.entities.Description
 import com.diegoparra.veggie.products.domain.entities.Label
 import java.text.NumberFormat
@@ -42,7 +41,7 @@ fun abbreviatedUnit(unit: String) =
     }
 
 fun getWeightString(weightGr: Int) : String? =
-    if(weightGr == Constants.Products.NoWeightGr) null
+    if(weightGr == -1) null
     else "Aprox. ${weightGr}g"
 
 //@ColorRes @ArrayRes

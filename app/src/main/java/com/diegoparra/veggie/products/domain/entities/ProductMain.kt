@@ -1,7 +1,5 @@
 package com.diegoparra.veggie.products.domain.entities
 
-import com.diegoparra.veggie.core.Constants
-
 /**
     - Entities that are really part of the client app.
     - Information that could be fetched from the database as a client and used throughout the app.
@@ -16,7 +14,7 @@ open class MainProduct(
     val price: Int,
     val discount: Float,
     val stock: Boolean,
-    private val suggestedLabel: String
+    private val suggestedLabel: String?
 ){
     constructor(mainProduct: MainProduct) : this(
             mainProduct.mainId, mainProduct.name, mainProduct.imageUrl,

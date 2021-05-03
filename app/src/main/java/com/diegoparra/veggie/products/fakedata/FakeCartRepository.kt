@@ -75,6 +75,23 @@ class FakeCartRepository (
         }
     }
 
+    override fun getQuantitiesByDetailsVariation(mainId: String, varId: String): Flow<Either<Failure, Map<String?, Int>>> {
+        return cartItems.map {
+            if(it.isNullOrEmpty()){
+                Timber.e("There are not products in the cart")
+                return@map Either.Left(Failure.ProductsFailure.ProductsNotFound)
+            }else{
+                val quantitiesMap = mutableMapOf<String?, Int>()
+                for(item in it){
+                    if(item.productId.mainId == mainId && item.productId.varId == varId){
+                        quantitiesMap[item.productId.detail] = item.quantity
+                    }
+                }
+                return@map Either.Right(quantitiesMap)
+            }
+        }
+    }
+
     override suspend fun addItem(cartItem: CartItem) {
         val currentCartItems = cartItems.value.toMutableSet()
         currentCartItems.add(cartItem)

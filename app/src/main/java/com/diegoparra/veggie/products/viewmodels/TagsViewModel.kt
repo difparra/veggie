@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.products.domain.entities.Tag
 import com.diegoparra.veggie.products.domain.usecases.GetTagsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,8 +17,8 @@ class TagsViewModel @Inject constructor(
     private val getTagsUseCase: GetTagsUseCase
 ) : ViewModel() {
 
-    private val _tagsState = MutableLiveData<TagsState>(TagsState.Loading)
-    val tagsState : LiveData<TagsState> = _tagsState
+    private val _tags = MutableLiveData<Resource<List<Tag>>>(Resource.Loading())
+    val tags : LiveData<Resource<List<Tag>>> = _tags
 
     init {
         viewModelScope.launch {
@@ -25,29 +26,16 @@ class TagsViewModel @Inject constructor(
         }
     }
 
-
     private fun handleTags(tags: List<Tag>){
         if(tags.isNullOrEmpty()){
-            _tagsState.value = TagsState.EmptyTagsList
+            _tags.value = Resource.Error(Failure.ProductsFailure.TagsNotFound)
         }else{
-            _tagsState.value = TagsState.Success(tags)
+            _tags.value = Resource.Success(tags)
         }
     }
 
     private fun handleFailureTags(failure: Failure) {
-        _tagsState.value = when(failure) {
-            is Failure.ProductsFailure.TagsNotFound ->
-                TagsState.EmptyTagsList
-            else ->
-                TagsState.UnknownError(failure, failure.toString())
-        }
+        _tags.value = Resource.Error(failure)
     }
 
-}
-
-sealed class TagsState {
-    object Loading : TagsState()
-    class Success(val data: List<Tag>) : TagsState()
-    object EmptyTagsList : TagsState()
-    class UnknownError(val failure: Failure, val message: String?) : TagsState()
 }

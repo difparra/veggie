@@ -1,7 +1,5 @@
 package com.diegoparra.veggie.products.domain.entities
 
-import com.diegoparra.veggie.core.Constants
-
 /**
     - Entities more associated to the admin.
     - Information that will be inserted in the database managed by the admin.
@@ -30,11 +28,11 @@ data class AdminMainData(
 data class AdminVariationData(
     val varId: String,
     val unit: String,       //  UnitOptions as well as labelOptions could be fetched from remoteConfig.
-    val weightGr: Int = Constants.Products.NoWeightGr,
+    val weightGr: Int = -1,
     val price: Int,
     val discount: Float,
     val stock: Boolean,
     val maxOrder: Int,
-    val suggestedLabel: String = Constants.Products.NoLabel,
-    val detailOptions: List<String> = listOf(Constants.Products.NoDetail)
+    val suggestedLabel: String? = null,
+    val detailOptions: List<String>? = null
 )

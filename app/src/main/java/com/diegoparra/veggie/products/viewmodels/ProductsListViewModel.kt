@@ -2,6 +2,7 @@ package com.diegoparra.veggie.products.viewmodels
 
 import androidx.lifecycle.*
 import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
 import com.diegoparra.veggie.products.domain.usecases.GetMainProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,15 +18,15 @@ class ProductsListViewModel @Inject constructor(
 
     private val tagId = savedStateHandle.get<String>(TAG_ID_SAVED_STATE_KEY)!!  //  Must be set when instantiating the fragment in the tabs adapter.
 
-    private val _productsListState = MutableLiveData<ProductsListState>()
-    val productsListState: LiveData<ProductsListState> = _productsListState
+    private val _productsList = MutableLiveData<Resource<List<MainProdWithQuantity>>>()
+    val productsList: LiveData<Resource<List<MainProdWithQuantity>>> = _productsList
 
     init {
         viewModelScope.launch {
-            _productsListState.value = ProductsListState.Loading
+            _productsList.value = Resource.Loading()
             getMainProductsUseCase(GetMainProductsUseCase.Params.ForTag(tagId))
                 .collect { prodsEither ->
-                    //_productsListState.value = ProductsListState.Loading
+                    //_productsListState.value = Resource.Loading()
                     prodsEither.fold(::handleFailure, ::handleProductsList)
                 }
         }
@@ -33,30 +34,18 @@ class ProductsListViewModel @Inject constructor(
 
     private fun handleProductsList(productsList: List<MainProdWithQuantity>){
         if(productsList.isNullOrEmpty()){
-            _productsListState.value = ProductsListState.EmptyProductsList
+            _productsList.value = Resource.Error(Failure.ProductsFailure.ProductsNotFound)
         }else{
-            _productsListState.value = ProductsListState.Success(productsList)
+            _productsList.value = Resource.Success(productsList)
         }
     }
 
     private fun handleFailure(failure: Failure){
-        _productsListState.value = when(failure){
-            is Failure.ProductsFailure.ProductsNotFound ->
-                ProductsListState.EmptyProductsList
-            else ->
-                ProductsListState.UnknownError(failure, failure.toString())
-        }
+        _productsList.value = Resource.Error(failure)
     }
 
     companion object {
         const val TAG_ID_SAVED_STATE_KEY = "tagId"
     }
 
-}
-
-sealed class ProductsListState {
-    object Loading : ProductsListState()
-    class Success(val data: List<MainProdWithQuantity>) : ProductsListState()
-    object EmptyProductsList : ProductsListState()
-    class UnknownError(val failure: Failure, val message: String? = null) : ProductsListState()
 }

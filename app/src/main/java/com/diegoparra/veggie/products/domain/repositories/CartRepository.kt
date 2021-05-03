@@ -12,6 +12,7 @@ interface CartRepository {
 
     fun getQuantityByMainId(mainId: String) : Flow<Either<Failure, Int>>
     fun getQuantityItem(productId: ProductId) : Flow<Either<Failure, Int>>
+    fun getQuantitiesByDetailsVariation(mainId: String, varId: String) : Flow<Either<Failure, Map<String?, Int>>>
 
     suspend fun addItem(cartItem: CartItem)
     suspend fun deleteItem(productId: ProductId)

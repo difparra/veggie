@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.products.fakedata
 
-import com.diegoparra.veggie.core.Constants
 import com.diegoparra.veggie.core.trimAllSpaces
 import com.diegoparra.veggie.products.domain.entities.*
 
@@ -13,7 +12,6 @@ object FakeProductsDatabase {
     }
 
     sealed class FakeDetail(val detail: String) {
-        object NoDetail: FakeDetail(Constants.Products.NoDetail)
         object Maduro: FakeDetail("Maduro")
         object Verde: FakeDetail("Verde")
     }
@@ -29,7 +27,6 @@ object FakeProductsDatabase {
     sealed class FakeLabel(val str : String){
         object Recomendado : FakeLabel("Recomendado")
         object Popular : FakeLabel("Popular")
-        object None : FakeLabel(Constants.Products.NoLabel)
     }
 
 
@@ -53,14 +50,14 @@ object FakeProductsDatabase {
     private fun createVariation(varId: String, unit: FakeUnit = FakeUnit.Libra,
                                 price: Int, discount: Float = 0.0f,
                                 stock: Boolean = true, maxOrder: Int = 10,
-                                label: FakeLabel = FakeLabel.None,
-                                details: List<FakeDetail> = listOf(FakeDetail.NoDetail)) : AdminVariationData {
+                                label: FakeLabel? = null,
+                                details: List<FakeDetail>? = null) : AdminVariationData {
         return AdminVariationData(
             varId = varId,
             unit = unit.unit, weightGr = unit.weightGr,
             price = price, discount = discount,
             stock = stock, maxOrder = maxOrder,
-            suggestedLabel = label.str, detailOptions = details.map { it.detail }
+            suggestedLabel = label?.str, detailOptions = details?.map { it.detail }
         )
     }
 

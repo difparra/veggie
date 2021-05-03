@@ -1,7 +1,5 @@
 package com.diegoparra.veggie.products.domain.entities
 
-import com.diegoparra.veggie.core.Constants
-
 sealed class Description {
     class Discounted(val finalPrice: Int, val discount: Float, val unit: String, val weightGr: Int) : Description()
     class Basic(val price: Int, val unit: String, val weightGr: Int) : Description()
@@ -24,12 +22,12 @@ sealed class Label {
     object Hidden : Label()
 
     companion object {
-        fun createLabel(stock: Boolean, discount: Float, suggestedLabel: String) : Label {
+        fun createLabel(stock: Boolean, discount: Float, suggestedLabel: String?) : Label {
             return if(!stock){
                 NoStock
             }else if(discount > 0){
                 Discounted(discount)
-            }else if(suggestedLabel == Constants.Products.NoLabel || suggestedLabel.isEmpty()){
+            }else if(suggestedLabel == null || suggestedLabel.isEmpty()){
                 Hidden
             }else{
                 DisplayLabel(suggestedLabel)

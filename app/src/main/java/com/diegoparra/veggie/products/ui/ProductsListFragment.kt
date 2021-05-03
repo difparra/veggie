@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.databinding.FragmentProductsListBinding
 import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
-import com.diegoparra.veggie.products.viewmodels.ProductsListState
 import com.diegoparra.veggie.products.viewmodels.ProductsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,12 +36,11 @@ class ProductsListFragment : Fragment() {
     }
 
     private fun subscribeUi(){
-        viewModel.productsListState.observe(viewLifecycleOwner) {
+        viewModel.productsList.observe(viewLifecycleOwner) {
             when(it){
-                is ProductsListState.Loading -> renderLoadingState()
-                is ProductsListState.Success -> renderProductsList(it.data)
-                is ProductsListState.EmptyProductsList -> renderEmptyListState()
-                is ProductsListState.UnknownError -> renderFailure(it.failure, it.message)
+                is Resource.Loading -> renderLoadingState()
+                is Resource.Success -> renderProductsList(it.data)
+                is Resource.Error -> renderFailure(it.failure)
             }
         }
     }
@@ -54,11 +53,16 @@ class ProductsListFragment : Fragment() {
         adapter.submitList(productsList)
     }
 
-    private fun renderEmptyListState() {
-        TODO()
+    private fun renderFailure(failure: Failure) {
+        when(failure){
+            is Failure.ProductsFailure.ProductsNotFound ->
+                renderEmptyListFailure()
+            else ->
+                TODO()
+        }
     }
 
-    private fun renderFailure(failure: Failure, message: String?) {
+    private fun renderEmptyListFailure() {
         TODO()
     }
 

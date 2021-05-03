@@ -1,34 +1,32 @@
 package com.diegoparra.veggie.products.domain.entities
 
-import com.diegoparra.veggie.core.Constants
-
 /*
     Products that will be used in the viewModel / ui layer
  */
 
-open class VariationProduct(
+open class ProductVariation(
         val varId: String,
         val unit: String,
-        val weightGr: Int = Constants.Products.NoWeightGr,
-        val details: List<String> = listOf(Constants.Products.NoDetail),
+        val weightGr: Int,
+        val details: List<String>?,
         val price: Int,
         val discount: Float,
         val stock: Boolean,
         val maxOrder: Int,
-        private val suggestedLabel: String = Constants.Products.NoLabel
+        private val suggestedLabel: String?
 ){
-    constructor(variationProduct: VariationProduct) : this(
-            variationProduct.varId, variationProduct.unit, variationProduct.weightGr,
-            variationProduct.details, variationProduct.price, variationProduct.discount,
-            variationProduct.stock, variationProduct.maxOrder,
-            variationProduct.suggestedLabel
+    constructor(productVariation: ProductVariation) : this(
+            productVariation.varId, productVariation.unit, productVariation.weightGr,
+            productVariation.details, productVariation.price, productVariation.discount,
+            productVariation.stock, productVariation.maxOrder,
+            productVariation.suggestedLabel
     )
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as VariationProduct
+        other as ProductVariation
 
         if (varId != other.varId) return false
         if (unit != other.unit) return false
@@ -54,10 +52,18 @@ open class VariationProduct(
         return result
     }
 
-
 }
 
-data class VariationProdWithQuantity(
-    private val variationProduct: VariationProduct,
-    val quantity: Int
-) : VariationProduct(variationProduct)
+data class ProdVariationWithQuantity(
+        private val productVariation: ProductVariation,
+        private val quantitiesByDetail: Map<String?, Int>
+) : ProductVariation(productVariation) {
+
+    constructor(productVariation: ProductVariation, quantity: Int) : this(
+            productVariation, mapOf(null to quantity))
+
+    fun quantity(detail: String?) : Int {
+        return quantitiesByDetail[detail] ?: 0
+    }
+
+}

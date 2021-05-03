@@ -48,7 +48,7 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
         }
 
         private fun navigateToProductDetails(product: MainProdWithQuantity, view: View) {
-            val action = HomeFragmentDirections.actionNavHomeToProductDetailsFragment(mainId = product.mainId)
+            val action = HomeFragmentDirections.actionNavHomeToProductDetailsFragment(mainId = product.mainId, name = product.name)
             view.findNavController().navigate(action)
         }
 

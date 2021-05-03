@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.databinding.FragmentHomeBinding
 import com.diegoparra.veggie.products.domain.entities.Tag
-import com.diegoparra.veggie.products.viewmodels.TagsState
 import com.diegoparra.veggie.products.viewmodels.TagsViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,12 +32,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        viewModel.tagsState.observe(viewLifecycleOwner) {
+        viewModel.tags.observe(viewLifecycleOwner) {
             when(it){
-                is TagsState.Loading -> renderLoadingTags()
-                is TagsState.Success -> renderTags(it.data)
-                is TagsState.EmptyTagsList -> renderEmptyTagsList()
-                is TagsState.UnknownError -> renderFailure(it.failure, it.message)
+                is Resource.Loading -> renderLoadingTags()
+                is Resource.Success -> renderTags(it.data)
+                is Resource.Error -> renderFailure(it.failure)
             }
         }
     }
@@ -54,12 +53,13 @@ class HomeFragment : Fragment() {
         }.attach()
     }
 
-    private fun renderEmptyTagsList(){
-        TODO()
-    }
-
-    private fun renderFailure(failure: Failure, message: String?){
-        TODO()
+    private fun renderFailure(failure: Failure){
+        when(failure){
+            is Failure.ProductsFailure.TagsNotFound ->
+                TODO()
+            else ->
+                TODO()
+        }
     }
 
 

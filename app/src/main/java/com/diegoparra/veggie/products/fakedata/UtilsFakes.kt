@@ -20,13 +20,13 @@ object UtilsFakes {
         suggestedLabel = getMainVariationInfo().suggestedLabel
     )
 
-    fun AdminVariationData.toVariationProduct() = VariationProduct(
+    fun AdminVariationData.toVariationProduct() = ProductVariation(
         varId = varId, unit = unit, weightGr = weightGr, details = detailOptions,
         price = price, discount = discount, stock = stock, maxOrder = maxOrder,
         suggestedLabel = suggestedLabel
     )
 
-    fun AdminProduct.getIdTest(detail: String = getMainVariationInfo().detailOptions[0]) =
+    fun AdminProduct.getIdTest(detail: String? = getMainVariationInfo().detailOptions?.get(0)) =
         ProductId(mainId = mainData.mainId,
             varId = getMainVariationInfo().varId,
             detail = detail

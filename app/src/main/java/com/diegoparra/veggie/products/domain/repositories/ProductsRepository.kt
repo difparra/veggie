@@ -4,7 +4,7 @@ import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.products.domain.entities.Tag
 import com.diegoparra.veggie.products.domain.entities.MainProduct
-import com.diegoparra.veggie.products.domain.entities.VariationProduct
+import com.diegoparra.veggie.products.domain.entities.ProductVariation
 import java.util.concurrent.TimeUnit
 
 interface ProductsRepository {
@@ -30,7 +30,7 @@ interface ProductsRepository {
         mainId: String,
         forceUpdate: Boolean = false,
         expirationTimeMillis: Long = TimeUnit.MINUTES.toMillis(15)
-    ) : Either<Failure, List<VariationProduct>>
+    ) : Either<Failure, List<ProductVariation>>
 
 
     /*

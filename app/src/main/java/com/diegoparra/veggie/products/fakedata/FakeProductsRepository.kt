@@ -5,7 +5,7 @@ import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.products.domain.entities.MainProduct
 import com.diegoparra.veggie.products.domain.entities.AdminProduct
 import com.diegoparra.veggie.products.domain.entities.Tag
-import com.diegoparra.veggie.products.domain.entities.VariationProduct
+import com.diegoparra.veggie.products.domain.entities.ProductVariation
 import com.diegoparra.veggie.products.domain.repositories.ProductsRepository
 import com.diegoparra.veggie.products.fakedata.UtilsFakes.toMainProduct
 import com.diegoparra.veggie.products.fakedata.UtilsFakes.toVariationProduct
@@ -67,7 +67,7 @@ class FakeProductsRepository(
     }
 
 
-    override suspend fun getProductVariationsByMainId(mainId: String, forceUpdate: Boolean, expirationTimeMillis: Long): Either<Failure, List<VariationProduct>> {
+    override suspend fun getProductVariationsByMainId(mainId: String, forceUpdate: Boolean, expirationTimeMillis: Long): Either<Failure, List<ProductVariation>> {
         if(products.isNullOrEmpty())    return Either.Left(Failure.ProductsFailure.ProductsNotFound)
 
         for(product in products){

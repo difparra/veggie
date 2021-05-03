@@ -37,6 +37,9 @@
         <argument
             android:name="mainId"
             app:argType="string" />
+        <argument
+            android:name="name"
+            app:argType="string" />
     </dialog>
 
 
