@@ -4,8 +4,9 @@
 
     <item
         custom:state_qty_zero = "true"
-        android:drawable="@drawable/ic_remove_circle_filled" />
+        android:drawable="@drawable/ic_add_circle_outline"
+        />
     <item
-        android:drawable="@drawable/ic_remove_circle_outline" />
+        android:drawable="@drawable/ic_circle_filled" />
 
 </selector>

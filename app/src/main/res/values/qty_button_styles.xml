@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.Veggie.QtyButton.Add" parent="">
+        <item name="android:background">@drawable/sel_btn_qty_add</item>
+        <item name="android:backgroundTint">@color/sel_btn_qty_add</item>
+        <item name="enabled_behaviour">add</item>
+    </style>
+
+    <style name="Widget.Veggie.QtyButton.Reduce" parent="">
+        <item name="android:background">@drawable/sel_btn_qty_reduce</item>
+        <item name="android:backgroundTint">@color/sel_btn_qty_reduce</item>
+        <item name="enabled_behaviour">reduce</item>
+    </style>
+
+</resources>

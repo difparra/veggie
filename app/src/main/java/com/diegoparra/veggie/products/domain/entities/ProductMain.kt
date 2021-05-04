@@ -26,7 +26,7 @@ open class MainProduct(
         get() = Label.createLabel(stock, discount, suggestedLabel)
 
     val description: Description
-        get() = Description.createDescription(price, discount, unit, weightGr)
+        get() = Description(price, discount, unit, weightGr)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

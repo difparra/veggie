@@ -1,19 +1,11 @@
 package com.diegoparra.veggie.products.domain.entities
 
-sealed class Description {
-    class Discounted(val finalPrice: Int, val discount: Float, val unit: String, val weightGr: Int) : Description()
-    class Basic(val price: Int, val unit: String, val weightGr: Int) : Description()
-
-    companion object{
-        fun createDescription(price: Int, discount: Float, unit: String, weightGr: Int) : Description {
-            return if(discount > 0){
-                Discounted(price, discount, unit, weightGr)
-            }else{
-                Basic(price, unit, weightGr)
-            }
-        }
-    }
-}
+data class Description(
+        val finalPrice: Int,
+        val discount: Float,
+        val unit: String,
+        val weightGr: Int
+)
 
 sealed class Label {
     object NoStock : Label()

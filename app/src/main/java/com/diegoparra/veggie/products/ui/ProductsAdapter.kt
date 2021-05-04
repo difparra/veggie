@@ -1,5 +1,7 @@
 package com.diegoparra.veggie.products.ui
 
+import android.text.Spannable
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +11,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.QtyButton
 import com.diegoparra.veggie.databinding.ListItemMainProductBinding
 import com.diegoparra.veggie.products.domain.entities.Description
 import com.diegoparra.veggie.products.domain.entities.Label
 import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
+import com.diegoparra.veggie.products.ui.utils.*
 import com.google.android.material.color.MaterialColors
 
 class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.ProductViewHolder>(DiffCallback) {
@@ -73,7 +77,14 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
         }
 
         private fun loadDescription(description: Description){
-            binding.description.text = getDescriptionText(description = description, context = binding.description.context)
+            val context = binding.description.context
+            val text = getFormattedPrice(finalPrice = description.finalPrice, discount = description.discount, context = context)
+            text.append(
+                    " /${abbreviatedUnit(description.unit)}",
+                    ForegroundColorSpan(context.getColorWithAlphaFromAttrs(colorAttr = R.attr.colorOnSurface, alphaAttr = R.attr.alphaSecondaryText)),
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+            )
+            binding.description.text = text
         }
 
         private fun loadQtyButton(quantity: Int){

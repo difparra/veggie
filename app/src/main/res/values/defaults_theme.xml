@@ -17,7 +17,7 @@
         <item name="colorWarning">@color/orange</item>
         <item name="colorOnWarning">@color/white</item>
         <item name="colorsRandom">@array/dark_colors</item> <!-- onRandomDark will be onSecondary -->
-
+        <item name="alphaSecondaryText">0.5</item>
     </style>
 
 </resources>

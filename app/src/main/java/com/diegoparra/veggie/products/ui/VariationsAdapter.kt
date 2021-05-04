@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.diegoparra.veggie.core.QtyButton
 import com.diegoparra.veggie.databinding.ListItemVariationHeaderBinding
 import com.diegoparra.veggie.databinding.ListItemVariationItemBinding
-import timber.log.Timber
+import com.diegoparra.veggie.products.ui.utils.getFormattedPrice
 
 private const val HEADER = 0
 private const val ITEM_FOR_HEADER = 1
@@ -41,7 +43,6 @@ class VariationsAdapter : ListAdapter<VariationUi, VariationsAdapter.ViewHolder>
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Timber.d("position: $position \n viewHolder: $holder \n item: ${getItem(position)} ")
         when(holder){
             is ViewHolder.HeaderViewHolder -> holder.bind(getItem(position) as VariationUi.Header)
             is ViewHolder.ItemForHeaderViewHolder -> holder.bind(getItem(position) as VariationUi.ItemForHeader)
@@ -53,30 +54,56 @@ class VariationsAdapter : ListAdapter<VariationUi, VariationsAdapter.ViewHolder>
     sealed class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         class HeaderViewHolder(private var binding: ListItemVariationHeaderBinding) : ViewHolder(binding.root) {
-            @SuppressLint("SetTextI18n")
             fun bind(header: VariationUi.Header) {
-                binding.title.text = "${header.unit} (±${header.weightGr}g)"
+                loadBasicDescription(binding.title, header.unit, header.weightGr)
             }
         }
 
         class ItemForHeaderViewHolder(private var binding: ListItemVariationItemBinding) : ViewHolder(binding.root) {
             fun bind(item: VariationUi.ItemForHeader) {
-                binding.price.text = item.price.toString()
+                loadPriceBox(binding.price, item.price, item.discount)
                 binding.description.text = item.detail ?: ""
-                binding.quantity.text = item.quantity.toString()
-                binding.btnAdd.setQuantityState(quantity = item.quantity, maxOrder = item.maxOrder)
-                binding.btnReduce.setQuantityState(quantity = item.quantity, maxOrder = item.maxOrder)
+                loadQuantityViews(
+                        btnReduce = binding.btnReduce, qtyView = binding.quantity, btnAdd = binding.btnAdd,
+                        quantity = item.quantity, maxOrder = item.maxOrder
+                )
             }
         }
 
         class BasicItemViewHolder(private var binding: ListItemVariationItemBinding) : ViewHolder(binding.root) {
             @SuppressLint("SetTextI18n")
             fun bind(item: VariationUi.BasicItem) {
-                binding.price.text = item.price.toString()
-                binding.description.text = "${item.unit} (±${item.weightGr}g)"
-                binding.quantity.text = item.quantity.toString()
-                binding.btnAdd.setQuantityState(quantity = item.quantity, maxOrder = item.maxOrder)
-                binding.btnReduce.setQuantityState(quantity = item.quantity, maxOrder = item.maxOrder)
+                loadPriceBox(binding.price, item.price, item.discount)
+                loadBasicDescription(binding.description, item.unit, item.weightGr)
+                loadQuantityViews(
+                        btnReduce = binding.btnReduce, qtyView = binding.quantity, btnAdd = binding.btnAdd,
+                        quantity = item.quantity, maxOrder = item.maxOrder
+                )
+            }
+        }
+
+
+        protected fun loadPriceBox(priceView: TextView, price: Int, discount: Float){
+            val formattedPriceString = getFormattedPrice(finalPrice = price, discount = discount, context = priceView.context)
+            priceView.text = formattedPriceString
+        }
+
+        @SuppressLint("SetTextI18n")
+        protected fun loadBasicDescription(view: TextView, unit: String, weightGr: Int){
+            view.text = "$unit (± ${weightGr}g)"
+        }
+
+        protected fun loadQuantityViews(btnReduce: QtyButton, qtyView: TextView, btnAdd: QtyButton,
+                                        quantity: Int, maxOrder: Int) {
+            btnAdd.setQuantityState(quantity = quantity, maxOrder = maxOrder)
+            btnReduce.setQuantityState(quantity = quantity, maxOrder = maxOrder)
+            qtyView.text = quantity.toString()
+            if(quantity==0){
+                btnReduce.visibility = View.GONE
+                qtyView.visibility = View.GONE
+            }else{
+                btnReduce.visibility = View.VISIBLE
+                qtyView.visibility = View.VISIBLE
             }
         }
     }

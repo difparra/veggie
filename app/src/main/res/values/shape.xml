@@ -30,8 +30,8 @@
 
     <!--Shape Appearance for large components like side and bottom navigation drawers-->
     <style name="ShapeAppearance.Veggie.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
-        <item name="cornerSizeTopLeft">10dp</item>
-        <item name="cornerSizeTopRight">10dp</item>
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeTopRight">20dp</item>
     </style>
 
     <!--Shape Appearance overlay for ShapeableImageView -->
