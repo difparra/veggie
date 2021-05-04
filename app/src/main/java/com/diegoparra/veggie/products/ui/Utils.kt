@@ -40,9 +40,6 @@ fun abbreviatedUnit(unit: String) =
         else -> unit
     }
 
-fun getWeightString(weightGr: Int) : String? =
-    if(weightGr == -1) null
-    else "Aprox. ${weightGr}g"
 
 //@ColorRes @ArrayRes
 fun Context.getResourceFromAttr(

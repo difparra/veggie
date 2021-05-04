@@ -19,7 +19,7 @@ class ProductsListFragment : Fragment() {
     private var _binding : FragmentProductsListBinding? = null
     private val binding get() = _binding!!
     private val viewModel : ProductsListViewModel by viewModels()
-    private val adapter = ProductsAdapter()
+    private val adapter by lazy { ProductsAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

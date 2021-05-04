@@ -3,7 +3,7 @@ package com.diegoparra.veggie.products.viewmodels
 import androidx.lifecycle.*
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.products.domain.entities.ProdVariationWithQuantity
+import com.diegoparra.veggie.products.domain.entities.ProdVariationWithQuantities
 import com.diegoparra.veggie.products.domain.usecases.GetVariationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
@@ -19,8 +19,8 @@ class ProductDetailsViewModel @Inject constructor(
     private val productId = savedStateHandle.get<String>(PROD_MAIN_ID_SAVED_STATE_KEY)!!
     val name = savedStateHandle.get<String>(PROD_MAIN_NAME_SAVED_STATE_KEY)!!
 
-    private val _variationsList = MutableLiveData<Resource<List<ProdVariationWithQuantity>>>()
-    val variationsList : LiveData<Resource<List<ProdVariationWithQuantity>>> = _variationsList
+    private val _variationsList = MutableLiveData<Resource<List<ProdVariationWithQuantities>>>()
+    val variationsList : LiveData<Resource<List<ProdVariationWithQuantities>>> = _variationsList
 
     init {
         viewModelScope.launch {
@@ -31,7 +31,7 @@ class ProductDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun handleVariationsList(variations: List<ProdVariationWithQuantity>) {
+    private fun handleVariationsList(variations: List<ProdVariationWithQuantities>) {
         _variationsList.value = Resource.Success(variations)
     }
 

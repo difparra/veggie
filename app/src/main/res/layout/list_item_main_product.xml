@@ -36,15 +36,20 @@
 
     <com.diegoparra.veggie.core.QtyButton
         android:id="@+id/btn_qty"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/ic_add_main_prod"
         android:backgroundTint="?attr/colorPrimary"
-        android:textColor="?attr/colorOnPrimary"
         android:layout_below="@id/image"
         android:layout_alignParentEnd="true"
-        android:layout_above="@id/name"
-        tools:text="1" />
+        tools:text="10"
+        android:padding="0dp"
+        android:includeFontPadding="false"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:textStyle="bold"
+        android:insetBottom="2dp"
+        android:insetTop="2dp"/>
 
     <com.google.android.material.chip.Chip
         android:id="@+id/label"

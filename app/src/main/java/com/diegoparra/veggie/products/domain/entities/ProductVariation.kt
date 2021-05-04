@@ -22,6 +22,8 @@ open class ProductVariation(
             productVariation.suggestedLabel
     )
 
+    val hasDetails = !details.isNullOrEmpty()
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -54,7 +56,7 @@ open class ProductVariation(
 
 }
 
-data class ProdVariationWithQuantity(
+data class ProdVariationWithQuantities(
         private val productVariation: ProductVariation,
         private val quantitiesByDetail: Map<String?, Int>
 ) : ProductVariation(productVariation) {
