@@ -7,17 +7,10 @@ sealed class VariationUi {
             val unit: String,
             val weightGr: Int
     ) : VariationUi()
-    data class ItemForHeader(
+    data class Item(
+            val headerIsVisible: Boolean,
             val varId: String,
             val detail: String?,
-            val price: Int,
-            val discount: Float,
-            val stock: Boolean,
-            val maxOrder: Int,
-            val quantity: Int
-    ) : VariationUi()
-    data class BasicItem(
-            val varId: String,
             val unit: String,
             val weightGr: Int,
             val price: Int,
@@ -28,31 +21,48 @@ sealed class VariationUi {
     ) : VariationUi()
 
     companion object {
+
         fun getListToSubmit(variationsList: List<ProdVariationWithQuantities>) : List<VariationUi> {
             return if(variationsList.any { it.hasDetails} ){
-                getListWithDetails(variationsList)
+                getListWithHeadersAndDetails(variationsList)
             }else{
                 getBasicList(variationsList)
             }
         }
-        private fun getListWithDetails(variationsList: List<ProdVariationWithQuantities>) : List<VariationUi> {
+
+        private fun getBasicList(variationsList: List<ProdVariationWithQuantities>) : List<VariationUi> {
+            return variationsList.map {
+                getItem(variation = it, detail = null, headerIsVisible = false)
+            }
+        }
+        private fun getListWithHeadersAndDetails(variationsList: List<ProdVariationWithQuantities>) : List<VariationUi> {
             val listToSubmit = mutableListOf<VariationUi>()
             variationsList.forEach { variation ->
                 listToSubmit.add(Header(variation.unit, variation.weightGr))
                 if(variation.details.isNullOrEmpty()){
-                    listToSubmit.add(ItemForHeader(variation.varId, null, variation.price, variation.discount, variation.stock, variation.maxOrder, variation.quantity(null)))
+                    listToSubmit.add(getItem(variation = variation, detail = null, headerIsVisible = true))
                 }else{
                     variation.details.forEach { detail ->
-                        listToSubmit.add(ItemForHeader(variation.varId, detail, variation.price, variation.discount, variation.stock, variation.maxOrder, variation.quantity(detail)))
+                        listToSubmit.add(getItem(variation = variation, detail = detail, headerIsVisible = true))
                     }
                 }
             }
             return listToSubmit
         }
-        private fun getBasicList(variationsList: List<ProdVariationWithQuantities>) : List<VariationUi> {
-            return variationsList.map {
-                BasicItem(it.varId, it.unit, it.weightGr, it.price, it.discount, it.stock, it.maxOrder, it.quantity(null))
-            }
+
+        private fun getItem(variation: ProdVariationWithQuantities, detail: String?, headerIsVisible: Boolean) : Item {
+            return Item(
+                    headerIsVisible = headerIsVisible,
+                    varId = variation.varId,
+                    detail = detail,
+                    unit = variation.unit,
+                    weightGr = variation.weightGr,
+                    price = variation.price,
+                    discount = variation.discount,
+                    stock = variation.stock,
+                    maxOrder = variation.maxOrder,
+                    quantity = variation.quantity(detail)
+            )
         }
     }
 }
