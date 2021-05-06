@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.products.ui
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,15 @@ class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter
         holder.bind(getItem(position))
     }
 
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && holder is ViewHolder.ItemViewHolder){
+            val payload = payloads.last() as Bundle
+            holder.bindFromPayload(payload)
+        }else{
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
 
     sealed class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -77,6 +87,12 @@ class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter
                     loadDescription(it.headerIsVisible, it.unit, it.weightGr, it.detail)
                     loadQuantityState(it.quantity, it.maxOrder)
                 }
+            }
+            fun bindFromPayload(payload: Bundle){
+                loadQuantityState(
+                        quantity = payload.getInt(PayloadConstants.QUANTITY),
+                        maxOrder = payload.getInt(PayloadConstants.MAX_ORDER)
+                )
             }
 
             private fun loadPrice(price: Int, discount: Float){
@@ -126,5 +142,20 @@ class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter
             return oldItem == newItem
         }
 
+        override fun getChangePayload(oldItem: VariationUi, newItem: VariationUi): Any? {
+            if(oldItem is VariationUi.Item && newItem is VariationUi.Item){
+                return Bundle().apply {
+                    putInt(PayloadConstants.QUANTITY, newItem.quantity)
+                    putInt(PayloadConstants.MAX_ORDER, newItem.maxOrder)
+                }
+            }else{
+                return null
+            }
+        }
+
+        object PayloadConstants {
+            const val QUANTITY = "quantity"
+            const val MAX_ORDER = "maxOrder"
+        }
     }
 }

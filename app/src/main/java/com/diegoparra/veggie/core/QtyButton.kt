@@ -64,6 +64,8 @@ class QtyButton(context: Context, attrs: AttributeSet) : AppCompatButton(context
         }
         mQtyState = qtyState
         setNewEnabledState(qtyState)
+        refreshDrawableState()  // it was necessary because with the payload, buttonQty on
+                                // mainProduct was not refreshed behind variationsDialog
         //  invalidate() and requestLayout() are called into setNewEnabledState method.
     }
 

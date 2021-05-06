@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.products.ui
 
+import android.os.Bundle
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ import com.diegoparra.veggie.products.domain.entities.Label
 import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
 import com.diegoparra.veggie.products.ui.utils.*
 import com.google.android.material.color.MaterialColors
+import timber.log.Timber
 
 class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.ProductViewHolder>(DiffCallback) {
 
@@ -35,6 +37,16 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
     override fun onBindViewHolder(holderProduct: ProductViewHolder, position: Int) {
         val product = getItem(position)
         holderProduct.bind(product)
+    }
+
+    override fun onBindViewHolder(holder: ProductViewHolder, position: Int, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty()){
+            Timber.d("payloads $payloads")
+            val payload = payloads.last() as Bundle
+            holder.bindFromPayload(payload)
+        }else{
+            super.onBindViewHolder(holder, position, payloads)
+        }
     }
 
     inner class ProductViewHolder(private var binding: ListItemMainProductBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -54,6 +66,9 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
             loadDescription(product.description)
             loadQtyButton(product.quantity)
             loadLabel(product.label)
+        }
+        fun bindFromPayload(bundle: Bundle){
+            loadQtyButton(bundle.getInt(PayloadConstants.QUANTITY))
         }
 
         private fun navigateToProductDetails(product: MainProdWithQuantity, view: View) {
@@ -136,25 +151,14 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
             return oldItem == newItem
         }
 
-        /*  TODO:   Deal with payloads, as quantity is the only value that changes
         override fun getChangePayload(oldItem: MainProdWithQuantity, newItem: MainProdWithQuantity): Any? {
-            return super.getChangePayload(oldItem, newItem)
+            return Bundle().apply {
+                putInt(PayloadConstants.QUANTITY, newItem.quantity)
+            }
         }
 
-        <-override fun onBindViewHolder(holder: ProductViewHolder, position: Int, payloads: MutableList<Any>) {
-            super.onBindViewHolder(holder, position, payloads)
+        object PayloadConstants {
+            const val QUANTITY = "quantity"
         }
-        if(!payloads.isEmpty()){
-            Log.d(TAG, "onBindViewHolder() called with: holder = [" + holder + "], position = [" + position + "], payloads = [" + payloads + "]");
-            Bundle payload = (Bundle) payloads.get(payloads.size() - 1);
-            int qtyState = payload.getInt("qtyState");
-            int quantity = payload.getInt("quantity");
-            loadQuantityViews(holder, qtyState, quantity);
-        }else{
-            Log.d(TAG, "emptyPayload/onBindViewHolder() called with: holder = [" + holder + "], position = [" + position + "], payloads = [" + payloads + "]");
-            super.onBindViewHolder(holder, position, payloads);
-        }
-        */
-
     }
 }
