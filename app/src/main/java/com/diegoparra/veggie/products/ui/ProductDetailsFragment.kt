@@ -36,11 +36,11 @@ class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.On
     }
 
     override fun onAddListener(variationId: String, detail: String?) {
-        Toast.makeText(binding.title.context, "btnAdd $variationId - $detail pressed!", Toast.LENGTH_SHORT).show()
+        viewModel.addQuantity(varId = variationId, detail = detail)
     }
 
     override fun onReduceListener(variationId: String, detail: String?) {
-        Toast.makeText(binding.title.context, "btnReduce $variationId - $detail pressed!", Toast.LENGTH_SHORT).show()
+        viewModel.reduceQuantity(varId = variationId, detail = detail)
     }
 
 

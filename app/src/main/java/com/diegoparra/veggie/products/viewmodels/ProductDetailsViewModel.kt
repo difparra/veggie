@@ -4,19 +4,24 @@ import androidx.lifecycle.*
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.products.domain.entities.ProdVariationWithQuantities
+import com.diegoparra.veggie.products.domain.entities.ProductId
+import com.diegoparra.veggie.products.domain.entities.ProductVariation
 import com.diegoparra.veggie.products.domain.usecases.GetVariationsUseCase
+import com.diegoparra.veggie.products.domain.usecases.UpdateQuantityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
         private val getVariationsUseCase: GetVariationsUseCase,
+        private val updateQuantityUseCase: UpdateQuantityUseCase,
         savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val productId = savedStateHandle.get<String>(PROD_MAIN_ID_SAVED_STATE_KEY)!!
+    private val mainId = savedStateHandle.get<String>(PROD_MAIN_ID_SAVED_STATE_KEY)!!
     val name = savedStateHandle.get<String>(PROD_MAIN_NAME_SAVED_STATE_KEY)!!
 
     private val _variationsList = MutableLiveData<Resource<List<ProdVariationWithQuantities>>>()
@@ -25,7 +30,8 @@ class ProductDetailsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _variationsList.value = Resource.Loading()
-            getVariationsUseCase(productId).collect {
+            getVariationsUseCase(mainId).collect {
+                Timber.d("variations collected: $it")
                 it.fold(::handleFailure, ::handleVariationsList)
             }
         }
@@ -39,6 +45,39 @@ class ProductDetailsViewModel @Inject constructor(
         _variationsList.value = Resource.Error(failure)
     }
 
+
+
+    fun addQuantity(varId: String, detail: String?) {
+        Timber.d("addQuantity() called with: varId = $varId, detail = $detail")
+        val prodVariation = findVariation(varId)
+        prodVariation?.let { variation ->
+            viewModelScope.launch {
+                val productId = ProductId(mainId = mainId, varId = varId, detail = detail)
+                val maxOrder = variation.maxOrder
+                updateQuantityUseCase(UpdateQuantityUseCase.Params.Add(productId, maxOrder))
+            }
+        }
+    }
+
+    fun reduceQuantity(varId: String, detail: String?) {
+        Timber.d("reduceQuantity() called with: varId = $varId, detail = $detail")
+        //  Not strictly necessary to findVariation, but better as it is a validation if variation
+        //  exists in the products send to show in ui
+        val prodVariation = findVariation(varId = varId)
+        prodVariation?.let {
+            viewModelScope.launch {
+                val productId = ProductId(mainId = mainId, varId = varId, detail = detail)
+                updateQuantityUseCase(UpdateQuantityUseCase.Params.Reduce(productId))
+            }
+        }
+    }
+
+    private fun findVariation(varId: String) : ProductVariation? {
+        return when(val variations = variationsList.value){
+            is Resource.Success -> variations.data.find { it.varId == varId }
+            else -> null
+        }
+    }
 
     companion object {
         //  VERY IMPORTANT: Must be the same key as the one defined in the nav_main.xml

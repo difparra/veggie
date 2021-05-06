@@ -13,7 +13,7 @@ import com.diegoparra.veggie.products.ui.utils.getFormattedPrice
 private const val HEADER = 0
 private const val ITEM = 1
 
-class VariationsAdapter(val listener: OnItemClickListener) : ListAdapter<VariationUi, VariationsAdapter.ViewHolder>(DiffCallback) {
+class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter<VariationUi, VariationsAdapter.ViewHolder>(DiffCallback) {
 
     interface OnItemClickListener {
         fun onAddListener(variationId: String, detail: String?)
