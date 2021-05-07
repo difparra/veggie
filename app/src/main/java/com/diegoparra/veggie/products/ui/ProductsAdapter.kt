@@ -6,7 +6,9 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.children
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -72,8 +74,17 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
         }
 
         private fun navigateToProductDetails(product: MainProdWithQuantity, view: View) {
-            val action = HomeFragmentDirections.actionNavHomeToProductDetailsFragment(mainId = product.mainId, name = product.name)
-            view.findNavController().navigate(action)
+            val action = when(view.findNavController().currentDestination?.id){
+                R.id.nav_home -> HomeFragmentDirections.actionNavHomeToProductDetailsFragment(mainId = product.mainId, name = product.name)
+                R.id.nav_search -> SearchFragmentDirections.actionNavSearchToProductDetailsFragment(mainId = product.mainId, name = product.name)
+                else -> null
+            }
+            if(action != null){
+                view.findNavController().navigate(action)
+            }else{
+                //  TODO()
+                Toast.makeText(view.context, "Can't navigate: currentDestinationId: ${view.findNavController().currentDestination?.id}", Toast.LENGTH_SHORT).show()
+            }
         }
 
         private fun loadEnabledState(enabled: Boolean){

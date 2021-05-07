@@ -75,7 +75,7 @@
     <style name="TextAppearance.Veggie.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
         <item name="fontFamily">@font/graphik_regular</item>
         <item name="android:fontFamily">@font/graphik_regular</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">16sp</item>
     </style>
 

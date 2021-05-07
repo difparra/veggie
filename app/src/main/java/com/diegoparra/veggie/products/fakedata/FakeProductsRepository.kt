@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.products.fakedata
 
+import android.util.Log
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.products.domain.entities.MainProduct
@@ -18,17 +19,22 @@ class FakeProductsRepository(
 ) : ProductsRepository {
 
     override suspend fun getTags(forceUpdate: Boolean, expirationTimeMillis: Long): Either<Failure, List<Tag>> {
+        Timber.d("getTags() called with: forceUpdate = $forceUpdate, expirationTimeMillis = $expirationTimeMillis")
         return if(tags.isNullOrEmpty()){
-            Timber.e("Tags not found")
+            Timber.e("getTags - Tags not found")
             Either.Left(Failure.ProductsFailure.TagsNotFound)
         }else{
-            Timber.i("tags: $tags")
+            Timber.i("getTags: $tags")
             Either.Right(tags)
         }
     }
 
     override suspend fun getMainProductsByTagId(tagId: String, forceUpdate: Boolean, expirationTimeMillis: Long): Either<Failure, List<MainProduct>> {
-        if(products.isNullOrEmpty())    return Either.Left(Failure.ProductsFailure.ProductsNotFound)
+        Timber.d("getMainProductsByTagId() called with: tagId = $tagId, forceUpdate = $forceUpdate, expirationTimeMillis = $expirationTimeMillis")
+        if(products.isNullOrEmpty()){
+            Timber.e("getMainProductsByTagId - empty products list")
+            return Either.Left(Failure.ProductsFailure.ProductsNotFound)
+        }
 
         val mainProds = mutableListOf<MainProduct>()
         for(product in products){
@@ -38,17 +44,23 @@ class FakeProductsRepository(
         }
 
         return if(mainProds.isNullOrEmpty()){
-            Timber.e("Main products not found")
+            Timber.e("getMainProductsByTagId - products for tag $tagId not found")
             Either.Left(Failure.ProductsFailure.ProductsNotFound)
         }else{
-            Timber.i("mainProds: $mainProds")
+            Timber.i("getMainProductsByTagId: mainProds = $mainProds")
             Either.Right(mainProds)
         }
     }
 
     override suspend fun searchMainProductsByName(query: String, forceUpdate: Boolean, expirationTimeMillis: Long): Either<Failure, List<MainProduct>> {
-        if(products.isNullOrEmpty())    return Either.Left(Failure.ProductsFailure.ProductsNotFound)
-        if(query.isEmpty())             return Either.Left(Failure.SearchFailure.EmptyQuery)
+        Timber.d("searchMainProductsByName() called with: query = $query, forceUpdate = $forceUpdate, expirationTimeMillis = $expirationTimeMillis")
+        if(products.isNullOrEmpty()){
+            Timber.e("searchMainProductsByName - empty products list")
+            return Either.Left(Failure.ProductsFailure.ProductsNotFound)
+        }else if(query.isEmpty()){
+            Timber.e("searchMainProductsByName - empty search query")
+            return Either.Left(Failure.SearchFailure.EmptyQuery)
+        }
 
         val mainProds = mutableListOf<MainProduct>()
         for(product in products){
@@ -58,26 +70,30 @@ class FakeProductsRepository(
         }
 
         return if(mainProds.isNullOrEmpty()){
-            Timber.e("Main products not found for the search query $query")
+            Timber.e("searchMainProductsByName - Main products not found for the search: $query")
             Either.Left(Failure.SearchFailure.NoSearchResults)
         }else{
-            Timber.i("query: ${query}, mainProds: $mainProds")
+            Timber.i("searchMainProductsByName: query= ${query}, mainProds= $mainProds")
             Either.Right(mainProds)
         }
     }
 
 
     override suspend fun getProductVariationsByMainId(mainId: String, forceUpdate: Boolean, expirationTimeMillis: Long): Either<Failure, List<ProductVariation>> {
-        if(products.isNullOrEmpty())    return Either.Left(Failure.ProductsFailure.ProductsNotFound)
+        Timber.d("getProductVariationsByMainId() called with: mainId = $mainId, forceUpdate = $forceUpdate, expirationTimeMillis = $expirationTimeMillis")
+        if(products.isNullOrEmpty()){
+            Timber.e("getProductVariationsByMainId - empty products list")
+            return Either.Left(Failure.ProductsFailure.ProductsNotFound)
+        }
 
         for(product in products){
             if(product.mainData.mainId == mainId){
-                Timber.i("variations: ${product.variations.map { it.toVariationProduct() }}")
+                Timber.i("getProductVariationsByMainId: mainId= $mainId, variations= ${product.variations.map { it.toVariationProduct() }}")
                 return Either.Right(product.variations.map { it.toVariationProduct() })
             }
         }
 
-        Timber.e("Product with mainId: $mainId not found")
+        Timber.e("getProductVariationsByMainId - Product with mainId: $mainId not found")
         return Either.Left(Failure.ProductsFailure.ProductsNotFound)
     }
 

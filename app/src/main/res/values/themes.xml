@@ -38,29 +38,8 @@
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Veggie.MediumComponent</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Veggie.LargeComponent</item>
 
-
-        <!-- Customizing theme -->
-        <!-- Most important components -->
-        <item name="android:textViewStyle">@style/Widget.Veggie.TextView</item>
     </style>
 
-
-
-    <style name="Widget.Veggie.TextView" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textAppearance">?attr/textAppearanceBody2</item>
-        <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">1</item>
-    </style>
-
-    <style name="Widget.Veggie.Divider" parent="">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0.75dp</item>
-        <item name="android:background">?attr/colorOnSurface</item>
-        <item name="android:alpha">0.4</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
-    </style>
 
     <!--
         Checkbox:       Type: inherits from AppCompatCheckBox / Shape is not supported
