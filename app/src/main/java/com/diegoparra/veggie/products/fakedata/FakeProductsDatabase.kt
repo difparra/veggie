@@ -1,210 +1,109 @@
 package com.diegoparra.veggie.products.fakedata
 
-import com.diegoparra.veggie.core.trimAllSpaces
 import com.diegoparra.veggie.products.domain.entities.*
+import java.util.*
 
 object FakeProductsDatabase {
 
-    sealed class FakeTag(val tag: Tag) {
-        object Fruits : FakeTag(Tag(id = "Fruits", name = "Frutas"))
-        object Vegetables : FakeTag(Tag(id = "Vegetables", name = "Verduras"))
-        object Meats : FakeTag(Tag(id = "Meats", name = "Carnes"))
-    }
+    val arandanos_bdj_lb = ProductBuilder()
+            .createProduct(
+                    tag = FakeTag.Fruits,
+                    name = "Arándanos",
+                    imageUrl = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592425703/Arandanos.png",
+                    unit = FakeUnit.Bandeja(125),
+                    price = 4500,
+            ).addVariation(
+                    unit = FakeUnit.Libra,
+                    price = 18000
+            ).build()
 
-    sealed class FakeDetail(val detail: String) {
-        object Maduro: FakeDetail("Maduro")
-        object Verde: FakeDetail("Verde")
-    }
+    val banano_lbMV = ProductBuilder()
+            .createProduct(
+                    tag = FakeTag.Fruits,
+                    name = "Banano",
+                    imageUrl = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592425704/Banano_Criollo.png",
+                    unit = FakeUnit.Libra,
+                    price = 1400,
+                    discount = 0.1f,
+                    details = listOf(FakeDetail.Maduro, FakeDetail.Verde)
+            ).build()
 
-    sealed class FakeUnit(val unit: String, val weightGr: Int) {
-        object Libra : FakeUnit("Libra", 500)
-        class Bandeja(weightGr: Int) : FakeUnit("Bandeja", weightGr)
-        class Canastilla(weightGr: Int) : FakeUnit("Canastilla", weightGr)
-        class Unidad(weightGr: Int) : FakeUnit("Unidad", weightGr)
-        //object Atado : FakeUnit("Atado", ProductConstants.NoWeightGr)
-    }
+    val granadilla_und = ProductBuilder()
+            .createProduct(
+                    tag = FakeTag.Fruits,
+                    name = "Granadilla",
+                    imageUrl = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592425705/Granadilla.png",
+                    unit = FakeUnit.Unidad(200),
+                    price = 1300,
+                    suggestedLabel = FakeLabel.Recomendado
+            ).build()
 
-    sealed class FakeLabel(val str : String){
-        object Recomendado : FakeLabel("Recomendado")
-        object Popular : FakeLabel("Popular")
-    }
+    val fresa_lbMV = ProductBuilder()
+            .createProduct(
+                    tag = FakeTag.Fruits,
+                    name = "Fresa",
+                    imageUrl = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592425705/Fresas.png",
+                    unit = FakeUnit.Libra,
+                    price = 3800,
+                    details = listOf(FakeDetail.Maduro, FakeDetail.Verde)
+            ).build()
 
+    val arveja_lb = ProductBuilder()
+            .createProduct(
+                    tag = FakeTag.Vegetables,
+                    name = "Arveja desgranada",
+                    imageUrl = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592426889/Arveja_Desgranada.png",
+                    unit = FakeUnit.Libra,
+                    price = 5800,
+                    stock = false,
+                    suggestedLabel = FakeLabel.Popular
+            ).build()
 
+    val tomCherry_can = ProductBuilder()
+            .createProduct(
+                    tag = FakeTag.Vegetables,
+                    name = "Tomate cherry",
+                    imageUrl = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592426893/Tomate_Cherry.png",
+                    unit = FakeUnit.Canastilla(125),
+                    price = 2400,
+                    discount = 0.05f
+            ).build()
 
-    private fun createProduct(tag: FakeTag,
-                              name: String, urlImage: String,
-                              variations: List<AdminVariationData>,
-                              mainVarId: String = variations[0].varId) : AdminProduct {
-        return AdminProduct(
-            tagId = tag.tag.id,
-            mainData = AdminMainData(
-                mainId = name.trimAllSpaces(),
-                name = name,
-                imageUrl = urlImage,
-                mainVariationId = mainVarId
-            ),
-            variations = variations
-        )
-    }
+    val zanahoria_lb = ProductBuilder()
+            .createProduct(
+                    tag = FakeTag.Vegetables,
+                    name = "Zanahoria",
+                    imageUrl = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592426893/Zanahoria.png",
+                    unit = FakeUnit.Libra,
+                    price = 950
+            ).build()
 
-    private fun createVariation(varId: String, unit: FakeUnit = FakeUnit.Libra,
-                                price: Int, discount: Float = 0.0f,
-                                stock: Boolean = true, maxOrder: Int = 10,
-                                label: FakeLabel? = null,
-                                details: List<FakeDetail>? = null) : AdminVariationData {
-        return AdminVariationData(
-            varId = varId,
-            unit = unit.unit, weightGr = unit.weightGr,
-            price = price, discount = discount,
-            stock = stock, maxOrder = maxOrder,
-            suggestedLabel = label?.str, detailOptions = details?.map { it.detail }
-        )
-    }
+    val lomoRes_lb = ProductBuilder()
+            .createProduct(
+                    tag = FakeTag.Meats,
+                    name = "Lomo de res",
+                    imageUrl = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1597724385/Carne.png",
+                    unit = FakeUnit.Libra,
+                    price = 13900
+            ).build()
 
+    val pechuga_lb = ProductBuilder()
+            .createProduct(
+                    tag = FakeTag.Meats,
+                    name = "Pechuga",
+                    imageUrl = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1597724385/Pechuga_de_Pollo.png",
+                    unit = FakeUnit.Libra,
+                    price = 4500
+            ).build()
 
-
-    val arandanos_bdj_lb = createProduct(
-        tag = FakeTag.Fruits,
-        name = "Arandanos",
-        urlImage = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592425703/Arandanos.png",
-        variations = listOf(
-            createVariation(
-                varId = "ArandanosBandeja",
-                unit = FakeUnit.Bandeja(125),
-                price = 4500
-            ),
-            createVariation(
-                varId = "ArandanosLibra",
-                unit = FakeUnit.Libra,
-                price = 18000
-            )
-        )
-    )
-
-    val banano_lbMV = createProduct(
-        tag = FakeTag.Fruits,
-        name = "Banano",
-        urlImage = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592425704/Banano_Criollo.png",
-        variations = listOf(
-            createVariation(
-                varId = "BananoLibra",
-                unit = FakeUnit.Libra,
-                price = 1400,
-                discount = 0.1f,
-                details = listOf(FakeDetail.Maduro, FakeDetail.Verde)
-            )
-        )
-    )
-
-    val granadilla_und = createProduct(
-        tag = FakeTag.Fruits,
-        name = "Granadilla",
-        urlImage = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592425705/Granadilla.png",
-        variations = listOf(
-            createVariation(
-                varId = "GranadillaUnidad",
-                unit = FakeUnit.Unidad(200),
-                price = 1300,
-                label = FakeLabel.Recomendado
-            )
-        )
-    )
-
-    val fresa_lbMV = createProduct(
-        tag = FakeTag.Fruits,
-        name = "Fresa",
-        urlImage = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592425705/Fresas.png",
-        variations = listOf(
-            createVariation(
-                varId = "FresaLibra",
-                unit = FakeUnit.Libra,
-                price = 3800,
-                details = listOf(FakeDetail.Maduro, FakeDetail.Verde)
-            )
-        )
-    )
-
-    val arveja_lb = createProduct(
-        tag = FakeTag.Vegetables,
-        name = "Arveja desgranada",
-        urlImage = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592426889/Arveja_Desgranada.png",
-        variations = listOf(
-            createVariation(
-                varId = "ArvejaDesgranadaLibra",
-                unit = FakeUnit.Libra,
-                price = 5800,
-                stock = false,
-                label = FakeLabel.Popular
-            )
-        )
-    )
-
-    val tomCherry_can = createProduct(
-        tag = FakeTag.Vegetables,
-        name = "Tomate cherry",
-        urlImage = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592426893/Tomate_Cherry.png",
-        variations = listOf(
-            createVariation(
-                varId = "TomateCherryCanastilla",
-                unit = FakeUnit.Canastilla(125),
-                price = 2400,
-                discount = 0.05f
-            )
-        )
-    )
-
-    val zanahoria_lb = createProduct(
-        tag = FakeTag.Vegetables,
-        name = "Zanahoria",
-        urlImage = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1592426893/Zanahoria.png",
-        variations = listOf(
-            createVariation(
-                varId = "ZanahoriaLibra",
-                unit = FakeUnit.Libra,
-                price = 950
-            )
-        )
-    )
-
-    val lomoRes_lb = createProduct(
-        tag = FakeTag.Meats,
-        name = "Lomo de res",
-        urlImage = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1597724385/Carne.png",
-        variations = listOf(
-            createVariation(
-                varId = "LomoResLibra",
-                unit = FakeUnit.Libra,
-                price = 13900
-            )
-        )
-    )
-
-    val pechuga_lb = createProduct(
-        tag = FakeTag.Meats,
-        name = "Pechuga",
-        urlImage = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1597724385/Pechuga_de_Pollo.png",
-        variations = listOf(
-            createVariation(
-                varId = "PechugaLibra",
-                unit = FakeUnit.Libra,
-                price = 4500
-            )
-        )
-    )
-
-    val sobrebarriga_lb = createProduct(
-        tag = FakeTag.Meats,
-        name = "Sobrebarriga",
-        urlImage = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1597724385/Carne.png",
-        variations = listOf(
-            createVariation(
-                varId = "SobrebarrigaLibra",
-                unit = FakeUnit.Libra,
-                price = 8600
-            )
-        )
-    )
-
+    val sobrebarriga_lb = ProductBuilder()
+            .createProduct(
+                    tag = FakeTag.Meats,
+                    name = "Sobrebarriga",
+                    imageUrl = "https://res.cloudinary.com/p-fresh-pics/image/upload/v1597724385/Carne.png",
+                    unit = FakeUnit.Libra,
+                    price = 8600
+            ).build()
 
 
 
@@ -217,4 +116,141 @@ object FakeProductsDatabase {
         lomoRes_lb, pechuga_lb, sobrebarriga_lb
     )
 
+}
+
+
+
+/*
+    ------------------------------------------------------------------------------------------------
+            HELPER CLASSES
+    ------------------------------------------------------------------------------------------------
+ */
+
+
+sealed class FakeTag(val tag: Tag) {
+    object Fruits : FakeTag(Tag(id = "Fruits", name = "Frutas"))
+    object Vegetables : FakeTag(Tag(id = "Vegetables", name = "Verduras"))
+    object Meats : FakeTag(Tag(id = "Meats", name = "Carnes"))
+}
+
+sealed class FakeDetail(val detail: String) {
+    object Maduro: FakeDetail("Maduro")
+    object Verde: FakeDetail("Verde")
+}
+
+sealed class FakeUnit(val unit: String, val weightGr: Int) {
+    object Libra : FakeUnit("Libra", 500)
+    class Bandeja(weightGr: Int) : FakeUnit("Bandeja", weightGr)
+    class Canastilla(weightGr: Int) : FakeUnit("Canastilla", weightGr)
+    class Unidad(weightGr: Int) : FakeUnit("Unidad", weightGr)
+    //object Atado : FakeUnit("Atado", ProductConstants.NoWeightGr)
+}
+
+private sealed class FakeLabel(val str : String){
+    object Recomendado : FakeLabel("Recomendado")
+    object Popular : FakeLabel("Popular")
+}
+
+
+private class ProductBuilder {
+
+    private lateinit var tagId: String
+    private lateinit var mainId: String
+    private lateinit var name: String
+    private lateinit var imageUrl: String
+    private lateinit var mainVarId: String
+    private val variations = mutableListOf<AdminVariationData>()
+
+    private fun String.normalise() =
+            toLowerCase(Locale.ROOT)
+                    .replace('á','a').replace('à', 'a')
+                    .replace('é','e').replace('à', 'a')
+                    .replace('í','i').replace('à', 'a')
+                    .replace('ó','o').replace('à', 'a')
+                    .replace('ú','u').replace('à', 'a')
+                    .replace('ñ','n')
+                    .replace(" ", "")
+
+
+    fun createProduct(tag: FakeTag, mainId: String? = null, varId: String? = null,
+                      name: String, imageUrl: String,
+                      unit: FakeUnit, price: Int, discount: Float = 0.0f,
+                      stock: Boolean = true, maxOrder: Int = 10,
+                      suggestedLabel: FakeLabel? = null, details: List<FakeDetail>? = null
+    ) : ProductBuilder {
+        this.tagId = tag.tag.id
+        this.mainId = mainId?.normalise() ?: name.normalise()
+        this.name = name
+        this.imageUrl = imageUrl
+        this.mainVarId = varId?.normalise() ?: (name + unit.unit).normalise()
+        variations.add(AdminVariationData(
+                varId = this.mainVarId,
+                relatedMainId = this.mainId,
+                unit = unit.unit,
+                weightGr = unit.weightGr,
+                price = price,
+                discount = discount,
+                stock = stock,
+                maxOrder = maxOrder,
+                suggestedLabel = suggestedLabel?.str,
+                detailOptions = details?.map { it.detail }
+        ))
+        return this
+    }
+
+    fun setMainId(mainId: String) : ProductBuilder {
+        this.mainId = mainId.normalise()
+        return this
+    }
+
+    fun setMainVarId(mainVarId: String) : ProductBuilder {
+        val variation = variations.find { it.varId == mainVarId.normalise() }
+        variation?.let {
+            this@ProductBuilder.mainVarId = mainVarId.normalise()
+        }
+        return this
+    }
+
+    fun addVariation(varId: String? = null, unit: FakeUnit, price: Int, discount: Float = 0.0f,
+                     stock: Boolean = true, maxOrder: Int = 10, suggestedLabel: FakeLabel? = null, details: List<FakeDetail>? = null
+    ) : ProductBuilder {
+        val finalVarId = getUniqueVarIdInMainId(varId?.normalise() ?: (name + unit.unit).normalise())
+        variations.add(AdminVariationData(
+                varId = finalVarId,
+                relatedMainId = this.mainId,
+                unit = unit.unit,
+                weightGr = unit.weightGr,
+                price = price,
+                discount = discount,
+                stock = stock,
+                maxOrder = maxOrder,
+                suggestedLabel = suggestedLabel?.str,
+                detailOptions = details?.map { it.detail }
+        ))
+        return this
+    }
+
+    private fun getUniqueVarIdInMainId(varId: String) : String {
+        var finalVarId = varId
+        var varIdFound: Boolean
+        var counter = 1
+        do {
+            if(variations.find { it.varId == finalVarId } != null){
+                finalVarId += counter.toString()
+                counter++
+                varIdFound = true
+            }else{
+                varIdFound = false
+            }
+        }while (varIdFound)
+        return finalVarId
+    }
+
+    fun build() : AdminProduct {
+        return AdminProduct(
+                tagId = tagId,
+                mainData = AdminMainData(mainId = mainId, name = name, imageUrl = imageUrl, mainVariationId = mainVarId),
+                variations = variations
+        )
+    }
 }

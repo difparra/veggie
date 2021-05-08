@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.products.fakedata
 
-import android.util.Log
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.products.domain.entities.MainProduct

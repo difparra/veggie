@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.diegoparra.veggie.databinding.ListItemVariationHeaderBinding
 import com.diegoparra.veggie.databinding.ListItemVariationItemBinding
 import com.diegoparra.veggie.products.ui.utils.getFormattedPrice
+import com.google.android.material.color.MaterialColors
 
 private const val HEADER = 0
 private const val ITEM = 1
@@ -83,6 +85,7 @@ class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter
             override fun bind(item: VariationUi) {
                 this.item = item as VariationUi.Item
                 this.item?.let {
+                    loadEnabledState(it.stock)
                     loadPrice(it.price, it.discount)
                     loadDescription(it.headerIsVisible, it.unit, it.weightGr, it.detail)
                     loadQuantityState(it.quantity, it.maxOrder)
@@ -93,6 +96,19 @@ class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter
                         quantity = payload.getInt(PayloadConstants.QUANTITY),
                         maxOrder = payload.getInt(PayloadConstants.MAX_ORDER)
                 )
+            }
+
+            private fun loadEnabledState(enabled: Boolean){
+                val currentEnabledState = binding.root.isEnabled
+                if(currentEnabledState != enabled){
+                    binding.root.isEnabled = enabled
+                    binding.root.children.forEach {
+                        if(it.hasOnClickListeners()){
+                            it.isEnabled = enabled
+                        }
+                        it.alpha = if(enabled) MaterialColors.ALPHA_FULL else MaterialColors.ALPHA_DISABLED
+                    }
+                }
             }
 
             private fun loadPrice(price: Int, discount: Float){

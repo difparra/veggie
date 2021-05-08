@@ -9,21 +9,12 @@ object UtilsFakes {
             ?: throw Exception("mainVariationId does not match any variation.")
 
     fun AdminProduct.toMainProduct() = MainProduct(
-        mainId = mainData.mainId,
-        name = mainData.name,
-        imageUrl = mainData.imageUrl,
-        unit = getMainVariationInfo().unit,
-        weightGr = getMainVariationInfo().weightGr,
-        price = getMainVariationInfo().price,
-        discount = getMainVariationInfo().discount,
-        stock = getMainVariationInfo().stock,
-        suggestedLabel = getMainVariationInfo().suggestedLabel
+            mainData = mainData,
+            mainVariationData = getMainVariationInfo()
     )
 
     fun AdminVariationData.toVariationProduct() = ProductVariation(
-        varId = varId, unit = unit, weightGr = weightGr, details = detailOptions,
-        price = price, discount = discount, stock = stock, maxOrder = maxOrder,
-        suggestedLabel = suggestedLabel
+            variationData = this
     )
 
     fun AdminProduct.getIdTest(detail: String? = getMainVariationInfo().detailOptions?.get(0)) =

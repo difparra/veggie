@@ -5,7 +5,7 @@ import com.diegoparra.veggie.products.domain.entities.ProductId
 
 object CartTransformations {
 
-    fun ProdIdRoom.toProductId() : ProductId {
+    private fun ProdIdRoom.toProductId() : ProductId {
         val detailDomain = if(detail == ProdIdRoom.NO_DETAIL) null else detail
         return ProductId(mainId = mainId, varId = varId, detail = detailDomain)
     }

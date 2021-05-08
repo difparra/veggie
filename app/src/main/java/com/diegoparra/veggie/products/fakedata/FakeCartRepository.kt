@@ -26,8 +26,8 @@ import timber.log.Timber
 
 class FakeCartRepository (
     _cartItems: List<CartItem> = listOf(
-        CartItem(productId = FakeProductsDatabase.banano_lbMV.getIdTest(detail = FakeProductsDatabase.FakeDetail.Maduro.detail), quantity = 2),
-        CartItem(productId = FakeProductsDatabase.banano_lbMV.getIdTest(detail = FakeProductsDatabase.FakeDetail.Verde.detail), quantity = 5),
+        CartItem(productId = FakeProductsDatabase.banano_lbMV.getIdTest(detail = FakeDetail.Maduro.detail), quantity = 2),
+        CartItem(productId = FakeProductsDatabase.banano_lbMV.getIdTest(detail = FakeDetail.Verde.detail), quantity = 5),
         CartItem(productId = FakeProductsDatabase.arandanos_bdj_lb.getIdTest(), quantity = 1),
         CartItem(productId = FakeProductsDatabase.granadilla_und.getIdTest(), quantity = 8)
     )

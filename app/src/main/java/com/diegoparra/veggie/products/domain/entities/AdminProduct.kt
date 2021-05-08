@@ -27,6 +27,7 @@ data class AdminMainData(
 
 data class AdminVariationData(
     val varId: String,
+    val relatedMainId: String,
     val unit: String,       //  UnitOptions as well as labelOptions could be fetched from remoteConfig.
     val weightGr: Int = -1,
     val price: Int,

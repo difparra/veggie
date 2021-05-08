@@ -85,7 +85,7 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
             if(action != null){
                 view.findNavController().navigate(action)
             }else{
-                //  TODO()
+                //  TODO: Deal with this error. Nevertheless, it should never happen.
                 Toast.makeText(view.context, "Can't navigate: currentDestinationId: ${view.findNavController().currentDestination?.id}", Toast.LENGTH_SHORT).show()
             }
         }
@@ -95,7 +95,9 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
             if(enabled != currentEnabledState){
                 binding.root.isEnabled = enabled
                 binding.root.children.forEach {
-                    //it.isEnabled = enabled
+                    if(it.hasOnClickListeners()){
+                        it.isEnabled = enabled
+                    }
                     it.alpha = if(enabled) MaterialColors.ALPHA_FULL else MaterialColors.ALPHA_DISABLED
                 }
             }
