@@ -18,4 +18,16 @@
         tools:itemCount="10"
         tools:listitem="@layout/list_item_main_product" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.Veggie.ProgressBar"
+        android:layout_gravity="center"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/error_text"
+        style="@style/Widget.Veggie.ErrorText"
+        android:layout_gravity="center"
+        tools:text="Error text" />
+
 </FrameLayout>

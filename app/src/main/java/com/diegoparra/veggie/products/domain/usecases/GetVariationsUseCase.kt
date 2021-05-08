@@ -43,17 +43,18 @@ class GetVariationsUseCase @Inject constructor(
 
     private fun addQuantityToVariation(mainId: String, variation: ProductVariation) : Flow<Either<Failure, ProdVariationWithQuantities>> {
         Timber.d("addQuantityToVariation() called with: mainId = $mainId, variation = $variation")
-        return if(variation.details.isNullOrEmpty()){
-            val quantity = cartRepository.getQuantityItem(ProductId(mainId = mainId, varId = variation.varId, detail = null))
-            quantity.map { qtyEither ->
+        return if(variation.hasDetails()){
+            val qtyMap =
+                    cartRepository.getQuantityMapByVariation(mainId = mainId, varId = variation.varId)
+            qtyMap.map { qtyEither ->
                 qtyEither.map {
                     ProdVariationWithQuantities(variation, it)
                 }
             }
         }else{
-            val detailsWithQuantitiesMap =
-                    cartRepository.getQuantityMapByVariation(mainId = mainId, varId = variation.varId)
-            detailsWithQuantitiesMap.map { qtyEither ->
+            val quantity =
+                    cartRepository.getQuantityItem(ProductId(mainId = mainId, varId = variation.varId, detail = null))
+            quantity.map { qtyEither ->
                 qtyEither.map {
                     ProdVariationWithQuantities(variation, it)
                 }

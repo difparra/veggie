@@ -23,7 +23,7 @@ sealed class VariationUi {
     companion object {
 
         fun getListToSubmit(variationsList: List<ProdVariationWithQuantities>) : List<VariationUi> {
-            return if(variationsList.any { it.hasDetails} ){
+            return if(variationsList.any { it.hasDetails() } ){
                 getListWithHeadersAndDetails(variationsList)
             }else{
                 getBasicList(variationsList)

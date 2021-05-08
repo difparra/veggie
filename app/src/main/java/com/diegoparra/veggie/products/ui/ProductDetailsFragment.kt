@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.ResourceViews
 import com.diegoparra.veggie.databinding.FragmentProductDetailsBinding
 import com.diegoparra.veggie.products.domain.entities.ProdVariationWithQuantities
 import com.diegoparra.veggie.products.viewmodels.ProductDetailsViewModel
@@ -43,20 +45,27 @@ class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.On
         viewModel.reduceQuantity(varId = variationId, detail = detail)
     }
 
-
-
     private fun subscribeUi(){
+        val resourceViews = ResourceViews(
+                loadingViews = listOf(binding.progressBar),
+                successViews = listOf(binding.variationsList),
+                failureViews = listOf(binding.errorText)
+        )
         viewModel.variationsList.observe(viewLifecycleOwner) {
             when(it){
-                is Resource.Loading -> renderLoadingVariations()
-                is Resource.Success -> renderVariationsList(it.data)
-                is Resource.Error -> renderFailureVariations(it.failure)
+                is Resource.Loading -> {
+                    resourceViews.displayViewsForState(ResourceViews.State.LOADING)
+                }
+                is Resource.Success -> {
+                    resourceViews.displayViewsForState(ResourceViews.State.SUCCESS)
+                    renderVariationsList(it.data)
+                }
+                is Resource.Error -> {
+                    resourceViews.displayViewsForState(ResourceViews.State.ERROR)
+                    renderFailureVariations(it.failure)
+                }
             }
         }
-    }
-
-    private fun renderLoadingVariations() {
-        //  TODO()
     }
 
     private fun renderVariationsList(variationsList: List<ProdVariationWithQuantities>) {
@@ -66,9 +75,13 @@ class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.On
     }
 
     private fun renderFailureVariations(failure: Failure) {
-        //  TODO()
+        when(failure){
+            is Failure.ProductsFailure.ProductsNotFound ->
+                binding.errorText.text = getString(R.string.failure_generic)
+            else ->
+                binding.errorText.text = failure.toString()
+        }
     }
-
 
 
     override fun onDestroyView() {

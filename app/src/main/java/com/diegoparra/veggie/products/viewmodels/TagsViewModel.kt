@@ -9,6 +9,7 @@ import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.products.domain.entities.Tag
 import com.diegoparra.veggie.products.domain.usecases.GetTagsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,6 +23,10 @@ class TagsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            _tags.value = Resource.Loading()
+            /*  //  In order to test loading and failure states
+            delay(2000)
+            _tags.value = Resource.Error(Failure.ProductsFailure.TagsNotFound)*/
             getTagsUseCase().fold(::handleFailureTags, ::handleTags)
         }
     }

@@ -25,6 +25,7 @@
         <!-- Most important components -->
         <item name="android:textViewStyle">@style/Widget.Veggie.TextView</item>
         <item name="editTextStyle">@style/Widget.Veggie.EditText</item>
+        <item name="android:progressBarStyle">@style/Widget.Veggie.ProgressBar</item>
     </style>
 
 
@@ -58,6 +59,33 @@
         <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
     </style>
 
+    <style name="Widget.Veggie.ProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <!--    Primary attributes, the ones put in theme   -->
+        <item name="android:indeterminateTint">?attr/colorPrimary</item>
+        <!--<item name="android:visibility">gone</item>-->
+        <!--    Additional attributes to use as style   -->
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+    </style>
+
+    <style name="Widget.Veggie.ErrorText" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">50dp</item>
+        <item name="android:layout_marginEnd">50dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:maxLines">4</item>
+    </style>
+
+    <!--    Working when used on layout sheet but not in theme.
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:indeterminate="true"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:indicatorColor="?attr/colorPrimary"
+        app:indicatorSize="48dp"
+        app:indeterminateAnimationType="contiguous"/>-->
 
 
 </resources>

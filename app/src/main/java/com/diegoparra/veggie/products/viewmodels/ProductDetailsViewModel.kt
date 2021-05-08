@@ -38,7 +38,11 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
     private fun handleVariationsList(variations: List<ProdVariationWithQuantities>) {
-        _variationsList.value = Resource.Success(variations)
+        if(variations.isNullOrEmpty()){
+            _variationsList.value = Resource.Error(Failure.ProductsFailure.ProductsNotFound)
+        }else{
+            _variationsList.value = Resource.Success(variations)
+        }
     }
 
     private fun handleFailure(failure: Failure) {
@@ -56,7 +60,7 @@ class ProductDetailsViewModel @Inject constructor(
                 val maxOrder = variation.maxOrder
                 updateQuantityUseCase(UpdateQuantityUseCase.Params.Add(productId, maxOrder))
             }
-        }
+        }// TODO:   Deal when variation was not found in viewModel (could be because of the lifecycles).
     }
 
     fun reduceQuantity(varId: String, detail: String?) {
@@ -69,7 +73,7 @@ class ProductDetailsViewModel @Inject constructor(
                 val productId = ProductId(mainId = mainId, varId = varId, detail = detail)
                 updateQuantityUseCase(UpdateQuantityUseCase.Params.Reduce(productId))
             }
-        }
+        }// TODO:   Deal when variation was not found in viewModel (could be because of the lifecycles).
     }
 
     private fun findVariation(varId: String) : ProductVariation? {

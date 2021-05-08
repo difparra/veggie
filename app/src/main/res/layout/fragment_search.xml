@@ -18,9 +18,9 @@
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@id/clear_search_text"
             android:background="@null"
-            android:autofillHints="@string/menu_search"
             android:imeOptions="actionSearch"
-            android:inputType="text"
+            android:autofillHints="@string/menu_search"
+            android:inputType="textCapSentences"
             android:hint="@string/menu_search"
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="10dp" />
@@ -48,5 +48,17 @@
         tools:itemCount="10"
         tools:listitem="@layout/list_item_main_product" />
 
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.Veggie.ProgressBar"
+        android:layout_centerInParent="true"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/error_text"
+        style="@style/Widget.Veggie.ErrorText"
+        android:layout_centerInParent="true"
+        tools:text="Error text" />
 
 </RelativeLayout>

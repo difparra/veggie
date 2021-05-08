@@ -8,4 +8,12 @@
     <string name="menu_user">Usuario</string>
 
 
+    <!-- Failures strings -->
+    <string name="failure_no_tags">Ha ocurrido un error. Intenta de nuevo más tarde.</string>
+    <string name="failure_no_products_for_tag">No hay productos para mostrar. Intenta en otra categoría.</string>
+    <string name="failure_empty_search_query">Ingresa un valor en la barra de búsqueda.</string>
+    <string name="failure_no_search_result">No hay productos que coincidan con tu búsqueda.</string>
+    <string name="failure_generic">Ha ocurrido un error. Intenta de nuevo.</string>
+
+
 </resources>

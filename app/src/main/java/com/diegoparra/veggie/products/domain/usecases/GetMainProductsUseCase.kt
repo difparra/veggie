@@ -21,7 +21,7 @@ class GetMainProductsUseCase @Inject constructor(
     suspend operator fun invoke(params: Params) : Flow<Either<Failure, List<MainProdWithQuantity>>> {
         Timber.d("invoke() called with: params = $params")
         return when(val products = getProducts(params)){
-            is Either.Left -> flow { emit(Either.Left(products.a)) }
+            is Either.Left -> flow { emit(products) }
             is Either.Right -> {
                 val mainProdsQtyFlows = products.b.map {
                     addQuantityToProduct(it)
@@ -37,7 +37,13 @@ class GetMainProductsUseCase @Inject constructor(
         Timber.d("getProducts() called with: params = $params")
         return when(params){
             is Params.ForTag -> productsRepository.getMainProductsByTagId(params.tagId)
-            is Params.ForSearch -> productsRepository.searchMainProductsByName(params.nameQuery)
+            is Params.ForSearch -> {
+                if(params.nameQuery.isEmpty()){
+                    Either.Left(Failure.SearchFailure.EmptyQuery)
+                }else{
+                    productsRepository.searchMainProductsByName(params.nameQuery)
+                }
+            }
         }
     }
 

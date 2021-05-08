@@ -53,12 +53,15 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
 
     inner class ProductViewHolder(private var binding: ListItemMainProductBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
-            binding.root.setOnClickListener { view ->
+            binding.btnQty.setOnClickListener { view ->
                 val position = bindingAdapterPosition
                 val item = if(position != RecyclerView.NO_POSITION) getItem(bindingAdapterPosition) else null
                 item?.let { product ->
                     navigateToProductDetails(product, view)
                 }
+            }
+            binding.root.setOnClickListener {
+                binding.btnQty.callOnClick()
             }
         }
         fun bind(product: MainProdWithQuantity){

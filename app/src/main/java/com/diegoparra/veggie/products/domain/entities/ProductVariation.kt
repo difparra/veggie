@@ -22,7 +22,7 @@ open class ProductVariation(
             productVariation.suggestedLabel
     )
 
-    val hasDetails = !details.isNullOrEmpty()
+    fun hasDetails() = !details.isNullOrEmpty()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

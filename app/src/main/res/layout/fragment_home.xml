@@ -15,4 +15,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.Veggie.ProgressBar"
+        android:layout_centerInParent="true"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/error_text"
+        style="@style/Widget.Veggie.ErrorText"
+        android:layout_centerInParent="true"
+        tools:text="Error text" />
+
 </RelativeLayout>

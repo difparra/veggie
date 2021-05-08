@@ -3,11 +3,23 @@ package com.diegoparra.veggie.products.ui.utils
 import android.content.Context
 import android.graphics.Color
 import android.util.TypedValue
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.core.graphics.ColorUtils
 import kotlin.math.roundToInt
+
+
+fun View.hideKeyboard() {
+    try{
+        this.clearFocus()
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }catch (throwable: Throwable){}
+}
+
 
 fun Context.getResourcesFromAttr(
         @AttrRes attrRes: Int,

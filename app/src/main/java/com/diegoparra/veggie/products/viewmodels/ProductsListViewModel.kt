@@ -26,7 +26,8 @@ class ProductsListViewModel @Inject constructor(
             _productsList.value = Resource.Loading()
             getMainProductsUseCase(GetMainProductsUseCase.Params.ForTag(tagId))
                 .collect { prodsEither ->
-                    //_productsListState.value = Resource.Loading()
+                    //  Do not set loading here, as it would hide the list on every change like
+                    //  quantity. Normally, this changes will be fast.
                     prodsEither.fold(::handleFailure, ::handleProductsList)
                 }
         }

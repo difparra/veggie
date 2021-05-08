@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.ResourceViews
 import com.diegoparra.veggie.databinding.FragmentProductsListBinding
 import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
 import com.diegoparra.veggie.products.viewmodels.ProductsListViewModel
@@ -36,17 +38,26 @@ class ProductsListFragment : Fragment() {
     }
 
     private fun subscribeUi(){
+        val resourceViews = ResourceViews(
+                loadingViews = listOf(binding.progressBar),
+                successViews = listOf(binding.productsList),
+                failureViews = listOf(binding.errorText)
+        )
         viewModel.productsList.observe(viewLifecycleOwner) {
             when(it){
-                is Resource.Loading -> renderLoadingState()
-                is Resource.Success -> renderProductsList(it.data)
-                is Resource.Error -> renderFailure(it.failure)
+                is Resource.Loading -> {
+                    resourceViews.displayViewsForState(ResourceViews.State.LOADING)
+                }
+                is Resource.Success -> {
+                    resourceViews.displayViewsForState(ResourceViews.State.SUCCESS)
+                    renderProductsList(it.data)
+                }
+                is Resource.Error -> {
+                    resourceViews.displayViewsForState(ResourceViews.State.ERROR)
+                    renderFailure(it.failure)
+                }
             }
         }
-    }
-
-    private fun renderLoadingState() {
-        //  TODO()
     }
 
     private fun renderProductsList(productsList: List<MainProdWithQuantity>) {
@@ -56,14 +67,10 @@ class ProductsListFragment : Fragment() {
     private fun renderFailure(failure: Failure) {
         when(failure){
             is Failure.ProductsFailure.ProductsNotFound ->
-                renderEmptyListFailure()
+                binding.errorText.text = getString(R.string.failure_no_products_for_tag)
             else ->
-                TODO()
+                binding.errorText.text = failure.toString()
         }
-    }
-
-    private fun renderEmptyListFailure() {
-        TODO()
     }
 
     override fun onDestroyView() {

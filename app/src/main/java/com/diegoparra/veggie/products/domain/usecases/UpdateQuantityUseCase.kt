@@ -20,7 +20,6 @@ class UpdateQuantityUseCase @Inject constructor(
 
     private suspend fun addQuantity(productId: ProductId, maxOrder: Int) {
         val currentQtyEither = getCurrentQuantity(productId)
-        //  TODO()  Deal with failure when getting quantity error
         if(currentQtyEither is Either.Right){
             val currQty = currentQtyEither.b
             if(currQty == 0){
