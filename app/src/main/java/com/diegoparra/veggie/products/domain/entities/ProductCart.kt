@@ -2,17 +2,18 @@ package com.diegoparra.veggie.products.domain.entities
 
 data class ProductCart(
         private val cartItem: CartItem,
-        private val mainData: AdminMainData,
-        private val variationData: AdminVariationData
+        private val product: Product
 ){
-    val name = mainData.name
-    val imageUrl = mainData.imageUrl
-    val unit = variationData.unit
-    val weightGr = variationData.weightGr
-    val price = variationData.price
-    val discount = variationData.discount
-    val stock = variationData.stock
-    val label = Label.createLabel(stock, discount, variationData.suggestedLabel)
+    val productId = cartItem.productId
+    val name = product.name
+    val imageUrl = product.imageUrl
+    val unit = product.unit
+    val weightGr = product.weightGr
+    val price = product.price
+    val discount = product.discount
+    val stock = product.stock
+    val maxOrder = product.maxOrder
+    val label = product.label
     val detail = cartItem.productId.detail
     val quantity = cartItem.quantity
 }

@@ -4,32 +4,24 @@ package com.diegoparra.veggie.products.domain.entities
     Products that will be used in the viewModel / ui layer
  */
 
-open class ProductVariation(
-        private val variationData: AdminVariationData
-){
-    constructor(productVariation: ProductVariation) : this(productVariation.variationData)
-
-    val varId = variationData.varId
-    val unit = variationData.unit
-    val weightGr = variationData.weightGr
-    val details = variationData.detailOptions
-    val price = variationData.price
-    val discount = variationData.discount
-    val stock = variationData.stock
-    val maxOrder = variationData.maxOrder
-    val label = Label.createLabel(stock, discount, variationData.suggestedLabel)
-
-    fun hasDetails() = !details.isNullOrEmpty()
-}
-
-data class ProdVariationWithQuantities(
-        private val productVariation: ProductVariation,
+data class ProductVariation(
+        private val variation: Variation,
         private val quantitiesByDetail: Map<String?, Int>
-) : ProductVariation(productVariation) {
+) {
+    constructor(variation: Variation, quantity: Int) :
+            this(variation, mapOf(null to quantity))
 
-    constructor(productVariation: ProductVariation, quantity: Int) : this(
-            productVariation, mapOf(null to quantity))
+    val varId = variation.varId
+    val unit = variation.unit
+    val weightGr = variation.weightGr
+    val details = variation.details
+    val price = variation.price
+    val discount = variation.discount
+    val stock = variation.stock
+    val maxOrder = variation.maxOrder
+    val label = variation.label
 
+    fun hasDetails() = variation.hasDetails()
     fun quantity(detail: String?) : Int {
         return quantitiesByDetail[detail] ?: 0
     }

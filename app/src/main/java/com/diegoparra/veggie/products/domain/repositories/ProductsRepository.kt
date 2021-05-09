@@ -2,9 +2,9 @@ package com.diegoparra.veggie.products.domain.repositories
 
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.products.domain.entities.Product
 import com.diegoparra.veggie.products.domain.entities.Tag
-import com.diegoparra.veggie.products.domain.entities.MainProduct
-import com.diegoparra.veggie.products.domain.entities.ProductVariation
+import com.diegoparra.veggie.products.domain.entities.Variation
 import java.util.concurrent.TimeUnit
 
 interface ProductsRepository {
@@ -18,20 +18,25 @@ interface ProductsRepository {
         tagId: String,
         forceUpdate: Boolean = false,
         expirationTimeMillis: Long = TimeUnit.MINUTES.toMillis(10)
-    ): Either<Failure, List<MainProduct>>
+    ): Either<Failure, List<Product>>
 
     suspend fun searchMainProductsByName(
         query: String,
         forceUpdate: Boolean = false,
         expirationTimeMillis: Long = TimeUnit.MINUTES.toMillis(10)
-    ): Either<Failure, List<MainProduct>>
+    ): Either<Failure, List<Product>>
 
     suspend fun getProductVariationsByMainId(
         mainId: String,
         forceUpdate: Boolean = false,
         expirationTimeMillis: Long = TimeUnit.MINUTES.toMillis(15)
-    ) : Either<Failure, List<ProductVariation>>
+    ) : Either<Failure, List<Variation>>
 
+    suspend fun getProduct(
+        mainId: String, varId: String,
+        forceUpdate: Boolean = false,
+        expirationTimeMillis: Long = TimeUnit.MINUTES.toMillis(10)
+    ) : Either<Failure, Product>
 
     /*
         ForceUpdate is set to false as default. Otherwise, there would be no point on having a local

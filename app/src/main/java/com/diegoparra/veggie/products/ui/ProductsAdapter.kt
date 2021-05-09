@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.children
-import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -19,12 +18,12 @@ import com.diegoparra.veggie.core.QtyButton
 import com.diegoparra.veggie.databinding.ListItemMainProductBinding
 import com.diegoparra.veggie.products.domain.entities.Description
 import com.diegoparra.veggie.products.domain.entities.Label
-import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
+import com.diegoparra.veggie.products.domain.entities.ProductMain
 import com.diegoparra.veggie.products.ui.utils.*
 import com.google.android.material.color.MaterialColors
 import timber.log.Timber
 
-class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.ProductViewHolder>(DiffCallback) {
+class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         return ProductViewHolder(
@@ -64,7 +63,7 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
                 binding.btnQty.callOnClick()
             }
         }
-        fun bind(product: MainProdWithQuantity){
+        fun bind(product: ProductMain){
             loadEnabledState(enabled = product.stock)
             loadImage(product.imageUrl)
             loadName(product.name)
@@ -76,7 +75,7 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
             loadQtyButton(bundle.getInt(PayloadConstants.QUANTITY))
         }
 
-        private fun navigateToProductDetails(product: MainProdWithQuantity, view: View) {
+        private fun navigateToProductDetails(product: ProductMain, view: View) {
             val action = when(view.findNavController().currentDestination?.id){
                 R.id.nav_home -> HomeFragmentDirections.actionNavHomeToProductDetailsFragment(mainId = product.mainId, name = product.name)
                 R.id.nav_search -> SearchFragmentDirections.actionNavSearchToProductDetailsFragment(mainId = product.mainId, name = product.name)
@@ -109,7 +108,6 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
 
         private fun loadName(name: String){
             binding.name.text = name
-            binding.image.contentDescription = name
         }
 
         private fun loadDescription(description: Description){
@@ -152,22 +150,22 @@ class ProductsAdapter : ListAdapter<MainProdWithQuantity, ProductsAdapter.Produc
     }
 
 
-    companion object DiffCallback : DiffUtil.ItemCallback<MainProdWithQuantity>() {
+    companion object DiffCallback : DiffUtil.ItemCallback<ProductMain>() {
         override fun areItemsTheSame(
-            oldItem: MainProdWithQuantity,
-            newItem: MainProdWithQuantity
+                oldItem: ProductMain,
+                newItem: ProductMain
         ): Boolean {
             return oldItem.mainId == newItem.mainId
         }
 
         override fun areContentsTheSame(
-            oldItem: MainProdWithQuantity,
-            newItem: MainProdWithQuantity
+                oldItem: ProductMain,
+                newItem: ProductMain
         ): Boolean {
             return oldItem == newItem
         }
 
-        override fun getChangePayload(oldItem: MainProdWithQuantity, newItem: MainProdWithQuantity): Any? {
+        override fun getChangePayload(oldItem: ProductMain, newItem: ProductMain): Any? {
             return Bundle().apply {
                 putInt(PayloadConstants.QUANTITY, newItem.quantity)
             }

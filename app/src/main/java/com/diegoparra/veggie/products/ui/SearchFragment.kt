@@ -1,18 +1,13 @@
 package com.diegoparra.veggie.products.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
@@ -20,7 +15,7 @@ import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.core.ResourceViews
 import com.diegoparra.veggie.databinding.FragmentSearchBinding
-import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
+import com.diegoparra.veggie.products.domain.entities.ProductMain
 import com.diegoparra.veggie.products.ui.utils.hideKeyboard
 import com.diegoparra.veggie.products.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -100,7 +95,7 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun renderProductsList(productsList: List<MainProdWithQuantity>) {
+    private fun renderProductsList(productsList: List<ProductMain>) {
         adapter.submitList(productsList)
     }
 
@@ -114,8 +109,10 @@ class SearchFragment : Fragment() {
                 cleanRecyclerView()
                 binding.errorText.text = getString(R.string.failure_no_search_result)
             }
-            else ->
+            else -> {
+                cleanRecyclerView()
                 binding.errorText.text = failure.toString()
+            }
         }
     }
 

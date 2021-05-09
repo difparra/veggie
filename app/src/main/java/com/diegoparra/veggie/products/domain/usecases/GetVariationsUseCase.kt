@@ -4,9 +4,9 @@ import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.customTransformListToEither
 import com.diegoparra.veggie.core.map
-import com.diegoparra.veggie.products.domain.entities.ProdVariationWithQuantities
 import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.domain.entities.ProductVariation
+import com.diegoparra.veggie.products.domain.entities.Variation
 import com.diegoparra.veggie.products.domain.repositories.CartRepository
 import com.diegoparra.veggie.products.domain.repositories.ProductsRepository
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +19,7 @@ class GetVariationsUseCase @Inject constructor(
         private val cartRepository: CartRepository
 ) {
 
-    suspend operator fun invoke(mainId: String) : Flow<Either<Failure, List<ProdVariationWithQuantities>>> {
+    suspend operator fun invoke(mainId: String) : Flow<Either<Failure, List<ProductVariation>>> {
         Timber.d("invoke() called with: mainId = $mainId")
         return when(val variations = getVariations(mainId)){
             is Either.Left -> flow { emit(variations) }
@@ -35,20 +35,20 @@ class GetVariationsUseCase @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    private suspend fun getVariations(mainId: String) : Either<Failure, List<ProductVariation>> {
+    private suspend fun getVariations(mainId: String) : Either<Failure, List<Variation>> {
         Timber.d("getVariations() called with: mainId = $mainId")
         return productsRepository.getProductVariationsByMainId(mainId = mainId)
     }
 
 
-    private fun addQuantityToVariation(mainId: String, variation: ProductVariation) : Flow<Either<Failure, ProdVariationWithQuantities>> {
+    private fun addQuantityToVariation(mainId: String, variation: Variation) : Flow<Either<Failure, ProductVariation>> {
         Timber.d("addQuantityToVariation() called with: mainId = $mainId, variation = $variation")
-        return if(variation.hasDetails()){
+        return if(variation.hasDetails()) {
             val qtyMap =
                     cartRepository.getQuantityMapByVariation(mainId = mainId, varId = variation.varId)
             qtyMap.map { qtyEither ->
                 qtyEither.map {
-                    ProdVariationWithQuantities(variation, it)
+                    ProductVariation(variation = variation, quantitiesByDetail = it)
                 }
             }
         }else{
@@ -56,7 +56,7 @@ class GetVariationsUseCase @Inject constructor(
                     cartRepository.getQuantityItem(ProductId(mainId = mainId, varId = variation.varId, detail = null))
             quantity.map { qtyEither ->
                 qtyEither.map {
-                    ProdVariationWithQuantities(variation, it)
+                    ProductVariation(variation = variation, quantity = it)
                 }
             }
         }

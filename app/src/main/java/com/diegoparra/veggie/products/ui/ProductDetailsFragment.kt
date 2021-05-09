@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.core.ResourceViews
 import com.diegoparra.veggie.databinding.FragmentProductDetailsBinding
-import com.diegoparra.veggie.products.domain.entities.ProdVariationWithQuantities
+import com.diegoparra.veggie.products.domain.entities.ProductVariation
 import com.diegoparra.veggie.products.viewmodels.ProductDetailsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -68,7 +67,7 @@ class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.On
         }
     }
 
-    private fun renderVariationsList(variationsList: List<ProdVariationWithQuantities>) {
+    private fun renderVariationsList(variationsList: List<ProductVariation>) {
         val listToSubmit = VariationUi.getListToSubmit(variationsList)
         Timber.d(listToSubmit.toString())
         adapter.submitList(listToSubmit)

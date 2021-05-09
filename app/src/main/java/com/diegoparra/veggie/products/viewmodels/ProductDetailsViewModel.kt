@@ -3,7 +3,6 @@ package com.diegoparra.veggie.products.viewmodels
 import androidx.lifecycle.*
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.products.domain.entities.ProdVariationWithQuantities
 import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.domain.entities.ProductVariation
 import com.diegoparra.veggie.products.domain.usecases.GetVariationsUseCase
@@ -24,8 +23,8 @@ class ProductDetailsViewModel @Inject constructor(
     private val mainId = savedStateHandle.get<String>(PROD_MAIN_ID_SAVED_STATE_KEY)!!
     val name = savedStateHandle.get<String>(PROD_MAIN_NAME_SAVED_STATE_KEY)!!
 
-    private val _variationsList = MutableLiveData<Resource<List<ProdVariationWithQuantities>>>()
-    val variationsList : LiveData<Resource<List<ProdVariationWithQuantities>>> = _variationsList
+    private val _variationsList = MutableLiveData<Resource<List<ProductVariation>>>()
+    val variationsList : LiveData<Resource<List<ProductVariation>>> = _variationsList
 
     init {
         viewModelScope.launch {
@@ -37,7 +36,7 @@ class ProductDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun handleVariationsList(variations: List<ProdVariationWithQuantities>) {
+    private fun handleVariationsList(variations: List<ProductVariation>) {
         if(variations.isNullOrEmpty()){
             _variationsList.value = Resource.Error(Failure.ProductsFailure.ProductsNotFound)
         }else{

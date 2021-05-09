@@ -3,7 +3,7 @@ package com.diegoparra.veggie.products.viewmodels
 import androidx.lifecycle.*
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
+import com.diegoparra.veggie.products.domain.entities.ProductMain
 import com.diegoparra.veggie.products.domain.usecases.GetMainProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -18,8 +18,8 @@ class ProductsListViewModel @Inject constructor(
 
     private val tagId = savedStateHandle.get<String>(TAG_ID_SAVED_STATE_KEY)!!  //  Must be set when instantiating the fragment in the tabs adapter.
 
-    private val _productsList = MutableLiveData<Resource<List<MainProdWithQuantity>>>()
-    val productsList: LiveData<Resource<List<MainProdWithQuantity>>> = _productsList
+    private val _productsList = MutableLiveData<Resource<List<ProductMain>>>()
+    val productsList: LiveData<Resource<List<ProductMain>>> = _productsList
 
     init {
         viewModelScope.launch {
@@ -33,7 +33,7 @@ class ProductsListViewModel @Inject constructor(
         }
     }
 
-    private fun handleProductsList(productsList: List<MainProdWithQuantity>){
+    private fun handleProductsList(productsList: List<ProductMain>){
         if(productsList.isNullOrEmpty()){
             _productsList.value = Resource.Error(Failure.ProductsFailure.ProductsNotFound)
         }else{

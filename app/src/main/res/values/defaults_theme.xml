@@ -18,8 +18,8 @@
         <item name="colorOnWarning">@color/white</item>
         <item name="colorsRandom">@array/dark_colors</item> <!-- onRandomDark will be onSecondary -->
         <item name="alphaSecondaryText">0.5</item>
-        <item name="appBarHeight">48dp</item>
-        <item name="appBarElevation">2dp</item>
+        <item name="appBarHeight">@dimen/app_bar_height</item>
+        <item name="appBarElevation">@dimen/app_bar_elevation</item>
 
         <!-- Customizing theme -->
         <!-- Most important components -->
@@ -38,16 +38,16 @@
 
     <style name="Widget.Veggie.EditText" parent="Widget.AppCompat.EditText">
         <item name="android:textCursorDrawable">@null</item>
-        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
+        <item name="android:textAppearance">?attr/textAppearanceBody2</item>
     </style>
 
     <style name="Widget.Veggie.Divider" parent="">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0.75dp</item>
+        <item name="android:layout_height">@dimen/divider_height</item>
         <item name="android:background">?attr/colorOnSurface</item>
         <item name="android:alpha">0.4</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginTop">@dimen/divider_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/divider_vertical_margin</item>
     </style>
 
     <style name="Widget.Veggie.AppBar" parent="">
@@ -57,6 +57,9 @@
         <item name="android:elevation">?attr/appBarElevation</item>   <!--    need to have a background to work   -->
         <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">@dimen/padding_standard</item>
+        <item name="android:paddingEnd">@dimen/padding_standard</item>
     </style>
 
     <style name="Widget.Veggie.ProgressBar" parent="Widget.AppCompat.ProgressBar">
@@ -64,28 +67,18 @@
         <item name="android:indeterminateTint">?attr/colorPrimary</item>
         <!--<item name="android:visibility">gone</item>-->
         <!--    Additional attributes to use as style   -->
-        <item name="android:layout_width">50dp</item>
-        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">@dimen/progress_bar_size</item>
+        <item name="android:layout_height">@dimen/progress_bar_size</item>
     </style>
 
     <style name="Widget.Veggie.ErrorText" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">50dp</item>
-        <item name="android:layout_marginEnd">50dp</item>
+        <item name="android:layout_marginStart">@dimen/error_text_horizontal_margin</item>
+        <item name="android:layout_marginEnd">@dimen/error_text_horizontal_margin</item>
         <item name="android:textAlignment">center</item>
         <item name="android:maxLines">4</item>
     </style>
-
-    <!--    Working when used on layout sheet but not in theme.
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:indeterminate="true"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:indicatorColor="?attr/colorPrimary"
-        app:indicatorSize="48dp"
-        app:indeterminateAnimationType="contiguous"/>-->
 
 
 </resources>

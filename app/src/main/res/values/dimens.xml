@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--    Used throughout the app, avoiding theme attributes  -->
+    <!--    Because dimensions do not normally change with theme, just colors  -->
+
+    <dimen name="app_bar_height">48dp</dimen>
+    <dimen name="app_bar_elevation">2dp</dimen>
+    <dimen name="divider_vertical_margin">8dp</dimen>
+    <dimen name="divider_height">0.75dp</dimen>
+    <dimen name="progress_bar_size">48dp</dimen>
+    <dimen name="error_text_horizontal_margin">48dp</dimen>
+    <dimen name="qty_button_size">32dp</dimen>
+    <dimen name="qty_button_size_small">24dp</dimen>
+
+    <dimen name="padding_standard">20dp</dimen>         <!--    padding used in appBar   -->
+    <dimen name="padding_big">30dp</dimen>
+    <dimen name="padding_small">6dp</dimen>
+
+
+    <!--    calculate and set when changing values  -->
+    <dimen name="qty_button_size_plus_small_padding">38dp</dimen>
+    <dimen name="padding_standard_half">10dp</dimen>
+    <dimen name="padding_big_half">15dp</dimen>
+
+</resources>

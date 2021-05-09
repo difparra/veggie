@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.products.ui
 
-import com.diegoparra.veggie.products.domain.entities.ProdVariationWithQuantities
+import com.diegoparra.veggie.products.domain.entities.ProductVariation
 
 sealed class VariationUi {
     data class Header(
@@ -22,7 +22,7 @@ sealed class VariationUi {
 
     companion object {
 
-        fun getListToSubmit(variationsList: List<ProdVariationWithQuantities>) : List<VariationUi> {
+        fun getListToSubmit(variationsList: List<ProductVariation>) : List<VariationUi> {
             return if(variationsList.any { it.hasDetails() } ){
                 getListWithHeadersAndDetails(variationsList)
             }else{
@@ -30,12 +30,12 @@ sealed class VariationUi {
             }
         }
 
-        private fun getBasicList(variationsList: List<ProdVariationWithQuantities>) : List<VariationUi> {
+        private fun getBasicList(variationsList: List<ProductVariation>) : List<VariationUi> {
             return variationsList.map {
                 getItem(variation = it, detail = null, headerIsVisible = false)
             }
         }
-        private fun getListWithHeadersAndDetails(variationsList: List<ProdVariationWithQuantities>) : List<VariationUi> {
+        private fun getListWithHeadersAndDetails(variationsList: List<ProductVariation>) : List<VariationUi> {
             val listToSubmit = mutableListOf<VariationUi>()
             variationsList.forEach { variation ->
                 listToSubmit.add(Header(variation.unit, variation.weightGr))
@@ -50,7 +50,7 @@ sealed class VariationUi {
             return listToSubmit
         }
 
-        private fun getItem(variation: ProdVariationWithQuantities, detail: String?, headerIsVisible: Boolean) : Item {
+        private fun getItem(variation: ProductVariation, detail: String?, headerIsVisible: Boolean) : Item {
             return Item(
                     headerIsVisible = headerIsVisible,
                     varId = variation.varId,

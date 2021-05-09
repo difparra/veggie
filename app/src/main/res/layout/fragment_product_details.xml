@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="30dp"
-    android:paddingTop="14dp">
+    android:paddingBottom="@dimen/padding_big"
+    android:paddingTop="@dimen/padding_big_half">
 
     <TextView
         android:id="@+id/title"
@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceSubtitle1"
         tools:text="Product"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="5dp"/>
+        android:layout_marginHorizontal="@dimen/padding_big"
+        android:layout_marginVertical="@dimen/padding_small"/>
 
     <View
         style="@style/Widget.Veggie.Divider" />
@@ -39,6 +39,6 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="5"
         tools:listitem="@layout/list_item_variation_item"
-        android:layout_marginHorizontal="30dp"/>
+        android:layout_marginHorizontal="@dimen/padding_big"/>
 
 </LinearLayout>

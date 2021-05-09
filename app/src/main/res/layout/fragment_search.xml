@@ -9,12 +9,12 @@
     <RelativeLayout
         android:id="@+id/app_bar"
         style="@style/Widget.Veggie.AppBar"
-        android:orientation="horizontal"
-        android:paddingHorizontal="20dp">
+        android:orientation="horizontal">
         <EditText
             android:id="@+id/search_query"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textAppearance="@style/TextAppearance.Veggie.Subtitle1"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@id/clear_search_text"
             android:background="@null"
@@ -40,8 +40,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/app_bar"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="6dp"
+        android:paddingHorizontal="@dimen/padding_standard_half"
+        android:paddingVertical="@dimen/padding_small"
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"

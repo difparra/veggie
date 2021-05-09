@@ -16,4 +16,8 @@ sealed class Failure {
         object NoSearchResults : SearchFailure()
     }
 
+    sealed class CartFailure() : Failure() {
+        object EmptyCartList : CartFailure()
+    }
+
 }

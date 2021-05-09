@@ -4,8 +4,8 @@ import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.customTransformListToEither
 import com.diegoparra.veggie.core.map
-import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
-import com.diegoparra.veggie.products.domain.entities.MainProduct
+import com.diegoparra.veggie.products.domain.entities.ProductMain
+import com.diegoparra.veggie.products.domain.entities.Product
 import com.diegoparra.veggie.products.domain.repositories.CartRepository
 import com.diegoparra.veggie.products.domain.repositories.ProductsRepository
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +18,7 @@ class GetMainProductsUseCase @Inject constructor(
     private val cartRepository: CartRepository
 ){
 
-    suspend operator fun invoke(params: Params) : Flow<Either<Failure, List<MainProdWithQuantity>>> {
+    suspend operator fun invoke(params: Params) : Flow<Either<Failure, List<ProductMain>>> {
         Timber.d("invoke() called with: params = $params")
         return when(val products = getProducts(params)){
             is Either.Left -> flow { emit(products) }
@@ -33,7 +33,7 @@ class GetMainProductsUseCase @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    private suspend fun getProducts(params: Params) : Either<Failure, List<MainProduct>> {
+    private suspend fun getProducts(params: Params) : Either<Failure, List<Product>> {
         Timber.d("getProducts() called with: params = $params")
         return when(params){
             is Params.ForTag -> productsRepository.getMainProductsByTagId(params.tagId)
@@ -47,12 +47,12 @@ class GetMainProductsUseCase @Inject constructor(
         }
     }
 
-    private fun addQuantityToProduct(product: MainProduct) : Flow<Either<Failure, MainProdWithQuantity>> {
-        Timber.d("addQuantityToProduct() called with: product = $product")
-        val quantity = cartRepository.getQuantityByMainId(product.mainId)
+    private fun addQuantityToProduct(mainProduct: Product) : Flow<Either<Failure, ProductMain>> {
+        Timber.d("addQuantityToProduct() called with: product = $mainProduct")
+        val quantity = cartRepository.getQuantityByMainId(mainProduct.mainId)
         return quantity.map { qtyEither ->
             qtyEither.map {
-                MainProdWithQuantity(product, it)
+                ProductMain(mainProduct, it)
             }
         }
     }

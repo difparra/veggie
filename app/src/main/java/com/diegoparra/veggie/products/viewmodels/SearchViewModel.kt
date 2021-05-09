@@ -1,10 +1,9 @@
 package com.diegoparra.veggie.products.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.products.domain.entities.MainProdWithQuantity
+import com.diegoparra.veggie.products.domain.entities.ProductMain
 import com.diegoparra.veggie.products.domain.usecases.GetMainProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -22,8 +21,8 @@ class SearchViewModel @Inject constructor(
     private val _query = MutableStateFlow(savedStateHandle.get(QUERY_SAVED_STATE_KEY) ?: "")
     private var currentJobSearch : Job? = null
 
-    private val _productsList = MutableLiveData<Resource<List<MainProdWithQuantity>>>(Resource.Error(Failure.SearchFailure.EmptyQuery))
-    val productsList : LiveData<Resource<List<MainProdWithQuantity>>> = _productsList
+    private val _productsList = MutableLiveData<Resource<List<ProductMain>>>(Resource.Error(Failure.SearchFailure.EmptyQuery))
+    val productsList : LiveData<Resource<List<ProductMain>>> = _productsList
 
     init {
         viewModelScope.launch {
@@ -52,7 +51,7 @@ class SearchViewModel @Inject constructor(
     }
 
 
-    private fun handleProducts(products: List<MainProdWithQuantity>) {
+    private fun handleProducts(products: List<ProductMain>) {
         _productsList.value = Resource.Success(products)
     }
 
