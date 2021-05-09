@@ -45,4 +45,8 @@ abstract class CartDao {
     @Query("Select quantity from Cart where mainId = :mainId and varId = :varId and detail = :detail")
     protected abstract fun _getCurrentQuantityItem(mainId: String, varId: String, detail: String) : Int?
     fun getCurrentQuantityItem(prodIdRoom: ProdIdRoom) = _getCurrentQuantityItem(prodIdRoom.mainId, prodIdRoom.varId, prodIdRoom.detail)
+
+    @Query("Select mainId, varId, detail from Cart")
+    protected abstract fun _getProductIds() : Flow<List<ProdIdRoom>>
+    fun getProductIds() = _getProductIds().distinctUntilChanged()
 }

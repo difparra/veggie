@@ -12,16 +12,17 @@ import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.core.ResourceViews
 import com.diegoparra.veggie.databinding.FragmentCartBinding
 import com.diegoparra.veggie.products.domain.entities.ProductCart
+import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.viewmodels.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CartFragment : Fragment() {
+class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
 
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
     private val viewModel : CartViewModel by viewModels()
-    private val adapter by lazy { CartAdapter() }
+    private val adapter by lazy { CartAdapter(this) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +37,15 @@ class CartFragment : Fragment() {
         binding.cartList.adapter = adapter
         subscribeUi()
     }
+
+    override fun onAddClick(productId: ProductId) {
+        viewModel.addQuantity(productId)
+    }
+
+    override fun onReduceClick(productId: ProductId) {
+        viewModel.reduceQuantity(productId)
+    }
+
 
     private fun subscribeUi() {
         val resourceViews = ResourceViews(
@@ -66,22 +76,12 @@ class CartFragment : Fragment() {
 
     private fun renderFailure(failure: Failure) {
         when(failure) {
-            is Failure.CartFailure.EmptyCartList -> {
-                cleanRecyclerView()
+            is Failure.CartFailure.EmptyCartList ->
                 binding.errorText.text = getString(R.string.failure_empty_cart_list)
-            }
-            else -> {
-                cleanRecyclerView()
+            else ->
                 binding.errorText.text = failure.toString()
-            }
         }
     }
-
-    private fun cleanRecyclerView() {
-        adapter.submitList(listOf())
-        binding.cartList.visibility = View.VISIBLE
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

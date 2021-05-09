@@ -1,6 +1,7 @@
 package com.diegoparra.veggie.products.ui
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,9 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.diegoparra.veggie.databinding.ListItemCartBinding
 import com.diegoparra.veggie.products.domain.entities.ProductCart
+import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.ui.utils.addThousandSeparator
 
-class CartAdapter : ListAdapter<ProductCart, CartAdapter.ViewHolder>(DiffCallback) {
+class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<ProductCart, CartAdapter.ViewHolder>(DiffCallback) {
+
+    interface OnItemClickListener {
+        fun onAddClick(productId: ProductId)
+        fun onReduceClick(productId: ProductId)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -19,7 +26,8 @@ class CartAdapter : ListAdapter<ProductCart, CartAdapter.ViewHolder>(DiffCallbac
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                )
+                ),
+                listener
         )
     }
 
@@ -28,13 +36,35 @@ class CartAdapter : ListAdapter<ProductCart, CartAdapter.ViewHolder>(DiffCallbac
         holder.bind(product)
     }
 
-    class ViewHolder(private var binding: ListItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty()){
+            val payload = payloads.last() as Bundle
+            holder.bindFromPayload(payload)
+        }else{
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
+    class ViewHolder(private var binding: ListItemCartBinding, private val listener: OnItemClickListener) : RecyclerView.ViewHolder(binding.root) {
+        private var item: ProductCart? = null
+        init {
+            binding.btnAdd.setOnClickListener { item?.let { listener.onAddClick(it.productId) } }
+            binding.btnReduce.setOnClickListener { item?.let { listener.onReduceClick(it.productId) } }
+        }
+
         fun bind(product: ProductCart) {
+            this.item = product
             loadImage(product.imageUrl)
             loadName(product.name)
             loadDescription(product.unit, product.detail)
             loadTotal(product.price, product.quantity)
-            loadQuantity(product.quantity, product.maxOrder)
+            loadQuantityState(product.quantity, product.maxOrder)
+        }
+
+        fun bindFromPayload(payload: Bundle) {
+            val quantity = payload.getInt(PayloadConstants.QUANTITY)
+            loadTotal(payload.getInt(PayloadConstants.PRICE), quantity)
+            loadQuantityState(quantity, payload.getInt(PayloadConstants.MAX_ORDER))
         }
 
         private fun loadImage(imageUrl: String) {
@@ -52,10 +82,10 @@ class CartAdapter : ListAdapter<ProductCart, CartAdapter.ViewHolder>(DiffCallbac
 
         @SuppressLint("SetTextI18n")
         private fun loadTotal(price: Int, quantity: Int){
-            binding.price.text = "$" + (price*quantity).addThousandSeparator()
+            binding.price.text = "Total: $" + (price*quantity).addThousandSeparator()
         }
 
-        private fun loadQuantity(quantity: Int, maxOrder: Int){
+        private fun loadQuantityState(quantity: Int, maxOrder: Int){
             binding.btnAdd.setQuantityState(quantity = quantity, maxOrder = maxOrder)
             binding.btnReduce.setQuantityState(quantity = quantity, maxOrder = maxOrder)
             binding.quantity.text = quantity.toString()
@@ -71,5 +101,18 @@ class CartAdapter : ListAdapter<ProductCart, CartAdapter.ViewHolder>(DiffCallbac
             return oldItem == newItem
         }
 
+        override fun getChangePayload(oldItem: ProductCart, newItem: ProductCart): Any? {
+            return Bundle().apply {
+                putInt(PayloadConstants.QUANTITY, newItem.quantity)
+                putInt(PayloadConstants.MAX_ORDER, newItem.maxOrder)
+                putInt(PayloadConstants.PRICE, newItem.price)
+            }
+        }
+
+        object PayloadConstants {
+            const val QUANTITY = "quantity"
+            const val MAX_ORDER = "maxOrder"
+            const val PRICE = "price"
+        }
     }
 }

@@ -21,4 +21,8 @@ interface CartRepository {
     suspend fun getItem(productId: ProductId) : Either<Failure, CartItem>
     suspend fun getCurrentQuantityItem(productId: ProductId) : Either<Failure, Int>
 
+
+    //  Additional methods to improve performance getting cart list
+    fun getProdIdsList() : Flow<Either<Failure, List<ProductId>>>
+
 }

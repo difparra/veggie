@@ -19,8 +19,8 @@ private const val ITEM = 1
 class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter<VariationUi, VariationsAdapter.ViewHolder>(DiffCallback) {
 
     interface OnItemClickListener {
-        fun onAddListener(variationId: String, detail: String?)
-        fun onReduceListener(variationId: String, detail: String?)
+        fun onAddClick(variationId: String, detail: String?)
+        fun onReduceClick(variationId: String, detail: String?)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -78,8 +78,8 @@ class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter
         class ItemViewHolder(private var binding: ListItemVariationItemBinding, private val listener: OnItemClickListener) : ViewHolder(binding.root) {
             private var item: VariationUi.Item? = null
             init {
-                binding.btnAdd.setOnClickListener { item?.let { listener.onAddListener(it.varId, it.detail) } }
-                binding.btnReduce.setOnClickListener { item?.let { listener.onReduceListener(it.varId, it.detail) } }
+                binding.btnAdd.setOnClickListener { item?.let { listener.onAddClick(it.varId, it.detail) } }
+                binding.btnReduce.setOnClickListener { item?.let { listener.onReduceClick(it.varId, it.detail) } }
             }
 
             override fun bind(item: VariationUi) {

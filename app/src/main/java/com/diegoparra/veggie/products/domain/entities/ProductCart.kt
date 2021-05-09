@@ -16,4 +16,6 @@ data class ProductCart(
     val label = product.label
     val detail = cartItem.productId.detail
     val quantity = cartItem.quantity
+
+    var isEditable = false
 }

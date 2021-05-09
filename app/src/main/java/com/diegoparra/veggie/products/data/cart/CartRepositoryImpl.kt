@@ -6,6 +6,7 @@ import com.diegoparra.veggie.products.data.cart.CartTransformations.toCartEntity
 import com.diegoparra.veggie.products.data.cart.CartTransformations.toCartItem
 import com.diegoparra.veggie.products.data.cart.CartTransformations.toMapQuantitiesByDetail
 import com.diegoparra.veggie.products.data.cart.CartTransformations.toProdIdRoom
+import com.diegoparra.veggie.products.data.cart.CartTransformations.toProductId
 import com.diegoparra.veggie.products.domain.entities.CartItem
 import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.domain.repositories.CartRepository
@@ -67,5 +68,18 @@ class CartRepositoryImpl (
     override suspend fun getCurrentQuantityItem(productId: ProductId): Either<Failure, Int>  = withContext(dispatcher) {
         val quantity = cartDao.getCurrentQuantityItem(productId.toProdIdRoom())
         return@withContext Either.Right(quantity ?: 0)
+    }
+
+
+
+    //  Additional methods to improve performance getting cart list
+    override fun getProdIdsList(): Flow<Either<Failure, List<ProductId>>> {
+        return cartDao.getProductIds().map {
+            if(it.isNullOrEmpty()){
+                Either.Left(Failure.CartFailure.EmptyCartList)
+            }else{
+                Either.Right(it.map { it.toProductId() })
+            }
+        }.flowOn(dispatcher)
     }
 }

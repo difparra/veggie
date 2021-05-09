@@ -166,4 +166,10 @@ class FakeCartRepository (
         return Either.Right(0)
     }
 
+    override fun getProdIdsList(): Flow<Either<Failure, List<ProductId>>> {
+        return cartItems.map {
+            Either.Right(it.map { it.productId })
+        }
+    }
+
 }
