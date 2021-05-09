@@ -19,7 +19,6 @@
 
 
     <!--    calculate and set when changing values  -->
-    <dimen name="qty_button_size_plus_small_padding">38dp</dimen>
     <dimen name="padding_standard_half">10dp</dimen>
     <dimen name="padding_big_half">15dp</dimen>
 

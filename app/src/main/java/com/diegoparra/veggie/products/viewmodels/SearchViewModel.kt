@@ -32,6 +32,9 @@ class SearchViewModel @Inject constructor(
 
                 _productsList.value = Resource.Loading()
                 val prods = getMainProductsUseCase(GetMainProductsUseCase.Params.ForSearch(it))
+
+                //  As in cartViewModel, this new job should be launched in a different viewModelScope,
+                //  otherwise, values will not be collected.
                 currentJobSearch = prods
                         .onEach {
                             it.fold(::handleFailure, ::handleProducts)

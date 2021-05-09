@@ -1,6 +1,7 @@
 package com.diegoparra.veggie.products.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.diegoparra.veggie.products.domain.entities.ProductCart
 import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.viewmodels.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
@@ -44,6 +46,10 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
 
     override fun onReduceClick(productId: ProductId) {
         viewModel.reduceQuantity(productId)
+    }
+
+    override fun setEditablePosition(position: Int) {
+        viewModel.setEditablePosition(position)
     }
 
 

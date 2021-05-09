@@ -72,7 +72,10 @@ class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHold
             loadLabel(product.label)
         }
         fun bindFromPayload(bundle: Bundle){
-            loadQtyButton(bundle.getInt(PayloadConstants.QUANTITY))
+            val quantity = bundle.getInt(PayloadConstants.QUANTITY, -1)
+            if(quantity != -1){
+                loadQtyButton(quantity)
+            }
         }
 
         private fun navigateToProductDetails(product: ProductMain, view: View) {

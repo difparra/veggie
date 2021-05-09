@@ -2,22 +2,29 @@ package com.diegoparra.veggie.products.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.diegoparra.veggie.R
 import com.diegoparra.veggie.databinding.ListItemCartBinding
 import com.diegoparra.veggie.products.domain.entities.ProductCart
 import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.ui.utils.addThousandSeparator
+import com.diegoparra.veggie.products.ui.utils.setBackground
+import timber.log.Timber
 
 class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<ProductCart, CartAdapter.ViewHolder>(DiffCallback) {
 
     interface OnItemClickListener {
         fun onAddClick(productId: ProductId)
         fun onReduceClick(productId: ProductId)
+        fun setEditablePosition(position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -50,6 +57,9 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
         init {
             binding.btnAdd.setOnClickListener { item?.let { listener.onAddClick(it.productId) } }
             binding.btnReduce.setOnClickListener { item?.let { listener.onReduceClick(it.productId) } }
+            binding.quantity.setOnClickListener {
+                Timber.d("qtyClicked! -> bindingAdapterPosition = $bindingAdapterPosition")
+                listener.setEditablePosition(bindingAdapterPosition) }
         }
 
         fun bind(product: ProductCart) {
@@ -59,12 +69,20 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
             loadDescription(product.unit, product.detail)
             loadTotal(product.price, product.quantity)
             loadQuantityState(product.quantity, product.maxOrder)
+            loadEditableState(product.isEditable)
         }
 
         fun bindFromPayload(payload: Bundle) {
-            val quantity = payload.getInt(PayloadConstants.QUANTITY)
-            loadTotal(payload.getInt(PayloadConstants.PRICE), quantity)
-            loadQuantityState(quantity, payload.getInt(PayloadConstants.MAX_ORDER))
+            Timber.d("data received in payload: $payload")
+            val quantity = payload.getInt(PayloadConstants.QUANTITY, -1)
+            if(quantity != -1){
+                loadTotal(payload.getInt(PayloadConstants.PRICE), quantity)
+                loadQuantityState(quantity, payload.getInt(PayloadConstants.MAX_ORDER))
+            }
+            val editable = payload.getByte(PayloadConstants.EDITABLE, (-1).toByte())
+            if(editable != (-1).toByte()){
+                loadEditableState(editable == 1.toByte())
+            }
         }
 
         private fun loadImage(imageUrl: String) {
@@ -90,6 +108,18 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
             binding.btnReduce.setQuantityState(quantity = quantity, maxOrder = maxOrder)
             binding.quantity.text = quantity.toString()
         }
+
+        private fun loadEditableState(editable: Boolean) {
+            if(editable){
+                binding.btnAdd.visibility = View.VISIBLE
+                binding.btnReduce.visibility = View.VISIBLE
+                binding.quantity.setBackground(null)
+            }else{
+                binding.btnAdd.visibility = View.INVISIBLE
+                binding.btnReduce.visibility = View.INVISIBLE
+                binding.quantity.setBackground(R.drawable.circle_outline)
+            }
+        }
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<ProductCart>(){
@@ -103,9 +133,14 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
 
         override fun getChangePayload(oldItem: ProductCart, newItem: ProductCart): Any? {
             return Bundle().apply {
-                putInt(PayloadConstants.QUANTITY, newItem.quantity)
-                putInt(PayloadConstants.MAX_ORDER, newItem.maxOrder)
-                putInt(PayloadConstants.PRICE, newItem.price)
+                if(oldItem.quantity != newItem.quantity){
+                    putInt(PayloadConstants.QUANTITY, newItem.quantity)
+                    putInt(PayloadConstants.MAX_ORDER, newItem.maxOrder)
+                    putInt(PayloadConstants.PRICE, newItem.price)
+                }
+                if(oldItem.isEditable != newItem.isEditable){
+                    putByte(PayloadConstants.EDITABLE, if(newItem.isEditable) 1.toByte() else 0.toByte() )
+                }
             }
         }
 
@@ -113,6 +148,7 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
             const val QUANTITY = "quantity"
             const val MAX_ORDER = "maxOrder"
             const val PRICE = "price"
+            const val EDITABLE = "editable"
         }
     }
 }

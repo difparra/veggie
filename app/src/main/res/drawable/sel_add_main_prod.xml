@@ -7,6 +7,6 @@
         android:drawable="@drawable/ic_add_circle_outline"
         />
     <item
-        android:drawable="@drawable/ic_circle_filled" />
+        android:drawable="@drawable/circle_filled" />
 
 </selector>

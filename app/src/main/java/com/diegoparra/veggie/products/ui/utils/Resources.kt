@@ -7,7 +7,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.annotation.FloatRange
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import kotlin.math.roundToInt
 
@@ -20,6 +22,15 @@ fun View.hideKeyboard() {
     }catch (throwable: Throwable){}
 }
 
+
+fun View.setBackground(@DrawableRes drawableRes: Int?) {
+    if(drawableRes == null){
+        background = null
+        return
+    }
+    val drawable = ResourcesCompat.getDrawable(context.resources, drawableRes, null)
+    background = drawable
+}
 
 fun Context.getResourcesFromAttr(
         @AttrRes attrRes: Int,

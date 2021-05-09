@@ -2,7 +2,8 @@ package com.diegoparra.veggie.products.domain.entities
 
 data class ProductCart(
         private val cartItem: CartItem,
-        private val product: Product
+        private val product: Product,
+        val isEditable: Boolean = false
 ){
     val productId = cartItem.productId
     val name = product.name
@@ -16,6 +17,4 @@ data class ProductCart(
     val label = product.label
     val detail = cartItem.productId.detail
     val quantity = cartItem.quantity
-
-    var isEditable = false
 }

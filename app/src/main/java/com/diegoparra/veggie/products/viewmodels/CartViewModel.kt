@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.products.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,8 +12,11 @@ import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.domain.usecases.GetCartProductsUseCase
 import com.diegoparra.veggie.products.domain.usecases.UpdateQuantityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,11 +28,31 @@ class CartViewModel @Inject constructor(
     private val _products = MutableLiveData<Resource<List<ProductCart>>>()
     val products : LiveData<Resource<List<ProductCart>>> = _products
 
+    private val _editablePosition = MutableStateFlow(0)
+    fun setEditablePosition(position: Int) {
+        _editablePosition.value = position
+    }
+
     init {
         viewModelScope.launch {
             _products.value = Resource.Loading()
             getCartProductsUseCase().collect {
                 it.fold(::handleFailure, ::handleCartProducts)
+            }
+        }
+        viewModelScope.launch {
+            /*
+                IMPORTANT NOTE:
+                    Every collect {} need to be in a different scope, otherwise that will not work.
+                    When I place _editablePosition.collect below getCartProductsUseCase().collect {}
+                    and inside the previous viewModelScope.launch {} that didn't work,
+                    but placing in different viewModelScope did certainly work.
+             */
+            _editablePosition.collect { newEditablePosition ->
+                val currentProdsList = products.value
+                if(currentProdsList is Resource.Success){
+                    setProductsListWithEditableItems(currentProdsList.data, newEditablePosition)
+                }
             }
         }
     }
@@ -37,8 +61,22 @@ class CartViewModel @Inject constructor(
         if(products.isNullOrEmpty()){
             _products.value = Resource.Error(Failure.CartFailure.EmptyCartList)
         }else{
-            _products.value = Resource.Success(products)
+            setProductsListWithEditableItems(products, _editablePosition.value)
         }
+    }
+
+    private fun setProductsListWithEditableItems(productsList: List<ProductCart>, editablePosition: Int) {
+        if(editablePosition !in productsList.indices){
+            setProductsListWithEditableItems(productsList, 0)
+        }
+        val prodsWithEditables = productsList.toMutableList()
+        prodsWithEditables.forEachIndexed { index, product ->
+            val editable = index == _editablePosition.value
+            if(product.isEditable != editable){
+                prodsWithEditables[index] = product.copy(isEditable = editable)
+            }
+        }
+        _products.value = Resource.Success(prodsWithEditables)
     }
 
     private fun handleFailure(failure: Failure){

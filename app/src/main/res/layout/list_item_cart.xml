@@ -68,8 +68,8 @@
         app:layout_constraintTop_toTopOf="@+id/btn_add"
         android:gravity="center"
         android:backgroundTint="?attr/colorPrimary"
-        android:minWidth="@dimen/qty_button_size_plus_small_padding"
-        android:minHeight="@dimen/qty_button_size_plus_small_padding"
+        android:minWidth="@dimen/qty_button_size"
+        android:minHeight="@dimen/qty_button_size"
         tools:text="1" />
 
     <com.diegoparra.veggie.core.QtyButton

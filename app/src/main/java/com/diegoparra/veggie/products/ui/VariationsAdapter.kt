@@ -92,10 +92,13 @@ class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter
                 }
             }
             fun bindFromPayload(payload: Bundle){
-                loadQuantityState(
-                        quantity = payload.getInt(PayloadConstants.QUANTITY),
+                val quantity = payload.getInt(PayloadConstants.QUANTITY, -1)
+                if(quantity != -1){
+                    loadQuantityState(
+                        quantity = quantity,
                         maxOrder = payload.getInt(PayloadConstants.MAX_ORDER)
-                )
+                    )
+                }
             }
 
             private fun loadEnabledState(enabled: Boolean){

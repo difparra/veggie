@@ -20,6 +20,12 @@ import timber.log.Timber
         Products and quantities are collected the first time, and can be shown on screen,
         but when add, update or delete quantity are called, they are executed but the flow
         collecting the values for the show quantities on screen is not working/collecting.
+
+    **************
+        Maybe is not that it is not that it is not working, maybe is just that the reference is the
+        same so equals always returns true, so distinctUntilChanged() in the flow does not return and
+        therefore does not emit anything.
+        To solve this, it is necessary to copy the objects so that a new object with a new reference is created
 */
 
 
