@@ -25,7 +25,7 @@
 
     <!-- Cards, Dialogs, AlertDialogs, DatePicker(dialog) -->
     <style name="ShapeAppearance.Veggie.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <!--Your custom shape here-->
+        <item name="cornerSize">20dp</item>
     </style>
 
     <!--Shape Appearance for large components like side and bottom navigation drawers-->

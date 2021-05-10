@@ -20,8 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CartViewModel @Inject constructor(
         private val getCartProductsUseCase: GetCartProductsUseCase,
-        private val updateQuantityUseCase: UpdateQuantityUseCase,
-        private val clearCartListUseCase: ClearCartListUseCase
+        private val updateQuantityUseCase: UpdateQuantityUseCase
 ) : ViewModel() {
 
     private val _products = MutableLiveData<Resource<List<ProductCart>>>()
@@ -53,6 +52,7 @@ class CartViewModel @Inject constructor(
             _editablePosition.collect { newEditablePosition ->
                 val currentProdsList = products.value
                 if(currentProdsList is Resource.Success){
+                    handleCartProducts(currentProdsList.data)
                     if(!currentProdsList.data.isNullOrEmpty()){
                         val prodListWithEditables = currentProdsList.data.addEditablePositionProperty(newEditablePosition)
                         _products.value = Resource.Success(prodListWithEditables)
@@ -123,15 +123,6 @@ class CartViewModel @Inject constructor(
         return when(val prods = products.value){
             is Resource.Success -> prods.data.find { it.productId == productId }
             else -> null
-        }
-    }
-
-
-    //      ----------------------------------------------------------------------------------------
-
-    fun clearCartList() {
-        viewModelScope.launch {
-            clearCartListUseCase()
         }
     }
 

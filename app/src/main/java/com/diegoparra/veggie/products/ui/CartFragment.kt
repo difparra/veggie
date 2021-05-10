@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
@@ -39,17 +40,8 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
 
         subscribeUi()
         binding.clearCart.setOnClickListener {
-            AlertDialog.Builder(binding.root.context)
-
-                    .setMessage(R.string.dialog_clear_cart)
-                    .setPositiveButton(R.string.yes) { _, _ ->
-                        viewModel.clearCartList()
-                    }
-                    .setNegativeButton(R.string.no) { _, _ ->
-                         /* Do nothing  */
-                    }
-                    .create()
-                    .show()
+            val action = CartFragmentDirections.actionNavCartToClearCartDialogFragment()
+            findNavController().navigate(action)
         }
     }
 

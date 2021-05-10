@@ -50,6 +50,15 @@
         <item name="android:layout_marginBottom">@dimen/divider_vertical_margin</item>
     </style>
 
+    <style name="Widget.Veggie.Divider.Vertical" parent="">
+        <item name="android:layout_width">@dimen/divider_height</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">?attr/colorOnSurface</item>
+        <item name="android:alpha">0.4</item>
+        <item name="android:layout_marginStart">@dimen/divider_vertical_margin</item>
+        <item name="android:layout_marginEnd">@dimen/divider_vertical_margin</item>
+    </style>
+
     <style name="Widget.Veggie.AppBar" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/appBarHeight</item>
