@@ -36,12 +36,11 @@ class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.On
         subscribeUi()
     }
 
-    override fun onAddClick(variationId: String, detail: String?) {
-        viewModel.addQuantity(varId = variationId, detail = detail)
-    }
-
-    override fun onReduceClick(variationId: String, detail: String?) {
-        viewModel.reduceQuantity(varId = variationId, detail = detail)
+    override fun onItemClick(variationId: String, detail: String?, which: Int) {
+        when(which){
+            VariationsAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(varId = variationId, detail = detail)
+            VariationsAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(varId = variationId, detail = detail)
+        }
     }
 
     private fun subscribeUi(){

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface CartRepository {
 
     fun getAllCartItems() : Flow<Either<Failure, List<CartItem>>>
+    fun getProdIdsList() : Flow<Either<Failure, List<ProductId>>>
 
     fun getQuantityItem(productId: ProductId) : Flow<Either<Failure, Int>>
     fun getQuantityByMainId(mainId: String) : Flow<Either<Failure, Int>>
@@ -21,8 +22,5 @@ interface CartRepository {
     suspend fun getItem(productId: ProductId) : Either<Failure, CartItem>
     suspend fun getCurrentQuantityItem(productId: ProductId) : Either<Failure, Int>
 
-
-    //  Additional methods to improve performance getting cart list
-    fun getProdIdsList() : Flow<Either<Failure, List<ProductId>>>
-
+    suspend fun deleteAllItems()
 }

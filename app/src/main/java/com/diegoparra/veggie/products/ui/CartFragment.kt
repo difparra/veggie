@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.ui
 
+import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +16,6 @@ import com.diegoparra.veggie.products.domain.entities.ProductCart
 import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.viewmodels.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
@@ -37,19 +36,29 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.cartList.setHasFixedSize(true)
         binding.cartList.adapter = adapter
+
         subscribeUi()
+        binding.clearCart.setOnClickListener {
+            AlertDialog.Builder(binding.root.context)
+
+                    .setMessage(R.string.dialog_clear_cart)
+                    .setPositiveButton(R.string.yes) { _, _ ->
+                        viewModel.clearCartList()
+                    }
+                    .setNegativeButton(R.string.no) { _, _ ->
+                         /* Do nothing  */
+                    }
+                    .create()
+                    .show()
+        }
     }
 
-    override fun onAddClick(productId: ProductId) {
-        viewModel.addQuantity(productId)
-    }
-
-    override fun onReduceClick(productId: ProductId) {
-        viewModel.reduceQuantity(productId)
-    }
-
-    override fun setEditablePosition(position: Int) {
-        viewModel.setEditablePosition(position)
+    override fun onItemClick(productId: ProductId, position: Int, which: Int) {
+        when(which){
+            CartAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(productId)
+            CartAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(productId)
+            CartAdapter.OnItemClickListener.VIEW_QUANTITY -> viewModel.setEditablePosition(position)
+        }
     }
 
 
@@ -67,6 +76,7 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
                 is Resource.Success -> {
                     resourceViews.displayViewsForState(ResourceViews.State.SUCCESS)
                     renderProducts(it.data)
+                    binding.clearCart.isEnabled = true
                 }
                 is Resource.Error -> {
                     resourceViews.displayViewsForState(ResourceViews.State.ERROR)
@@ -82,8 +92,10 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
 
     private fun renderFailure(failure: Failure) {
         when(failure) {
-            is Failure.CartFailure.EmptyCartList ->
+            is Failure.CartFailure.EmptyCartList -> {
                 binding.errorText.text = getString(R.string.failure_empty_cart_list)
+                binding.clearCart.isEnabled = false
+            }
             else ->
                 binding.errorText.text = failure.toString()
         }

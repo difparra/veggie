@@ -2,11 +2,9 @@ package com.diegoparra.veggie.products.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -22,9 +20,12 @@ import timber.log.Timber
 class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<ProductCart, CartAdapter.ViewHolder>(DiffCallback) {
 
     interface OnItemClickListener {
-        fun onAddClick(productId: ProductId)
-        fun onReduceClick(productId: ProductId)
-        fun setEditablePosition(position: Int)
+        companion object {
+            const val BUTTON_ADD = 1
+            const val BUTTON_REDUCE = 2
+            const val VIEW_QUANTITY = 3
+        }
+        fun onItemClick(productId: ProductId, position: Int, which: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -55,11 +56,15 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
     class ViewHolder(private var binding: ListItemCartBinding, private val listener: OnItemClickListener) : RecyclerView.ViewHolder(binding.root) {
         private var item: ProductCart? = null
         init {
-            binding.btnAdd.setOnClickListener { item?.let { listener.onAddClick(it.productId) } }
-            binding.btnReduce.setOnClickListener { item?.let { listener.onReduceClick(it.productId) } }
-            binding.quantity.setOnClickListener {
-                Timber.d("qtyClicked! -> bindingAdapterPosition = $bindingAdapterPosition")
-                listener.setEditablePosition(bindingAdapterPosition) }
+            binding.btnAdd.setOnClickListener { item?.let {
+                listener.onItemClick(productId = it.productId, position = bindingAdapterPosition, which = OnItemClickListener.BUTTON_ADD)
+            } }
+            binding.btnReduce.setOnClickListener { item?.let {
+                listener.onItemClick(productId = it.productId, position = bindingAdapterPosition, which = OnItemClickListener.BUTTON_REDUCE)
+            } }
+            binding.quantity.setOnClickListener { item?.let {
+                listener.onItemClick(productId = it.productId, position = bindingAdapterPosition, which = OnItemClickListener.VIEW_QUANTITY)
+            } }
         }
 
         fun bind(product: ProductCart) {
@@ -95,7 +100,7 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
 
         @SuppressLint("SetTextI18n")
         private fun loadDescription(unit: String, detail: String?) {
-            binding.description.text = unit + detail?.let { " • $it" }
+            binding.description.text = unit + (detail?.let { " • $it" } ?: "")
         }
 
         @SuppressLint("SetTextI18n")

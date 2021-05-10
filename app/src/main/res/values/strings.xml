@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Veggie</string>
 
+
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+
     <!-- Main navigation -->
     <string name="menu_home">Inicio</string>
     <string name="menu_search">Buscar</string>
@@ -15,6 +19,9 @@
     <string name="failure_no_search_result">No hay productos que coincidan con tu búsqueda.</string>
     <string name="failure_empty_cart_list">El carrito está vacío.</string>
     <string name="failure_generic">Ha ocurrido un error. Intenta de nuevo.</string>
+
+    <!-- Dialog messages -->
+    <string name="dialog_clear_cart">¿Vaciar carrito?</string>
 
 
 </resources>

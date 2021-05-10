@@ -28,6 +28,16 @@ class CartRepositoryImpl (
         }.flowOn(dispatcher)
     }
 
+    override fun getProdIdsList(): Flow<Either<Failure, List<ProductId>>> {
+        return cartDao.getProductIds().map {
+            if(it.isNullOrEmpty()){
+                Either.Left(Failure.CartFailure.EmptyCartList)
+            }else{
+                Either.Right(it.map { it.toProductId() })
+            }
+        }.flowOn(dispatcher)
+    }
+
     override fun getQuantityByMainId(mainId: String): Flow<Either<Failure, Int>> {
         return cartDao.getQuantityByMainId(mainId).map {
             Either.Right(it ?: 0)
@@ -70,16 +80,7 @@ class CartRepositoryImpl (
         return@withContext Either.Right(quantity ?: 0)
     }
 
-
-
-    //  Additional methods to improve performance getting cart list
-    override fun getProdIdsList(): Flow<Either<Failure, List<ProductId>>> {
-        return cartDao.getProductIds().map {
-            if(it.isNullOrEmpty()){
-                Either.Left(Failure.CartFailure.EmptyCartList)
-            }else{
-                Either.Right(it.map { it.toProductId() })
-            }
-        }.flowOn(dispatcher)
+    override suspend fun deleteAllItems() = withContext(dispatcher) {
+        cartDao.deleteAllItems()
     }
 }

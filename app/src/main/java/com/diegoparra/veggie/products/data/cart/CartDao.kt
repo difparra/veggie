@@ -14,6 +14,10 @@ abstract class CartDao {
     protected abstract fun _getAllCartItems() : Flow<List<CartEntity>>
     fun getAllCartItems() = _getAllCartItems().distinctUntilChanged()
 
+    @Query("Select mainId, varId, detail from Cart")
+    protected abstract fun _getProductIds() : Flow<List<ProdIdRoom>>
+    fun getProductIds() = _getProductIds().distinctUntilChanged()
+
     @Query("Select quantity from Cart where mainId = :mainId and varId = :varId and detail = :detail")
     protected abstract fun _getQuantityItem(mainId: String, varId: String, detail: String) : Flow<Int?>
     fun getQuantityItem(prodIdRoom: ProdIdRoom) =
@@ -46,7 +50,6 @@ abstract class CartDao {
     protected abstract fun _getCurrentQuantityItem(mainId: String, varId: String, detail: String) : Int?
     fun getCurrentQuantityItem(prodIdRoom: ProdIdRoom) = _getCurrentQuantityItem(prodIdRoom.mainId, prodIdRoom.varId, prodIdRoom.detail)
 
-    @Query("Select mainId, varId, detail from Cart")
-    protected abstract fun _getProductIds() : Flow<List<ProdIdRoom>>
-    fun getProductIds() = _getProductIds().distinctUntilChanged()
+    @Query("Delete from Cart")
+    abstract fun deleteAllItems()
 }

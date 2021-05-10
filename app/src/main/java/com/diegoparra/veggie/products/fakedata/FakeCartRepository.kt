@@ -178,4 +178,8 @@ class FakeCartRepository (
         }
     }
 
+    override suspend fun deleteAllItems() {
+        updateCartItems(listOf())
+    }
+
 }
