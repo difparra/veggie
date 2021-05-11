@@ -1,19 +1,25 @@
 package com.diegoparra.veggie.products.ui
 
 import android.annotation.SuppressLint
+import android.graphics.Typeface
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.databinding.ListItemCartBinding
+import com.diegoparra.veggie.products.domain.entities.Label
 import com.diegoparra.veggie.products.domain.entities.ProductCart
 import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.ui.utils.addThousandSeparator
+import com.diegoparra.veggie.products.ui.utils.getLabelProps
+import com.diegoparra.veggie.products.ui.utils.getResourcesFromAttr
 import com.diegoparra.veggie.products.ui.utils.setBackground
 import timber.log.Timber
 
@@ -70,6 +76,7 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
         fun bind(product: ProductCart) {
             this.item = product
             loadImage(product.imageUrl)
+            loadLabel(product.label)
             loadName(product.name)
             loadDescription(product.unit, product.detail)
             loadTotal(product.price, product.quantity)
@@ -82,6 +89,7 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
             if(payload.containsKey(PayloadConstants.QUANTITY)){
                 val quantity = payload.getInt(PayloadConstants.QUANTITY)
                 loadTotal(payload.getInt(PayloadConstants.PRICE), quantity)
+                animateNewTotal(payload.getBoolean(PayloadConstants.QUANTITY_INCREASED))
                 loadQuantityState(quantity, payload.getInt(PayloadConstants.MAX_ORDER))
             }
             if(payload.containsKey(PayloadConstants.EDITABLE)){
@@ -91,6 +99,20 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
 
         private fun loadImage(imageUrl: String) {
             binding.image.load(imageUrl)
+        }
+
+        private fun loadLabel(label: Label){
+            when(label){
+                is Label.Hidden -> {
+                    binding.label.visibility = View.GONE
+                }
+                else -> {
+                    val labelProps = getLabelProps(label = label, context = binding.label.context)
+                    binding.label.text = labelProps?.first
+                    binding.label.chipBackgroundColor = labelProps?.second
+                    binding.label.visibility = View.VISIBLE
+                }
+            }
         }
 
         private fun loadName(name: String) {
@@ -105,6 +127,28 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
         @SuppressLint("SetTextI18n")
         private fun loadTotal(price: Int, quantity: Int){
             binding.price.text = "Total: $" + (price*quantity).addThousandSeparator()
+        }
+
+        private val originalColor = binding.price.currentTextColor
+        private val originalAlpha = binding.price.alpha
+        private fun animateNewTotal(qtyIncreased : Boolean = true){
+            binding.price
+                    .animate()
+                    .setDuration(500)
+                    .withStartAction {
+                        with(binding.price) {
+                            val colorAttr = if(qtyIncreased) R.attr.colorPrimary else R.attr.colorSecondary
+                            setTextColor(context.getResourcesFromAttr(colorAttr))
+                            alpha = 1.0f
+                        }
+                    }
+                    .withEndAction {
+                        with(binding.price) {
+                            setTextColor(originalColor)
+                            alpha = originalAlpha
+                        }
+                    }
+                    .start()
         }
 
         private fun loadQuantityState(quantity: Int, maxOrder: Int){
@@ -139,6 +183,7 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
             return Bundle().apply {
                 if(oldItem.quantity != newItem.quantity){
                     putInt(PayloadConstants.QUANTITY, newItem.quantity)
+                    putBoolean(PayloadConstants.QUANTITY_INCREASED, newItem.quantity > oldItem.quantity)
                     putInt(PayloadConstants.MAX_ORDER, newItem.maxOrder)
                     putInt(PayloadConstants.PRICE, newItem.price)
                 }
@@ -150,6 +195,7 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
 
         object PayloadConstants {
             const val QUANTITY = "quantity"
+            const val QUANTITY_INCREASED = "qty_increased"
             const val MAX_ORDER = "maxOrder"
             const val PRICE = "price"
             const val EDITABLE = "editable"

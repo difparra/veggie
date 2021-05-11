@@ -34,8 +34,18 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setUiVisibilityBasedOnEmptyStateProductsList()
         clearCartFunctionality()
         cartProductsFunctionality()
+    }
+
+
+    //      ----------------------------------------------------------------------------------------
+
+    private fun setUiVisibilityBasedOnEmptyStateProductsList() {
+        viewModel.productsListIsNotEmpty.observe(viewLifecycleOwner) {
+            binding.clearCart.isEnabled = it
+        }
     }
 
 
@@ -45,9 +55,6 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
         binding.clearCart.setOnClickListener {
             val action = CartFragmentDirections.actionNavCartToClearCartDialogFragment()
             findNavController().navigate(action)
-        }
-        viewModel.clearCartEnabledState.observe(viewLifecycleOwner) {
-            binding.clearCart.isEnabled = it
         }
     }
 

@@ -22,8 +22,8 @@ class CartViewModel @Inject constructor(
     private val _products = MutableLiveData<Resource<List<ProductCart>>>()
     val products : LiveData<Resource<List<ProductCart>>> = _products
 
-    private val _clearCartEnabledState = MutableLiveData(true)
-    val clearCartEnabledState : LiveData<Boolean> = _clearCartEnabledState
+    private val _productsListIsNotEmpty = MutableLiveData(true)
+    val productsListIsNotEmpty : LiveData<Boolean> = _productsListIsNotEmpty
 
     init {
         viewModelScope.launch {
@@ -37,17 +37,17 @@ class CartViewModel @Inject constructor(
     private fun handleCartProducts(products : List<ProductCart>){
         if(products.isNullOrEmpty()){
             _products.value = Resource.Error(Failure.CartFailure.EmptyCartList)
-            _clearCartEnabledState.value = false
+            _productsListIsNotEmpty.value = false
         }else{
             //  Must addEditablePositionProperty in here, so that there will always be an item opened to edition
             _products.value = Resource.Success(products.addEditablePositionProperty())
-            _clearCartEnabledState.value = true
+            _productsListIsNotEmpty.value = true
         }
     }
 
     private fun handleFailure(failure: Failure){
         _products.value = Resource.Error(failure)
-        _clearCartEnabledState.value = false
+        _productsListIsNotEmpty.value = false
     }
 
 

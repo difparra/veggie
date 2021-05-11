@@ -16,6 +16,13 @@ class GetCartProductsUseCase @Inject constructor(
     private val cartRepository: CartRepository
 ) {
 
+    /*
+        TODO:   Ask cartRepository to delete items that has no longer stock
+                This can occur when the user had a saved cart list from the previous day, and the next
+                day, some items in the cart list would possibly have no longer stock.
+     */
+
+
     /*  Option 2:       ** Already verified with the logs on productsRepository
             Get ids in the cartList.
             Possible changes in cartPage:

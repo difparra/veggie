@@ -63,6 +63,7 @@
         app:chipBackgroundColor="?attr/colorSecondary"
         android:textColor="?attr/colorOnSecondary"
         android:clickable="false"
+        android:enabled="false"
         tools:text="Label"
         tools:visibility="visible" />
 
