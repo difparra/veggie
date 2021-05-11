@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.products.ui
 
-import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -38,23 +37,20 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
         binding.cartList.setHasFixedSize(true)
         binding.cartList.adapter = adapter
 
-        subscribeUi()
+        clearCartFunctionality()
+        subscribeCartProductsList()
+
+    }
+
+    private fun clearCartFunctionality() {
         binding.clearCart.setOnClickListener {
             val action = CartFragmentDirections.actionNavCartToClearCartDialogFragment()
             findNavController().navigate(action)
         }
     }
 
-    override fun onItemClick(productId: ProductId, position: Int, which: Int) {
-        when(which){
-            CartAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(productId)
-            CartAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(productId)
-            CartAdapter.OnItemClickListener.VIEW_QUANTITY -> viewModel.setEditablePosition(position)
-        }
-    }
 
-
-    private fun subscribeUi() {
+    private fun subscribeCartProductsList() {
         val resourceViews = ResourceViews(
                 loadingViews = listOf(binding.progressBar),
                 successViews = listOf(binding.cartList),
@@ -76,10 +72,21 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
                 }
             }
         }
+        /*viewModel.editablePosition.observe(viewLifecycleOwner) {
+            adapter.changeEditablePosition(it)
+        }*/
     }
 
     private fun renderProducts(products: List<ProductCart>) {
         adapter.submitList(products)
+    }
+
+    override fun onItemClick(productId: ProductId, position: Int, which: Int) {
+        when(which){
+            CartAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(productId)
+            CartAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(productId)
+            CartAdapter.OnItemClickListener.VIEW_QUANTITY -> viewModel.setEditablePosition(position)
+        }
     }
 
     private fun renderFailure(failure: Failure) {

@@ -1,14 +1,10 @@
 package com.diegoparra.veggie.products.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.products.domain.entities.ProductCart
 import com.diegoparra.veggie.products.domain.entities.ProductId
-import com.diegoparra.veggie.products.domain.usecases.ClearCartListUseCase
 import com.diegoparra.veggie.products.domain.usecases.GetCartProductsUseCase
 import com.diegoparra.veggie.products.domain.usecases.UpdateQuantityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +22,31 @@ class CartViewModel @Inject constructor(
     private val _products = MutableLiveData<Resource<List<ProductCart>>>()
     val products : LiveData<Resource<List<ProductCart>>> = _products
 
+    init {
+        viewModelScope.launch {
+            _products.value = Resource.Loading()
+            getCartProductsUseCase().collect {
+                it.fold(::handleFailure, ::handleCartProducts)
+            }
+        }
+    }
+
+    private fun handleCartProducts(products : List<ProductCart>){
+        if(products.isNullOrEmpty()){
+            _products.value = Resource.Error(Failure.CartFailure.EmptyCartList)
+        }else{
+            //  Must addEditablePositionProperty in here, so that there will always be an item opened to edition
+            _products.value = Resource.Success(products.addEditablePositionProperty())
+        }
+    }
+
+    private fun handleFailure(failure: Failure){
+        _products.value = Resource.Error(failure)
+    }
+
+
+    //      ----------------------------------------------------------------------------------------
+
     private val _editablePosition = MutableStateFlow(0)
     fun setEditablePosition(position: Int) {
         if(position == _editablePosition.value){
@@ -36,19 +57,6 @@ class CartViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _products.value = Resource.Loading()
-            getCartProductsUseCase().collect {
-                it.fold(::handleFailure, ::handleCartProducts)
-            }
-        }
-        viewModelScope.launch {
-            /*
-                IMPORTANT NOTE:
-                    Every collect {} need to be in a different scope, otherwise that will not work.
-                    When I place _editablePosition.collect below getCartProductsUseCase().collect {}
-                    and inside the previous viewModelScope.launch {} that didn't work,
-                    but placing in different viewModelScope did certainly work.
-             */
             _editablePosition.collect { newEditablePosition ->
                 val currentProdsList = products.value
                 if(currentProdsList is Resource.Success){
@@ -62,37 +70,17 @@ class CartViewModel @Inject constructor(
         }
     }
 
-
-    //      ----------------------------------------------------------------------------------------
-
-    private fun handleCartProducts(products : List<ProductCart>){
-        if(products.isNullOrEmpty()){
-            _products.value = Resource.Error(Failure.CartFailure.EmptyCartList)
-        }else{
-            /*
-                Important note:
-                Can add visual properties in the viewModel but not modify domain properties,
-                such as price, discounts, data in general: This last values need to be handled
-                properly in the use cases which can communicate with databases.
-             */
-            _products.value = Resource.Success(products.addEditablePositionProperty())
-        }
-    }
-
     private fun List<ProductCart>.addEditablePositionProperty(editablePosition: Int = _editablePosition.value) : List<ProductCart> {
+        if(this.isNullOrEmpty()) { return emptyList() }
         val validEditablePosition = editablePosition.coerceIn(this.indices)
-        val prodsWithEditables = this.toMutableList()
-        prodsWithEditables.forEachIndexed { index, product ->
+        return this.mapIndexed { index, product ->
             val editable = index == validEditablePosition
             if(product.isEditable != editable){
-                prodsWithEditables[index] = product.copy(isEditable = editable)
+                product.copy(isEditable = editable)
+            }else{
+                product
             }
         }
-        return prodsWithEditables
-    }
-
-    private fun handleFailure(failure: Failure){
-        _products.value = Resource.Error(failure)
     }
 
 
@@ -127,3 +115,56 @@ class CartViewModel @Inject constructor(
     }
 
 }
+
+
+/*
+    private val _products = MutableLiveData<Resource<List<ProductCart>>>()
+    val products : LiveData<Resource<List<ProductCart>>> = _products
+
+    init {
+        viewModelScope.launch {
+            _products.value = Resource.Loading()
+            getCartProductsUseCase().collect {
+                it.fold(::handleFailure, ::handleCartProducts)
+            }
+        }
+    }
+
+    private fun handleCartProducts(products : List<ProductCart>){
+        if(products.isNullOrEmpty()){
+            _products.value = Resource.Error(Failure.CartFailure.EmptyCartList)
+        }else{
+            _products.value = Resource.Success(products)
+            //setEditablePosition(_editablePosition.value.coerceIn(products.indices))
+            forceEditablePositionOnProductsListSizeChange(products)
+        }
+    }
+
+    private var lastProdsSize = 0
+    fun forceEditablePositionOnProductsListSizeChange(products: List<ProductCart>){
+        if(products.size != lastProdsSize){
+            Timber.d("products.size = ${products.size}, lastProdSize = $lastProdsSize")
+            _editablePosition.value = _editablePosition.value?.coerceIn(products.indices) ?: 0
+            lastProdsSize = products.size
+        }
+    }
+
+
+    private fun handleFailure(failure: Failure){
+        _products.value = Resource.Error(failure)
+    }
+
+
+
+    //      ----------------------------------------------------------------------------------------
+
+    private val _editablePosition = MutableLiveData(0)
+    val editablePosition : LiveData<Int> = _editablePosition
+
+    fun setEditablePosition(position: Int) {
+        if(position == _editablePosition.value){
+            return
+        }
+        _editablePosition.value = position
+    }
+ */
