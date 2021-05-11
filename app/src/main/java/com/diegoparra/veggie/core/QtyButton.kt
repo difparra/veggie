@@ -7,20 +7,13 @@ import androidx.appcompat.widget.AppCompatButton
 import com.diegoparra.veggie.R
 
 /*
-        NOTES: When extending the Button from:
-        ->  androidx.appcompat.widget.AppCompatButton(context, attrs)
-                Override the setEnabled method, and set, for example, a different alpha on the button
-                depending on its enabled state. In MaterialButton it is not necessary as it is already implemented.
-        ->  MaterialButton
-                Text is not correctly supported on small buttons, as the ones used in QtyButtons.
-                So, in the case of qtyButton in mainProducts, there are some more things to do in the
-                xml layout file:
-                    padding=0dp and includeFontPadding=false    will reduce internal padding greately
-                    insetBottom=0dp and insetTop=0dp            will reduce even more the padding
-                    With the previous four values, padding has almost completely disappeared on button.
-                    minWidth and minHeight set to 0dp will let me use wrap_content, and be almost as
-                    small as possible.
-     */
+    Notes when extending from:
+    AppCompatButton
+        Although enabling the button works, the visual appearance is not modified.
+        Will need to setAlpha and color in selector background (or overriding isEnabled method)
+    MaterialButton
+        Does not accept selectors as backgrounds. So states will not have the desired functionality.
+ */
 class QtyButton(context: Context, attrs: AttributeSet) : AppCompatButton(context, attrs) {
 
     companion object{

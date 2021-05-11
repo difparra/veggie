@@ -3,6 +3,9 @@ package com.diegoparra.veggie.core
 import android.view.View
 import androidx.core.view.isVisible
 
+/**
+ * To send the state of the data from the viewModel to the Ui.
+ */
 sealed class Resource<T> {
     class Loading<T> : Resource<T>()
     class Success<T>(val data: T) : Resource<T>()
@@ -10,7 +13,11 @@ sealed class Resource<T> {
 }
 
 
-
+/**
+ * To manage visibility of components in the ui in different states.
+ * A group of views is defined for each state, and when calling displayViewsForState,
+ * method will hide the views of the other states and show the views defined for the desired state.
+ */
 class ResourceViews(
         loadingViews: List<View>,
         successViews: List<View>,

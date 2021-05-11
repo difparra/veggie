@@ -3,7 +3,7 @@ package com.diegoparra.veggie.products.domain.entities
 data class ProductCart(
         private val cartItem: CartItem,
         private val product: Product,
-        val isEditable: Boolean = false     //  Can be deleted when working in viewModel
+        val isEditable: Boolean = false
 ){
     val productId = cartItem.productId
     val name = product.name

@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.domain.entities
 
-/*
-    Product used by the ui in the client app
+/**
+ * Classes with prefix Product are normally products ready to be used in the ui.
  */
 
 data class ProductMain(

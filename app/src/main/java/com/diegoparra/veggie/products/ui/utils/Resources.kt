@@ -22,7 +22,6 @@ fun View.hideKeyboard() {
     }catch (throwable: Throwable){}
 }
 
-
 fun View.setBackground(@DrawableRes drawableRes: Int?) {
     if(drawableRes == null){
         background = null
@@ -31,6 +30,9 @@ fun View.setBackground(@DrawableRes drawableRes: Int?) {
     val drawable = ResourcesCompat.getDrawable(context.resources, drawableRes, null)
     background = drawable
 }
+
+
+//      --------------------------------------------------------------------------------------------
 
 fun Context.getResourcesFromAttr(
         @AttrRes attrRes: Int,

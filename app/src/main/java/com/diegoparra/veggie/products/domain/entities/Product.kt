@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.domain.entities
 
-/*
-    Information fetched from database in client app
+/**
+ * Information to be fetched from the database in the client app.
  */
 
 data class Product(
@@ -19,7 +19,7 @@ data class Product(
     val discount: Float = variation.discount
     val stock: Boolean = variation.stock
     val maxOrder: Int = variation.maxOrder
-    val label = variation.label
+    val label: Label = variation.label
 }
 
 data class Variation(

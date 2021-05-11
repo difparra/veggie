@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.products.ui
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View

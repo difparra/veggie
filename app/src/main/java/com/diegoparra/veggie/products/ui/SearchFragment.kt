@@ -37,14 +37,14 @@ class SearchFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.searchResults.setHasFixedSize(true)
-        binding.searchResults.adapter = adapter
-        searchFunctionality()
-        subscribeUi()
+        searchBarFunctionality()
+        searchResultsList()
     }
 
 
-    private fun searchFunctionality(){
+    //      ----------------------------------------------------------------------------------------
+
+    private fun searchBarFunctionality(){
         binding.clearSearchText.visibility = View.GONE
         binding.clearSearchText.setOnClickListener {
             viewModel.clearQuery()
@@ -71,8 +71,15 @@ class SearchFragment : Fragment() {
     }
 
 
+    //      ----------------------------------------------------------------------------------------
 
-    private fun subscribeUi() {
+    private fun searchResultsList() {
+        binding.searchResults.setHasFixedSize(true)
+        binding.searchResults.adapter = adapter
+        subscribeUiResults()
+    }
+
+    private fun subscribeUiResults(){
         val resourceViews = ResourceViews(
                 loadingViews = listOf(binding.progressBar),
                 successViews = listOf(binding.searchResults),
@@ -120,6 +127,9 @@ class SearchFragment : Fragment() {
         adapter.submitList(listOf())
         binding.searchResults.visibility = View.VISIBLE
     }
+
+
+    //      ----------------------------------------------------------------------------------------
 
     override fun onDestroyView() {
         super.onDestroyView()

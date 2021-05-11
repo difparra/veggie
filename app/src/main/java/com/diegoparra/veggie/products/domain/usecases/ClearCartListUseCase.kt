@@ -7,8 +7,7 @@ class ClearCartListUseCase @Inject constructor(
         private val cartRepository: CartRepository
 ) {
 
-    suspend operator fun invoke() {
-        cartRepository.deleteAllItems()
-    }
+    suspend operator fun invoke() =
+            cartRepository.deleteAllItems()
 
 }

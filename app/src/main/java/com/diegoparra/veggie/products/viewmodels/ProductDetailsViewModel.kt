@@ -49,6 +49,7 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
 
+    //      ----------------------------------------------------------------------------------------
 
     fun addQuantity(varId: String, detail: String?) {
         Timber.d("addQuantity() called with: varId = $varId, detail = $detail")
@@ -81,6 +82,9 @@ class ProductDetailsViewModel @Inject constructor(
             else -> null
         }
     }
+
+
+    //      ----------------------------------------------------------------------------------------
 
     companion object {
         //  VERY IMPORTANT: Must be the same key as the one defined in the nav_main.xml

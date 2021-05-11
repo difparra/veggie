@@ -34,23 +34,33 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.cartList.setHasFixedSize(true)
-        binding.cartList.adapter = adapter
-
         clearCartFunctionality()
-        subscribeCartProductsList()
-
+        cartProductsFunctionality()
     }
+
+
+    //      ----------------------------------------------------------------------------------------
 
     private fun clearCartFunctionality() {
         binding.clearCart.setOnClickListener {
             val action = CartFragmentDirections.actionNavCartToClearCartDialogFragment()
             findNavController().navigate(action)
         }
+        viewModel.clearCartEnabledState.observe(viewLifecycleOwner) {
+            binding.clearCart.isEnabled = it
+        }
     }
 
 
-    private fun subscribeCartProductsList() {
+    //      ----------------------------------------------------------------------------------------
+
+    private fun cartProductsFunctionality() {
+        binding.cartList.setHasFixedSize(true)
+        binding.cartList.adapter = adapter
+        subscribeProductsList()
+    }
+
+    private fun subscribeProductsList() {
         val resourceViews = ResourceViews(
                 loadingViews = listOf(binding.progressBar),
                 successViews = listOf(binding.cartList),
@@ -64,7 +74,6 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
                 is Resource.Success -> {
                     resourceViews.displayViewsForState(ResourceViews.State.SUCCESS)
                     renderProducts(it.data)
-                    binding.clearCart.isEnabled = true
                 }
                 is Resource.Error -> {
                     resourceViews.displayViewsForState(ResourceViews.State.ERROR)
@@ -72,9 +81,6 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
                 }
             }
         }
-        /*viewModel.editablePosition.observe(viewLifecycleOwner) {
-            adapter.changeEditablePosition(it)
-        }*/
     }
 
     private fun renderProducts(products: List<ProductCart>) {
@@ -93,12 +99,14 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
         when(failure) {
             is Failure.CartFailure.EmptyCartList -> {
                 binding.errorText.text = getString(R.string.failure_empty_cart_list)
-                binding.clearCart.isEnabled = false
             }
             else ->
                 binding.errorText.text = failure.toString()
         }
     }
+
+
+    //      ----------------------------------------------------------------------------------------
 
     override fun onDestroyView() {
         super.onDestroyView()

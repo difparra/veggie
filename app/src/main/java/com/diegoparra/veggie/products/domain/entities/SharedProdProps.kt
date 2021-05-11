@@ -1,5 +1,9 @@
 package com.diegoparra.veggie.products.domain.entities
 
+/*
+ * Additional properties defined in Product___ classes that could be common between them.
+ */
+
 data class Description(
         val finalPrice: Int,
         val discount: Float,

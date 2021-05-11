@@ -28,25 +28,7 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
         fun onItemClick(productId: ProductId, position: Int, which: Int)
     }
 
-    /*private var editablePosition: Int = 0
-    fun changeEditablePosition(newEditablePosition: Int) {
-        Timber.d("setEditablePosition() called with: newEditablePosition = $newEditablePosition, currentListIndices = ${currentList.indices}")
-        //  Update
-        if(newEditablePosition in currentList.indices){
-            if(editablePosition in currentList.indices){
-                notifyItemChanged(editablePosition, Bundle().apply {
-                    putBoolean(PayloadConstants.EDITABLE, false)
-                })
-            }
-            notifyItemChanged(newEditablePosition, Bundle().apply {
-                putBoolean(PayloadConstants.EDITABLE, true)
-            })
-            editablePosition = newEditablePosition
-        }
-    }*/
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        //Timber.d("onCreateViewHolder() called with: parent = $parent, viewType = $viewType")
         return ViewHolder(
                 ListItemCartBinding.inflate(
                         LayoutInflater.from(parent.context),
@@ -58,14 +40,11 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //Timber.d("onBindViewHolder() called with: holder = $holder, position = $position")
         val product = getItem(position)
-        //holder.bind(product, editablePosition)
         holder.bind(product)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
-        //Timber.d("onBindViewHolder() called with: holder = $holder, position = $position, payloads = $payloads")
         if(payloads.isNotEmpty()){
             val payload = payloads.last() as Bundle
             holder.bindFromPayload(payload)
@@ -88,16 +67,13 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
             } }
         }
 
-        //fun bind(product: ProductCart, editablePosition: Int) {
         fun bind(product: ProductCart) {
-            //Timber.d("bind() called with: product = $product")
             this.item = product
             loadImage(product.imageUrl)
             loadName(product.name)
             loadDescription(product.unit, product.detail)
             loadTotal(product.price, product.quantity)
             loadQuantityState(product.quantity, product.maxOrder)
-            //loadEditableState(bindingAdapterPosition == editablePosition)
             loadEditableState(product.isEditable)
         }
 
@@ -166,7 +142,6 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
                     putInt(PayloadConstants.MAX_ORDER, newItem.maxOrder)
                     putInt(PayloadConstants.PRICE, newItem.price)
                 }
-                //  Not necessary when the viewModel liveData editablePosition approach
                 if(oldItem.isEditable != newItem.isEditable){
                     putBoolean(PayloadConstants.EDITABLE, newItem.isEditable)
                 }

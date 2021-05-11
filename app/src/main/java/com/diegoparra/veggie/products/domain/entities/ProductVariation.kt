@@ -1,9 +1,5 @@
 package com.diegoparra.veggie.products.domain.entities
 
-/*
-    Products that will be used in the viewModel / ui layer
- */
-
 data class ProductVariation(
         private val variation: Variation,
         private val quantitiesByDetail: Map<String?, Int>

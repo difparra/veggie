@@ -41,9 +41,6 @@ fun getFormattedPrice(finalPrice: Int, discount: Float, context: Context,
 
 
 fun getLabelProps(label: Label, context: Context) : Pair<String, ColorStateList>? {
-    /*val colorNoStock = ResourcesCompat.getColor(resources, R.color.black_light, theme)
-    val colorDiscount = ResourcesCompat.getColor(resources, R.color.red_700, theme)
-    val additionalColors = resources.getIntArray(R.array.dark_colors)*/
     return when(label){
         is Label.NoStock -> {
             val colorNoStock = context.getColorFromAttr(R.attr.colorOnSurface)

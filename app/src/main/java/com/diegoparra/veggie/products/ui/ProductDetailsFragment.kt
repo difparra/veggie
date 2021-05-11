@@ -36,13 +36,6 @@ class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.On
         subscribeUi()
     }
 
-    override fun onItemClick(variationId: String, detail: String?, which: Int) {
-        when(which){
-            VariationsAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(varId = variationId, detail = detail)
-            VariationsAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(varId = variationId, detail = detail)
-        }
-    }
-
     private fun subscribeUi(){
         val resourceViews = ResourceViews(
                 loadingViews = listOf(binding.progressBar),
@@ -70,6 +63,13 @@ class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.On
         val listToSubmit = VariationUi.getListToSubmit(variationsList)
         Timber.d(listToSubmit.toString())
         adapter.submitList(listToSubmit)
+    }
+
+    override fun onItemClick(variationId: String, detail: String?, which: Int) {
+        when(which){
+            VariationsAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(varId = variationId, detail = detail)
+            VariationsAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(varId = variationId, detail = detail)
+        }
     }
 
     private fun renderFailureVariations(failure: Failure) {

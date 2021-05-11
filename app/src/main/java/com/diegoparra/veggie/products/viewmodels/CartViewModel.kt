@@ -22,6 +22,9 @@ class CartViewModel @Inject constructor(
     private val _products = MutableLiveData<Resource<List<ProductCart>>>()
     val products : LiveData<Resource<List<ProductCart>>> = _products
 
+    private val _clearCartEnabledState = MutableLiveData(true)
+    val clearCartEnabledState : LiveData<Boolean> = _clearCartEnabledState
+
     init {
         viewModelScope.launch {
             _products.value = Resource.Loading()
@@ -34,14 +37,17 @@ class CartViewModel @Inject constructor(
     private fun handleCartProducts(products : List<ProductCart>){
         if(products.isNullOrEmpty()){
             _products.value = Resource.Error(Failure.CartFailure.EmptyCartList)
+            _clearCartEnabledState.value = false
         }else{
             //  Must addEditablePositionProperty in here, so that there will always be an item opened to edition
             _products.value = Resource.Success(products.addEditablePositionProperty())
+            _clearCartEnabledState.value = true
         }
     }
 
     private fun handleFailure(failure: Failure){
         _products.value = Resource.Error(failure)
+        _clearCartEnabledState.value = false
     }
 
 
@@ -115,56 +121,3 @@ class CartViewModel @Inject constructor(
     }
 
 }
-
-
-/*
-    private val _products = MutableLiveData<Resource<List<ProductCart>>>()
-    val products : LiveData<Resource<List<ProductCart>>> = _products
-
-    init {
-        viewModelScope.launch {
-            _products.value = Resource.Loading()
-            getCartProductsUseCase().collect {
-                it.fold(::handleFailure, ::handleCartProducts)
-            }
-        }
-    }
-
-    private fun handleCartProducts(products : List<ProductCart>){
-        if(products.isNullOrEmpty()){
-            _products.value = Resource.Error(Failure.CartFailure.EmptyCartList)
-        }else{
-            _products.value = Resource.Success(products)
-            //setEditablePosition(_editablePosition.value.coerceIn(products.indices))
-            forceEditablePositionOnProductsListSizeChange(products)
-        }
-    }
-
-    private var lastProdsSize = 0
-    fun forceEditablePositionOnProductsListSizeChange(products: List<ProductCart>){
-        if(products.size != lastProdsSize){
-            Timber.d("products.size = ${products.size}, lastProdSize = $lastProdsSize")
-            _editablePosition.value = _editablePosition.value?.coerceIn(products.indices) ?: 0
-            lastProdsSize = products.size
-        }
-    }
-
-
-    private fun handleFailure(failure: Failure){
-        _products.value = Resource.Error(failure)
-    }
-
-
-
-    //      ----------------------------------------------------------------------------------------
-
-    private val _editablePosition = MutableLiveData(0)
-    val editablePosition : LiveData<Int> = _editablePosition
-
-    fun setEditablePosition(position: Int) {
-        if(position == _editablePosition.value){
-            return
-        }
-        _editablePosition.value = position
-    }
- */
