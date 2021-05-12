@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.children
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.diegoparra.veggie.databinding.ListItemVariationHeaderBinding
 import com.diegoparra.veggie.databinding.ListItemVariationItemBinding
 import com.diegoparra.veggie.products.ui.utils.getFormattedPrice
-import com.google.android.material.color.MaterialColors
+import com.diegoparra.veggie.products.ui.utils.loadEnabledState
 
 private const val HEADER = 0
 private const val ITEM = 1
@@ -99,26 +98,16 @@ class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter
                 }
             }
             fun bindFromPayload(payload: Bundle){
-                val quantity = payload.getInt(PayloadConstants.QUANTITY, -1)
-                if(quantity != -1){
+                if(payload.containsKey(PayloadConstants.QUANTITY)){
                     loadQuantityState(
-                        quantity = quantity,
-                        maxOrder = payload.getInt(PayloadConstants.MAX_ORDER)
+                            quantity = payload.getInt(PayloadConstants.QUANTITY),
+                            maxOrder = payload.getInt(PayloadConstants.MAX_ORDER)
                     )
                 }
             }
 
-            private fun loadEnabledState(enabled: Boolean){
-                val currentEnabledState = binding.root.isEnabled
-                if(currentEnabledState != enabled){
-                    binding.root.isEnabled = enabled
-                    binding.root.children.forEach {
-                        if(it.hasOnClickListeners()){
-                            it.isEnabled = enabled
-                        }
-                        it.alpha = if(enabled) MaterialColors.ALPHA_FULL else MaterialColors.ALPHA_DISABLED
-                    }
-                }
+            private fun loadEnabledState(stock: Boolean){
+                binding.root.loadEnabledState(stock)
             }
 
             private fun loadPrice(price: Int, discount: Float){
@@ -169,13 +158,13 @@ class VariationsAdapter(private val listener: OnItemClickListener) : ListAdapter
         }
 
         override fun getChangePayload(oldItem: VariationUi, newItem: VariationUi): Any? {
-            if(oldItem is VariationUi.Item && newItem is VariationUi.Item){
-                return Bundle().apply {
+            return if(oldItem is VariationUi.Item && newItem is VariationUi.Item){
+                Bundle().apply {
                     putInt(PayloadConstants.QUANTITY, newItem.quantity)
                     putInt(PayloadConstants.MAX_ORDER, newItem.maxOrder)
                 }
             }else{
-                return null
+                null
             }
         }
 

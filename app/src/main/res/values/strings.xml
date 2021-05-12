@@ -23,5 +23,16 @@
     <!-- Dialog messages -->
     <string name="dialog_clear_cart">¿Vaciar carrito?</string>
 
+    <!-- Cart -->
+    <string name="btn_make_order">Hacer pedido</string>
+    <string name="total_empty_cart">Tu carrito está vacío</string>
+    <string name="total_x_to_complete_min_order">Te faltan %s para el pedido mínimo</string>
+    <string name="total_order">Vas %s</string>
+
+    <!-- Labels -->
+    <string name="label_no_stock">Agotado</string>
+    <string name="label_discounted">%s Off</string>     <!-- use percentage sign in the string %s as app will
+                                                        crash if used here as \% or simply % because of the formats -->
+
 
 </resources>

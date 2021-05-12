@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.core.ResourceViews
 import com.diegoparra.veggie.databinding.FragmentProductDetailsBinding
 import com.diegoparra.veggie.products.domain.entities.ProductVariation
 import com.diegoparra.veggie.products.viewmodels.ProductDetailsViewModel
@@ -37,22 +37,23 @@ class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.On
     }
 
     private fun subscribeUi(){
-        val resourceViews = ResourceViews(
-                loadingViews = listOf(binding.progressBar),
-                successViews = listOf(binding.variationsList),
-                failureViews = listOf(binding.errorText)
-        )
         viewModel.variationsList.observe(viewLifecycleOwner) {
             when(it){
                 is Resource.Loading -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.LOADING)
+                    binding.progressBar.isVisible = true
+                    binding.variationsList.isVisible = false
+                    binding.errorText.isVisible = false
                 }
                 is Resource.Success -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.SUCCESS)
+                    binding.progressBar.isVisible = false
+                    binding.variationsList.isVisible = true
+                    binding.errorText.isVisible = false
                     renderVariationsList(it.data)
                 }
                 is Resource.Error -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.ERROR)
+                    binding.progressBar.isVisible = false
+                    binding.variationsList.isVisible = false
+                    binding.errorText.isVisible = true
                     renderFailureVariations(it.failure)
                 }
             }

@@ -83,4 +83,10 @@ class CartRepositoryImpl (
     override suspend fun deleteAllItems() = withContext(dispatcher) {
         cartDao.deleteAllItems()
     }
+
+
+    override fun getMinOrder(): Int {
+        //  TODO:   Define method to getMinOrder
+        return 40000
+    }
 }

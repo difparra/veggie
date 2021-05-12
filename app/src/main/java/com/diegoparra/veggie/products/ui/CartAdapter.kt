@@ -1,13 +1,10 @@
 package com.diegoparra.veggie.products.ui
 
 import android.annotation.SuppressLint
-import android.graphics.Typeface
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -18,9 +15,10 @@ import com.diegoparra.veggie.products.domain.entities.Label
 import com.diegoparra.veggie.products.domain.entities.ProductCart
 import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.ui.utils.addThousandSeparator
-import com.diegoparra.veggie.products.ui.utils.getLabelProps
-import com.diegoparra.veggie.products.ui.utils.getResourcesFromAttr
-import com.diegoparra.veggie.products.ui.utils.setBackground
+import com.diegoparra.veggie.core.getResourcesFromAttr
+import com.diegoparra.veggie.core.setBackground
+import com.diegoparra.veggie.products.ui.utils.loadProductLabel
+import com.diegoparra.veggie.products.ui.utils.setQuantityState
 import timber.log.Timber
 
 class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<ProductCart, CartAdapter.ViewHolder>(DiffCallback) {
@@ -102,17 +100,7 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
         }
 
         private fun loadLabel(label: Label){
-            when(label){
-                is Label.Hidden -> {
-                    binding.label.visibility = View.GONE
-                }
-                else -> {
-                    val labelProps = getLabelProps(label = label, context = binding.label.context)
-                    binding.label.text = labelProps?.first
-                    binding.label.chipBackgroundColor = labelProps?.second
-                    binding.label.visibility = View.VISIBLE
-                }
-            }
+            binding.label.loadProductLabel(label)
         }
 
         private fun loadName(name: String) {
@@ -129,6 +117,8 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
             binding.price.text = "Total: $" + (price*quantity).addThousandSeparator()
         }
 
+        //  This variables need to be outside the method, if I put inside some bug is originated,
+        //  and color will not return to its original when pressed qtybutton twice fast.
         private val originalColor = binding.price.currentTextColor
         private val originalAlpha = binding.price.alpha
         private fun animateNewTotal(qtyIncreased : Boolean = true){
@@ -152,8 +142,7 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
         }
 
         private fun loadQuantityState(quantity: Int, maxOrder: Int){
-            binding.btnAdd.setQuantityState(quantity = quantity, maxOrder = maxOrder)
-            binding.btnReduce.setQuantityState(quantity = quantity, maxOrder = maxOrder)
+            listOf(binding.btnAdd, binding.btnReduce).setQuantityState(quantity = quantity, maxOrder = maxOrder)
             binding.quantity.text = quantity.toString()
         }
 

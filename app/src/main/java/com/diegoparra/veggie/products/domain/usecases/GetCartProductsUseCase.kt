@@ -16,13 +16,6 @@ class GetCartProductsUseCase @Inject constructor(
     private val cartRepository: CartRepository
 ) {
 
-    /*
-        TODO:   Ask cartRepository to delete items that has no longer stock
-                This can occur when the user had a saved cart list from the previous day, and the next
-                day, some items in the cart list would possibly have no longer stock.
-     */
-
-
     /*  Option 2:       ** Already verified with the logs on productsRepository
             Get ids in the cartList.
             Possible changes in cartPage:
@@ -65,7 +58,15 @@ class GetCartProductsUseCase @Inject constructor(
 
     private suspend fun getProductInfo(productId: ProductId) : Either<Failure, Product> {
         //  TODO:   Define custom expiration time for updating product info in cart.
-        return productsRepository.getProduct(mainId = productId.mainId, varId = productId.varId)
+        val prod =productsRepository.getProduct(mainId = productId.mainId, varId = productId.varId)
+        //  TODO:   This has not still been tested if is working
+        //  Check if product has no longer stock, and if so, delete from cart.
+        //      This can occur when the user had a saved cart list from the previous day, and the
+        //      next day, some items in the cart list would possibly have no longer stock.
+        if(prod is Either.Right && !prod.b.stock){
+            cartRepository.deleteItem(productId = productId)
+        }
+        return prod
     }
 
     private fun addQuantityInfo(productId: ProductId, product: Product) : Flow<Either<Failure, ProductCart>> {

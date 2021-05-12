@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.products.ui.utils
+package com.diegoparra.veggie.core
 
 import android.content.Context
 import android.graphics.Color

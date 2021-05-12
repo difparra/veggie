@@ -13,10 +13,9 @@ import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.core.ResourceViews
 import com.diegoparra.veggie.databinding.FragmentSearchBinding
 import com.diegoparra.veggie.products.domain.entities.ProductMain
-import com.diegoparra.veggie.products.ui.utils.hideKeyboard
+import com.diegoparra.veggie.core.hideKeyboard
 import com.diegoparra.veggie.products.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -80,22 +79,23 @@ class SearchFragment : Fragment() {
     }
 
     private fun subscribeUiResults(){
-        val resourceViews = ResourceViews(
-                loadingViews = listOf(binding.progressBar),
-                successViews = listOf(binding.searchResults),
-                failureViews = listOf(binding.errorText)
-        )
         viewModel.productsList.observe(viewLifecycleOwner) {
             when(it){
                 is Resource.Loading -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.LOADING)
+                    binding.progressBar.isVisible = true
+                    binding.searchResults.isVisible = false
+                    binding.errorText.isVisible = false
                 }
                 is Resource.Success -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.SUCCESS)
+                    binding.progressBar.isVisible = false
+                    binding.searchResults.isVisible = true
+                    binding.errorText.isVisible = false
                     renderProductsList(it.data)
                 }
                 is Resource.Error -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.ERROR)
+                    binding.progressBar.isVisible = false
+                    binding.searchResults.isVisible = false
+                    binding.errorText.isVisible = true
                     renderFailure(it.failure)
                 }
             }

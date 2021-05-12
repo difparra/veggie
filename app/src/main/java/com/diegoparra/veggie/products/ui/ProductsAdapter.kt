@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.children
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,12 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.QtyButton
+import com.diegoparra.veggie.core.getColorWithAlphaFromAttrs
 import com.diegoparra.veggie.databinding.ListItemMainProductBinding
 import com.diegoparra.veggie.products.domain.entities.Description
 import com.diegoparra.veggie.products.domain.entities.Label
 import com.diegoparra.veggie.products.domain.entities.ProductMain
 import com.diegoparra.veggie.products.ui.utils.*
-import com.google.android.material.color.MaterialColors
 import timber.log.Timber
 
 class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHolder>(DiffCallback) {
@@ -64,7 +63,7 @@ class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHold
             }
         }
         fun bind(product: ProductMain){
-            loadEnabledState(enabled = product.stock)
+            loadEnabledState(stock = product.stock)
             loadImage(product.imageUrl)
             loadName(product.name)
             loadDescription(product.description)
@@ -92,17 +91,8 @@ class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHold
             }
         }
 
-        private fun loadEnabledState(enabled: Boolean){
-            val currentEnabledState = binding.root.isEnabled
-            if(enabled != currentEnabledState){
-                binding.root.isEnabled = enabled
-                binding.root.children.forEach {
-                    if(it.hasOnClickListeners()){
-                        it.isEnabled = enabled
-                    }
-                    it.alpha = if(enabled) MaterialColors.ALPHA_FULL else MaterialColors.ALPHA_DISABLED
-                }
-            }
+        private fun loadEnabledState(stock: Boolean){
+            binding.root.loadEnabledState(stock)
         }
 
         private fun loadImage(imageUrl: String){
@@ -138,17 +128,7 @@ class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHold
         }
 
         private fun loadLabel(label: Label){
-            when(label){
-                is Label.Hidden -> {
-                    binding.label.visibility = View.GONE
-                }
-                else -> {
-                    val labelProps = getLabelProps(label = label, context = binding.label.context)
-                    binding.label.text = labelProps?.first
-                    binding.label.chipBackgroundColor = labelProps?.second
-                    binding.label.visibility = View.VISIBLE
-                }
-            }
+            binding.label.loadProductLabel(label)
         }
     }
 

@@ -1,33 +1,33 @@
 package com.diegoparra.veggie.products.viewmodels
 
 import androidx.lifecycle.*
+import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.products.domain.entities.ProductCart
 import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.domain.usecases.GetCartProductsUseCase
+import com.diegoparra.veggie.products.domain.usecases.GetMinOrderCartUseCase
 import com.diegoparra.veggie.products.domain.usecases.UpdateQuantityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
         private val getCartProductsUseCase: GetCartProductsUseCase,
-        private val updateQuantityUseCase: UpdateQuantityUseCase
+        private val updateQuantityUseCase: UpdateQuantityUseCase,
+        private val getMinOrderCartUseCase: GetMinOrderCartUseCase
 ) : ViewModel() {
 
-    private val _products = MutableLiveData<Resource<List<ProductCart>>>()
-    val products : LiveData<Resource<List<ProductCart>>> = _products
-
-    private val _productsListIsNotEmpty = MutableLiveData(true)
-    val productsListIsNotEmpty : LiveData<Boolean> = _productsListIsNotEmpty
-
+    private val _products = MutableStateFlow<Resource<List<ProductCart>>>(Resource.Loading())
+    val products : LiveData<Resource<List<ProductCart>>> = _products.asLiveData()
     init {
         viewModelScope.launch {
-            _products.value = Resource.Loading()
             getCartProductsUseCase().collect {
                 it.fold(::handleFailure, ::handleCartProducts)
             }
@@ -37,17 +37,14 @@ class CartViewModel @Inject constructor(
     private fun handleCartProducts(products : List<ProductCart>){
         if(products.isNullOrEmpty()){
             _products.value = Resource.Error(Failure.CartFailure.EmptyCartList)
-            _productsListIsNotEmpty.value = false
         }else{
             //  Must addEditablePositionProperty in here, so that there will always be an item opened to edition
             _products.value = Resource.Success(products.addEditablePositionProperty())
-            _productsListIsNotEmpty.value = true
         }
     }
 
     private fun handleFailure(failure: Failure){
         _products.value = Resource.Error(failure)
-        _productsListIsNotEmpty.value = false
     }
 
 
@@ -90,6 +87,43 @@ class CartViewModel @Inject constructor(
     }
 
 
+
+    //      ----------------------------------------------------------------------------------------
+    //      ----------------------------------------------------------------------------------------
+
+
+    val clearCartEnabledState : LiveData<Boolean> = _products.map {
+        return@map it is Resource.Success && !it.data.isNullOrEmpty()
+    }.asLiveData()
+
+
+    //      ----------------------------------------------------------------------------------------
+
+    private val minOrder = getMinOrderCartUseCase()
+
+    val total = _products.map {
+        if(it is Resource.Success){
+            var total = 0
+            it.data.forEach {
+                total += (it.quantity * it.price)
+            }
+            if(total < 0) {
+                return@map Total.Failure
+            }else if(total == 0){
+                return@map Total.EmptyCart
+            }else if(total < minOrder){
+                return@map Total.MinNotReached(totalValue = total, minOrder = minOrder)
+            }else{
+                return@map Total.OK(totalValue = total)
+            }
+        }else if(it is Resource.Error && it.failure is Failure.CartFailure.EmptyCartList){
+            return@map Total.EmptyCart
+        }else{
+            return@map Total.Failure
+        }
+    }.asLiveData()
+
+
     //      ----------------------------------------------------------------------------------------
 
     fun addQuantity(productId: ProductId) {
@@ -120,4 +154,12 @@ class CartViewModel @Inject constructor(
         }
     }
 
+}
+
+
+sealed class Total(val totalValue: Int) {
+    class OK(totalValue: Int) : Total(totalValue)
+    class MinNotReached(totalValue: Int, val minOrder: Int) : Total(totalValue)
+    object EmptyCart : Total(0)
+    object Failure : Total(0)
 }

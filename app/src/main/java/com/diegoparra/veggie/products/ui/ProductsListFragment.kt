@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.core.ResourceViews
 import com.diegoparra.veggie.databinding.FragmentProductsListBinding
 import com.diegoparra.veggie.products.domain.entities.ProductMain
 import com.diegoparra.veggie.products.viewmodels.ProductsListViewModel
@@ -38,22 +38,23 @@ class ProductsListFragment : Fragment() {
     }
 
     private fun subscribeUi(){
-        val resourceViews = ResourceViews(
-                loadingViews = listOf(binding.progressBar),
-                successViews = listOf(binding.productsList),
-                failureViews = listOf(binding.errorText)
-        )
         viewModel.productsList.observe(viewLifecycleOwner) {
             when(it){
                 is Resource.Loading -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.LOADING)
+                    binding.progressBar.isVisible = true
+                    binding.productsList.isVisible = false
+                    binding.errorText.isVisible = false
                 }
                 is Resource.Success -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.SUCCESS)
+                    binding.progressBar.isVisible = false
+                    binding.productsList.isVisible = true
+                    binding.errorText.isVisible = false
                     renderProductsList(it.data)
                 }
                 is Resource.Error -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.ERROR)
+                    binding.progressBar.isVisible = false
+                    binding.productsList.isVisible = false
+                    binding.errorText.isVisible = true
                     renderFailure(it.failure)
                 }
             }

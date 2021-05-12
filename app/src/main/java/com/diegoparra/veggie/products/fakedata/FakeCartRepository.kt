@@ -182,4 +182,6 @@ class FakeCartRepository (
         updateCartItems(listOf())
     }
 
+
+    override fun getMinOrder(): Int = 80000
 }

@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.core.ResourceViews
 import com.diegoparra.veggie.databinding.FragmentHomeBinding
 import com.diegoparra.veggie.products.domain.entities.Tag
 import com.diegoparra.veggie.products.viewmodels.TagsViewModel
@@ -33,22 +33,26 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val resourceViews = ResourceViews(
-                loadingViews = listOf(binding.progressBar),
-                successViews = listOf(binding.tabLayout, binding.viewPager),
-                failureViews = listOf(binding.errorText)
-        )
         viewModel.tags.observe(viewLifecycleOwner) {
             when(it){
                 is Resource.Loading -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.LOADING)
+                    binding.progressBar.isVisible = true
+                    binding.tabLayout.isVisible = false
+                    binding.viewPager.isVisible = false
+                    binding.errorText.isVisible = false
                 }
                 is Resource.Success -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.SUCCESS)
+                    binding.progressBar.isVisible = false
+                    binding.tabLayout.isVisible = true
+                    binding.viewPager.isVisible = true
+                    binding.errorText.isVisible = false
                     renderTags(it.data)
                 }
                 is Resource.Error -> {
-                    resourceViews.displayViewsForState(ResourceViews.State.ERROR)
+                    binding.progressBar.isVisible = false
+                    binding.tabLayout.isVisible = false
+                    binding.viewPager.isVisible = false
+                    binding.errorText.isVisible = true
                     renderFailure(it.failure)
                 }
             }

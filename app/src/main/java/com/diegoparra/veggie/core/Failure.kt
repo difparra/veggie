@@ -5,6 +5,8 @@ sealed class Failure {
     object NetworkConnection : Failure()
     object ServerError : Failure()
 
+    class UnknownFailure(val message: String? = null) : Failure()
+
 
     sealed class ProductsFailure() : Failure() {
         object TagsNotFound : ProductsFailure()
