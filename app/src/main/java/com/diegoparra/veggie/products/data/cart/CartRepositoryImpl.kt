@@ -38,6 +38,12 @@ class CartRepositoryImpl (
         }.flowOn(dispatcher)
     }
 
+    override fun getCartSize(): Flow<Either<Failure, Int>> {
+        return cartDao.getCartSize().map {
+            Either.Right(it)
+        }.flowOn(dispatcher)
+    }
+
     override fun getQuantityByMainId(mainId: String): Flow<Either<Failure, Int>> {
         return cartDao.getQuantityByMainId(mainId).map {
             Either.Right(it ?: 0)
@@ -85,8 +91,8 @@ class CartRepositoryImpl (
     }
 
 
-    override fun getMinOrder(): Int {
+    override fun getMinOrder(): Either<Failure, Int> {
         //  TODO:   Define method to getMinOrder
-        return 40000
+        return Either.Right(40000)
     }
 }

@@ -178,10 +178,16 @@ class FakeCartRepository (
         }
     }
 
+    override fun getCartSize(): Flow<Either<Failure, Int>> {
+        return cartItems.map {
+            Either.Right(it.size)
+        }
+    }
+
     override suspend fun deleteAllItems() {
         updateCartItems(listOf())
     }
 
 
-    override fun getMinOrder(): Int = 80000
+    override fun getMinOrder() = Either.Right(80000)
 }

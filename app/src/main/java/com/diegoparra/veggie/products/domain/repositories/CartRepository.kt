@@ -10,6 +10,7 @@ interface CartRepository {
 
     fun getAllCartItems() : Flow<Either<Failure, List<CartItem>>>
     fun getProdIdsList() : Flow<Either<Failure, List<ProductId>>>
+    fun getCartSize() : Flow<Either<Failure, Int>>
 
     fun getQuantityItem(productId: ProductId) : Flow<Either<Failure, Int>>
     fun getQuantityByMainId(mainId: String) : Flow<Either<Failure, Int>>
@@ -25,5 +26,7 @@ interface CartRepository {
     suspend fun deleteAllItems()
 
 
-    fun getMinOrder() : Int
+
+    fun getMinOrder() : Either<Failure, Int>
+
 }

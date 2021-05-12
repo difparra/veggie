@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -40,6 +41,7 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
         clearCartFunctionality()
         cartProductsFunctionality()
         totalFunctionality()
+        makeOrderListener()
     }
 
     //      ----------------------------------------------------------------------------------------
@@ -149,6 +151,15 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
                     binding.btnMakeOrder.isVisible = false
                 }
             }
+        }
+    }
+
+    //      ----------------------------------------------------------------------------------------
+
+    private fun makeOrderListener(){
+        binding.btnMakeOrder.setOnClickListener {
+            //  TODO: clickListener btnMakeOrder
+            Toast.makeText(context, "TODO: clickListener btnMakeOrder", Toast.LENGTH_SHORT).show()
         }
     }
 

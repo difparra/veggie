@@ -18,6 +18,10 @@ abstract class CartDao {
     protected abstract fun _getProductIds() : Flow<List<ProdIdRoom>>
     fun getProductIds() = _getProductIds().distinctUntilChanged()
 
+    @Query("Select count(mainId) from Cart")
+    protected abstract fun _getCartSize() : Flow<Int>
+    fun getCartSize() = _getCartSize().distinctUntilChanged()
+
     @Query("Select quantity from Cart where mainId = :mainId and varId = :varId and detail = :detail")
     protected abstract fun _getQuantityItem(mainId: String, varId: String, detail: String) : Flow<Int?>
     fun getQuantityItem(prodIdRoom: ProdIdRoom) =
