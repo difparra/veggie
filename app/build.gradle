@@ -3,7 +3,8 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
-    id "androidx.navigation.safeargs.kotlin"
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.gms.google-services'             //  Plugin for firebase
 }
 
 android {
@@ -57,7 +58,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03'   //  In order to inject viewModels
-    kapt 'androidx.hilt:hilt-compiler:1.0.0-beta01'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     //  Support libraries
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -73,20 +74,31 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3"
 
-    //  Room
-    implementation "androidx.room:room-runtime:2.3.0"
-    kapt "androidx.room:room-compiler:2.3.0"
-    implementation "androidx.room:room-ktx:2.3.0"           //  Coroutines support for room
-
-    // Preferences DataStore
-    implementation "androidx.datastore:datastore-preferences:1.0.0-beta01"
-
     //  Kotlin lifecycle - ViewModel and LiveData
     def lifecycle_version = "2.3.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"       //  ViewModel
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"        //  LiveData
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"   //  Saved state module for viewModel
     //  More dependencies   https://developer.android.com/jetpack/androidx/releases/lifecycle
+
+
+    //  Room        ...................................................
+    implementation "androidx.room:room-runtime:2.3.0"
+    kapt "androidx.room:room-compiler:2.3.0"
+    implementation "androidx.room:room-ktx:2.3.0"           //  Coroutines support for room
+
+    //  Preferences DataStore   .......................................
+    implementation "androidx.datastore:datastore-preferences:1.0.0-beta01"
+
+    //  Firebase        ...............................................
+    implementation platform('com.google.firebase:firebase-bom:28.0.0')      //  Manage all Firebase Library versions
+        //  When using the BoM, don't specify versions in Firebase dependencies
+    implementation 'com.google.firebase:firebase-analytics-ktx'     //  GoogleAnalytics in firebase console
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-config-ktx'        //  RemoteConfig
+    //  More firebase products https://firebase.google.com/docs/android/setup#available-libraries
 
 
 

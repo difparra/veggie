@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1087318847949",
+    "project_id": "veggie-co",
+    "storage_bucket": "veggie-co.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1087318847949:android:4bdbc2d076121f98e59484",
+        "android_client_info": {
+          "package_name": "com.diegoparra.veggie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1087318847949-rvja2va6pcfboltllk2rbvr0nbdqlukc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diegoparra.veggie",
+            "certificate_hash": "f2e75e13a7c98e4d63c80e9d90b0cebfef2ada16"
+          }
+        },
+        {
+          "client_id": "1087318847949-lfha5qip4hleg2kfijajrj1trehsnmdd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfSJ-Fj4pr66sJKo8t3rxiP2_VubykHWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1087318847949-lfha5qip4hleg2kfijajrj1trehsnmdd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
