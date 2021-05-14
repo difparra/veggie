@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>categories</key>
+        <value>
+            {
+                "tags_array": [
+                    {
+                        "id": "fruits",
+                        "name": "Frutas"
+                    },
+                    {
+                        "id": "vegetables",
+                        "name": "Verduras"
+                    },
+                    {
+                        "id": "meats",
+                        "name": "Carnes"
+                    }
+                ]
+            }
+        </value>
+    </entry>
+    <!--<entry>
+        <key>minTotal</key>
+        <value>80000</value>
+    </entry>-->
+</defaultsMap>

@@ -1,9 +1,17 @@
 package com.diegoparra.veggie.products.data.products.firebase
 
 import com.diegoparra.veggie.products.domain.entities.Product
+import com.diegoparra.veggie.products.domain.entities.Tag
 import com.diegoparra.veggie.products.domain.entities.Variation
 
 object ProductDtosTransformations {
+
+    fun TagDto.toTag() : Tag {
+        return Tag(
+                id = id,
+                name = name
+        )
+    }
 
     fun ProductDto.toProduct() : Product {
         return Product(

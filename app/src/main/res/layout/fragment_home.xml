@@ -8,7 +8,9 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         style="@style/Widget.Veggie.AppBar"
-        android:paddingHorizontal="0dp" />
+        android:paddingHorizontal="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
