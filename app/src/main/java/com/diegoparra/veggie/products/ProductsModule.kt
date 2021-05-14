@@ -5,9 +5,9 @@ import androidx.room.Room
 import com.diegoparra.veggie.products.data.cart.CartDao
 import com.diegoparra.veggie.products.data.cart.CartRepositoryImpl
 import com.diegoparra.veggie.products.data.VeggieDatabase
+import com.diegoparra.veggie.products.data.products.ProductsRepositoryFirebase
 import com.diegoparra.veggie.products.domain.repositories.CartRepository
 import com.diegoparra.veggie.products.domain.repositories.ProductsRepository
-import com.diegoparra.veggie.products.fakedata.FakeProductsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +21,8 @@ object ProductsModule {
 
     @Provides
     fun providesProductsRepository() : ProductsRepository {
-        return FakeProductsRepository()
+        return ProductsRepositoryFirebase()
+        //return FakeProductsRepository()
     }
 
     /*@Provides

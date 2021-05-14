@@ -12,7 +12,7 @@ abstract class ProductsDao {
 
     @Transaction
     @Query("Select * from Main where relatedTagId = :tagId")
-    abstract suspend fun getMainProductByTagId(tagId: String) : List<MainWithMainVariation>
+    abstract suspend fun getMainProductsByTagId(tagId: String) : List<MainWithMainVariation>
 
     @Transaction
     @Query("Select * from Main where normalised_name like ('%' || :normalisedQuery || '%')")

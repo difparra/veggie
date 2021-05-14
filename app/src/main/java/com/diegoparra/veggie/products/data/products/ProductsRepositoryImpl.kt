@@ -1,12 +1,11 @@
 package com.diegoparra.veggie.products.data.products
 
-import androidx.room.withTransaction
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.products.data.products.room.ProductsDao
-import com.diegoparra.veggie.products.data.products.room.ProductsTransformations.toProduct
-import com.diegoparra.veggie.products.data.products.room.ProductsTransformations.toTag
-import com.diegoparra.veggie.products.data.products.room.ProductsTransformations.toVariation
+import com.diegoparra.veggie.products.data.products.room.ProductEntitiesTransformations.toProduct
+import com.diegoparra.veggie.products.data.products.room.ProductEntitiesTransformations.toTag
+import com.diegoparra.veggie.products.data.products.room.ProductEntitiesTransformations.toVariation
 import com.diegoparra.veggie.products.domain.entities.Product
 import com.diegoparra.veggie.products.domain.entities.Tag
 import com.diegoparra.veggie.products.domain.entities.Variation
@@ -39,7 +38,7 @@ class ProductsRepositoryImpl @Inject constructor(
             forceUpdate: Boolean,
             expirationTimeMillis: Long
     ): Either<Failure, List<Product>> = withContext(dispatcher){
-        val prods = productsDao.getMainProductByTagId(tagId)
+        val prods = productsDao.getMainProductsByTagId(tagId)
         if(prods.isNullOrEmpty()){
             Either.Left(Failure.ProductsFailure.ProductsNotFound)
         }else{

@@ -4,7 +4,7 @@ import com.diegoparra.veggie.products.domain.entities.Product
 import com.diegoparra.veggie.products.domain.entities.Tag
 import com.diegoparra.veggie.products.domain.entities.Variation
 
-object ProductsTransformations {
+object ProductEntitiesTransformations {
 
     fun TagEntity.toTag() : Tag {
         return Tag(
