@@ -1,8 +1,10 @@
 package com.diegoparra.veggie.products.domain.entities
 
+import com.diegoparra.veggie.core.products.Variation
+
 data class ProductVariation(
-        private val variation: Variation,
-        private val quantitiesByDetail: Map<String?, Int>
+    private val variation: Variation,
+    private val quantitiesByDetail: Map<String?, Int>
 ) {
     constructor(variation: Variation, quantity: Int) :
             this(variation, mapOf(null to quantity))

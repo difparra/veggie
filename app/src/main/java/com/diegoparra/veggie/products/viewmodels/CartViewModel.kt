@@ -1,7 +1,6 @@
 package com.diegoparra.veggie.products.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.products.domain.entities.ProductCart
@@ -12,7 +11,6 @@ import com.diegoparra.veggie.products.domain.usecases.UpdateQuantityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -108,7 +106,7 @@ class CartViewModel @Inject constructor(
                 total += (it.quantity * it.price)
             }
             if(total < 0) {
-                return@map Total.Failure
+                return@map Total.Error
             }else if(total == 0){
                 return@map Total.EmptyCart
             }else if(total < minOrder){
@@ -119,7 +117,7 @@ class CartViewModel @Inject constructor(
         }else if(it is Resource.Error && it.failure is Failure.CartFailure.EmptyCartList){
             return@map Total.EmptyCart
         }else{
-            return@map Total.Failure
+            return@map Total.Error
         }
     }.asLiveData()
 
@@ -161,5 +159,5 @@ sealed class Total(val totalValue: Int) {
     class OK(totalValue: Int) : Total(totalValue)
     class MinNotReached(totalValue: Int, val minOrder: Int) : Total(totalValue)
     object EmptyCart : Total(0)
-    object Failure : Total(0)
+    object Error : Total(0)
 }

@@ -6,17 +6,17 @@ import com.diegoparra.veggie.core.customTransformListToEither
 import com.diegoparra.veggie.core.map
 import com.diegoparra.veggie.products.domain.entities.ProductId
 import com.diegoparra.veggie.products.domain.entities.ProductVariation
-import com.diegoparra.veggie.products.domain.entities.Variation
 import com.diegoparra.veggie.products.domain.repositories.CartRepository
-import com.diegoparra.veggie.products.domain.repositories.ProductsRepository
+import com.diegoparra.veggie.core.products.ProductsRepository
+import com.diegoparra.veggie.core.products.Variation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 import javax.inject.Inject
 
 class GetVariationsUseCase @Inject constructor(
-        private val productsRepository: ProductsRepository,
-        private val cartRepository: CartRepository
+    private val productsRepository: ProductsRepository,
+    private val cartRepository: CartRepository
 ) {
 
     suspend operator fun invoke(mainId: String) : Flow<Either<Failure, List<ProductVariation>>> {

@@ -4,9 +4,10 @@ import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.customTransformListToEither
 import com.diegoparra.veggie.core.map
+import com.diegoparra.veggie.core.products.Product
 import com.diegoparra.veggie.products.domain.entities.*
 import com.diegoparra.veggie.products.domain.repositories.CartRepository
-import com.diegoparra.veggie.products.domain.repositories.ProductsRepository
+import com.diegoparra.veggie.core.products.ProductsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject

@@ -8,7 +8,7 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.QtyButton
 import com.diegoparra.veggie.core.getColorFromAttr
 import com.diegoparra.veggie.core.getResourcesFromAttr
-import com.diegoparra.veggie.products.domain.entities.Label
+import com.diegoparra.veggie.core.products.Label
 import com.google.android.material.chip.Chip
 import com.google.android.material.color.MaterialColors
 import java.util.*

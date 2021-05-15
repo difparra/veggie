@@ -2,11 +2,7 @@ package com.diegoparra.veggie.products.fakedata
 
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.products.domain.entities.AdminProduct
-import com.diegoparra.veggie.products.domain.entities.Product
-import com.diegoparra.veggie.products.domain.entities.Tag
-import com.diegoparra.veggie.products.domain.entities.Variation
-import com.diegoparra.veggie.products.domain.repositories.ProductsRepository
+import com.diegoparra.veggie.core.products.*
 import com.diegoparra.veggie.products.fakedata.UtilsFakes.toProduct
 import com.diegoparra.veggie.products.fakedata.UtilsFakes.toVariation
 import timber.log.Timber

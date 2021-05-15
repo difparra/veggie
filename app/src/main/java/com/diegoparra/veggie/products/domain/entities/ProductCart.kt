@@ -1,9 +1,11 @@
 package com.diegoparra.veggie.products.domain.entities
 
+import com.diegoparra.veggie.core.products.Product
+
 data class ProductCart(
-        private val cartItem: CartItem,
-        private val product: Product,
-        val isEditable: Boolean = false
+    private val cartItem: CartItem,
+    private val product: Product,
+    val isEditable: Boolean = false
 ){
     val productId = cartItem.productId
     val name = product.name

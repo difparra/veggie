@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.diegoparra.veggie.products.data.cart.CartDao
 import com.diegoparra.veggie.products.data.cart.CartEntity
-import com.diegoparra.veggie.products.data.products.room.*
+import com.diegoparra.veggie.products.room.*
 
 @Database(
         entities = [

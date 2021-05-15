@@ -11,7 +11,7 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.databinding.FragmentHomeBinding
-import com.diegoparra.veggie.products.domain.entities.Tag
+import com.diegoparra.veggie.core.products.Tag
 import com.diegoparra.veggie.products.viewmodels.TagsViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint

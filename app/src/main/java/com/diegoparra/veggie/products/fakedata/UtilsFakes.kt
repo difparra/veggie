@@ -1,5 +1,9 @@
 package com.diegoparra.veggie.products.fakedata
 
+import com.diegoparra.veggie.core.products.AdminProduct
+import com.diegoparra.veggie.core.products.AdminVariationData
+import com.diegoparra.veggie.core.products.Product
+import com.diegoparra.veggie.core.products.Variation
 import com.diegoparra.veggie.products.domain.entities.*
 
 object UtilsFakes {

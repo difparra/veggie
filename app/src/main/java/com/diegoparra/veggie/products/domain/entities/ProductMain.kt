@@ -1,12 +1,15 @@
 package com.diegoparra.veggie.products.domain.entities
 
+import com.diegoparra.veggie.core.products.Description
+import com.diegoparra.veggie.core.products.Product
+
 /**
  * Classes with prefix Product are normally products ready to be used in the ui.
  */
 
 data class ProductMain(
-        private val product: Product,
-        val quantity: Int
+    private val product: Product,
+    val quantity: Int
 ){
     val mainId = product.mainId
     val name = product.name
