@@ -6,8 +6,11 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.products.data.cart.CartDao
 import com.diegoparra.veggie.products.data.cart.CartRepositoryImpl
 import com.diegoparra.veggie.products.data.VeggieDatabase
-import com.diegoparra.veggie.products.data.products.ProductsRepositoryFirebase
+import com.diegoparra.veggie.products.data.products.ProductsRepositoryImpl
 import com.diegoparra.veggie.products.data.products.firebase.ProductsApi
+import com.diegoparra.veggie.products.data.products.prefs.ProductPrefs
+import com.diegoparra.veggie.products.data.products.prefs.ProductPrefsImpl
+import com.diegoparra.veggie.products.data.products.room.ProductsDao
 import com.diegoparra.veggie.products.domain.repositories.CartRepository
 import com.diegoparra.veggie.products.domain.repositories.ProductsRepository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,7 +24,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -29,9 +31,15 @@ import javax.inject.Singleton
 object ProductsModule {
 
     @Provides
-    fun providesProductsRepository(productsApi: ProductsApi) : ProductsRepository {
-        return ProductsRepositoryFirebase(productsApi)
+    fun providesProductsRepository(productsDao: ProductsDao, productsApi: ProductsApi, prefs: ProductPrefs) : ProductsRepository {
+        return ProductsRepositoryImpl(productsDao, productsApi, prefs)
     }
+
+
+
+    /*
+                PRODUCTS API - FIREBASE         ----------------------------------------------------
+     */
 
     @Singleton
     @Provides
@@ -52,12 +60,10 @@ object ProductsModule {
         }
     }
 
-    @Provides
-    fun providesProductsApi(database: FirebaseFirestore, remoteConfig: FirebaseRemoteConfig) : ProductsApi {
-        return ProductsApi(database, remoteConfig)
-    }
 
-
+    /*
+                PRODUCTS DAO - ROOM         --------------------------------------------------------
+     */
 
     @Singleton
     @Provides
@@ -68,6 +74,11 @@ object ProductsModule {
     }
 
     @Provides
+    fun providesProductsDao(veggieDatabase: VeggieDatabase) : ProductsDao {
+        return veggieDatabase.productsDao()
+    }
+
+    @Provides
     fun providesCartDao(veggieDatabase: VeggieDatabase) : CartDao {
         return veggieDatabase.cartDao()
     }
@@ -75,5 +86,15 @@ object ProductsModule {
     @Provides
     fun providesCartRepository(cartDao: CartDao) : CartRepository {
         return CartRepositoryImpl(cartDao)
+    }
+
+
+    /*
+                PRODUCTS PREFS         -------------------------------------------------------------
+     */
+
+    @Provides
+    fun providesProductsPrefs(@ApplicationContext context: Context) : ProductPrefs {
+        return ProductPrefsImpl(context)
     }
 }

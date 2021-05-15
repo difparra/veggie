@@ -8,6 +8,8 @@ object ProdsFirebaseConstants {
 
     object Keys {
         const val tagId = "tagId"
+        const val updatedAt = "updatedAt"
+        const val name = "name"
     }
 
     object RemoteConfigKeys {

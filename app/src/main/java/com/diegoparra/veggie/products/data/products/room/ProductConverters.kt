@@ -2,7 +2,7 @@ package com.diegoparra.veggie.products.data.products.room
 
 import androidx.room.TypeConverter
 
-class ProductsConverters {
+class ProductConverters {
 
     @TypeConverter
     fun fromStringList(value: List<String>?) : String? {

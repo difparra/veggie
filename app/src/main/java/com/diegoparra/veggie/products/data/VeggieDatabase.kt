@@ -15,7 +15,7 @@ import com.diegoparra.veggie.products.data.products.room.*
         version = 1,
         exportSchema = false
 )
-@TypeConverters(ProductsConverters::class)
+@TypeConverters(ProductConverters::class)
 abstract class VeggieDatabase : RoomDatabase() {
 
     companion object {

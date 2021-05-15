@@ -11,11 +11,11 @@ abstract class ProductsDao {
     abstract suspend fun getAllTags() : List<TagEntity>
 
     @Transaction
-    @Query("Select * from Main where relatedTagId = :tagId")
+    @Query("Select * from Main where relatedTagId = :tagId order by name")
     abstract suspend fun getMainProductsByTagId(tagId: String) : List<MainWithMainVariation>
 
     @Transaction
-    @Query("Select * from Main where normalised_name like ('%' || :normalisedQuery || '%')")
+    @Query("Select * from Main where normalised_name like ('%' || :normalisedQuery || '%') order by name")
     protected abstract suspend fun _searchMainProdByName(normalisedQuery: String) : List<MainWithMainVariation>
     suspend fun searchMainProdByName(query: String) = _searchMainProdByName(query.customNormalisation())
 
@@ -44,10 +44,8 @@ abstract class ProductsDao {
     }
 
 
-    @Query("Select MAX(updatedAt) from Main")
-    abstract suspend fun getLastProdUpdatedAt() : Long?
-    @Query("Select MAX(updatedAt) from Main where relatedTagId = :tagId")
-    abstract suspend fun getLastProdUpdatedAtByTag(tagId: String) : Long?
+    @Query("Select MAX(updatedAtInMillis) from Main")
+    abstract suspend fun getLastProdUpdatedAtInMillis() : Long?
 
     //      ----------------------------------------
 
@@ -80,6 +78,7 @@ abstract class ProductsDao {
         upsertMains(products.map { it.mainEntity })
         for(product in products){
             deleteLocalVariationsNotInMainUpdate(product.mainEntity.mainId, product.variations)
+            upsertVariations(product.variations)
         }
     }
     @Transaction

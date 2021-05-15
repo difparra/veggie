@@ -9,6 +9,7 @@ data class ProductDto (
     val name: String,
     val imageUrl: String,
     val updatedAt: Timestamp,
+    val deleted: Boolean,
     val variations: List<VariationDto>          //  val variations: List<Map<String, Any>>
 ){
     //  Required empty constructor for firebase
@@ -19,6 +20,7 @@ data class ProductDto (
             name = "",
             imageUrl = "",
             updatedAt = Timestamp(0,0),
+            deleted = false,
             variations = listOf()
     )
 }

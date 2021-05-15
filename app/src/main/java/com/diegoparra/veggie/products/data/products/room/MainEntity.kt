@@ -18,5 +18,5 @@ data class MainEntity(
         val name: String,
         val normalised_name: String = name.customNormalisation(),                //      Just to make easier search ignoring case and accents
         val imageUrl: String,
-        val updatedAt: Long
+        val updatedAtInMillis: Long
 )
