@@ -1,12 +1,10 @@
 package com.diegoparra.veggie.core
 
-import java.util.*
-
 /**
  *      Remove accents and convert to lower case. Ideal for searches.
  */
 fun String.customNormalisation() =
-    toLowerCase(Locale.ROOT)
+    this.lowercase()
         .replace('á','a').replace('à', 'a')
         .replace('é','e').replace('à', 'a')
         .replace('í','i').replace('à', 'a')

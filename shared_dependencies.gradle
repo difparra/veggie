@@ -1,0 +1,32 @@
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
+
+
+dependencies {
+
+    implementation "androidx.appcompat:appcompat:$appCompat"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "androidx.core:core-ktx:$coreKtx"
+    implementation "com.jakewharton.timber:timber:$timber"
+
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
+
+    //  Data
+
+    implementation "androidx.room:room-runtime:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"           //  Coroutines support for room
+
+    implementation "androidx.datastore:datastore-preferences:$dataStoreVersion"
+
+    implementation platform("com.google.firebase:firebase-bom:$firebaseBomVersion")      //  Manage all Firebase Library versions
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-config-ktx'        //  RemoteConfig
+    //  More firebase products https://firebase.google.com/docs/android/setup#available-libraries*/
+
+}
