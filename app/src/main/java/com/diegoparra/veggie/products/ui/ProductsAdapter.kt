@@ -15,10 +15,10 @@ import coil.load
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.QtyButton
 import com.diegoparra.veggie.core.getColorWithAlphaFromAttrs
-import com.diegoparra.veggie.core.products.Description
-import com.diegoparra.veggie.core.products.Label
+import com.diegoparra.veggie.products.domain.Description
+import com.diegoparra.veggie.products.domain.Label
 import com.diegoparra.veggie.databinding.ListItemMainProductBinding
-import com.diegoparra.veggie.products.domain.entities.ProductMain
+import com.diegoparra.veggie.products.entities.ProductMain
 import com.diegoparra.veggie.products.ui.utils.*
 import timber.log.Timber
 

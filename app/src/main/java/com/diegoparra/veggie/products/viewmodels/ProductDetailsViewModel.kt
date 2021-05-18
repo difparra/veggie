@@ -3,10 +3,10 @@ package com.diegoparra.veggie.products.viewmodels
 import androidx.lifecycle.*
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.products.domain.entities.ProductId
-import com.diegoparra.veggie.products.domain.entities.ProductVariation
-import com.diegoparra.veggie.products.domain.usecases.GetVariationsUseCase
-import com.diegoparra.veggie.products.domain.usecases.UpdateQuantityUseCase
+import com.diegoparra.veggie.products.cart.domain.ProductId
+import com.diegoparra.veggie.products.entities.ProductVariation
+import com.diegoparra.veggie.products.usecases.GetVariationsUseCase
+import com.diegoparra.veggie.products.usecases.UpdateQuantityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

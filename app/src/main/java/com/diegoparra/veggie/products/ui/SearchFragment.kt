@@ -14,7 +14,7 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.databinding.FragmentSearchBinding
-import com.diegoparra.veggie.products.domain.entities.ProductMain
+import com.diegoparra.veggie.products.entities.ProductMain
 import com.diegoparra.veggie.core.hideKeyboard
 import com.diegoparra.veggie.products.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint

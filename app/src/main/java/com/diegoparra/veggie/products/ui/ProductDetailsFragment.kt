@@ -10,7 +10,7 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.databinding.FragmentProductDetailsBinding
-import com.diegoparra.veggie.products.domain.entities.ProductVariation
+import com.diegoparra.veggie.products.entities.ProductVariation
 import com.diegoparra.veggie.products.viewmodels.ProductDetailsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint

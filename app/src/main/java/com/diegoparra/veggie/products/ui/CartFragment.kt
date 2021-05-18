@@ -13,8 +13,8 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.databinding.FragmentCartBinding
-import com.diegoparra.veggie.products.domain.entities.ProductCart
-import com.diegoparra.veggie.products.domain.entities.ProductId
+import com.diegoparra.veggie.products.entities.ProductCart
+import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.ui.utils.addThousandSeparator
 import com.diegoparra.veggie.core.getColorFromAttr
 import com.diegoparra.veggie.products.viewmodels.CartViewModel

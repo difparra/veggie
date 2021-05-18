@@ -11,7 +11,7 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.databinding.FragmentProductsListBinding
-import com.diegoparra.veggie.products.domain.entities.ProductMain
+import com.diegoparra.veggie.products.entities.ProductMain
 import com.diegoparra.veggie.products.viewmodels.ProductsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.products.ui
 
-import com.diegoparra.veggie.products.domain.entities.ProductVariation
+import com.diegoparra.veggie.products.entities.ProductVariation
 
 sealed class VariationUi {
     data class Header(

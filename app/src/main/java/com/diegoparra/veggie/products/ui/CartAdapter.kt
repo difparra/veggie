@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.databinding.ListItemCartBinding
-import com.diegoparra.veggie.products.domain.entities.ProductCart
-import com.diegoparra.veggie.products.domain.entities.ProductId
+import com.diegoparra.veggie.products.entities.ProductCart
+import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.ui.utils.addThousandSeparator
 import com.diegoparra.veggie.core.getResourcesFromAttr
-import com.diegoparra.veggie.core.products.Label
+import com.diegoparra.veggie.products.domain.Label
 import com.diegoparra.veggie.core.setBackground
 import com.diegoparra.veggie.products.ui.utils.loadProductLabel
 import com.diegoparra.veggie.products.ui.utils.setQuantityState
