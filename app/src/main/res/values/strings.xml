@@ -10,6 +10,7 @@
     <string name="menu_search">Buscar</string>
     <string name="menu_cart">Carrito</string>
     <string name="menu_user">Usuario</string>
+    <string name="menu_support">Soporte</string>
 
 
     <!-- Failures strings -->
@@ -33,6 +34,13 @@
     <string name="label_no_stock">Agotado</string>
     <string name="label_discounted">%s Off</string>     <!-- use percentage sign in the string %s as app will
                                                         crash if used here as \% or simply % because of the formats -->
+
+
+    <!-- User -->
+    <string name="user_profile">Mi cuenta</string>
+    <string name="user_orders">Pedidos</string>
+    <string name="user_addresses">Direcciones</string>
+    <string name="user_sign_out">Cerrar sesión</string>
 
 
 </resources>

@@ -15,6 +15,10 @@
         android:icon="@drawable/sel_cart"
         android:title="@string/menu_cart" />
     <item
+        android:id="@+id/nav_support"
+        android:icon="@drawable/sel_support"
+        android:title="@string/menu_support" />
+    <item
         android:id="@+id/nav_user"
         android:icon="@drawable/sel_person"
         android:title="@string/menu_user" />

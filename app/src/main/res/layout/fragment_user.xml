@@ -1,13 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UserFragment">
+    android:orientation="vertical"
+    tools:context=".user.ui.UserFragment">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/app_bar"
+        style="@style/Widget.Veggie.AppBar"
         android:text="@string/menu_user" />
 
-</FrameLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_standard" />
+
+    <TextView
+        android:id="@+id/item_profile"
+        style="@style/Widget.Veggie.UserItem"
+        android:text="@string/user_profile" />
+
+    <TextView
+        android:id="@+id/item_orders"
+        style="@style/Widget.Veggie.UserItem"
+        android:text="@string/user_orders" />
+
+    <TextView
+        android:id="@+id/item_address"
+        style="@style/Widget.Veggie.UserItem"
+        android:text="@string/user_addresses" />
+
+    <TextView
+        android:layout_gravity="bottom"
+        style="@style/Widget.Veggie.UserItem"
+        android:text="@string/user_sign_out" />
+
+
+
+</LinearLayout>

@@ -73,4 +73,9 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerView"
     implementation "io.coil-kt:coil:$coil"
 
+
+    //  More dependencies
+    //  Verion already added in BoM firebase shared_dependencies.gradle
+    implementation 'com.google.firebase:firebase-auth-ktx'
+
 }

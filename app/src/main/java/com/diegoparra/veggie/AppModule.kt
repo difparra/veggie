@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.diegoparra.veggie.products.VeggieDatabase
 import com.diegoparra.veggie.products.cart.data.room.CartDao
 import com.diegoparra.veggie.products.data.room.ProductsDao
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -44,6 +46,12 @@ object AppModule {
             })
             setDefaultsAsync(R.xml.remote_config_defaults)
         }
+    }
+
+    @Singleton
+    @Provides
+    fun providesFirebaseAuth() : FirebaseAuth {
+        return Firebase.auth
     }
 
 

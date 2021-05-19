@@ -35,9 +35,16 @@
     </fragment>
     <fragment
         android:id="@+id/nav_user"
-        android:name="com.diegoparra.veggie.UserFragment"
+        android:name="com.diegoparra.veggie.user.ui.UserFragment"
         android:label="fragment_user"
         tools:layout="@layout/fragment_user" />
+    <fragment
+        android:id="@+id/nav_support"
+        android:name="com.diegoparra.veggie.SupportFragment"
+        android:label="fragment_support"
+        tools:layout="@layout/fragment_support" />
+
+
     <dialog
         android:id="@+id/productDetailsFragment"
         android:name="com.diegoparra.veggie.products.ui.ProductDetailsFragment"
