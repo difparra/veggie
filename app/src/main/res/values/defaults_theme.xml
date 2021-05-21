@@ -101,4 +101,16 @@
         <item name="android:paddingBottom">@dimen/padding_small</item>
     </style>
 
+
+    <style name="Widget.Veggie.Button.SignIn" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="layout_constraintWidth_max">230dp</item>
+        <item name="android:layout_marginTop">@dimen/padding_small</item>
+        <item name="android:layout_marginBottom">@dimen/padding_small</item>
+    </style>
+
 </resources>

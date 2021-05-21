@@ -74,8 +74,9 @@ dependencies {
     implementation "io.coil-kt:coil:$coil"
 
 
-    //  More dependencies
-    //  Verion already added in BoM firebase shared_dependencies.gradle
+    //  ----------      Firebase / Bom already added in shared dependencies     --------------------
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-config-ktx'        //  RemoteConfig
     implementation 'com.google.firebase:firebase-auth-ktx'
 
 }

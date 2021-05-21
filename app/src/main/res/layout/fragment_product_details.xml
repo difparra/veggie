@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".products.ui.ProductDetailsFragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="@dimen/padding_big"
-    android:paddingTop="@dimen/padding_big_half">
+    android:paddingTop="@dimen/padding_big_half"
+    tools:context=".products.ui.ProductDetailsFragment">
 
     <TextView
         android:id="@+id/title"

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_sign_in"
+    app:startDestination="@id/signInOptionsFragment">
+
+    <fragment
+        android:id="@+id/signInOptionsFragment"
+        android:name="com.diegoparra.veggie.user.ui.SignInOptionsFragment"
+        android:label="fragment_sign_in_options"
+        tools:layout="@layout/fragment_sign_in_options" >
+        <action
+            android:id="@+id/action_signInOptionsFragment_to_emailFragment"
+            app:destination="@id/emailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailFragment"
+        android:name="com.diegoparra.veggie.user.ui.EmailFragment"
+        android:label="fragment_email"
+        tools:layout="@layout/fragment_email" >
+        <action
+            android:id="@+id/action_emailFragment_to_emailSignInFragment"
+            app:destination="@id/emailSignInFragment" />
+        <action
+            android:id="@+id/action_emailFragment_to_emailSignUpFragment"
+            app:destination="@id/emailSignUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailSignInFragment"
+        android:name="com.diegoparra.veggie.user.ui.EmailSignInFragment"
+        android:label="fragment_email_sign_in"
+        tools:layout="@layout/fragment_email_sign_in" />
+    <fragment
+        android:id="@+id/emailSignUpFragment"
+        android:name="com.diegoparra.veggie.user.ui.EmailSignUpFragment"
+        android:label="fragment_email_sign_up"
+        tools:layout="@layout/fragment_email_sign_up" />
+</navigation>
