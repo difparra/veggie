@@ -35,9 +35,9 @@
     </fragment>
     <fragment
         android:id="@+id/nav_user"
-        android:name="com.diegoparra.veggie.user.ui.UserFragment"
+        android:name="com.diegoparra.veggie.user.ui.SignInFragment"
         android:label="fragment_user"
-        tools:layout="@layout/fragment_user" />
+        tools:layout="@layout/fragment_sign_in" />
     <fragment
         android:id="@+id/nav_support"
         android:name="com.diegoparra.veggie.SupportFragment"
@@ -48,7 +48,8 @@
     <dialog
         android:id="@+id/productDetailsFragment"
         android:name="com.diegoparra.veggie.products.ui.ProductDetailsFragment"
-        android:label="ProductDetailsFragment" >
+        android:label="ProductDetailsFragment"
+        tools:layout="@layout/fragment_product_details" >
         <argument
             android:name="mainId"
             app:argType="string" />
@@ -59,7 +60,8 @@
     <dialog
         android:id="@+id/clearCartDialogFragment"
         android:name="com.diegoparra.veggie.products.ui.ClearCartDialogFragment"
-        android:label="ClearCartDialogFragment" />
+        android:label="ClearCartDialogFragment"
+        tools:layout="@layout/dialog_clear_cart" />
 
 
 </navigation>

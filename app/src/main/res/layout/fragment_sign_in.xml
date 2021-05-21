@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".user.ui.SignInFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_standard">
+
+    <ImageView
+        android:id="@+id/image_title"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/padding_small"
+        android:importantForAccessibility="no"
+        app:layout_constraintHeight_max="100dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_app"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tabs"/>
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/appBarHeight"
+        app:layout_constraintBottom_toTopOf="@+id/view_pager" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:layout_below="@id/tabs"
+        app:layout_constraintBottom_toTopOf="@+id/sign_in_alternatives_layout" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sign_in_alternatives_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/padding_standard"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/or_sign_in_with"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/padding_small"
+            android:layout_marginBottom="@dimen/padding_standard"
+            android:alpha="?attr/alphaSecondaryText"
+            android:gravity="center"
+            android:text="@string/user_or_sign_in_with"
+            app:layout_constraintBottom_toTopOf="@id/google_sign_in"
+            app:layout_constraintEnd_toStartOf="@+id/divider_right"
+            app:layout_constraintStart_toEndOf="@+id/divider_left"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/divider_left"
+            style="@style/Widget.Veggie.Divider"
+            android:layout_width="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/or_sign_in_with"
+            app:layout_constraintEnd_toStartOf="@+id/or_sign_in_with"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/or_sign_in_with" />
+
+        <View
+            android:id="@+id/divider_right"
+            style="@style/Widget.Veggie.Divider"
+            android:layout_width="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/or_sign_in_with"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/or_sign_in_with"
+            app:layout_constraintTop_toTopOf="@+id/or_sign_in_with" />
+
+        <ImageView
+            android:id="@+id/google_sign_in"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="@dimen/padding_big"
+            android:contentDescription="@string/google"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:src="@drawable/ic_google"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/facebook_sign_in"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/facebook_sign_in"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/facebook"
+            android:src="@drawable/ic_facebook"
+            app:layout_constraintBottom_toBottomOf="@+id/google_sign_in"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/google_sign_in"
+            app:layout_constraintTop_toTopOf="@+id/google_sign_in" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
