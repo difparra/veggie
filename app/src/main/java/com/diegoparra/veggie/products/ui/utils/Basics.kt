@@ -10,28 +10,31 @@ import android.text.style.StyleSpan
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.getColorFromAttr
 import com.diegoparra.veggie.core.getColorWithAlphaFromAttrs
+import com.diegoparra.veggie.core.roundToMultiple
 import java.text.NumberFormat
-import java.util.*
-import kotlin.math.ceil
+import java.util.Locale
 
 
-fun Int.addThousandSeparator() : String {
+fun Int.addPriceFormat() : String {
+    val roundedPrice = this.roundToMultiple(10)
+    return "$" + roundedPrice.addThousandSeparator()
+}
+
+private fun Int.addThousandSeparator() : String {
     return NumberFormat.getNumberInstance(Locale.US).format(this)
 }
 
-fun getPriceBeforeDiscount(finalPrice: Int, discount: Float) : Int {
-    val price = finalPrice / (1-discount)
-    return (ceil(price/10) * 10).toInt()
-}
-
 fun abbreviatedUnit(unit: String) =
-        when (unit.toLowerCase(Locale.ROOT)){
+        when (unit.lowercase()){
             "libra" -> "lb"
             "unidad" -> "und"
             "canastilla" -> "cta"
             "bandeja" -> "bdj"
             else -> unit
         }
+
+
+
 
 fun SpannableStringBuilder.appendMultipleSpans(text: CharSequence, what: List<Any>, flags: Int) : SpannableStringBuilder {
     if(what.isNullOrEmpty())    return this
@@ -43,8 +46,12 @@ fun SpannableStringBuilder.appendMultipleSpans(text: CharSequence, what: List<An
     return this
 }
 
-
-
+private fun getPriceBeforeDiscount(finalPrice: Int, discount: Float) : Int {
+    if(discount <= 0f || discount >= 1.0f){
+        throw IllegalArgumentException("Discount must be a value between 0 and 1")
+    }
+    return (finalPrice / (1-discount)).toInt()
+}
 
 fun getFormattedPrice(finalPrice: Int, discount: Float, context: Context,
                       hideDiscount: Boolean = false
@@ -53,18 +60,18 @@ fun getFormattedPrice(finalPrice: Int, discount: Float, context: Context,
     if(discount > 0 && !hideDiscount){
         val colorAlpha = context.getColorWithAlphaFromAttrs(colorAttr = R.attr.colorOnSurface, alphaAttr = R.attr.alphaSecondaryText)
         text.appendMultipleSpans(
-                "$" + getPriceBeforeDiscount(finalPrice, discount).addThousandSeparator() + " ",
+                getPriceBeforeDiscount(finalPrice, discount).addPriceFormat() + " ",
                 listOf(StrikethroughSpan(), ForegroundColorSpan(colorAlpha)),
                 Spannable.SPAN_INCLUSIVE_EXCLUSIVE
         )
         text.appendMultipleSpans(
-                "$" + finalPrice.addThousandSeparator(),
+                finalPrice.addPriceFormat(),
                 listOf(StyleSpan(Typeface.BOLD), ForegroundColorSpan(context.getColorFromAttr(R.attr.colorSecondary))),
                 Spannable.SPAN_INCLUSIVE_EXCLUSIVE
         )
     }else{
         text.append(
-                "$" + finalPrice.addThousandSeparator(),
+                finalPrice.addPriceFormat(),
                 StyleSpan(Typeface.BOLD),
                 Spannable.SPAN_INCLUSIVE_EXCLUSIVE
         )

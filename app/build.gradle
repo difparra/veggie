@@ -67,11 +67,14 @@ dependencies {
 
     implementation "com.google.android.material:material:$materialVersion"             //  Material design
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
-    implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
     implementation "androidx.viewpager2:viewpager2:$viewPager2"
     implementation "androidx.recyclerview:recyclerview:$recyclerView"
     implementation "io.coil-kt:coil:$coil"
+
+    //  Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
+    //implementation "androidx.hilt:hilt-navigation-fragment:$navHiltVersion" //  In order to scope hiltNavGraphViewModels
 
 
     //  ----------      Firebase / Bom already added in shared dependencies     --------------------

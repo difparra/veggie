@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.data.room
 
 import androidx.room.*
-import com.diegoparra.veggie.core.customNormalisation
+import com.diegoparra.veggie.core.removeCaseAndAccents
 
 @Dao
 abstract class ProductsDao {
@@ -17,7 +17,7 @@ abstract class ProductsDao {
     @Transaction
     @Query("Select * from Main where normalised_name like ('%' || :normalisedQuery || '%') order by name")
     protected abstract suspend fun _searchMainProdByName(normalisedQuery: String) : List<MainWithMainVariation>
-    suspend fun searchMainProdByName(query: String) = _searchMainProdByName(query.customNormalisation())
+    suspend fun searchMainProdByName(query: String) = _searchMainProdByName(query.removeCaseAndAccents())
 
     @Query("Select * from Variations where relatedMainId = :mainId")
     abstract suspend fun getProductVariationsByMainId(mainId: String) : List<VariationEntity>

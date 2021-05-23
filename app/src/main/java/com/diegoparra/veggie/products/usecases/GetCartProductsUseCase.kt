@@ -88,7 +88,7 @@ class GetCartProductsUseCase @Inject constructor(
 
     private suspend fun getProductInfo(productId: ProductId) : Either<Failure, Product> {
         //  TODO:   Define custom expiration time for updating product info in cart.
-        val prod =productsRepository.getProduct(mainId = productId.mainId, varId = productId.varId)
+        val prod = productsRepository.getProduct(mainId = productId.mainId, varId = productId.varId)
         //  TODO:   This has not still been tested if is working
         //  Check if product has no longer stock, and if so, delete from cart.
         //      This can occur when the user had a saved cart list from the previous day, and the

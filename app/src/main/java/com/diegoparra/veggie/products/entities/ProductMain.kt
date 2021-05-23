@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.products.entities
 
-import com.diegoparra.veggie.products.domain.Description
 import com.diegoparra.veggie.products.domain.Product
 
 /**
@@ -20,5 +19,5 @@ data class ProductMain(
     val discount = product.discount
     val stock = product.stock
     val label = product.label
-    val description = Description(price, discount, unit, weightGr)
+
 }

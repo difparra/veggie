@@ -22,15 +22,18 @@
         <action
             android:id="@+id/action_emailFragment_to_emailSignInFragment"
             app:destination="@id/emailSignInFragment" />
-        <action
-            android:id="@+id/action_emailFragment_to_emailSignUpFragment"
-            app:destination="@id/emailSignUpFragment" />
     </fragment>
     <fragment
         android:id="@+id/emailSignInFragment"
         android:name="com.diegoparra.veggie.user.ui.EmailSignInFragment"
         android:label="fragment_email_sign_in"
-        tools:layout="@layout/fragment_email_sign_in" />
+        tools:layout="@layout/fragment_email_sign_in" >
+        <action
+            android:id="@+id/action_emailSignInFragment_to_emailSignUpFragment"
+            app:destination="@id/emailSignUpFragment"
+            app:popUpTo="@id/emailSignInFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/emailSignUpFragment"
         android:name="com.diegoparra.veggie.user.ui.EmailSignUpFragment"

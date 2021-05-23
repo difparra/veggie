@@ -10,12 +10,9 @@
     tools:context=".user.ui.EmailSignUpFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/Widget.Veggie.TextInputLayout"
         android:hint="@string/email"
-        app:boxBackgroundColor="?attr/colorSurface"
-        app:startIconDrawable="@drawable/ic_email_outline"
-        android:layout_marginVertical="@dimen/padding_small" >
+        app:startIconDrawable="@drawable/ic_email_outline">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email"
@@ -26,12 +23,9 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/Widget.Veggie.TextInputLayout"
         android:hint="@string/name"
-        app:boxBackgroundColor="?attr/colorSurface"
-        app:startIconDrawable="@drawable/ic_person_outline"
-        android:layout_marginVertical="@dimen/padding_small">
+        app:startIconDrawable="@drawable/ic_person_outline">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/name"
@@ -42,13 +36,10 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/Widget.Veggie.TextInputLayout"
         android:hint="@string/password"
-        app:boxBackgroundColor="?attr/colorSurface"
         app:startIconDrawable="@drawable/ic_password_outline"
-        app:endIconMode="password_toggle"
-        android:layout_marginVertical="@dimen/padding_small">
+        app:endIconMode="password_toggle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"

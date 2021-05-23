@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.products.data
 
-import com.diegoparra.veggie.core.customNormalisation
+import com.diegoparra.veggie.core.removeCaseAndAccents
 import com.diegoparra.veggie.products.data.firebase.ProductDto
 import com.diegoparra.veggie.products.data.firebase.TagDto
 import com.diegoparra.veggie.products.data.firebase.VariationDto
@@ -39,7 +39,7 @@ object DtoToEntityTransformations {
             relatedTagId = tagId,
             mainVarId = mainVarId,
             name = name,
-            normalised_name = name.customNormalisation(),
+            normalised_name = name.removeCaseAndAccents(),
             imageUrl = imageUrl,
             updatedAtInMillis = updatedAt.toMillis()
     )

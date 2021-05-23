@@ -15,7 +15,7 @@ import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.databinding.FragmentCartBinding
 import com.diegoparra.veggie.products.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
-import com.diegoparra.veggie.products.ui.utils.addThousandSeparator
+import com.diegoparra.veggie.products.ui.utils.addPriceFormat
 import com.diegoparra.veggie.core.getColorFromAttr
 import com.diegoparra.veggie.products.viewmodels.CartViewModel
 import com.diegoparra.veggie.products.viewmodels.Total
@@ -132,7 +132,7 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
                     with(binding.cartTotal){
                         setBackgroundColor(context.getColorFromAttr(R.attr.colorWarning))
                         setTextColor(context.getColorFromAttr(R.attr.colorOnWarning))
-                        val toMinOrder = "$" + (it.minOrder - it.totalValue).addThousandSeparator()
+                        val toMinOrder = (it.minOrder - it.totalValue).addPriceFormat()
                         text = getString(R.string.total_x_to_complete_min_order, toMinOrder)
                     }
                 }
@@ -143,7 +143,7 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
                     with(binding.cartTotal){
                         setBackgroundColor(context.getColorFromAttr(R.attr.colorPrimaryVariant))
                         setTextColor(context.getColorFromAttr(R.attr.colorOnPrimary))
-                        text = getString(R.string.total_order, it.totalValue.addThousandSeparator())
+                        text = getString(R.string.total_order, it.totalValue.addPriceFormat())
                     }
                 }
                 else -> {

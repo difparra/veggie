@@ -22,4 +22,10 @@ sealed class Failure {
         object EmptyCartList : CartFailure()
     }
 
+
+    sealed class SignInFailure : Failure() {
+        object EmptyField : SignInFailure()
+        object InvalidEmail : SignInFailure()
+    }
+
 }

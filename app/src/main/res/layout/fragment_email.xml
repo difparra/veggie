@@ -10,12 +10,10 @@
     tools:context=".user.ui.EmailFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/email_layout"
+        style="@style/Widget.Veggie.TextInputLayout"
         android:hint="@string/email"
-        app:boxBackgroundColor="?attr/colorSurface"
-        app:startIconDrawable="@drawable/ic_email_outline"
-        android:layout_marginVertical="@dimen/padding_small" >
+        app:startIconDrawable="@drawable/ic_email_outline">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email"

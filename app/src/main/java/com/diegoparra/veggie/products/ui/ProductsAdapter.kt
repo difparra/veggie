@@ -15,7 +15,6 @@ import coil.load
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.QtyButton
 import com.diegoparra.veggie.core.getColorWithAlphaFromAttrs
-import com.diegoparra.veggie.products.domain.Description
 import com.diegoparra.veggie.products.domain.Label
 import com.diegoparra.veggie.databinding.ListItemMainProductBinding
 import com.diegoparra.veggie.products.entities.ProductMain
@@ -66,7 +65,7 @@ class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHold
             loadEnabledState(stock = product.stock)
             loadImage(product.imageUrl)
             loadName(product.name)
-            loadDescription(product.description)
+            loadDescription(finalPrice = product.price, discount = product.discount, unit = product.unit)
             loadQtyButton(product.quantity)
             loadLabel(product.label)
         }
@@ -103,11 +102,11 @@ class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHold
             binding.name.text = name
         }
 
-        private fun loadDescription(description: Description){
+        private fun loadDescription(finalPrice: Int, discount: Float, unit: String){
             val context = binding.description.context
-            val text = getFormattedPrice(finalPrice = description.finalPrice, discount = description.discount, context = context)
+            val text = getFormattedPrice(finalPrice = finalPrice, discount = discount, context = context)
             text.append(
-                    " /${abbreviatedUnit(description.unit)}",
+                    " /${abbreviatedUnit(unit)}",
                     ForegroundColorSpan(context.getColorWithAlphaFromAttrs(colorAttr = R.attr.colorOnSurface, alphaAttr = R.attr.alphaSecondaryText)),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE
             )

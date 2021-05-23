@@ -4,13 +4,6 @@ package com.diegoparra.veggie.products.domain
  * Additional properties defined in Product___ classes that could be common between them.
  */
 
-data class Description(
-        val finalPrice: Int,
-        val discount: Float,
-        val unit: String,
-        val weightGr: Int
-)
-
 sealed class Label {
     object NoStock : Label()
     class Discounted(val discount: Float) : Label()

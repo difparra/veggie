@@ -11,7 +11,6 @@ import com.diegoparra.veggie.core.getResourcesFromAttr
 import com.diegoparra.veggie.products.domain.Label
 import com.google.android.material.chip.Chip
 import com.google.android.material.color.MaterialColors
-import java.util.*
 
 
 fun Chip.loadProductLabel(label: Label) {
@@ -25,7 +24,6 @@ fun Chip.loadProductLabel(label: Label) {
             isVisible = true
         }
         is Label.Discounted -> {
-            //text = context.getString(R.string.label_discounted, (label.discount*100).toInt())
             text = context.getString(R.string.label_discounted, (label.discount*100).toInt().toString() + "%")
             chipBackgroundColor = ColorStateList.valueOf(context.getColorFromAttr(R.attr.colorSecondary))
             isVisible = true
@@ -33,7 +31,7 @@ fun Chip.loadProductLabel(label: Label) {
         is Label.DisplayLabel -> {
             text = label.suggestedLabel
             val randomAttrColors = context.resources.getIntArray(context.getResourcesFromAttr(R.attr.colorsRandom))
-            chipBackgroundColor = ColorStateList.valueOf(when(label.suggestedLabel.toLowerCase(Locale.ROOT)){
+            chipBackgroundColor = ColorStateList.valueOf(when(label.suggestedLabel.lowercase()){
                 "recomendado" -> randomAttrColors[0]
                 "popular" -> randomAttrColors.getOrElse(1) { randomAttrColors[0] }
                 else -> randomAttrColors.getOrElse(2) { randomAttrColors[0] }

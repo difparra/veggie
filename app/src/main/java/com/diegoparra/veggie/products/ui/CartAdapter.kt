@@ -13,7 +13,7 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.databinding.ListItemCartBinding
 import com.diegoparra.veggie.products.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
-import com.diegoparra.veggie.products.ui.utils.addThousandSeparator
+import com.diegoparra.veggie.products.ui.utils.addPriceFormat
 import com.diegoparra.veggie.core.getResourcesFromAttr
 import com.diegoparra.veggie.products.domain.Label
 import com.diegoparra.veggie.core.setBackground
@@ -114,7 +114,7 @@ class CartAdapter(private var listener: OnItemClickListener) : ListAdapter<Produ
 
         @SuppressLint("SetTextI18n")
         private fun loadTotal(price: Int, quantity: Int){
-            binding.price.text = "Total: $" + (price*quantity).addThousandSeparator()
+            binding.price.text = "Total: " + (price*quantity).addPriceFormat()
         }
 
         //  This variables need to be outside the method, if I put inside some bug is originated,

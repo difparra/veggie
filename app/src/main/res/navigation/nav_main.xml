@@ -66,9 +66,19 @@
         tools:layout="@layout/fragment_user" >
         <action
             android:id="@+id/action_nav_user_to_nav_sign_in"
-            app:destination="@id/nav_sign_in" />
+            app:destination="@id/nav_sign_in"
+            app:popUpTo="@id/nav_user"
+            app:popUpToInclusive="true" />
+        <!--    popUpTo and popUpToInclusive are important, as it is not
+                desired to navigate back to user details when entering
+                the signInFlow (user is not logged in) -->
     </fragment>
     <include app:graph="@navigation/nav_sign_in" />
+
+    <!--    Global action to navigate back from nestedNavGraph logIn flow -->
+    <action
+        android:id="@+id/action_global_nav_user"
+        app:destination="@id/nav_user" />
 
 
     <!--    .....   SUPPORT    .....   -->
