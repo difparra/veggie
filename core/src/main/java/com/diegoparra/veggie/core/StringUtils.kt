@@ -35,5 +35,5 @@ private val EMAIL_ADDRESS_PATTERN = Pattern.compile(
 /**
  * Validate is an email address is correct (according to the pattern EMAIL_ADDRESS_PATTERN)
  */
-fun validateEmail(email: String) : Boolean =
+fun validateAndSetEmail(email: String) : Boolean =
     email.isNotEmpty() && EMAIL_ADDRESS_PATTERN.matcher(email).matches()

@@ -5,52 +5,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/padding_standard"
     android:orientation="vertical"
     tools:context=".user.ui.EmailSignInFragment">
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.Veggie.TextInputLayout"
-        android:hint="@string/email"
-        app:startIconDrawable="@drawable/ic_email_outline">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.Veggie.TextInputLayout"
-        android:hint="@string/password"
-        app:startIconDrawable="@drawable/ic_password_outline"
-        app:endIconMode="password_toggle">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="textEnd"
-        android:text="@string/forgot_password"
-        android:textAppearance="?attr/textAppearanceCaption"
-        android:paddingVertical="@dimen/padding_small"
-        android:layout_marginVertical="@dimen/padding_small"
-        android:layout_gravity="end" />
-
-    <Button
-        android:id="@+id/btn_sign_in"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_standard"
+        style="@style/Widget.Veggie.AppBar"
         android:text="@string/sign_in" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_standard">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Veggie.TextInputLayout"
+                android:hint="@string/email"
+                app:startIconDrawable="@drawable/ic_email_outline">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Veggie.TextInputLayout"
+                android:hint="@string/password"
+                app:startIconDrawable="@drawable/ic_password_outline"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:text="@string/forgot_password"
+                android:textAppearance="?attr/textAppearanceCaption"
+                android:paddingVertical="@dimen/padding_small"
+                android:layout_marginVertical="@dimen/padding_small"
+                android:layout_gravity="end" />
+
+            <Button
+                android:id="@+id/btn_sign_in"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:text="@string/sign_in" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

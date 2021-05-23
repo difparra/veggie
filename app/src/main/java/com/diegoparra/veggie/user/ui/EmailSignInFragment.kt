@@ -30,12 +30,6 @@ class EmailSignInFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.isEmailRegistered.observe(viewLifecycleOwner) {
-            if(it is Resource.Success && !it.data){
-                findNavController().navigate(EmailSignInFragmentDirections.actionEmailSignInFragmentToEmailSignUpFragment())
-            }
-        }
-
         viewModel.email.observe(viewLifecycleOwner) {
             binding.email.setText(it)
         }

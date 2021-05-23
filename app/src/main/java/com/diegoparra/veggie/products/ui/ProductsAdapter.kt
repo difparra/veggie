@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.diegoparra.veggie.NavMainDirections
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.QtyButton
 import com.diegoparra.veggie.core.getColorWithAlphaFromAttrs
@@ -77,17 +78,9 @@ class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHold
         }
 
         private fun navigateToProductDetails(product: ProductMain, view: View) {
-            val action = when(view.findNavController().currentDestination?.id){
-                R.id.nav_home -> HomeFragmentDirections.actionNavHomeToProductDetailsFragment(mainId = product.mainId, name = product.name)
-                R.id.nav_search -> SearchFragmentDirections.actionNavSearchToProductDetailsFragment(mainId = product.mainId, name = product.name)
-                else -> null
-            }
-            if(action != null){
-                view.findNavController().navigate(action)
-            }else{
-                //  TODO: Deal with this error. Nevertheless, it should never happen.
-                Toast.makeText(view.context, "Can't navigate: currentDestinationId: ${view.findNavController().currentDestination?.id}", Toast.LENGTH_SHORT).show()
-            }
+            //  Use global action, as the original destination is unknown (could be home or search)
+            val action = NavMainDirections.actionGlobalProductDetailsFragment(mainId = product.mainId, name = product.name)
+            view.findNavController().navigate(action)
         }
 
         private fun loadEnabledState(stock: Boolean){

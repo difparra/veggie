@@ -10,12 +10,7 @@
         android:id="@+id/nav_home"
         android:name="com.diegoparra.veggie.products.ui.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_nav_home_to_productDetailsFragment"
-            app:destination="@id/productDetailsFragment">
-        </action>
-    </fragment>
+        tools:layout="@layout/fragment_home" />
     <dialog
         android:id="@+id/productDetailsFragment"
         android:name="com.diegoparra.veggie.products.ui.ProductDetailsFragment"
@@ -34,11 +29,7 @@
         android:id="@+id/nav_search"
         android:name="com.diegoparra.veggie.products.ui.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
-        <action
-            android:id="@+id/action_nav_search_to_productDetailsFragment"
-            app:destination="@id/productDetailsFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_search" />
 
 
     <!--    .....   CART    .....   -->
@@ -76,9 +67,6 @@
     <include app:graph="@navigation/nav_sign_in" />
 
     <!--    Global action to navigate back from nestedNavGraph logIn flow -->
-    <action
-        android:id="@+id/action_global_nav_user"
-        app:destination="@id/nav_user" />
 
 
     <!--    .....   SUPPORT    .....   -->
@@ -87,5 +75,6 @@
         android:name="com.diegoparra.veggie.SupportFragment"
         android:label="fragment_support"
         tools:layout="@layout/fragment_support" />
+    <action android:id="@+id/action_global_productDetailsFragment" app:destination="@id/productDetailsFragment" />
 
 </navigation>
