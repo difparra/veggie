@@ -74,7 +74,7 @@ dependencies {
     //  Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
-    //implementation "androidx.hilt:hilt-navigation-fragment:$navHiltVersion" //  In order to scope hiltNavGraphViewModels
+    implementation "androidx.hilt:hilt-navigation-fragment:$navHiltVersion" //  In order to scope hiltNavGraphViewModels
 
 
     //  ----------      Firebase / Bom already added in shared dependencies     --------------------

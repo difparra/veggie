@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import com.diegoparra.veggie.R
 import com.diegoparra.veggie.databinding.FragmentEmailSignUpBinding
 import com.diegoparra.veggie.user.viewmodels.EmailAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,8 +17,11 @@ class EmailSignUpFragment : Fragment() {
 
     private var _binding : FragmentEmailSignUpBinding? = null
     private val binding get() = _binding!!
+
+    //private val viewModel: EmailAuthViewModel by viewModels()
+    private val viewModel: EmailAuthViewModel by hiltNavGraphViewModels(R.id.nav_sign_in)
+
     //private val viewModel: EmailAuthViewModel by hiltNavGraphViewModels(R.id.nav_sign_in)
-    private val viewModel: EmailAuthViewModel by viewModels()
     //private val viewModel: EmailAuthViewModel by navGraphViewModels(R.id.nav_main)
 
     override fun onCreateView(

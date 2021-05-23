@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Either
@@ -22,8 +23,11 @@ class EmailFragment : Fragment() {
 
     private var _binding : FragmentEmailBinding? = null
     private val binding get() = _binding!!
+
+    //private val viewModel: EmailAuthViewModel by viewModels()
+    private val viewModel: EmailAuthViewModel by hiltNavGraphViewModels(R.id.nav_sign_in)
+
     //private val viewModel: EmailAuthViewModel by hiltNavGraphViewModels(R.id.nav_sign_in)
-    private val viewModel: EmailAuthViewModel by viewModels()
     //private val viewModel: EmailAuthViewModel by navGraphViewModels(R.id.nav_main)
 
     override fun onCreateView(

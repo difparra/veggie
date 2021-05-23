@@ -2,7 +2,7 @@
 buildscript {
     ext{
         kotlinVersion = '1.5.0'
-        hiltVersion = '2.33-beta'
+        hiltVersion = '2.35.1'
         googleServicesVersion = '4.3.5'
         firebaseBomVersion = '28.0.0'
 
