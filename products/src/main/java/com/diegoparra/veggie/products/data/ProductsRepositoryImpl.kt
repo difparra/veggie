@@ -112,10 +112,18 @@ class ProductsRepositoryImpl @Inject constructor(
 
 
     private suspend fun updateLocalProductsFromApiIfNecessary(forceUpdate: Boolean, expirationTimeMillis: Long) : Failure? {
-        //  TODO:   WorkManager to get products for the very first time
+        //  TODO:   WorkManager to update local database, as it is an operation that must be completed
+        //          If for example 10 products were needed to update: 7 updated on Monday and 3 on Tuesday,
+        //          and the user opens the app on Wednesday and close before updating all the 10 products,
+        //          resulting that 5 Monday products and 2 Tuesday products were updated, when the user
+        //          opens the app again the lastProdUpdatedAt will be on Tuesday, so the remaining 2
+        //          Monday products will now never been updated.
+        //          It is therefore mandatory that the updates complete even if the user close the app, or
+        //          sorting the products by lastUpdatedTime, so that the most recent update will always update
+        //          the last.
         val localLastUpdatedAtInMillis = productsDao.getLastProdUpdatedAtInMillis() ?: 0
         if(forceUpdate || isDataExpired(lastUpdatedAtInMillis = localLastUpdatedAtInMillis, expirationTimeInMillis = expirationTimeMillis)) {
-            when(val productsNetwork = productsApi.getProductsUpdatedAfter(localLastUpdatedAtInMillis.toTimestamp())) {
+            when(val productsNetwork = productsApi.getSortedProductsUpdatedAfter(localLastUpdatedAtInMillis.toTimestamp())) {
                 is Either.Left -> return productsNetwork.a
                 is Either.Right -> {
                     val prods = productsNetwork.b

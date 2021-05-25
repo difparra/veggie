@@ -18,6 +18,16 @@ class SearchViewModel @Inject constructor(
         private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    /*
+        NOTE:   https://www.youtube.com/watch?v=B8ppnjGPAGE
+                liveDataCoroutineBuilder can assign Dispatchers to LiveData,
+                so I can switchMap on another dispatcher and use LiveData instead of StateFlow
+                liveData(Dispatchers.IO) { emit(__) }
+                The problem with liveData is that map run on MainThread, so it is better to use switchMap
+                and return a liveData created with a builder.
+                Flow map is in the coroutine context so function can be normally called and then call asLiveData.
+     */
+
     private val _query = MutableStateFlow(savedStateHandle.get(QUERY_SAVED_STATE_KEY) ?: "")
     private var currentJobSearch : Job? = null
 

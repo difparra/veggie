@@ -76,7 +76,7 @@ class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.On
     private fun renderFailureVariations(failure: Failure) {
         when(failure){
             is Failure.ProductsFailure.ProductsNotFound ->
-                binding.errorText.text = getString(R.string.failure_generic)
+                binding.errorText.text = getString(R.string.failure_no_variations_found)
             else ->
                 binding.errorText.text = failure.toString()
         }

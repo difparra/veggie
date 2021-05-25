@@ -6,6 +6,7 @@ sealed class Failure {
 
     object NetworkConnection : Failure()
     class ServerError(val exception: Exception? = null, val message: String? = null) : Failure()
+    class FirebaseException(val exception: Exception) : Failure()
 
 
     sealed class ProductsFailure : Failure() {
@@ -23,9 +24,24 @@ sealed class Failure {
     }
 
 
-    sealed class SignInFailure : Failure() {
+    /*sealed class SignInFailure : Failure() {
+        class FirebaseException(val exception: Exception) : SignInFailure()
         object EmptyField : SignInFailure()
         object InvalidEmail : SignInFailure()
+        object NewUser : SignInFailure()
+        class NotLinkedSignInMethod(val signInMethod: String, val linkedSignInMethods: List<String>) : SignInFailure()
+    }*/
+
+}
+
+sealed class SignInFailure : Failure() {
+
+    class FirebaseException(val exception: Exception) : SignInFailure()
+    class SignInMethodNotLinked(val signInMethod: String, val linkedSignInMethods: List<String>) : SignInFailure()
+
+    sealed class WrongInput : SignInFailure() {
+        object EmptyField : WrongInput()
+        object InvalidEmail : WrongInput()
     }
 
 }

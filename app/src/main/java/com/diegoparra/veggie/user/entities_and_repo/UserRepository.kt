@@ -1,12 +1,21 @@
 package com.diegoparra.veggie.user.entities_and_repo
 
+import com.diegoparra.veggie.core.Either
+import com.diegoparra.veggie.core.Failure
+import kotlinx.coroutines.flow.Flow
+
 interface UserRepository {
 
-    suspend fun isSignedIn() : Boolean
+    fun isSignedIn() : Flow<Boolean>
+    suspend fun getSignInMethodsForEmail(email: String) : Either<Failure, List<SignInMethod>>
+
+
+
+    /*
+    Other possible methods:
     suspend fun getLastSignedInEmail() : String?
 
-
-    /*suspend fun getCurrentUser() : Either<Failure, User>
+    suspend fun getCurrentUser() : Either<Failure, User>
 
     suspend fun signUpWithEmailAndPassword(email: String, password: String)
     suspend fun signInWithEmailAndPassword(email: String, password: String)

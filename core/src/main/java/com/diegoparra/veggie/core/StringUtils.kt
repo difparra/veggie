@@ -7,15 +7,15 @@ import java.util.regex.Pattern
  */
 fun String.removeCaseAndAccents() =
     this.lowercase()
-        .replace('á','a').replace('à', 'a')
-        .replace('é','e').replace('à', 'a')
-        .replace('í','i').replace('à', 'a')
-        .replace('ó','o').replace('à', 'a')
-        .replace('ú','u').replace('à', 'a')
-        .replace('ñ','n')
+        .replace('á', 'a').replace('à', 'a')
+        .replace('é', 'e').replace('à', 'a')
+        .replace('í', 'i').replace('à', 'a')
+        .replace('ó', 'o').replace('à', 'a')
+        .replace('ú', 'u').replace('à', 'a')
+        .replace('ñ', 'n')
 
 
-fun String.trimAllSpaces() = this.replace(" ","")
+fun String.trimAllSpaces() = this.replace(" ", "")
 
 
 /**
@@ -35,5 +35,5 @@ private val EMAIL_ADDRESS_PATTERN = Pattern.compile(
 /**
  * Validate is an email address is correct (according to the pattern EMAIL_ADDRESS_PATTERN)
  */
-fun validateAndSetEmail(email: String) : Boolean =
+fun validateEmail(email: String): Boolean =
     email.isNotEmpty() && EMAIL_ADDRESS_PATTERN.matcher(email).matches()

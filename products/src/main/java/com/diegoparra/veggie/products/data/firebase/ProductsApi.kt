@@ -8,10 +8,9 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.get
 import com.google.gson.Gson
+import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class ProductsApi @Inject constructor(
         private val database: FirebaseFirestore,
@@ -19,34 +18,32 @@ class ProductsApi @Inject constructor(
 ) {
     private val gson by lazy { Gson() }
 
-
-    suspend fun getTags() : Either<Failure, List<TagDto>> = suspendCoroutine { continuation ->
-        remoteConfig
-                .fetchAndActivate()
-                .addOnSuccessListener {
-                    val categoriesString = remoteConfig[ProdsFirebaseConstants.RemoteConfigKeys.categories].asString()
-                    val tagsList = gson.fromJson(categoriesString, TagDtoList::class.java)
-                    continuation.resume(Either.Right(tagsList.tagsArray))
-                }
-                .addOnFailureListener {
-                    Timber.d("Error getting tags: $it")
-                    continuation.resume(Either.Left(Failure.ServerError(exception = it, message = "Error getting tags.")))
-                }
+    suspend fun getTags(): Either<Failure, List<TagDto>> {
+        return try {
+            remoteConfig.fetchAndActivate().await()
+            val categoriesString =
+                remoteConfig[ProdsFirebaseConstants.RemoteConfigKeys.categories].asString()
+            val tagsList = gson.fromJson(categoriesString, TagDtoList::class.java)
+            Either.Right(tagsList.tagsArray)
+        } catch (e: Exception) {
+            Timber.d("Error getting tags: $e")
+            Either.Left(Failure.ServerError(exception = e, message = "Error getting tags."))
+        }
     }
 
-    suspend fun getProductsUpdatedAfter(timestamp: Timestamp) : Either<Failure, List<ProductDto>> = suspendCoroutine { continuation ->
-        database.collection(ProdsFirebaseConstants.Collections.products)
+    suspend fun getSortedProductsUpdatedAfter(timestamp: Timestamp) : Either<Failure, List<ProductDto>> {
+        return try {
+            val prods = database
+                .collection(ProdsFirebaseConstants.Collections.products)
                 .whereGreaterThan(ProdsFirebaseConstants.Keys.updatedAt, timestamp)
+                .orderBy(ProdsFirebaseConstants.Keys.updatedAt)
                 .get()
-                .addOnSuccessListener { snapshot ->
-                    val prods = snapshot.map {
-                        it.toObject<ProductDto>()
-                    }
-                    continuation.resume(Either.Right(prods))
-                }
-                .addOnFailureListener {
-                    continuation.resume(Either.Left(Failure.ServerError(exception = it, message = "Error getting last updated products.")))
-                }
+                .await()
+                .map { it.toObject<ProductDto>() }
+            Either.Right(prods)
+        }catch (e: Exception){
+            Either.Left(Failure.ServerError(exception = e, message = "Error getting last updated products."))
+        }
     }
 
 }

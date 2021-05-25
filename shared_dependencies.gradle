@@ -25,6 +25,7 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:$dataStoreVersion"
 
     implementation platform("com.google.firebase:firebase-bom:$firebaseBomVersion")      //  Manage all Firebase Library versions
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$firebaseCoroutines"
     //  More firebase products https://firebase.google.com/docs/android/setup#available-libraries*/
 
 }

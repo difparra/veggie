@@ -53,14 +53,15 @@
     <!-- Products -->
     <string name="failure_no_tags">Ha ocurrido un error. Intenta de nuevo más tarde.</string>
     <string name="failure_no_products_for_tag">No hay productos para mostrar. Intenta en otra categoría.</string>
+    <string name="failure_no_variations_found">Ha ocurrido un error. Intenta de nuevo más tarde.</string> <!-- Should never occur -->
     <string name="failure_empty_search_query">Ingresa un valor en la barra de búsqueda.</string>
     <string name="failure_no_search_result">No hay productos que coincidan con tu búsqueda.</string>
     <string name="failure_empty_cart_list">El carrito está vacío.</string>
-    <string name="failure_generic">Ha ocurrido un error. Intenta de nuevo.</string>
 
     <!-- User -->
-    <string name="failure_empty_field">%s is empty.</string>
-    <string name="failure_invalid_email">Email is not valid.</string>
+    <string name="failure_empty_field">%s está vacío.</string>
+    <string name="failure_invalid_email">El correo no es válido.</string>
+    <string name="failure_not_linked_sign_in_method">El correo se ha registrado mediante %s</string>
 
 
 </resources>

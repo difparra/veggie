@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.core
 
 /**
- * To send the state of the data from the viewModel to the Ui.
+ * Used as a wrapper to set state on data going from viewModel to Ui.
  */
 sealed class Resource<T> {
     class Loading<T> : Resource<T>()
