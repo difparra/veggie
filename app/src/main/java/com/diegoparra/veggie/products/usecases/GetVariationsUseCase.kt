@@ -2,7 +2,7 @@ package com.diegoparra.veggie.products.usecases
 
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.customTransformListToEither
+import com.diegoparra.veggie.core.mapListAndFlattenFailure
 import com.diegoparra.veggie.core.map
 import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.entities.ProductVariation
@@ -29,7 +29,7 @@ class GetVariationsUseCase @Inject constructor(
                 }
                 combine(varsQtyFlows){
                     Timber.d("invoke - combine called. ${it.toList()}")
-                    it.toList().customTransformListToEither()
+                    it.toList().mapListAndFlattenFailure()
                 }
             }
         }.flowOn(Dispatchers.IO)

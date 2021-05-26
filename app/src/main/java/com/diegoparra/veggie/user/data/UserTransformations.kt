@@ -20,18 +20,4 @@ object UserTransformations {
         }
     }
 
-
-
-
-
-    /*//  TODO()
-    fun FirebaseUser.toUser() : User = User(
-        id = uid,
-        email = email ?: "",
-        name = displayName ?: email ?: "",
-        phoneNumber = phoneNumber,
-        address = null,
-        photoUrl = null
-    )*/
-
 }

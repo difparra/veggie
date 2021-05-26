@@ -5,6 +5,12 @@
     android:id="@+id/nav_sign_in"
     app:startDestination="@id/signInOptionsFragment">
 
+    <!-- Global action to nav out of sign in flow -->
+    <action
+        android:id="@+id/action_pop_out_of_sign_in_flow"
+        app:popUpTo="@id/nav_sign_in"
+        app:popUpToInclusive="true" />
+
     <fragment
         android:id="@+id/signInOptionsFragment"
         android:name="com.diegoparra.veggie.user.ui.SignInOptionsFragment"
@@ -16,9 +22,9 @@
     </fragment>
     <fragment
         android:id="@+id/emailFragment"
-        android:name="com.diegoparra.veggie.user.ui.EmailFragment"
+        android:name="com.diegoparra.veggie.user.ui.EmailAuthFragment"
         android:label="fragment_email"
-        tools:layout="@layout/fragment_email" >
+        tools:layout="@layout/fragment_email_auth" >
         <action
             android:id="@+id/action_emailFragment_to_emailSignInFragment"
             app:destination="@id/emailSignInFragment" />

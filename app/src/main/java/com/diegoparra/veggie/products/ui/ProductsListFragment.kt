@@ -32,7 +32,9 @@ class ProductsListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.productsList.setHasFixedSize(true)  //  TODO:   Because this could be somewhat not true if a banner is used
+        binding.productsList.setHasFixedSize(true)
+            //  TODO:   Check app do not crash and products list is still visible when a banner is
+            //          added. setHasFixedSize didn't work in productVariations.
         binding.productsList.adapter = adapter
         subscribeUi()
     }

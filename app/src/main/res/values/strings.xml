@@ -61,7 +61,11 @@
     <!-- User -->
     <string name="failure_empty_field">%s está vacío.</string>
     <string name="failure_invalid_email">El correo no es válido.</string>
+    <string name="failure_short_password">La contraseña debe tener al menos %d caracteres.</string>
     <string name="failure_not_linked_sign_in_method">El correo se ha registrado mediante %s</string>
+    <string name="failure_new_user">Este correo aún no está registrado. Crea una cuenta para continuar.</string>
+    <string name="failure_existent_user">Este correo ya se encuentra registrado. Inicia sesión para continuar.</string>
+
 
 
 </resources>

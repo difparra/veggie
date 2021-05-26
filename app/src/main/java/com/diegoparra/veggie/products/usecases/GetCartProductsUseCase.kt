@@ -1,9 +1,6 @@
 package com.diegoparra.veggie.products.usecases
 
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.customTransformListToEither
-import com.diegoparra.veggie.core.map
+import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.products.domain.Product
 import com.diegoparra.veggie.products.entities.*
 import com.diegoparra.veggie.products.cart.domain.CartRepository
@@ -54,7 +51,7 @@ class GetCartProductsUseCase @Inject constructor(
                     }
                     val prodsCartFlows = deferredList.awaitAll()
                     combine(prodsCartFlows) {
-                        it.toList().customTransformListToEither()
+                        it.toList().mapListAndFlattenFailure()
                     }
                 }
             }
@@ -90,9 +87,8 @@ class GetCartProductsUseCase @Inject constructor(
         //  TODO:   Define custom expiration time for updating product info in cart.
         val prod = productsRepository.getProduct(mainId = productId.mainId, varId = productId.varId)
         //  TODO:   This has not still been tested if is working
-        //  Check if product has no longer stock, and if so, delete from cart.
-        //      This can occur when the user had a saved cart list from the previous day, and the
-        //      next day, some items in the cart list would possibly have no longer stock.
+        //          Check if product has no longer stock, and if so, delete from cart. For example,
+        //          there were left products in cart the previous day and next day some has no stock.
         if(prod is Either.Right && !prod.b.stock){
             cartRepository.deleteItem(productId = productId)
         }

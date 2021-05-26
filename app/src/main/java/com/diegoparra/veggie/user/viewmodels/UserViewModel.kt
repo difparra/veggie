@@ -12,12 +12,5 @@ class UserViewModel @Inject constructor(
 ) : ViewModel() {
 
     val isSignedIn = isSignedInUseCase().asLiveData()
-    /*val isSignedIn: LiveData<Resource<Boolean>> = isSignedInUseCase()
-        .onStart {
-            Resource.Loading<Boolean>()
-        }
-        .map {
-            Resource.Success(it)
-        }.asLiveData()*/
 
 }

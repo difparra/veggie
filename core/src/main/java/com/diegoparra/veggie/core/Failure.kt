@@ -23,25 +23,32 @@ sealed class Failure {
         object EmptyCartList : CartFailure()
     }
 
-
-    /*sealed class SignInFailure : Failure() {
-        class FirebaseException(val exception: Exception) : SignInFailure()
-        object EmptyField : SignInFailure()
-        object InvalidEmail : SignInFailure()
-        object NewUser : SignInFailure()
-        class NotLinkedSignInMethod(val signInMethod: String, val linkedSignInMethods: List<String>) : SignInFailure()
-    }*/
-
 }
 
 sealed class SignInFailure : Failure() {
 
     class FirebaseException(val exception: Exception) : SignInFailure()
-    class SignInMethodNotLinked(val signInMethod: String, val linkedSignInMethods: List<String>) : SignInFailure()
+    object NewUser : SignInFailure()
+    object ExistentUser : SignInFailure()
+    class SignInMethodNotLinked(val signInMethod: String, val linkedSignInMethods: List<String>) :
+        SignInFailure()
 
     sealed class WrongInput : SignInFailure() {
-        object EmptyField : WrongInput()
-        object InvalidEmail : WrongInput()
+        sealed class Email : WrongInput() {
+            object Empty : Email()
+            object Invalid : Email()
+        }
+
+        sealed class Password : WrongInput() {
+            object Empty : Password()
+            object Short : Password() {
+                const val minLength = 6
+            }
+        }
+
+        object NameEmpty : WrongInput()
     }
+
+    class WrongInputList(val failures: List<WrongInput>) : SignInFailure()
 
 }

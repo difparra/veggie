@@ -20,8 +20,6 @@ class FakeProductsRepository(
         }
     }
 
-    //  TODO:   Search the difference between throwable and exception in kotlin
-
     override suspend fun getTags(forceUpdate: Boolean, expirationTimeMillis: Long): Either<Failure, List<Tag>> {
         Timber.d("getTags() called with: forceUpdate = $forceUpdate, expirationTimeMillis = $expirationTimeMillis")
 

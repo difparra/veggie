@@ -96,7 +96,7 @@ class CartRepositoryImpl @Inject constructor(
 
 
     override fun getMinOrder(): Either<Failure, Int> {
-        //  TODO:   Define method to getMinOrder
+        //  TODO:   Define method to getMinOrder, possibly from remoteConfig
         return Either.Right(40000)
     }
 }

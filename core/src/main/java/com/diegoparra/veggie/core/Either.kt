@@ -116,21 +116,59 @@ fun <L, R> Either<L, R>.onSuccess(fn: (success: R) -> Unit): Either<L, R> =
  */
 
 /**
- * Converts a List of Either<> into a Either<_,List>. (Left-Biased)
+ * Transform a List of Either<> into a Either<_,List>. (Left-Biased)
  * The returned value will be:
- *  - Failure:  If any of the elements of the list is Failure(Left).
- *              Failure returned will be the first Failure encountered in the list.
- *  - Success:  If every item in the list is Success (Right).
- *              Success returned will now represent the list<R> without any failures.
+ *  - Failure:  If any of the elements in the list is Failure (Left)
+ *  - Success:  If every item in the list is Success (Right)
  */
-fun <L,R> List<Either<L, R>>.customTransformListToEither() : Either<L, List<R>> {
-    return if(this.any { it.isLeft }){
-        val left = this.find { it.isLeft } as Either.Left
-        Either.Left(left.a)
+fun <L,R> List<Either<L, R>>.mapList() : Either<List<L>, List<R>> {
+    val failures = this.filter { it is Either.Left }
+    return if(failures.isNotEmpty()){
+        Either.Left(failures.map { (it as Either.Left).a })
     }else{
         Either.Right(this.map { (it as Either.Right).b })
     }
 }
+
+/**
+ * Transform a List of Either<> into a Either<_,List>. (Left-Biased)
+ * The returned value will be:
+ *  - Failure:  If any of the elements in the list is Failure(Left).
+ *              Returned Failure will be the first Failure encountered in the list.
+ *  - Success:  If every item in the list is Success (Right).
+ *              Returned Success will now represent the list<R> without failures.
+ */
+fun <L,R> List<Either<L, R>>.mapListAndFlattenFailure(flattenFailure: (List<L>)->L = { it.first() }) : Either<L, List<R>> {
+    return when(val mappedList = this.mapList()){
+        is Either.Left -> Either.Left(flattenFailure(mappedList.a))
+        is Either.Right -> mappedList
+    }
+}
+
+
+/**
+ * Return the failures contained in a list of Either
+ */
+fun <L> List<Either<L, Any>>.getFailures() : List<L> {
+    return this
+        .filter { it is Either.Left }
+        .map {
+            (it as Either.Left).a
+        }
+}
+
+
+/**
+ * Transform Either<Failure, T> into Resource.Success or Resource.Error
+ */
+fun <T> Either<Failure, T>.toResource() : Resource<T> {
+    return when(this){
+        is Either.Left -> Resource.Error(this.a)
+        is Either.Right -> Resource.Success(this.b)
+    }
+}
+
+
 
 /**
  * Right-biased customMap()
@@ -139,6 +177,9 @@ fun <L,R> List<Either<L, R>>.customTransformListToEither() : Either<L, List<R>> 
  *  - Failure: If the either was initially a failure
  *  - Failure: If for any of the elements in the list the transformation (parameter) results in failure.
  *  - Success: When list transformed does not contain any failure.
- */
+ *//*
+
 fun <T, L, R> Either<L, List<R>>.customMap(fn: (R) -> Either<L, T>): Either<L, List<T>> =
-    this.flatMap { it.map(fn).customTransformListToEither() }
+    this.flatMap { it.map(fn).mapListAndFlattenFailure() }
+
+*/

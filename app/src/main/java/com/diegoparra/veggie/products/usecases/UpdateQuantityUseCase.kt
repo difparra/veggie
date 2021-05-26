@@ -5,6 +5,7 @@ import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.products.cart.domain.CartItem
 import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.cart.domain.CartRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class UpdateQuantityUseCase @Inject constructor(
@@ -26,7 +27,11 @@ class UpdateQuantityUseCase @Inject constructor(
                 cartRepository.addItem(CartItem(productId = productId, quantity = 1))
             }else if(currQty < maxOrder){
                 cartRepository.updateQuantityItem(productId = productId, newQuantity = currQty + 1)
-            }// TODO: else throw error when currentQty is already maxOrder so productQty can't be added
+            }
+            // Here can be optionally added a new variable to toast a message indicating the user
+            // that he can't order more items on this product
+        }else{
+            Timber.e("Couldn't find current quantity for product $productId")
         }
     }
 
@@ -38,7 +43,7 @@ class UpdateQuantityUseCase @Inject constructor(
                 cartRepository.updateQuantityItem(productId = productId, newQuantity = currQty - 1)
             }else if(currQty == 1){
                 cartRepository.deleteItem(productId = productId)
-            }// TODO: else throw error when currentQty is already 0
+            }
         }
     }
 

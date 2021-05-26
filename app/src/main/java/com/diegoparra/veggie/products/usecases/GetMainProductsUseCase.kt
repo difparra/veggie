@@ -2,7 +2,7 @@ package com.diegoparra.veggie.products.usecases
 
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.customTransformListToEither
+import com.diegoparra.veggie.core.mapListAndFlattenFailure
 import com.diegoparra.veggie.core.map
 import com.diegoparra.veggie.products.domain.Product
 import com.diegoparra.veggie.products.entities.ProductMain
@@ -61,7 +61,7 @@ class GetMainProductsUseCase @Inject constructor(
                 }
                 val mainProdsQtyFlows = deferredList.awaitAll()
                 combine(mainProdsQtyFlows){
-                    it.toList().customTransformListToEither()
+                    it.toList().mapListAndFlattenFailure()
                 }
             }
         }.flowOn(Dispatchers.IO)

@@ -40,7 +40,7 @@ object AppModule {
     fun providesFirebaseRemoteConfig() : FirebaseRemoteConfig {
         return Firebase.remoteConfig.apply {
             setConfigSettingsAsync(remoteConfigSettings {
-                //  TODO:   Change when launched in production
+                //  TODO:   Change minimumFetchInterval for RemoteConfig when in production
                 //minimumFetchIntervalInSeconds = TimeUnit.HOURS.toSeconds(12)
                 minimumFetchIntervalInSeconds = 1
             })

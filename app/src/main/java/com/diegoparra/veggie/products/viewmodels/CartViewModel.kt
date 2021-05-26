@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -131,7 +132,10 @@ class CartViewModel @Inject constructor(
                 val maxOrder = it.maxOrder
                 updateQuantityUseCase(UpdateQuantityUseCase.Params.Add(productId, maxOrder))
             }
-        }// TODO:   Deal when variation was not found in viewModel (could be because of the lifecycles).
+        }
+        if(prod == null){
+            Timber.e("Product $productId was not found in CartViewModel products.")
+        }
     }
 
     fun reduceQuantity(productId: ProductId) {
@@ -142,7 +146,10 @@ class CartViewModel @Inject constructor(
             viewModelScope.launch {
                 updateQuantityUseCase(UpdateQuantityUseCase.Params.Reduce(productId))
             }
-        }// TODO:   Deal when variation was not found in viewModel (could be because of the lifecycles).
+        }
+        if(prod == null){
+            Timber.e("Product $productId was not found in CartViewModel products.")
+        }
     }
 
     private fun findCartProd(productId: ProductId) : ProductCart? {
