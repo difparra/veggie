@@ -11,7 +11,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class EmailAuthFragment : Fragment() {
+class EmailViewPagerFragment : Fragment() {
 
     private var _binding: FragmentEmailAuthBinding? = null
     private val binding get() = _binding!!

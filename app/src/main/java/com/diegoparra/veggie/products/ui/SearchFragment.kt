@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
@@ -26,6 +27,7 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel : SearchViewModel by viewModels()
     private val adapter by lazy { ProductsAdapter() }
+    private var searchTextWatcher: TextWatcher? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,17 +51,13 @@ class SearchFragment : Fragment() {
             viewModel.clearQuery()
             binding.searchQuery.setText("")
         }
-        binding.searchQuery.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                viewModel.setQuery(s.toString())
-                val btnClearVisibility = s.toString().isNotEmpty()
-                if(binding.clearSearchText.isVisible != btnClearVisibility){
-                    binding.clearSearchText.isVisible = btnClearVisibility
-                }
+        searchTextWatcher = binding.searchQuery.addTextChangedListener {
+            viewModel.setQuery(it.toString())
+            val btnClearVisibility = it.toString().isNotEmpty()
+            if(binding.clearSearchText.isVisible != btnClearVisibility){
+                binding.clearSearchText.isVisible = btnClearVisibility
             }
-        })
+        }
         binding.searchQuery.setOnEditorActionListener { v, actionId, event ->
             if(actionId == EditorInfo.IME_ACTION_SEARCH) {
                 v.hideKeyboard()
@@ -133,6 +131,7 @@ class SearchFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        searchTextWatcher?.let { binding.searchQuery.removeTextChangedListener(it) }
         _binding = null
     }
 

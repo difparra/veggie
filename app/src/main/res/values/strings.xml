@@ -59,12 +59,15 @@
     <string name="failure_empty_cart_list">El carrito está vacío.</string>
 
     <!-- User -->
-    <string name="failure_empty_field">%s está vacío.</string>
-    <string name="failure_invalid_email">El correo no es válido.</string>
-    <string name="failure_short_password">La contraseña debe tener al menos %d caracteres.</string>
-    <string name="failure_not_linked_sign_in_method">El correo se ha registrado mediante %s</string>
+    <string name="failure_empty_field">Campo vacío.</string>
+    <string name="failure_invalid_field_m">Por favor ingresa un %s válido.</string>
+    <string name="failure_invalid_field_f">Por favor ingresa una %s válida.</string>
+    <string name="failure_short_field_m">El %1$s debe tener al menos %2$d caracteres.</string>
+    <string name="failure_short_field_f">La %1$s debe tener al menos %2$d caracteres.</string>
+
+    <string name="failure_not_linked_sign_in_method">Este correo ya se encuentra registrado. Para iniciar sesión accede mediante %s en la pantalla anterior.</string>
     <string name="failure_new_user">Este correo aún no está registrado. Crea una cuenta para continuar.</string>
-    <string name="failure_existent_user">Este correo ya se encuentra registrado. Inicia sesión para continuar.</string>
+    <string name="failure_existent_user">Este correo ya se encuentra registrado. Para crear una cuenta usa un correo diferente, o prueba iniciando sesión.</string>
 
 
 

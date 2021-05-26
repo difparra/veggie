@@ -1,28 +1,48 @@
 package com.diegoparra.veggie.user.ui
 
+import android.content.Context
+import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.SignInFailure
 import com.google.android.material.textfield.TextInputLayout
-import timber.log.Timber
 
-fun TextInputLayout.setError(failure: Failure, mapFailureString: Map<Failure, String>) {
-    if (mapFailureString.isNullOrEmpty()) {
-        return
-    } else {
-        val message = mapFailureString[failure]
-        if(message != null){
-            error = message
-        }else{
-            error = null
-            Timber.e("Failure: $failure has not assigned an error message")
+fun TextInputLayout.handleError(
+    resource: Resource<String>,
+    inputErrorMessage: (String, SignInFailure.WrongInput, Boolean) -> String? = context.handleGenericInputError,
+    otherErrorMessage: (String, Failure, Boolean) -> String? = { _, f,_ -> f.toString() },
+    femaleGenderString: Boolean = false,
+) {
+    val field = this.hint.toString().lowercase()
+    error = when (resource) {
+        is Resource.Success -> null
+        is Resource.Error -> {
+            when (val failure = resource.failure) {
+                is SignInFailure.WrongInput -> inputErrorMessage(field, failure, femaleGenderString)
+                else -> otherErrorMessage(field, failure, femaleGenderString)
+            }
+        }
+        else -> null
+    }
+}
+
+val Context.handleGenericInputError: (String, SignInFailure.WrongInput, Boolean) -> String
+    get() = { field, failure, femaleString ->
+        when(failure){
+            is SignInFailure.WrongInput.Empty -> getString(R.string.failure_empty_field)
+            is SignInFailure.WrongInput.Invalid -> {
+                if(femaleString){
+                    getString(R.string.failure_invalid_field_f, field)
+                }else{
+                    getString(R.string.failure_invalid_field_m, field)
+                }
+            }
+            is SignInFailure.WrongInput.Short -> {
+                if(femaleString){
+                    getString(R.string.failure_short_field_f, field, failure.minLength)
+                }else{
+                    getString(R.string.failure_short_field_m, field, failure.minLength)
+                }
+            }
         }
     }
-}
-
-fun TextInputLayout.handleError(resource: Resource<String>, mapFailureString: Map<Failure, String>) {
-    when(resource){
-        is Resource.Success -> error = null
-        is Resource.Error -> this.setError(resource.failure, mapFailureString)
-        else -> Timber.e("Not handled loading case.")
-    }
-}

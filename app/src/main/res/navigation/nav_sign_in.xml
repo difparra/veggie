@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/emailFragment"
-        android:name="com.diegoparra.veggie.user.ui.EmailAuthFragment"
+        android:name="com.diegoparra.veggie.user.ui.EmailViewPagerFragment"
         android:label="fragment_email"
         tools:layout="@layout/fragment_email_auth" >
         <action

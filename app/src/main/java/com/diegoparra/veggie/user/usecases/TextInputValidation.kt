@@ -8,9 +8,9 @@ object TextInputValidation {
 
     fun forEmail(email: String): Either<SignInFailure.WrongInput, String> {
         return if (email.isEmpty()) {
-            Either.Left(SignInFailure.WrongInput.Email.Empty)
+            Either.Left(SignInFailure.WrongInput.Empty)
         } else if (!validateEmail(email)) {
-            Either.Left(SignInFailure.WrongInput.Email.Invalid)
+            Either.Left(SignInFailure.WrongInput.Invalid)
         } else {
             Either.Right(email)
         }
@@ -18,9 +18,9 @@ object TextInputValidation {
 
     fun forPassword(password: String): Either<SignInFailure.WrongInput, String> {
         return if (password.isEmpty()) {
-            Either.Left(SignInFailure.WrongInput.Password.Empty)
-        } else if (password.length < SignInFailure.WrongInput.Password.Short.minLength) {
-            Either.Left(SignInFailure.WrongInput.Password.Short)
+            Either.Left(SignInFailure.WrongInput.Empty)
+        } else if (password.length < 6) {
+            Either.Left(SignInFailure.WrongInput.Short(6))
         } else {
             Either.Right(password)
         }
@@ -28,7 +28,7 @@ object TextInputValidation {
 
     fun forName(name: String): Either<SignInFailure.WrongInput, String> {
         return if (name.isEmpty()) {
-            Either.Left(SignInFailure.WrongInput.NameEmpty)
+            Either.Left(SignInFailure.WrongInput.Empty)
         } else {
             Either.Right(name)
         }
