@@ -16,20 +16,17 @@ class EmailSignInUseCase @Inject constructor(
     ) : EmailParams
 
 
-    override fun validateFields(params: Params): Map<String, Either<SignInFailure.WrongInput, String>> =
-        mapOf(
-            UserConstants.SignInFields.EMAIL to validateEmail(params.email),
-            UserConstants.SignInFields.PASSWORD to validatePassword(params.password)
-        )
-
     override fun validatePassword(password: String): Either<SignInFailure.WrongInput, String> {
         val validation = TextInputValidation.forPassword(password)
-        return if(validation is Either.Left && validation.a is SignInFailure.WrongInput.Short){
+        return if (validation is Either.Left && validation.a is SignInFailure.WrongInput.Short) {
             Either.Right(password)
-        }else{
+        } else {
             validation
         }
     }
+
+    override fun validateAdditionalFields(params: Params): Set<Either<SignInFailure.WrongInput, String>> =
+        setOf()
 
 
     override suspend fun validateEmailLinkedWithAuthMethod(email: String): Either<Failure, Unit> {

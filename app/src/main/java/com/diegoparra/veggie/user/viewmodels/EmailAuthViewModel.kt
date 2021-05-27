@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.user.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.user.entities_and_repo.UserConstants
@@ -7,6 +8,7 @@ import com.diegoparra.veggie.user.usecases.EmailAuthUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 abstract class EmailAuthViewModel<Params : EmailAuthUseCase.EmailParams>(
     private val useCase: EmailAuthUseCase<Params>
@@ -50,6 +52,7 @@ abstract class EmailAuthViewModel<Params : EmailAuthUseCase.EmailParams>(
 
 
     fun authenticate(params: Params) {
+        Timber.d("authenticate() called with: params = $params")
         viewModelScope.launch {
             cleanErrorStateAllFields(params)
             useCase(params).fold(
@@ -61,6 +64,7 @@ abstract class EmailAuthViewModel<Params : EmailAuthUseCase.EmailParams>(
 
     //  Set all fields to success, so that error is deleted
     protected fun cleanErrorStateAllFields(params: Params) {
+        Timber.d("cleanErrorStateAllFields() called with: params = $params")
         _email.value = Resource.Success(params.email)
         _password.value = Resource.Success(params.password)
         cleanErrorAdditionalFields(params)
@@ -70,27 +74,30 @@ abstract class EmailAuthViewModel<Params : EmailAuthUseCase.EmailParams>(
 
 
     protected open fun handleSuccess(nothing: Unit) {
+        Timber.d("handleSuccess() called")
         _navigateSignedIn.value = Event(true)
     }
 
     protected open fun handleFailure(failure: Failure) {
+        Timber.d("handleFailure() called with: failure = $failure")
         when (failure) {
-            is SignInFailure.WrongInputs -> handleInputFailure(failure.inputErrors)
+            is SignInFailure.ValidationFailures -> failure.failures.forEach { handleFailure(it) }
+            is SignInFailure.WrongInput -> handleInputFailure(failure.field, failure)
             is SignInFailure.WrongSignInMethod -> _email.value = Resource.Error(failure)
             else -> _toastFailure.value = Event(failure)
         }
     }
 
-    protected fun handleInputFailure(inputFailures: Map<String, SignInFailure.WrongInput>) {
-        _email.setIfNotNull(inputFailures[UserConstants.SignInFields.EMAIL]?.let { Resource.Error(it) })
-        _password.setIfNotNull(inputFailures[UserConstants.SignInFields.PASSWORD]?.let { Resource.Error(it) })
-        handleInputFailureOnAdditionalFields(inputFailures)
+
+    private fun handleInputFailure(field: String, failure: SignInFailure.WrongInput) {
+        Timber.d("handleInputFailure() called with: field = $field, failure = $failure")
+        when (field) {
+            UserConstants.SignInFields.EMAIL -> _email.value = Resource.Error(failure)
+            UserConstants.SignInFields.PASSWORD -> _password.value = Resource.Error(failure)
+            else -> handleInputFailureOnAdditionalFields(failure.field, failure)
+        }
     }
 
-    protected abstract fun handleInputFailureOnAdditionalFields(inputFailures: Map<String, SignInFailure.WrongInput>)
-
-    protected fun <T> MutableStateFlow<T>.setIfNotNull(value: T?) {
-        value?.let { this.value = value }
-    }
+    protected abstract fun handleInputFailureOnAdditionalFields(field: String, failure: Failure)
 
 }

@@ -2,6 +2,7 @@ package com.diegoparra.veggie.user.ui
 
 import android.os.Bundle
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +16,9 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.core.SignInFailure
 import com.diegoparra.veggie.databinding.FragmentEmailSignUpBinding
-import com.diegoparra.veggie.user.entities_and_repo.UserConstants
 import com.diegoparra.veggie.user.viewmodels.EmailSignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class EmailSignUpFragment : Fragment() {
@@ -44,19 +45,22 @@ class EmailSignUpFragment : Fragment() {
 
         binding.btnSignUp.setOnClickListener {
             viewModel.signUp(
-                email = binding.email.toString(),
-                password = binding.password.toString(),
-                name = binding.name.toString()
+                email = binding.email.text.toString(),
+                password = binding.password.text.toString(),
+                name = binding.name.text.toString()
             )
         }
 
-        binding.email.addTextChangedListener {
+        emailTextWatcher = binding.email.addTextChangedListener {
+            Timber.d("email changed to: ${it.toString()}")
             viewModel.setEmail(it.toString())
         }
-        binding.password.addTextChangedListener {
+        passwordTextWatcher = binding.password.addTextChangedListener {
+            Timber.d("password changed to: ${it.toString()}")
             viewModel.setPassword(it.toString())
         }
-        binding.name.addTextChangedListener {
+        nameTextWatcher = binding.name.addTextChangedListener {
+            Timber.d("name changed to: ${it.toString()}")
             viewModel.setName(it.toString())
         }
     }
@@ -66,12 +70,13 @@ class EmailSignUpFragment : Fragment() {
         subscribePassword()
         subscribeName()
         subscribeToastMessage()
-        //subscribeValidationFailure()
+        subscribeValidationFailure()
         subscribeNavigateSignedIn()
     }
 
     private fun subscribeEmail() {
         viewModel.email.observe(viewLifecycleOwner) {
+            Timber.d("email resource received: $it")
             binding.emailLayout.handleError(
                 resource = it, femaleGenderString = false,
                 otherErrorMessage = { field, failure, _ ->
@@ -92,6 +97,7 @@ class EmailSignUpFragment : Fragment() {
 
     private fun subscribePassword() {
         viewModel.password.observe(viewLifecycleOwner) {
+            Timber.d("password resource received: $it")
             binding.passwordLayout.handleError(
                 resource = it, femaleGenderString = true
             )
@@ -100,6 +106,7 @@ class EmailSignUpFragment : Fragment() {
 
     private fun subscribeName() {
         viewModel.name.observe(viewLifecycleOwner) {
+            Timber.d("name resource received: $it")
             binding.nameLayout.handleError(
                 resource = it, femaleGenderString = false
             )
@@ -108,19 +115,27 @@ class EmailSignUpFragment : Fragment() {
 
     private fun subscribeToastMessage() {
         viewModel.toastFailure.observe(viewLifecycleOwner, EventObserver {
+            Timber.d("toastMessage failure received: $it")
             Toast.makeText(binding.root.context, it.toString(), Toast.LENGTH_SHORT).show()
         })
     }
 
     private fun subscribeValidationFailure() {
         viewModel.btnContinueEnabled.observe(viewLifecycleOwner) {
+            Timber.d("btnContinueEnabled received: $it")
             binding.btnSignUp.isEnabled = !it
         }
     }
 
     private fun subscribeNavigateSignedIn() {
         viewModel.navigateSignedIn.observe(viewLifecycleOwner, EventObserver {
-            //  TODO: Not tested yet. Should sign in when correctly authenticated.
+            //  TODO:   Not tested yet. Should sign in when correctly authenticated.
+            //          It has not failures but also not the desired behaviour.
+            //          When login is successful, navigation goes until homeFragment, because
+            //          userFragment was already popped of the backstack.
+            //          However I can't just delete pop userFragment, because then when going back
+            //          from login flow, it will try to show a userDataFragment wiouth being logged in.
+            Timber.d("navigateSignedIn received: $it")
             val action = NavSignInDirections.actionPopOutOfSignInFlow()
             findNavController().navigate(action)
         })

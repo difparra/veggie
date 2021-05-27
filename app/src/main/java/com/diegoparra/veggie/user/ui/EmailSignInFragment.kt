@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.NavSignInDirections
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.EventObserver
+import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.core.SignInFailure.WrongSignInMethod
 import com.diegoparra.veggie.databinding.FragmentEmailSignInBinding
 import com.diegoparra.veggie.user.entities_and_repo.UserConstants
@@ -67,7 +68,7 @@ class EmailSignInFragment : Fragment() {
         subscribeEmail()
         subscribePassword()
         subscribeToastMessage()
-        //subscribeValidationFailure()
+        subscribeValidationFailure()
         subscribeNavigateSignedIn()
     }
 

@@ -17,24 +17,20 @@ class EmailSignUpUseCase @Inject constructor(
     ) : EmailParams
 
 
-    override fun validateFields(params: Params): Map<String, Either<SignInFailure.WrongInput, String>> =
-        mapOf(
-            UserConstants.SignInFields.EMAIL to validateEmail(params.email),
-            UserConstants.SignInFields.PASSWORD to validateEmail(params.password),
-            UserConstants.SignInFields.NAME to validateEmail(params.name)
-        )
-
     fun validateName(name: String): Either<SignInFailure.WrongInput, String> =
         TextInputValidation.forName(name)
+
+    override fun validateAdditionalFields(params: Params): Set<Either<SignInFailure.WrongInput, String>> =
+        setOf(validateName(params.name))
 
 
     override suspend fun validateEmailLinkedWithAuthMethod(email: String): Either<Failure, Unit> {
         return getSignInMethodsForEmail(email).flatMap {
-            if(it.isEmpty()){
+            if (it.isEmpty()) {
                 Either.Right(Unit)
-            }else if(SignInMethod.EMAIL in it){
+            } else if (SignInMethod.EMAIL in it) {
                 Either.Left(SignInFailure.WrongSignInMethod.ExistentUser)
-            }else{
+            } else {
                 Either.Left(
                     SignInFailure.WrongSignInMethod.SignInMethodNotLinked(
                         signInMethod = SignInMethod.EMAIL.toString(),

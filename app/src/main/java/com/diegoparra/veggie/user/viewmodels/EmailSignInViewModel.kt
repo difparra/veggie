@@ -26,7 +26,7 @@ class EmailSignInViewModel @Inject constructor(
         //  No additional fields to email and password. There is no need to clean.
     }
 
-    override fun handleInputFailureOnAdditionalFields(inputFailures: Map<String, SignInFailure.WrongInput>) {
+    override fun handleInputFailureOnAdditionalFields(field: String, failure: Failure) {
         //  No additional fields to email and password. There is no need to clean.
     }
 

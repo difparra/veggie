@@ -13,13 +13,13 @@ fun TextInputLayout.handleError(
     otherErrorMessage: (String, Failure, Boolean) -> String? = { _, f,_ -> f.toString() },
     femaleGenderString: Boolean = false,
 ) {
-    val field = this.hint.toString().lowercase()
+    val fieldName = this.hint.toString().lowercase()
     error = when (resource) {
         is Resource.Success -> null
         is Resource.Error -> {
             when (val failure = resource.failure) {
-                is SignInFailure.WrongInput -> inputErrorMessage(field, failure, femaleGenderString)
-                else -> otherErrorMessage(field, failure, femaleGenderString)
+                is SignInFailure.WrongInput -> inputErrorMessage(fieldName, failure, femaleGenderString)
+                else -> otherErrorMessage(fieldName, failure, femaleGenderString)
             }
         }
         else -> null

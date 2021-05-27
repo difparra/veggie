@@ -36,12 +36,12 @@ sealed class SignInFailure : Failure() {
             WrongSignInMethod()
     }
 
-    sealed class WrongInput: SignInFailure() {
-        object Empty : WrongInput()
-        object Invalid : WrongInput()
-        class Short(val minLength: Int) : WrongInput()
+    sealed class WrongInput(val field: String): SignInFailure() {
+        class Empty(field: String) : WrongInput(field)
+        class Invalid(field: String) : WrongInput(field)
+        class Short(field: String, val minLength: Int) : WrongInput(field)
     }
 
-    class WrongInputs(val inputErrors: Map<String, WrongInput>) : SignInFailure()
+    class ValidationFailures(val failures: Set<Failure>): SignInFailure()
 
 }

@@ -1,16 +1,15 @@
 package com.diegoparra.veggie.user.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.user.entities_and_repo.UserConstants
 import com.diegoparra.veggie.user.usecases.EmailSignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,15 +30,20 @@ class EmailSignUpViewModel @Inject constructor(
     }
 
     fun signUp(email: String, password: String, name: String) {
+        Timber.d("signUp() called with: email = $email, password = $password, name = $name")
         authenticate(EmailSignUpUseCase.Params(email, password, name))
     }
 
     override fun cleanErrorAdditionalFields(params: EmailSignUpUseCase.Params) {
+        Timber.d("cleanErrorAdditionalFields() called with: params = $params")
         _name.value = Resource.Success(params.name)
     }
 
-    override fun handleInputFailureOnAdditionalFields(inputFailures: Map<String, SignInFailure.WrongInput>) {
-        _name.setIfNotNull(inputFailures[UserConstants.SignInFields.NAME]?.let { Resource.Error(it) })
+    override fun handleInputFailureOnAdditionalFields(field: String, failure: Failure) {
+        Timber.d("handleInputFailureOnAdditionalFields() called with: field = $field, failure = $failure")
+        if(field == UserConstants.SignInFields.NAME){
+            _name.value = Resource.Error(failure)
+        }
     }
 
 }
