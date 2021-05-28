@@ -1,8 +1,8 @@
 package com.diegoparra.veggie.products.fakes
 
-import com.diegoparra.veggie.products.domain.AdminMainData
-import com.diegoparra.veggie.products.domain.AdminProduct
-import com.diegoparra.veggie.products.domain.AdminVariationData
+import com.diegoparra.veggie.products.domain.MainData
+import com.diegoparra.veggie.products.domain.ProductWithAllVariations
+import com.diegoparra.veggie.products.domain.VariationData
 import com.diegoparra.veggie.products.domain.Tag
 import java.util.*
 
@@ -162,7 +162,7 @@ private class ProductBuilder {
     private lateinit var name: String
     private lateinit var imageUrl: String
     private lateinit var mainVarId: String
-    private val variations = mutableListOf<AdminVariationData>()
+    private val variations = mutableListOf<VariationData>()
 
     private fun String.normalise() =
             toLowerCase(Locale.ROOT)
@@ -186,7 +186,7 @@ private class ProductBuilder {
         this.name = name
         this.imageUrl = imageUrl
         this.mainVarId = varId?.normalise() ?: (name + unit.unit).normalise()
-        variations.add(AdminVariationData(
+        variations.add(VariationData(
                 varId = this.mainVarId,
                 relatedMainId = this.mainId,
                 unit = unit.unit,
@@ -218,7 +218,7 @@ private class ProductBuilder {
                      stock: Boolean = true, maxOrder: Int = 10, suggestedLabel: FakeLabel? = null, details: List<FakeDetail>? = null
     ) : ProductBuilder {
         val finalVarId = getUniqueVarIdInMainId(varId?.normalise() ?: (name + unit.unit).normalise())
-        variations.add(AdminVariationData(
+        variations.add(VariationData(
                 varId = finalVarId,
                 relatedMainId = this.mainId,
                 unit = unit.unit,
@@ -249,10 +249,10 @@ private class ProductBuilder {
         return finalVarId
     }
 
-    fun build() : AdminProduct {
-        return AdminProduct(
+    fun build() : ProductWithAllVariations {
+        return ProductWithAllVariations(
                 tagId = tagId,
-                mainData = AdminMainData(mainId = mainId, name = name, imageUrl = imageUrl, mainVariationId = mainVarId),
+                mainData = MainData(mainId = mainId, name = name, imageUrl = imageUrl, mainVariationId = mainVarId),
                 variations = variations
         )
     }

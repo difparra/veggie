@@ -1,8 +1,6 @@
 package com.diegoparra.veggie.products.data.room
 
-import com.diegoparra.veggie.products.domain.Product
-import com.diegoparra.veggie.products.domain.Tag
-import com.diegoparra.veggie.products.domain.Variation
+import com.diegoparra.veggie.products.domain.*
 
 object ProductEntitiesTransformations {
 
@@ -12,30 +10,36 @@ object ProductEntitiesTransformations {
     )
 
     fun MainWithMainVariation.toProduct() = Product(
-            mainId = mainEntity.mainId,
-            name = mainEntity.name,
-            imageUrl = mainEntity.imageUrl,
-            variation = variationEntity.toVariation()
+            tagId = mainEntity.relatedTagId,
+            mainData = mainEntity.toMainData(),
+            variationData = variationEntity.toVariationData(),
     )
 
-    fun VariationEntity.toVariation() = Variation(
-            mainId = relatedMainId,
+    fun VariationWithMain.toProduct() = Product(
+        tagId = mainEntity.relatedTagId,
+        mainData = mainEntity.toMainData(),
+        variationData = variationEntity.toVariationData(),
+    )
+
+
+    fun MainEntity.toMainData() = MainData(
+        mainId = mainId,
+        name = name,
+        imageUrl = imageUrl,
+        mainVariationId = mainVarId
+    )
+
+    fun VariationEntity.toVariationData() = VariationData(
             varId = varId,
+            relatedMainId = relatedMainId,
             unit = unit,
             weightGr = weightGr,
-            details = details,
             price = price,
             discount = discount,
             stock = stock,
             maxOrder = maxOrder,
-            suggestedLabel = label
-    )
-
-    fun VariationWithMain.toProduct() = Product(
-            mainId = mainEntity.mainId,
-            name = mainEntity.name,
-            imageUrl = mainEntity.imageUrl,
-            variation = variationEntity.toVariation()
+            suggestedLabel = label,
+            detailOptions = details
     )
 
 }

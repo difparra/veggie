@@ -23,17 +23,17 @@ interface ProductsRepository {
         expirationTimeMillis: Long = TimeUnit.MINUTES.toMillis(10)
     ): Either<Failure, List<Product>>
 
-    suspend fun getProductVariationsByMainId(
+    suspend fun getVariationsByMainId(
         mainId: String,
         forceUpdate: Boolean = false,
         expirationTimeMillis: Long = TimeUnit.MINUTES.toMillis(15)
-    ) : Either<Failure, List<Variation>>
+    ): Either<Failure, List<VariationData>>
 
     suspend fun getProduct(
         mainId: String, varId: String,
         forceUpdate: Boolean = false,
         expirationTimeMillis: Long = TimeUnit.MINUTES.toMillis(10)
-    ) : Either<Failure, Product>
+    ): Either<Failure, Product>
 
     /*
         ForceUpdate is set to false as default. Otherwise, there would be no point on having a local

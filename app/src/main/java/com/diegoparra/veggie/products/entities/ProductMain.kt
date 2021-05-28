@@ -10,14 +10,14 @@ data class ProductMain(
     private val product: Product,
     val quantity: Int
 ){
-    val mainId = product.mainId
-    val name = product.name
-    val imageUrl = product.imageUrl
-    val unit = product.unit
-    val weightGr = product.weightGr
-    val price = product.price
-    val discount = product.discount
-    val stock = product.stock
-    val label = product.label
+    val mainId = product.mainData.mainId
+    val name = product.mainData.name
+    val imageUrl = product.mainData.imageUrl
+    val unit = product.variationData.unit
+    val weightGr = product.variationData.weightGr
+    val price = product.variationData.price
+    val discount = product.variationData.discount
+    val stock = product.variationData.stock
+    val label = product.variationData.label
 
 }

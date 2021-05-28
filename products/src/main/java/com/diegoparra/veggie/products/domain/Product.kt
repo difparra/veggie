@@ -1,39 +1,46 @@
 package com.diegoparra.veggie.products.domain
 
-/**
- * Information to be fetched from the database in the client app.
- */
+//      ----------      PRODUCT        -------------------------------------------------------------
 
+//  General product to use in the app. I will not normally get product with all variations,
+//  but product with a specific variation.
 data class Product(
-        //  AdminMainData filtered to what is needed in the client app
+    val tagId: String,
+    val mainData: MainData,
+    val variationData: VariationData
+)
+
+//  Will be mainly needed when inserting the products to the database.
+//  In other words, will be required by the admin.
+data class ProductWithAllVariations(
+    val tagId: String,
+    val mainData: MainData,
+    val variations: List<VariationData>
+)
+
+//      ----------      DATA        ----------------------------------------------------------------
+
+data class MainData(
     val mainId: String,
     val name: String,
     val imageUrl: String,
-        //  variationData filtered to what is needed in the client app
-    val variation: Variation,
-){
-    val varId: String = variation.varId
-    val unit: String = variation.unit
-    val weightGr: Int = variation.weightGr
-    val price: Int = variation.price
-    val discount: Float = variation.discount
-    val stock: Boolean = variation.stock
-    val maxOrder: Int = variation.maxOrder
-    val label: Label = variation.label
-}
+    val mainVariationId: String
+)
 
-data class Variation(
-        val mainId: String,
-        val varId: String,
-        val unit: String,
-        val weightGr: Int,
-        val details: List<String>?,
-        val price: Int,
-        val discount: Float,
-        val stock: Boolean,
-        val maxOrder: Int,
-        private val suggestedLabel: String?
-){
-    val label = Label.createLabel(stock, discount, suggestedLabel)
-    fun hasDetails() = !details.isNullOrEmpty()
+data class VariationData(
+    val varId: String,
+    val relatedMainId: String,
+    val unit: String,
+    val weightGr: Int = -1,
+    val price: Int,
+    val discount: Float,
+    val stock: Boolean,
+    val maxOrder: Int,
+    private val suggestedLabel: String? = null,
+    val detailOptions: List<String>? = null
+) {
+    val label
+        get() = Label.createLabel(stock, discount, suggestedLabel)
+
+    fun hasDetails() = !detailOptions.isNullOrEmpty()
 }

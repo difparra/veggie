@@ -1,12 +1,12 @@
 package com.diegoparra.veggie.products.usecases
 
 import com.diegoparra.veggie.core.*
-import com.diegoparra.veggie.products.domain.Product
 import com.diegoparra.veggie.products.entities.*
 import com.diegoparra.veggie.products.cart.domain.CartRepository
 import com.diegoparra.veggie.products.domain.ProductsRepository
 import com.diegoparra.veggie.products.cart.domain.CartItem
 import com.diegoparra.veggie.products.cart.domain.ProductId
+import com.diegoparra.veggie.products.domain.Product
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -89,7 +89,7 @@ class GetCartProductsUseCase @Inject constructor(
         //  TODO:   This has not still been tested if is working
         //          Check if product has no longer stock, and if so, delete from cart. For example,
         //          there were left products in cart the previous day and next day some has no stock.
-        if(prod is Either.Right && !prod.b.stock){
+        if(prod is Either.Right && !prod.b.variationData.stock){
             cartRepository.deleteItem(productId = productId)
         }
         return prod

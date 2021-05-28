@@ -4,14 +4,12 @@ import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.products.domain.*
 import com.diegoparra.veggie.products.fakes.UtilsFakes.toProduct
-import com.diegoparra.veggie.products.fakes.UtilsFakes.toVariation
 import timber.log.Timber
 import java.lang.IllegalStateException
-import java.util.*
 
 class FakeProductsRepository(
     private val tags: List<Tag> = FakeProductsDatabase.tags,
-    private val products: List<AdminProduct> = FakeProductsDatabase.products
+    private val products: List<ProductWithAllVariations> = FakeProductsDatabase.products
 ) : ProductsRepository {
 
     private fun checkProductsNeitherNullNorEmpty(methodNameLog: String? = null) {
@@ -67,7 +65,7 @@ class FakeProductsRepository(
 
         val mainProds = mutableListOf<Product>()
         for(product in products){
-            if(product.mainData.name.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))){
+            if(product.mainData.name.lowercase().contains(query.lowercase())){
                 try{
                     val mainProd = product.toProduct(product.mainData.mainVariationId)
                     mainProds.add(mainProd)
@@ -85,14 +83,14 @@ class FakeProductsRepository(
     }
 
 
-    override suspend fun getProductVariationsByMainId(mainId: String, forceUpdate: Boolean, expirationTimeMillis: Long): Either<Failure, List<Variation>> {
+    override suspend fun getVariationsByMainId(mainId: String, forceUpdate: Boolean, expirationTimeMillis: Long): Either<Failure, List<VariationData>> {
         Timber.d("getProductVariationsByMainId() called with: mainId = $mainId, forceUpdate = $forceUpdate, expirationTimeMillis = $expirationTimeMillis")
         checkProductsNeitherNullNorEmpty("getProductVariationsByMainId")
 
         for(product in products){
             if(product.mainData.mainId == mainId){
-                Timber.i("getProductVariationsByMainId: mainId= $mainId, variations= ${product.variations.map { it.toVariation() }}")
-                return Either.Right(product.variations.map { it.toVariation() })
+                Timber.i("getProductVariationsByMainId: mainId= $mainId, variations= ${product.variations}")
+                return Either.Right(product.variations)
             }
         }
 

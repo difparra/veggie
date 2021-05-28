@@ -4,9 +4,9 @@ import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.mapListAndFlattenFailure
 import com.diegoparra.veggie.core.map
-import com.diegoparra.veggie.products.domain.Product
 import com.diegoparra.veggie.products.entities.ProductMain
 import com.diegoparra.veggie.products.cart.domain.CartRepository
+import com.diegoparra.veggie.products.domain.Product
 import com.diegoparra.veggie.products.domain.ProductsRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -98,7 +98,7 @@ class GetMainProductsUseCase @Inject constructor(
 
     private fun addQuantityToProduct(mainProduct: Product) : Flow<Either<Failure, ProductMain>> {
         Timber.d("addQuantityToProduct() called with: product = $mainProduct")
-        val quantity = cartRepository.getQuantityByMainId(mainProduct.mainId)
+        val quantity = cartRepository.getQuantityByMainId(mainProduct.mainData.mainId)
         return quantity.map { qtyEither ->
             qtyEither.map {
                 ProductMain(mainProduct, it)

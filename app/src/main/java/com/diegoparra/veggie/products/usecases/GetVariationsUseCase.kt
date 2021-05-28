@@ -8,7 +8,7 @@ import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.entities.ProductVariation
 import com.diegoparra.veggie.products.cart.domain.CartRepository
 import com.diegoparra.veggie.products.domain.ProductsRepository
-import com.diegoparra.veggie.products.domain.Variation
+import com.diegoparra.veggie.products.domain.VariationData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
@@ -35,13 +35,13 @@ class GetVariationsUseCase @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    private suspend fun getVariations(mainId: String) : Either<Failure, List<Variation>> {
+    private suspend fun getVariations(mainId: String) : Either<Failure, List<VariationData>> {
         Timber.d("getVariations() called with: mainId = $mainId")
-        return productsRepository.getProductVariationsByMainId(mainId = mainId)
+        return productsRepository.getVariationsByMainId(mainId = mainId)
     }
 
 
-    private fun addQuantityToVariation(mainId: String, variation: Variation) : Flow<Either<Failure, ProductVariation>> {
+    private fun addQuantityToVariation(mainId: String, variation: VariationData) : Flow<Either<Failure, ProductVariation>> {
         Timber.d("addQuantityToVariation() called with: mainId = $mainId, variation = $variation")
         return if(variation.hasDetails()) {
             val qtyMap =

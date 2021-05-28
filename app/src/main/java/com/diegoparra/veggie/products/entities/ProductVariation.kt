@@ -1,18 +1,18 @@
 package com.diegoparra.veggie.products.entities
 
-import com.diegoparra.veggie.products.domain.Variation
+import com.diegoparra.veggie.products.domain.VariationData
 
 data class ProductVariation(
-    private val variation: Variation,
+    private val variation: VariationData,
     private val quantitiesByDetail: Map<String?, Int>
 ) {
-    constructor(variation: Variation, quantity: Int) :
+    constructor(variation: VariationData, quantity: Int) :
             this(variation, mapOf(null to quantity))
 
     val varId = variation.varId
     val unit = variation.unit
     val weightGr = variation.weightGr
-    val details = variation.details
+    val details = variation.detailOptions
     val price = variation.price
     val discount = variation.discount
     val stock = variation.stock

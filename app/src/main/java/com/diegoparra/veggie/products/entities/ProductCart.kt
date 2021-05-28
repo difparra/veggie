@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.entities
 
-import com.diegoparra.veggie.products.domain.Product
 import com.diegoparra.veggie.products.cart.domain.CartItem
+import com.diegoparra.veggie.products.domain.Product
 
 data class ProductCart(
     private val cartItem: CartItem,
@@ -9,15 +9,19 @@ data class ProductCart(
     val isEditable: Boolean = false
 ){
     val productId = cartItem.productId
-    val name = product.name
-    val imageUrl = product.imageUrl
-    val unit = product.unit
-    val weightGr = product.weightGr
-    val price = product.price
-    val discount = product.discount
-    val stock = product.stock
-    val maxOrder = product.maxOrder
-    val label = product.label
     val detail = cartItem.productId.detail
     val quantity = cartItem.quantity
+
+    private val mainData = product.mainData
+    val name = mainData.name
+    val imageUrl = mainData.imageUrl
+
+    private val variationData = product.variationData
+    val unit = variationData.unit
+    val weightGr = variationData.weightGr
+    val price = variationData.price
+    val discount = variationData.discount
+    val stock = variationData.stock
+    val maxOrder = variationData.maxOrder
+    val label = variationData.label
 }
