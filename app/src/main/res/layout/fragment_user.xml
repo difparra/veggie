@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".user.ui.UserFragment"
-    android:visibility="gone"
-    tools:visibility="visible">
+    tools:context=".user.ui.UserFragment">
 
     <TextView
         android:id="@+id/app_bar"

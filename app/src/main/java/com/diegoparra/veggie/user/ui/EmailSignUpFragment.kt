@@ -1,8 +1,8 @@
 package com.diegoparra.veggie.user.ui
 
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +11,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.diegoparra.veggie.NavSignInDirections
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.core.SignInFailure
@@ -129,15 +128,8 @@ class EmailSignUpFragment : Fragment() {
 
     private fun subscribeNavigateSignedIn() {
         viewModel.navigateSignedIn.observe(viewLifecycleOwner, EventObserver {
-            //  TODO:   Not tested yet. Should sign in when correctly authenticated.
-            //          It has not failures but also not the desired behaviour.
-            //          When login is successful, navigation goes until homeFragment, because
-            //          userFragment was already popped of the backstack.
-            //          However I can't just delete pop userFragment, because then when going back
-            //          from login flow, it will try to show a userDataFragment wiouth being logged in.
             Timber.d("navigateSignedIn received: $it")
-            val action = NavSignInDirections.actionPopOutOfSignInFlow()
-            findNavController().navigate(action)
+            setLoginResultAndNavigate(findNavController(), true)
         })
     }
 

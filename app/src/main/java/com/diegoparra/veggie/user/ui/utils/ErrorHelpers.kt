@@ -9,8 +9,8 @@ import com.google.android.material.textfield.TextInputLayout
 
 fun TextInputLayout.handleError(
     resource: Resource<String>,
-    inputErrorMessage: (String, SignInFailure.WrongInput, Boolean) -> String? = context.handleGenericInputError,
-    otherErrorMessage: (String, Failure, Boolean) -> String? = { _, f,_ -> f.toString() },
+    inputErrorMessage: (field: String, failure: SignInFailure.WrongInput, femaleString: Boolean) -> String? = context.handleGenericInputError,
+    otherErrorMessage: (field: String, failure: Failure, femaleString: Boolean) -> String? = { _, f,_ -> f.toString() },
     femaleGenderString: Boolean = false,
 ) {
     val fieldName = this.hint.toString().lowercase()

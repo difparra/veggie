@@ -10,13 +10,10 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.diegoparra.veggie.NavSignInDirections
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.EventObserver
-import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.core.SignInFailure.WrongSignInMethod
 import com.diegoparra.veggie.databinding.FragmentEmailSignInBinding
-import com.diegoparra.veggie.user.entities_and_repo.UserConstants
 import com.diegoparra.veggie.user.viewmodels.EmailSignInViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -112,9 +109,7 @@ class EmailSignInFragment : Fragment() {
 
     private fun subscribeNavigateSignedIn() {
         viewModel.navigateSignedIn.observe(viewLifecycleOwner, EventObserver {
-            //  TODO: Not tested yet. Should sign in when correctly authenticated.
-            val action = NavSignInDirections.actionPopOutOfSignInFlow()
-            findNavController().navigate(action)
+            setLoginResultAndNavigate(findNavController(), true)
         })
     }
 

@@ -20,6 +20,26 @@ class UserFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: UserViewModel by viewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val navController = findNavController()
+        val currentBackStackEntry = navController.currentBackStackEntry!!
+        val savedStateHandle = currentBackStackEntry.savedStateHandle
+        //  Navigate back if login flow was cancelled or failure
+        savedStateHandle.getLiveData<Boolean>(SignInOptionsFragment.LOGIN_SUCCESSFUL)
+            .observe(currentBackStackEntry) {
+                if (!it) {
+                    navController.popBackStack()
+                }
+            }
+        //  Navigate to login flow if user is still not signed in
+        viewModel.isSignedIn.observe(currentBackStackEntry) {
+            if (!it) {
+                navController.navigate(UserFragmentDirections.actionNavUserToNavSignIn())
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,29 +49,7 @@ class UserFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        navigateIfNotSignedIn()
-    }
-
-    private fun navigateIfNotSignedIn(){
-        /*
-            In this case there is no need to set navigate as event in viewModel, as navigation
-            will pop original destination from backstack. So there is no problem when pressing back
-            button, as this fragment will not be navigated with backStack.
-        */
-        viewModel.isSignedIn.observe(viewLifecycleOwner) {
-            if(!it){
-                findNavController().navigate(UserFragmentDirections.actionNavUserToNavSignIn())
-                /*  //  Set in the navGraph xml. It is better there.
-                    findNavController().navigate(
-                        UserFragmentDirections.actionNavUserToNavSignIn(),
-                        navOptions { popUpTo(R.id.nav_user) { inclusive = true } }
-                    )*/
-            }else{
-                //  Small workaround. This way user is blank while getting signedInState, so if
-                //  user is not signedIn, screen does not flash userDataViews and then navigate
-                binding.root.isVisible = true
-            }
-        }
+        // ...
     }
 
     override fun onDestroyView() {

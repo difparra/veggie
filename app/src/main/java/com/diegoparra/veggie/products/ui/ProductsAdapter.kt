@@ -79,7 +79,7 @@ class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHold
 
         private fun navigateToProductDetails(product: ProductMain, view: View) {
             //  Use global action, as the original destination is unknown (could be home or search)
-            val action = NavMainDirections.actionGlobalProductDetailsFragment(mainId = product.mainId, name = product.name)
+            val action = NavMainDirections.actionGlobalToProductDetailsFragment(mainId = product.mainId, name = product.name)
             view.findNavController().navigate(action)
         }
 

@@ -5,12 +5,6 @@
     android:id="@+id/nav_sign_in"
     app:startDestination="@id/signInOptionsFragment">
 
-    <!-- Global action to nav out of sign in flow -->
-    <action
-        android:id="@+id/action_pop_out_of_sign_in_flow"
-        app:popUpTo="@id/nav_sign_in"
-        app:popUpToInclusive="true" />
-
     <fragment
         android:id="@+id/signInOptionsFragment"
         android:name="com.diegoparra.veggie.user.ui.SignInOptionsFragment"
@@ -20,26 +14,11 @@
             android:id="@+id/action_signInOptionsFragment_to_emailFragment"
             app:destination="@id/emailFragment" />
     </fragment>
+
+    <!-- Internally has a viewPager with email options: SignIn/SignUp -->
     <fragment
         android:id="@+id/emailFragment"
         android:name="com.diegoparra.veggie.user.ui.EmailViewPagerFragment"
         android:label="fragment_email"
-        tools:layout="@layout/fragment_email_auth" >
-        <action
-            android:id="@+id/action_emailFragment_to_emailSignInFragment"
-            app:destination="@id/emailSignInFragment" />
-        <action
-            android:id="@+id/action_emailFragment_to_emailSignUpFragment"
-            app:destination="@id/emailSignUpFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/emailSignInFragment"
-        android:name="com.diegoparra.veggie.user.ui.EmailSignInFragment"
-        android:label="fragment_email_sign_in"
-        tools:layout="@layout/fragment_email_sign_in" />
-    <fragment
-        android:id="@+id/emailSignUpFragment"
-        android:name="com.diegoparra.veggie.user.ui.EmailSignUpFragment"
-        android:label="fragment_email_sign_up"
-        tools:layout="@layout/fragment_email_sign_up" />
+        tools:layout="@layout/fragment_email_auth" />
 </navigation>

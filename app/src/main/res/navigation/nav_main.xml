@@ -23,6 +23,11 @@
             android:name="name"
             app:argType="string" />
     </dialog>
+    <!-- Global action - navigate to productDetails -->
+    <action
+        android:id="@+id/action_global_to_productDetailsFragment"
+        app:destination="@id/productDetailsFragment" />
+
 
     <!--    .....   SEARCH    .....   -->
     <fragment
@@ -57,16 +62,9 @@
         tools:layout="@layout/fragment_user" >
         <action
             android:id="@+id/action_nav_user_to_nav_sign_in"
-            app:destination="@id/nav_sign_in"
-            app:popUpTo="@id/nav_user"
-            app:popUpToInclusive="true" />
-        <!--    popUpTo and popUpToInclusive are important, as it is not
-                desired to navigate back to user details when entering
-                the signInFlow (user is not logged in) -->
+            app:destination="@id/nav_sign_in" />
     </fragment>
     <include app:graph="@navigation/nav_sign_in" />
-
-    <!--    Global action to navigate back from nestedNavGraph logIn flow -->
 
 
     <!--    .....   SUPPORT    .....   -->
@@ -75,6 +73,5 @@
         android:name="com.diegoparra.veggie.SupportFragment"
         android:label="fragment_support"
         tools:layout="@layout/fragment_support" />
-    <action android:id="@+id/action_global_productDetailsFragment" app:destination="@id/productDetailsFragment" />
 
 </navigation>
