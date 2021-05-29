@@ -2,11 +2,14 @@ package com.diegoparra.veggie.core
 
 import java.lang.Exception
 
-sealed class Failure {
+sealed class Failure(open val message: String? = null) {
+    override fun toString(): String {
+        return message ?: super.toString()
+    }
 
     object NetworkConnection : Failure()
-    class ServerError(val exception: Exception? = null, val message: String? = null) : Failure()
-    class FirebaseException(val exception: Exception) : Failure()
+    class ServerError(val exception: Exception? = null, message: String? = null) :
+        Failure(message = message ?: exception?.localizedMessage)
 
     sealed class ProductsFailure : Failure() {
         object TagsNotFound : ProductsFailure()
@@ -27,21 +30,26 @@ sealed class Failure {
 
 sealed class SignInFailure : Failure() {
 
-    class FirebaseException(val exception: Exception) : SignInFailure()
+    sealed class SignInState : SignInFailure() {
+        object NotSignedIn : SignInState()
+        object Anonymous : SignInState()
+    }
 
     sealed class WrongSignInMethod : SignInFailure() {
         object NewUser : WrongSignInMethod()
         object ExistentUser : WrongSignInMethod()
-        class SignInMethodNotLinked(val signInMethod: String, val linkedSignInMethods: List<String>) :
-            WrongSignInMethod()
+        class SignInMethodNotLinked(
+            val signInMethod: String,
+            val linkedSignInMethods: List<String>
+        ) : WrongSignInMethod()
     }
 
-    sealed class WrongInput(val field: String): SignInFailure() {
+    sealed class WrongInput(val field: String) : SignInFailure() {
         class Empty(field: String) : WrongInput(field)
-        class Invalid(field: String) : WrongInput(field)
         class Short(field: String, val minLength: Int) : WrongInput(field)
+        class Invalid(field: String, override val message: String? = null) : WrongInput(field)
     }
 
-    class ValidationFailures(val failures: Set<Failure>): SignInFailure()
+    class ValidationFailures(val failures: Set<Failure>) : SignInFailure()
 
 }

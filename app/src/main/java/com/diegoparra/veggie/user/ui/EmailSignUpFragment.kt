@@ -77,19 +77,7 @@ class EmailSignUpFragment : Fragment() {
         viewModel.email.observe(viewLifecycleOwner) {
             Timber.d("email resource received: $it")
             binding.emailLayout.handleError(
-                resource = it, femaleGenderString = false,
-                otherErrorMessage = { field, failure, _ ->
-                    when (failure) {
-                        is SignInFailure.WrongSignInMethod.ExistentUser -> getString(
-                            R.string.failure_existent_user
-                        )
-                        is SignInFailure.WrongSignInMethod.SignInMethodNotLinked -> getString(
-                            R.string.failure_not_linked_sign_in_method,
-                            failure.linkedSignInMethods.joinToString()
-                        )
-                        else -> failure.toString()
-                    }
-                }
+                resource = it, femaleGenderString = false
             )
         }
     }

@@ -9,6 +9,12 @@ data class User (
     val photoUrl: String? = null
 )
 
+data class BasicUserInfo(
+    val id: String,
+    val email: String,
+    val name: String
+)
+
 
 /*
     USER SCREENS

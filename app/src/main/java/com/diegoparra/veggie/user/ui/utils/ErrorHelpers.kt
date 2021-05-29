@@ -9,8 +9,9 @@ import com.google.android.material.textfield.TextInputLayout
 
 fun TextInputLayout.handleError(
     resource: Resource<String>,
-    inputErrorMessage: (field: String, failure: SignInFailure.WrongInput, femaleString: Boolean) -> String? = context.handleGenericInputError,
-    otherErrorMessage: (field: String, failure: Failure, femaleString: Boolean) -> String? = { _, f,_ -> f.toString() },
+    wrongInputErrorMessage: (field: String, failure: SignInFailure.WrongInput, femaleString: Boolean) -> String? = context.defaultWrongInputErrorMessage,
+    wrongSignInMethodErrorMessage: (field: String, failure: SignInFailure.WrongSignInMethod, femaleString: Boolean) -> String = context.defaultWrongSignInMethodErrorMessage,
+    otherErrorMessage: (field: String, failure: Failure, femaleString: Boolean) -> String? = { _, f, _ -> f.toString() },
     femaleGenderString: Boolean = false,
 ) {
     val fieldName = this.hint.toString().lowercase()
@@ -18,7 +19,12 @@ fun TextInputLayout.handleError(
         is Resource.Success -> null
         is Resource.Error -> {
             when (val failure = resource.failure) {
-                is SignInFailure.WrongInput -> inputErrorMessage(fieldName, failure, femaleGenderString)
+                is SignInFailure.WrongInput -> wrongInputErrorMessage(
+                    fieldName, failure, femaleGenderString
+                )
+                is SignInFailure.WrongSignInMethod -> wrongSignInMethodErrorMessage(
+                    fieldName, failure, femaleGenderString
+                )
                 else -> otherErrorMessage(fieldName, failure, femaleGenderString)
             }
         }
@@ -26,23 +32,38 @@ fun TextInputLayout.handleError(
     }
 }
 
-val Context.handleGenericInputError: (String, SignInFailure.WrongInput, Boolean) -> String
+private val Context.defaultWrongInputErrorMessage: (String, SignInFailure.WrongInput, Boolean) -> String
     get() = { field, failure, femaleString ->
-        when(failure){
+        when (failure) {
             is SignInFailure.WrongInput.Empty -> getString(R.string.failure_empty_field)
             is SignInFailure.WrongInput.Invalid -> {
-                if(femaleString){
-                    getString(R.string.failure_invalid_field_f, field)
-                }else{
-                    getString(R.string.failure_invalid_field_m, field)
-                }
+                failure.message
+                    ?: if (femaleString) {
+                        getString(R.string.failure_invalid_field_f, field)
+                    } else {
+                        getString(R.string.failure_invalid_field_m, field)
+                    }
             }
             is SignInFailure.WrongInput.Short -> {
-                if(femaleString){
+                if (femaleString) {
                     getString(R.string.failure_short_field_f, field, failure.minLength)
-                }else{
+                } else {
                     getString(R.string.failure_short_field_m, field, failure.minLength)
                 }
             }
+        }
+    }
+
+private val Context.defaultWrongSignInMethodErrorMessage: (String, SignInFailure.WrongSignInMethod, Boolean) -> String
+    get() = { field, failure, femaleString ->
+        when (failure) {
+            is SignInFailure.WrongSignInMethod.NewUser -> getString(R.string.failure_new_user)
+            is SignInFailure.WrongSignInMethod.ExistentUser -> getString(
+                R.string.failure_existent_user
+            )
+            is SignInFailure.WrongSignInMethod.SignInMethodNotLinked -> getString(
+                R.string.failure_not_linked_sign_in_method,
+                failure.linkedSignInMethods.joinToString()
+            )
         }
     }

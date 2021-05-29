@@ -4,6 +4,7 @@ import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.user.entities_and_repo.SignInMethod
 import com.diegoparra.veggie.user.entities_and_repo.UserConstants
 import com.diegoparra.veggie.user.entities_and_repo.UserRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class EmailSignInUseCase @Inject constructor(
@@ -31,6 +32,7 @@ class EmailSignInUseCase @Inject constructor(
 
     override suspend fun validateEmailLinkedWithAuthMethod(email: String): Either<Failure, Unit> {
         return getSignInMethodsForEmail(email).flatMap {
+            Timber.d("email: $email - signInMethodsList: ${it.joinToString()}")
             if (SignInMethod.EMAIL in it) {
                 Either.Right(Unit)
             } else if (it.isEmpty()) {
@@ -47,8 +49,7 @@ class EmailSignInUseCase @Inject constructor(
 
 
     override suspend fun signInRepository(params: Params): Either<Failure, Unit> {
-        //  TODO: SignInFlow with Repository/Firebase
-        return Either.Right(Unit)
+        return userRepository.signInWithEmailAndPassword(params.email, params.password)
     }
 
 }

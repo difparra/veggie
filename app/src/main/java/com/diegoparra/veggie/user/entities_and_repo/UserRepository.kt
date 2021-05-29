@@ -7,20 +7,13 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
 
     fun isSignedIn() : Flow<Boolean>
+    fun getBasicUserInfo() : Flow<Either<Failure, BasicUserInfo>>
     suspend fun getSignInMethodsForEmail(email: String) : Either<Failure, List<SignInMethod>>
 
+    suspend fun signUpWithEmailAndPassword(user: User, password: String) : Either<Failure, Unit>
+    suspend fun signInWithEmailAndPassword(email: String, password: String) : Either<Failure, Unit>
 
-
-    /*
-    Other possible methods:
-    suspend fun getLastSignedInEmail() : String?
-
-    suspend fun getCurrentUser() : Either<Failure, User>
-
-    suspend fun signUpWithEmailAndPassword(email: String, password: String)
-    suspend fun signInWithEmailAndPassword(email: String, password: String)
-
-    suspend fun signOut()*/
+    fun signOut()
 
 }
 

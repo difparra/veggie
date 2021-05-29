@@ -183,3 +183,19 @@ fun <T, L, R> Either<L, List<R>>.customMap(fn: (R) -> Either<L, T>): Either<L, L
     this.flatMap { it.map(fn).mapListAndFlattenFailure() }
 
 */
+
+
+
+suspend fun <T,L,R> Either<L,R>.suspendMap(fn: suspend (R) -> T) : Either<L,T> {
+    return when(this){
+        is Either.Left -> this
+        is Either.Right -> Either.Right(fn(this.b))
+    }
+}
+
+suspend fun <T,L,R> Either<L,R>.suspendFlatMap(fn: suspend (R) -> Either<L,T>) : Either<L,T> {
+    return when(this){
+        is Either.Left -> this
+        is Either.Right -> fn(this.b)
+    }
+}

@@ -27,7 +27,7 @@ class ProductsApi @Inject constructor(
             Either.Right(tagsList.tagsArray)
         } catch (e: Exception) {
             Timber.d("Error getting tags: $e")
-            Either.Left(Failure.ServerError(exception = e, message = "Error getting tags."))
+            Either.Left(Failure.ServerError(exception = e))
         }
     }
 
@@ -42,7 +42,7 @@ class ProductsApi @Inject constructor(
                 .map { it.toObject<ProductDto>() }
             Either.Right(prods)
         }catch (e: Exception){
-            Either.Left(Failure.ServerError(exception = e, message = "Error getting last updated products."))
+            Either.Left(Failure.ServerError(exception = e))
         }
     }
 

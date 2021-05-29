@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.databinding.FragmentUserBinding
 import com.diegoparra.veggie.user.viewmodels.UserViewModel
@@ -33,6 +34,10 @@ class UserFragment : Fragment() {
                 }
             }
         //  Navigate to login flow if user is still not signed in
+        /*
+            TODO:   Navigation error.
+                    When entering user and a wrong password, and then rotate the screen, app crash.
+         */
         viewModel.isSignedIn.observe(currentBackStackEntry) {
             if (!it) {
                 navController.navigate(UserFragmentDirections.actionNavUserToNavSignIn())
@@ -49,7 +54,9 @@ class UserFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // ...
+        binding.signOut.setOnClickListener {
+            viewModel.signOut()
+        }
     }
 
     override fun onDestroyView() {

@@ -72,17 +72,7 @@ class EmailSignInFragment : Fragment() {
     private fun subscribeEmail() {
         viewModel.email.observe(viewLifecycleOwner) {
             binding.emailLayout.handleError(
-                resource = it, femaleGenderString = false,
-                otherErrorMessage = { field, failure, _ ->
-                    when (failure) {
-                        is WrongSignInMethod.NewUser -> getString(R.string.failure_new_user)
-                        is WrongSignInMethod.SignInMethodNotLinked -> getString(
-                            R.string.failure_not_linked_sign_in_method,
-                            failure.linkedSignInMethods.joinToString()
-                        )
-                        else -> failure.toString()
-                    }
-                }
+                resource = it, femaleGenderString = false
             )
         }
     }
