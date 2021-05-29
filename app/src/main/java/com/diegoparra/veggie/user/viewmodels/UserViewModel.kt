@@ -15,7 +15,7 @@ class UserViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase
 ) : ViewModel() {
 
-    val isSignedIn = isSignedInUseCase().asLiveData()
+    val isSignedIn = isSignedInUseCase().map { Event(it) }.asLiveData()
 
     fun signOut() = signOutUseCase()
 

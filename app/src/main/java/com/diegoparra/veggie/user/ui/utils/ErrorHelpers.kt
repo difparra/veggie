@@ -36,14 +36,6 @@ private val Context.defaultWrongInputErrorMessage: (String, SignInFailure.WrongI
     get() = { field, failure, femaleString ->
         when (failure) {
             is SignInFailure.WrongInput.Empty -> getString(R.string.failure_empty_field)
-            is SignInFailure.WrongInput.Invalid -> {
-                failure.message
-                    ?: if (femaleString) {
-                        getString(R.string.failure_invalid_field_f, field)
-                    } else {
-                        getString(R.string.failure_invalid_field_m, field)
-                    }
-            }
             is SignInFailure.WrongInput.Short -> {
                 if (femaleString) {
                     getString(R.string.failure_short_field_f, field, failure.minLength)
@@ -51,11 +43,26 @@ private val Context.defaultWrongInputErrorMessage: (String, SignInFailure.WrongI
                     getString(R.string.failure_short_field_m, field, failure.minLength)
                 }
             }
+            is SignInFailure.WrongInput.Invalid -> {
+                if (femaleString) {
+                    getString(R.string.failure_invalid_field_f, field)
+                } else {
+                    getString(R.string.failure_invalid_field_m, field)
+                }
+            }
+            is SignInFailure.WrongInput.Incorrect -> {
+                if (femaleString) {
+                    getString(R.string.failure_incorrect_field_f, field)
+                } else {
+                    getString(R.string.failure_incorrect_field_m, field)
+                }
+            }
+            is SignInFailure.WrongInput.Unknown -> failure.message
         }
     }
 
 private val Context.defaultWrongSignInMethodErrorMessage: (String, SignInFailure.WrongSignInMethod, Boolean) -> String
-    get() = { field, failure, femaleString ->
+    get() = { _, failure, _ ->
         when (failure) {
             is SignInFailure.WrongSignInMethod.NewUser -> getString(R.string.failure_new_user)
             is SignInFailure.WrongSignInMethod.ExistentUser -> getString(
@@ -65,5 +72,6 @@ private val Context.defaultWrongSignInMethodErrorMessage: (String, SignInFailure
                 R.string.failure_not_linked_sign_in_method,
                 failure.linkedSignInMethods.joinToString()
             )
+            is SignInFailure.WrongSignInMethod.Unknown -> failure.message
         }
     }

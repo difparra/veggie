@@ -80,14 +80,20 @@ abstract class EmailAuthViewModel<Params : EmailAuthUseCase.EmailParams>(
 
     protected open fun handleFailure(failure: Failure) {
         Timber.d("handleFailure() called with: failure = $failure")
-        when (failure) {
-            is SignInFailure.ValidationFailures -> failure.failures.forEach { handleFailure(it) }
-            is SignInFailure.WrongInput -> handleInputFailure(failure.field, failure)
-            is SignInFailure.WrongSignInMethod -> _email.value = Resource.Error(failure)
+        when(failure){
+            is SignInFailure -> handleSignInFailure(failure)
             else -> _toastFailure.value = Event(failure)
         }
     }
 
+    private fun handleSignInFailure(failure: SignInFailure) {
+        when (failure) {
+            is SignInFailure.ValidationFailures -> failure.failures.forEach { handleFailure(it) }
+            is SignInFailure.WrongInput -> handleInputFailure(failure.field, failure)
+            is SignInFailure.WrongSignInMethod -> _email.value = Resource.Error(failure)
+            is SignInFailure.SignInState -> _toastFailure.value = Event(failure)
+        }
+    }
 
     private fun handleInputFailure(field: String, failure: SignInFailure.WrongInput) {
         Timber.d("handleInputFailure() called with: field = $field, failure = $failure")

@@ -8,9 +8,10 @@
     android:fillViewport="true"
     tools:context=".user.ui.EmailSignUpFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="@dimen/padding_standard">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -31,8 +32,7 @@
             android:id="@+id/name_layout"
             style="@style/Widget.Veggie.TextInputLayout"
             android:hint="@string/name"
-            app:startIconDrawable="@drawable/ic_person_outline"
-            android:layout_below="@id/email_layout">
+            app:startIconDrawable="@drawable/ic_person_outline">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name"
@@ -47,8 +47,7 @@
             style="@style/Widget.Veggie.TextInputLayout"
             android:hint="@string/password"
             app:startIconDrawable="@drawable/ic_password_outline"
-            app:endIconMode="password_toggle"
-            android:layout_below="@id/name_layout">
+            app:endIconMode="password_toggle">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
@@ -64,9 +63,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_standard"
             android:text="@string/sign_up"
-            android:layout_gravity="bottom"
-            android:layout_alignParentBottom="true"/>
+            android:layout_gravity="bottom" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </ScrollView>

@@ -1,6 +1,7 @@
 package com.diegoparra.veggie.user.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.databinding.FragmentSignInOptionsBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SignInOptionsFragment : Fragment() {
@@ -31,6 +33,10 @@ class SignInOptionsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //  Important: Call in onViewCreated. Can't be called in onCreate, because if the device is
+        //  rotated, as it is in the backStack and even if it is not visible, onCreate will be
+        //  called again and by that time if it is not visible, previousBackStackEntry would have
+        //  changed and therefore the incorrect savedStateHandle will be modified.
         setUpToSendBackLoginResult()
         uiSetUp()
     }

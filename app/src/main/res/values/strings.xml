@@ -60,10 +60,12 @@
 
     <!-- User -->
     <string name="failure_empty_field">Campo vacío.</string>
-    <string name="failure_invalid_field_m">Por favor ingresa un %s válido.</string>
-    <string name="failure_invalid_field_f">Por favor ingresa una %s válida.</string>
     <string name="failure_short_field_m">El %1$s debe tener al menos %2$d caracteres.</string>
     <string name="failure_short_field_f">La %1$s debe tener al menos %2$d caracteres.</string>
+    <string name="failure_invalid_field_m">Por favor ingresa un %s válido.</string>
+    <string name="failure_invalid_field_f">Por favor ingresa una %s válida.</string>
+    <string name="failure_incorrect_field_m">El %s es incorrecto.</string>
+    <string name="failure_incorrect_field_f">La %s es incorrecta.</string>
 
     <string name="failure_not_linked_sign_in_method">Este correo ya se encuentra registrado. Para iniciar sesión accede mediante %s en la pantalla anterior.</string>
     <string name="failure_new_user">Este correo aún no está registrado. Crea una cuenta para continuar.</string>

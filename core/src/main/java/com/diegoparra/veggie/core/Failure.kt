@@ -42,12 +42,16 @@ sealed class SignInFailure : Failure() {
             val signInMethod: String,
             val linkedSignInMethods: List<String>
         ) : WrongSignInMethod()
+
+        class Unknown(override val message: String) : WrongSignInMethod()
     }
 
     sealed class WrongInput(val field: String) : SignInFailure() {
         class Empty(field: String) : WrongInput(field)
         class Short(field: String, val minLength: Int) : WrongInput(field)
-        class Invalid(field: String, override val message: String? = null) : WrongInput(field)
+        class Invalid(field: String) : WrongInput(field)        //  Email
+        class Incorrect(field: String) : WrongInput(field)      //  Password or when authenticating
+        class Unknown(field: String, override val message: String) : WrongInput(field)
     }
 
     class ValidationFailures(val failures: Set<Failure>) : SignInFailure()
