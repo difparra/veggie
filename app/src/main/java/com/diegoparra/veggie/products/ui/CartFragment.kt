@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -19,6 +18,7 @@ import com.diegoparra.veggie.products.ui.utils.addPriceFormat
 import com.diegoparra.veggie.core.getColorFromAttr
 import com.diegoparra.veggie.products.viewmodels.CartViewModel
 import com.diegoparra.veggie.products.viewmodels.Total
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -159,7 +159,7 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
     private fun makeOrderListener(){
         binding.btnMakeOrder.setOnClickListener {
             //  TODO: clickListener btnMakeOrder
-            Toast.makeText(context, "TODO: clickListener btnMakeOrder", Toast.LENGTH_SHORT).show()
+            Snackbar.make(it, "TODO: clickListener btnMakeOrder", Snackbar.LENGTH_SHORT).show()
         }
     }
 

@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.user.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.user.entities_and_repo.UserConstants
@@ -29,6 +28,9 @@ abstract class EmailAuthViewModel<Params : EmailAuthUseCase.EmailParams>(
     val toastFailure: LiveData<Event<Failure>> = _toastFailure
 
 
+    /*
+    //  It was working fine, but the validateNotEmailCollision has some quota limit in Firebase,
+    //  and then it will incur in costs. So it is better to do just a simple format validation.
     private var emailJob: Job? = null
     fun setEmail(email: String) {
         when (val eitherValidField = useCase.validateEmail(email)) {
@@ -37,13 +39,17 @@ abstract class EmailAuthViewModel<Params : EmailAuthUseCase.EmailParams>(
                 emailJob?.cancel()
                 emailJob = viewModelScope.launch {
                     _email.value = Resource.Loading()
-                    when (val result = useCase.validateEmailLinkedWithAuthMethod(email)) {
+                    when (val result = useCase.validateNotEmailCollision(email)) {
                         is Either.Left -> _email.value = Resource.Error(result.a)
                         is Either.Right -> _email.value = Resource.Success(email)
                     }
                 }
             }
         }
+    }*/
+
+    fun setEmail(email: String) {
+        _email.value = useCase.validateEmail(email).toResource()
     }
 
     fun setPassword(password: String) {

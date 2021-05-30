@@ -1,21 +1,20 @@
 package com.diegoparra.veggie.user.ui
 
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.EventObserver
-import com.diegoparra.veggie.core.SignInFailure
+import com.diegoparra.veggie.core.hideKeyboard
 import com.diegoparra.veggie.databinding.FragmentEmailSignUpBinding
+import com.diegoparra.veggie.user.ui.utils.handleError
 import com.diegoparra.veggie.user.viewmodels.EmailSignUpViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -43,6 +42,7 @@ class EmailSignUpFragment : Fragment() {
         subscribeUi()
 
         binding.btnSignUp.setOnClickListener {
+            it.hideKeyboard()
             viewModel.signUp(
                 email = binding.email.text.toString(),
                 password = binding.password.text.toString(),
@@ -76,34 +76,28 @@ class EmailSignUpFragment : Fragment() {
     private fun subscribeEmail() {
         viewModel.email.observe(viewLifecycleOwner) {
             Timber.d("email resource received: $it")
-            binding.emailLayout.handleError(
-                resource = it, femaleGenderString = false
-            )
+            binding.emailLayout.handleError(resource = it, femaleGenderString = false)
         }
     }
 
     private fun subscribePassword() {
         viewModel.password.observe(viewLifecycleOwner) {
             Timber.d("password resource received: $it")
-            binding.passwordLayout.handleError(
-                resource = it, femaleGenderString = true
-            )
+            binding.passwordLayout.handleError(resource = it, femaleGenderString = true)
         }
     }
 
     private fun subscribeName() {
         viewModel.name.observe(viewLifecycleOwner) {
             Timber.d("name resource received: $it")
-            binding.nameLayout.handleError(
-                resource = it, femaleGenderString = false
-            )
+            binding.nameLayout.handleError(resource = it, femaleGenderString = false)
         }
     }
 
     private fun subscribeToastMessage() {
         viewModel.toastFailure.observe(viewLifecycleOwner, EventObserver {
             Timber.d("toastMessage failure received: $it")
-            Toast.makeText(binding.root.context, it.toString(), Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_SHORT).show()
         })
     }
 

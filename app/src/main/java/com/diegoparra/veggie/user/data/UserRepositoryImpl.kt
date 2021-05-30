@@ -35,11 +35,11 @@ class UserRepositoryImpl @Inject constructor(
         return userApi
             .getCurrentUserAsFlow()
             .map {
-                if(it==null) {
+                if (it == null) {
                     Either.Left(SignInFailure.SignInState.NotSignedIn)
-                }else if(it.isAnonymous){
+                } else if (it.isAnonymous) {
                     Either.Left(SignInFailure.SignInState.Anonymous)
-                }else{
+                } else {
                     val user = BasicUserInfo(
                         id = it.uid,
                         email = it.email!!,
@@ -72,6 +72,11 @@ class UserRepositoryImpl @Inject constructor(
         userApi
             .signInWithEmailAndPassword(email, password)
     }
+
+    override suspend fun sendPasswordResetEmail(email: String): Either<Failure, Unit> =
+        withContext(dispatcher) {
+            userApi.resetPassword(email)
+        }
 
     override fun signOut() {
         userApi.signOut()

@@ -35,23 +35,24 @@ sealed class SignInFailure : Failure() {
         object Anonymous : SignInState()
     }
 
-    sealed class WrongSignInMethod : SignInFailure() {
-        object NewUser : WrongSignInMethod()
-        object ExistentUser : WrongSignInMethod()
+    sealed class WrongSignInMethod(val email: String) : SignInFailure() {
+        class NewUser(email: String) : WrongSignInMethod(email)
+        class ExistentUser(email: String) : WrongSignInMethod(email)
         class SignInMethodNotLinked(
+            email: String,
             val signInMethod: String,
             val linkedSignInMethods: List<String>
-        ) : WrongSignInMethod()
+        ) : WrongSignInMethod(email)
 
-        class Unknown(override val message: String) : WrongSignInMethod()
+        class Unknown(email: String, override val message: String) : WrongSignInMethod(email)
     }
 
-    sealed class WrongInput(val field: String) : SignInFailure() {
-        class Empty(field: String) : WrongInput(field)
-        class Short(field: String, val minLength: Int) : WrongInput(field)
-        class Invalid(field: String) : WrongInput(field)        //  Email
-        class Incorrect(field: String) : WrongInput(field)      //  Password or when authenticating
-        class Unknown(field: String, override val message: String) : WrongInput(field)
+    sealed class WrongInput(val field: String, val input: String) : SignInFailure() {
+        class Empty(field: String, input: String) : WrongInput(field, input)
+        class Short(field: String, input: String, val minLength: Int) : WrongInput(field, input)
+        class Invalid(field: String, input: String) : WrongInput(field, input)        //  Email
+        class Incorrect(field: String, input: String) : WrongInput(field, input)      //  Password or when authenticating
+        class Unknown(field: String, input: String, override val message: String) : WrongInput(field, input)
     }
 
     class ValidationFailures(val failures: Set<Failure>) : SignInFailure()

@@ -1,17 +1,19 @@
 package com.diegoparra.veggie.user.usecases
 
-import android.util.Log
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.SignInFailure
-import com.diegoparra.veggie.user.entities_and_repo.SignInMethod
 import com.diegoparra.veggie.user.entities_and_repo.UserConstants
 import com.diegoparra.veggie.user.entities_and_repo.UserRepository
+import com.diegoparra.veggie.user.usecases.utils.EmailCollisionValidation
+import com.diegoparra.veggie.user.usecases.utils.TextInputValidation
 import timber.log.Timber
 
 abstract class EmailAuthUseCase<Params : EmailAuthUseCase.EmailParams>(
     protected val userRepository: UserRepository
 ) {
+    protected val emailCollisionValidation = EmailCollisionValidation(userRepository)
+
 
     interface EmailParams {
         val email: String
@@ -50,7 +52,7 @@ abstract class EmailAuthUseCase<Params : EmailAuthUseCase.EmailParams>(
         var linkedEmailFailure: Failure? = null
         val isEmailCorrect = inputFailures.none { it.field == UserConstants.SignInFields.EMAIL }
         if (isEmailCorrect) {
-            validateEmailLinkedWithAuthMethod(params.email).let {
+            validateNotEmailCollision(params.email).let {
                 if (it is Either.Left) {
                     linkedEmailFailure = it.a
                 }
@@ -85,11 +87,7 @@ abstract class EmailAuthUseCase<Params : EmailAuthUseCase.EmailParams>(
 
     //      ----------------------------------------------------------------------------------------
 
-    abstract suspend fun validateEmailLinkedWithAuthMethod(email: String): Either<Failure, Unit>
-
-    protected suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>> {
-        return userRepository.getSignInMethodsForEmail(email)
-    }
+    abstract suspend fun validateNotEmailCollision(email: String): Either<Failure, Unit>
 
 
     //      ----------------------------------------------------------------------------------------

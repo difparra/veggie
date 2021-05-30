@@ -12,13 +12,22 @@
         tools:layout="@layout/fragment_sign_in_options" >
         <action
             android:id="@+id/action_signInOptionsFragment_to_emailFragment"
-            app:destination="@id/emailFragment" />
+            app:destination="@id/emailViewPagerFragment" />
     </fragment>
 
     <!-- Internally has a viewPager with email options: SignIn/SignUp -->
     <fragment
-        android:id="@+id/emailFragment"
+        android:id="@+id/emailViewPagerFragment"
         android:name="com.diegoparra.veggie.user.ui.EmailViewPagerFragment"
         android:label="fragment_email"
-        tools:layout="@layout/fragment_email_auth" />
+        tools:layout="@layout/fragment_email_view_pager" >
+        <action
+            android:id="@+id/action_emailFragment_to_forgotPasswordFragment"
+            app:destination="@id/forgotPasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="com.diegoparra.veggie.user.ui.ForgotPasswordFragment"
+        android:label="fragment_forgot_password"
+        tools:layout="@layout/fragment_forgot_password" />
 </navigation>

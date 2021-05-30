@@ -2,8 +2,8 @@ package com.diegoparra.veggie.user.usecases
 
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.user.entities_and_repo.SignInMethod
-import com.diegoparra.veggie.user.entities_and_repo.UserConstants
 import com.diegoparra.veggie.user.entities_and_repo.UserRepository
+import com.diegoparra.veggie.user.usecases.utils.TextInputValidation
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -30,21 +30,8 @@ class EmailSignInUseCase @Inject constructor(
         setOf()
 
 
-    override suspend fun validateEmailLinkedWithAuthMethod(email: String): Either<Failure, Unit> {
-        return getSignInMethodsForEmail(email).flatMap {
-            Timber.d("email: $email - signInMethodsList: ${it.joinToString()}")
-            if (SignInMethod.EMAIL in it) {
-                Either.Right(Unit)
-            } else if (it.isEmpty()) {
-                Either.Left(SignInFailure.WrongSignInMethod.NewUser)
-            } else {
-                Either.Left(
-                    SignInFailure.WrongSignInMethod.SignInMethodNotLinked(
-                        signInMethod = SignInMethod.EMAIL.toString(),
-                        linkedSignInMethods = it.map { it.toString() })
-                )
-            }
-        }
+    override suspend fun validateNotEmailCollision(email: String): Either<Failure, Unit> {
+        return emailCollisionValidation.isValidForSignIn(email, SignInMethod.EMAIL)
     }
 
 

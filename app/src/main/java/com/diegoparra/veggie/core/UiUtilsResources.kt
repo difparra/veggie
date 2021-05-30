@@ -13,27 +13,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import kotlin.math.roundToInt
 
-
-fun View.hideKeyboard() {
-    try{
-        this.clearFocus()
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(windowToken, 0)
-    }catch (throwable: Throwable){}
-}
-
-fun View.setBackground(@DrawableRes drawableRes: Int?) {
-    if(drawableRes == null){
-        background = null
-        return
-    }
-    val drawable = ResourcesCompat.getDrawable(context.resources, drawableRes, null)
-    background = drawable
-}
-
-
-//      --------------------------------------------------------------------------------------------
-
 fun Context.getResourcesFromAttr(
         @AttrRes attrRes: Int,
         typedValue: TypedValue = TypedValue(),

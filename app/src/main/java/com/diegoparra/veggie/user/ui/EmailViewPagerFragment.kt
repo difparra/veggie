@@ -7,14 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.databinding.FragmentEmailAuthBinding
+import com.diegoparra.veggie.databinding.FragmentEmailViewPagerBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class EmailViewPagerFragment : Fragment() {
 
-    private var _binding: FragmentEmailAuthBinding? = null
+    private var _binding: FragmentEmailViewPagerBinding? = null
     private val binding get() = _binding!!
     //private val viewModel: EmailAuthViewModel by hiltNavGraphViewModels(R.id.nav_sign_in)
 
@@ -22,7 +22,7 @@ class EmailViewPagerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentEmailAuthBinding.inflate(inflater, container, false)
+        _binding = FragmentEmailViewPagerBinding.inflate(inflater, container, false)
         return binding.root
     }
 

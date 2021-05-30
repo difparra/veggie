@@ -5,26 +5,29 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.EventObserver
-import com.diegoparra.veggie.core.SignInFailure.WrongSignInMethod
+import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.SignInFailure
+import com.diegoparra.veggie.core.hideKeyboard
 import com.diegoparra.veggie.databinding.FragmentEmailSignInBinding
+import com.diegoparra.veggie.user.ui.utils.handleError
 import com.diegoparra.veggie.user.viewmodels.EmailSignInViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class EmailSignInFragment : Fragment() {
 
     private var _binding: FragmentEmailSignInBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: EmailSignInViewModel by viewModels()
+    private val viewModel: EmailSignInViewModel by hiltNavGraphViewModels(R.id.nav_sign_in)
 
-    //private val viewModel: EmailAuthViewModel by hiltNavGraphViewModels(R.id.nav_sign_in)
     private var emailTextWatcher: TextWatcher? = null
     private var passwordTextWatcher: TextWatcher? = null
 
@@ -38,17 +41,19 @@ class EmailSignInFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setInitialEmail()
         subscribeUi()
 
         binding.btnSignIn.setOnClickListener {
+            it.hideKeyboard()
             viewModel.signIn(
                 email = binding.email.text.toString(),
                 password = binding.password.text.toString()
             )
         }
         binding.forgotPassword.setOnClickListener {
-            //  TODO: Deal with forgotPassword flow
-            Toast.makeText(it.context, "TODO()", Toast.LENGTH_SHORT).show()
+            val action = EmailViewPagerFragmentDirections.actionEmailFragmentToForgotPasswordFragment()
+            findNavController().navigate(action)
         }
 
         emailTextWatcher = binding.email.addTextChangedListener {
@@ -60,6 +65,24 @@ class EmailSignInFragment : Fragment() {
 
     }
 
+    private fun setInitialEmail() {
+        val initialEmail = viewModel.email.value
+        Timber.d("initialEmail = $initialEmail")
+        initialEmail?.let {
+            val email = when(it){
+                is Resource.Success -> it.data
+                is Resource.Error -> {
+                    when(val failure = it.failure){
+                        is SignInFailure.WrongInput -> failure.input
+                        is SignInFailure.WrongSignInMethod -> failure.email
+                        else -> ""
+                    }
+                }
+                is Resource.Loading -> ""
+            }
+            binding.email.setText(email)
+        }
+    }
 
     private fun subscribeUi() {
         subscribeEmail()
@@ -71,23 +94,19 @@ class EmailSignInFragment : Fragment() {
 
     private fun subscribeEmail() {
         viewModel.email.observe(viewLifecycleOwner) {
-            binding.emailLayout.handleError(
-                resource = it, femaleGenderString = false
-            )
+            binding.emailLayout.handleError(resource = it, femaleGenderString = false)
         }
     }
 
     private fun subscribePassword() {
         viewModel.password.observe(viewLifecycleOwner) {
-            binding.passwordLayout.handleError(
-                resource = it, femaleGenderString = true
-            )
+            binding.passwordLayout.handleError(resource = it, femaleGenderString = true)
         }
     }
 
     private fun subscribeToastMessage() {
         viewModel.toastFailure.observe(viewLifecycleOwner, EventObserver {
-            Toast.makeText(binding.root.context, it.toString(), Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_SHORT).show()
         })
     }
 
