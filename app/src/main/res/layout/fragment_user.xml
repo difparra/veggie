@@ -1,41 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".user.ui.UserFragment">
 
-    <TextView
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
-        style="@style/Widget.Veggie.AppBar"
-        android:text="@string/menu_user" />
-
-    <Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_standard" />
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/padding_big">
 
-    <TextView
-        android:id="@+id/item_profile"
-        style="@style/Widget.Veggie.UserItem"
-        android:text="@string/user_profile" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/item_orders"
-        style="@style/Widget.Veggie.UserItem"
-        android:text="@string/user_orders" />
+            <TextView
+                android:id="@+id/name"
+                style="@style/Widget.Veggie.AppBarLayout.Title"
+                tools:text="Name" />
 
-    <TextView
-        android:id="@+id/item_address"
-        style="@style/Widget.Veggie.UserItem"
-        android:text="@string/user_addresses" />
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/padding_standard"
+                android:alpha="?attr/alphaSecondaryText"
+                tools:text="Email" />
 
-    <TextView
-        android:id="@+id/sign_out"
-        android:layout_gravity="bottom"
-        style="@style/Widget.Veggie.UserItem"
-        android:text="@string/user_sign_out" />
+        </LinearLayout>
 
+    </com.google.android.material.appbar.AppBarLayout>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar"
+        android:fillViewport="true">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/padding_standard"
+            android:clipToPadding="false">
+
+            <TextView
+                android:id="@+id/item_profile"
+                style="@style/Widget.Veggie.UserItem"
+                android:text="@string/user_profile"
+                app:drawableStartCompat="@drawable/ic_person_outline" />
+
+            <TextView
+                android:id="@+id/item_orders"
+                style="@style/Widget.Veggie.UserItem"
+                android:text="@string/user_orders"
+                app:drawableStartCompat="@drawable/ic_shipping_outline" />
+
+            <TextView
+                android:id="@+id/item_address"
+                style="@style/Widget.Veggie.UserItem"
+                android:text="@string/user_addresses"
+                app:drawableStartCompat="@drawable/ic_pin_drop_outline" />
+
+            <TextView
+                android:id="@+id/sign_out"
+                android:layout_gravity="bottom"
+                style="@style/Widget.Veggie.UserItem"
+                android:text="@string/user_sign_out"
+                app:drawableStartCompat="@drawable/ic_logout_outline" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

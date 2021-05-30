@@ -7,30 +7,31 @@
     android:layout_height="match_parent"
     tools:context=".products.ui.CartFragment">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
-        style="@style/Widget.Veggie.AppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-        <TextView
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="@style/TextAppearance.Veggie.Subtitle1"
-            android:layout_alignParentStart="true"
-            android:gravity="center_vertical"
-            android:text="@string/menu_cart"
-            android:layout_toStartOf="@id/clear_cart" />
-        <Button
-            android:id="@+id/clear_cart"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:drawableEnd="@drawable/ic_remove_shopping_cart"
-            android:layout_alignParentEnd="true"
-            android:padding="0dp"
-            android:minWidth="0dp" />
-    </RelativeLayout>
+            android:layout_height="wrap_content">
+            <TextView
+                style="@style/Widget.Veggie.AppBarLayout.Title"
+                android:text="@string/menu_cart"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/clear_cart" />
+            <ImageView
+                android:id="@+id/clear_cart"
+                style="@style/Widget.Veggie.AppBarLayout.ButtonImageView"
+                android:src="@drawable/ic_remove_shopping_cart"
+                android:layout_alignParentEnd="true"
+                android:importantForAccessibility="no"/>
+        </RelativeLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cart_list"
@@ -70,12 +71,12 @@
 
     <ProgressBar
         android:id="@+id/progress_bar"
-        style="@style/Widget.Veggie.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/error_text"

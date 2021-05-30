@@ -34,12 +34,8 @@ class UserFragment : Fragment() {
         //  Navigate back if login flow was cancelled or failure
         savedStateHandle.getLiveData<Boolean>(SignInOptionsFragment.LOGIN_SUCCESSFUL)
             .observe(userFragmentAsBackStackEntry) {
+                //  OK, it is just being called when view is visible, not only if rotating device.
                 Timber.d("LOGIN_SUCCESSFUL = $it")
-                /*
-                I think this observer gets lost when rotating screen.
-                When moving to signInOptions and rotate, if I press back, I would get to this screen
-                rather than pop from backstack.
-                 */
                 if (!it) {
                     navController.popBackStack()
                 }
@@ -64,10 +60,18 @@ class UserFragment : Fragment() {
             }
         })
 
+        viewModel.name.observe(viewLifecycleOwner) {
+            binding.name.text = it
+        }
+        viewModel.email.observe(viewLifecycleOwner) {
+            binding.email.text = it
+        }
+
         binding.signOut.setOnClickListener {
             viewModel.signOut()
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -21,14 +21,6 @@ class UserApi @Inject constructor(
         https://firebase.google.com/docs/reference/kotlin/com/google/firebase/auth/FirebaseAuth?hl=es-419#createuserwithemailandpassword
      */
 
-    /*
-        TODO:   Deal with exceptions in a better way.
-                For example, instead of setting FirebaseAuthInvalidCredentialsException (wrong password)
-                as if it had been a wrong input, it could be set as a new failure.
-                So that it can be translated into my own custom message.
-                And in addition, it could be controlled how to show, if on the field or as toast message.
-     */
-
     fun getCurrentUserAsFlow(): Flow<FirebaseUser?> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener {
             offer(it.currentUser)

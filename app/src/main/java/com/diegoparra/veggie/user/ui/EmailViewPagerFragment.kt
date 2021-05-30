@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.databinding.FragmentEmailAuthBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -26,6 +27,9 @@ class EmailViewPagerFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
         binding.viewPager.adapter = EmailAuthAdapter(this)
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
             tab.text = getTabTitle(position)

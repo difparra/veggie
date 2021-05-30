@@ -12,11 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/padding_standard">
+        android:gravity="center"
+        android:padding="@dimen/padding_big">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_layout"
-            style="@style/Widget.Veggie.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/email"
             app:startIconDrawable="@drawable/ic_email_outline">
 
@@ -30,7 +32,9 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name_layout"
-            style="@style/Widget.Veggie.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/padding_small"
             android:hint="@string/name"
             app:startIconDrawable="@drawable/ic_person_outline">
 
@@ -44,7 +48,8 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password_layout"
-            style="@style/Widget.Veggie.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/password"
             app:startIconDrawable="@drawable/ic_password_outline"
             app:endIconMode="password_toggle">
@@ -62,8 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_standard"
-            android:text="@string/sign_up"
-            android:layout_gravity="bottom" />
+            android:text="@string/sign_up" />
 
     </LinearLayout>
 
