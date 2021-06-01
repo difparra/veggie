@@ -5,15 +5,11 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.EventObserver
-import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.core.SignInFailure
-import com.diegoparra.veggie.core.hideKeyboard
+import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.databinding.FragmentEmailSignInBinding
 import com.diegoparra.veggie.user.ui.utils.handleError
 import com.diegoparra.veggie.user.viewmodels.EmailSignInViewModel
@@ -41,7 +37,6 @@ class EmailSignInFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setInitialEmail()
         subscribeUi()
 
         binding.btnSignIn.setOnClickListener {
@@ -52,35 +47,16 @@ class EmailSignInFragment : Fragment() {
             )
         }
         binding.forgotPassword.setOnClickListener {
-            val action = EmailViewPagerFragmentDirections.actionEmailFragmentToForgotPasswordFragment()
+            val action =
+                EmailViewPagerFragmentDirections.actionEmailFragmentToForgotPasswordFragment()
             findNavController().navigate(action)
         }
 
-        emailTextWatcher = binding.email.addTextChangedListener {
+        emailTextWatcher = binding.email.addTextChangedListenerDistinctChanged {
             viewModel.setEmail(it.toString())
         }
-        passwordTextWatcher = binding.password.addTextChangedListener {
+        passwordTextWatcher = binding.password.addTextChangedListenerDistinctChanged {
             viewModel.setPassword(it.toString())
-        }
-
-    }
-
-    private fun setInitialEmail() {
-        val initialEmail = viewModel.email.value
-        Timber.d("initialEmail = $initialEmail")
-        initialEmail?.let {
-            val email = when(it){
-                is Resource.Success -> it.data
-                is Resource.Error -> {
-                    when(val failure = it.failure){
-                        is SignInFailure.WrongInput -> failure.input
-                        is SignInFailure.WrongSignInMethod -> failure.email
-                        else -> ""
-                    }
-                }
-                is Resource.Loading -> ""
-            }
-            binding.email.setText(email)
         }
     }
 

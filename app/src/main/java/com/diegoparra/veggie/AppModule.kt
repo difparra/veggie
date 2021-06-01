@@ -51,7 +51,10 @@ object AppModule {
     @Singleton
     @Provides
     fun providesFirebaseAuth() : FirebaseAuth {
-        return Firebase.auth
+        return Firebase.auth.apply {
+            //  OK: It will be the languge set on the phone (e.g. German)
+            useAppLanguage()
+        }
     }
 
 

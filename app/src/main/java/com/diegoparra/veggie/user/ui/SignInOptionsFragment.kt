@@ -1,16 +1,22 @@
 package com.diegoparra.veggie.user.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
+import com.diegoparra.veggie.core.EventObserver
+import com.diegoparra.veggie.core.SignInFailure
 import com.diegoparra.veggie.databinding.FragmentSignInOptionsBinding
+import com.diegoparra.veggie.user.ui.utils.getDefaultWrongInputErrorMessage
+import com.diegoparra.veggie.user.ui.utils.getDefaultWrongSignInMethodErrorMessage
+import com.diegoparra.veggie.user.viewmodels.SignInOptionsViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class SignInOptionsFragment : Fragment() {
@@ -23,6 +29,14 @@ class SignInOptionsFragment : Fragment() {
     private var _binding: FragmentSignInOptionsBinding? = null
     private val binding get() = _binding!!
     private lateinit var savedStateHandle: SavedStateHandle
+    private val viewModel: SignInOptionsViewModel by viewModels()
+
+    private val googleContract =
+        registerForActivityResult(GoogleSignInContract()) {
+            viewModel.onSignInGoogleResult(it)
+        }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,12 +47,24 @@ class SignInOptionsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //  Important: Call in onViewCreated. Can't be called in onCreate, because if the device is
-        //  rotated, as it is in the backStack and even if it is not visible, onCreate will be
-        //  called again and by that time if it is not visible, previousBackStackEntry would have
-        //  changed and therefore the incorrect savedStateHandle will be modified.
+        //  Important: Call in onViewCreated. If called in onCreate, when device is rotated the method
+        //  will be called again even if screen is not visible and previousBackStack entry will be wrong.
         setUpToSendBackLoginResult()
-        uiSetUp()
+        subscribeUi()
+
+        binding.emailSignIn.setOnClickListener {
+            val action =
+                SignInOptionsFragmentDirections.actionSignInOptionsFragmentToEmailFragment()
+            findNavController().navigate(action)
+        }
+        binding.googleSignIn.setOnClickListener {
+            binding.progressBar.isVisible = true
+            googleContract.launch(viewModel.googleSignInClient)
+        }
+        binding.facebookSignIn.setOnClickListener {
+            //  TODO
+            Snackbar.make(binding.root, "TODO()", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private fun setUpToSendBackLoginResult() {
@@ -55,14 +81,29 @@ class SignInOptionsFragment : Fragment() {
         )
     }
 
-    private fun uiSetUp() {
-        binding.emailSignIn.setOnClickListener {
-            val action =
-                SignInOptionsFragmentDirections.actionSignInOptionsFragmentToEmailFragment()
-            findNavController().navigate(action)
+    private fun subscribeUi() {
+        viewModel.navigateSignedIn.observe(viewLifecycleOwner, EventObserver{
+            if(it) {
+                setLoginResultAndNavigate(findNavController(), true)
+            }
+        })
+
+        viewModel.failure.observe(viewLifecycleOwner) {
+            val errorMessage = when(it){
+                is SignInFailure.WrongSignInMethod ->
+                    getDefaultWrongSignInMethodErrorMessage(binding.root.context, it)
+                is SignInFailure.WrongInput ->
+                    getDefaultWrongInputErrorMessage(binding.root.context, it.field, it, false)
+                else ->
+                    it.toString()
+            }
+            Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_SHORT).show()
+        }
+
+        viewModel.loading.observe(viewLifecycleOwner) {
+            binding.progressBar.isVisible = it
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -49,10 +49,12 @@ abstract class EmailAuthViewModel<Params : EmailAuthUseCase.EmailParams>(
     }*/
 
     fun setEmail(email: String) {
+        Timber.d("setEmail called with email = $email")
         _email.value = useCase.validateEmail(email).toResource()
     }
 
     fun setPassword(password: String) {
+        Timber.d("setPassword called with password = $password")
         _password.value = useCase.validatePassword(password).toResource()
     }
 

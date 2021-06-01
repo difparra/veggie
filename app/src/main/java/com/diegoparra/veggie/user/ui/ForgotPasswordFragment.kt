@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
@@ -39,7 +38,7 @@ class ForgotPasswordFragment : Fragment() {
         setInitialEmail()
         subscribeUi()
 
-        emailTextWatcher = binding.email.addTextChangedListener {
+        emailTextWatcher = binding.email.addTextChangedListenerDistinctChanged {
             viewModel.setEmail(it.toString())
         }
 

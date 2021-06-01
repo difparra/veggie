@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingVertical="@dimen/padding_big">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -20,17 +20,35 @@
             <TextView
                 android:id="@+id/name"
                 style="@style/Widget.Veggie.AppBarLayout.Title"
+                android:layout_width="0dp"
+                app:layout_constraintEnd_toStartOf="@+id/photo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Name" />
 
             <TextView
                 android:id="@+id/email"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/padding_standard"
                 android:alpha="?attr/alphaSecondaryText"
+                android:paddingHorizontal="@dimen/padding_standard"
+                app:layout_constraintEnd_toStartOf="@+id/photo"
+                app:layout_constraintStart_toStartOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/name"
                 tools:text="Email" />
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="@dimen/padding_standard"
+                tools:src="@mipmap/ic_launcher" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 

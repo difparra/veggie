@@ -9,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.addTextChangedListenerDistinctChanged
 import com.diegoparra.veggie.databinding.FragmentSearchBinding
 import com.diegoparra.veggie.products.entities.ProductMain
 import com.diegoparra.veggie.core.hideKeyboard
@@ -51,7 +51,7 @@ class SearchFragment : Fragment() {
             viewModel.clearQuery()
             binding.searchQuery.setText("")
         }
-        searchTextWatcher = binding.searchQuery.addTextChangedListener {
+        searchTextWatcher = binding.searchQuery.addTextChangedListenerDistinctChanged {
             viewModel.setQuery(it.toString())
             val btnClearVisibility = it.toString().isNotEmpty()
             if(binding.clearSearchText.isVisible != btnClearVisibility){

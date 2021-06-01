@@ -1,6 +1,7 @@
 package com.diegoparra.veggie.user.ui.utils
 
 import android.content.Context
+import android.widget.TextView
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.Resource
@@ -15,6 +16,7 @@ fun TextInputLayout.handleError(
     femaleGenderString: Boolean = false,
 ) {
     val fieldName = this.hint.toString().lowercase()
+    this.findViewById<TextView>(R.id.textinput_error).apply { maxLines = 4 }
     error = when (resource) {
         is Resource.Success -> null
         is Resource.Error -> {
@@ -72,7 +74,7 @@ fun getDefaultWrongSignInMethodErrorMessage(
         )
         is SignInFailure.WrongSignInMethod.SignInMethodNotLinked -> getString(
             R.string.failure_not_linked_sign_in_method,
-            failure.linkedSignInMethods.joinToString()
+            failure.linkedSignInMethods.joinToString().lowercase()
         )
         is SignInFailure.WrongSignInMethod.Unknown -> failure.message
     }

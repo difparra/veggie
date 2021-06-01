@@ -35,6 +35,12 @@ class UserViewModel @Inject constructor(
             .map { if(it is Either.Right) it.b else null }
             .asLiveData()
 
+    val photoUrl =
+        getBasicUserInfoUseCase.getPhotoUrl()
+            .map { if(it is Either.Right) it.b else null }
+            .asLiveData()
+
+
     fun signOut() = signOutUseCase()
 
 }

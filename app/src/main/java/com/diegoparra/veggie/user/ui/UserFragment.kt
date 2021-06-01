@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.databinding.FragmentUserBinding
@@ -65,6 +67,14 @@ class UserFragment : Fragment() {
         }
         viewModel.email.observe(viewLifecycleOwner) {
             binding.email.text = it
+        }
+        viewModel.photoUrl.observe(viewLifecycleOwner) {
+            if(it != null) {
+                binding.photo.isVisible = true
+                binding.photo.load(it)
+            }else{
+                binding.photo.isVisible = false
+            }
         }
 
         binding.signOut.setOnClickListener {

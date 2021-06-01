@@ -9,7 +9,8 @@ import com.diegoparra.veggie.R
  * that can access to it easily).
  * - Will also be the reference to popBackStack and finish login flow.
  */
-@IdRes private val startDestination = R.id.signInOptionsFragment
+@IdRes
+private val startDestination = R.id.signInOptionsFragment
 
 @IdRes
 private fun getOriginalDestination(
@@ -19,9 +20,10 @@ private fun getOriginalDestination(
     return savedStateHandle.get<Int>(SignInOptionsFragment.ORIGINAL_DESTINATION)!!
 }
 
-fun setLoginResult(navController: NavController, loginSuccessful: Boolean){
+fun setLoginResult(navController: NavController, loginSuccessful: Boolean) {
     val originalDestination = getOriginalDestination(navController)
-    val originalSavedStateHandle = navController.getBackStackEntry(originalDestination).savedStateHandle
+    val originalSavedStateHandle =
+        navController.getBackStackEntry(originalDestination).savedStateHandle
     originalSavedStateHandle.set(SignInOptionsFragment.LOGIN_SUCCESSFUL, loginSuccessful)
 }
 

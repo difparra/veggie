@@ -1,18 +1,21 @@
 package com.diegoparra.veggie.user.entities_and_repo
 
+import android.net.Uri
+
 data class User (
     val id: String,
     val email: String,
     val name: String,
     val phoneNumber: String? = null,
     val address: String? = null,
-    val photoUrl: String? = null
+    val photoUrl: Uri? = null
 )
 
 data class BasicUserInfo(
     val id: String,
     val email: String,
-    val name: String
+    val name: String,
+    val photoUrl: Uri? = null
 )
 
 

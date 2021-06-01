@@ -5,11 +5,11 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.core.EventObserver
+import com.diegoparra.veggie.core.addTextChangedListenerDistinctChanged
 import com.diegoparra.veggie.core.hideKeyboard
 import com.diegoparra.veggie.databinding.FragmentEmailSignUpBinding
 import com.diegoparra.veggie.user.ui.utils.handleError
@@ -50,15 +50,15 @@ class EmailSignUpFragment : Fragment() {
             )
         }
 
-        emailTextWatcher = binding.email.addTextChangedListener {
+        emailTextWatcher = binding.email.addTextChangedListenerDistinctChanged {
             Timber.d("email changed to: ${it.toString()}")
             viewModel.setEmail(it.toString())
         }
-        passwordTextWatcher = binding.password.addTextChangedListener {
+        passwordTextWatcher = binding.password.addTextChangedListenerDistinctChanged {
             Timber.d("password changed to: ${it.toString()}")
             viewModel.setPassword(it.toString())
         }
-        nameTextWatcher = binding.name.addTextChangedListener {
+        nameTextWatcher = binding.name.addTextChangedListenerDistinctChanged {
             Timber.d("name changed to: ${it.toString()}")
             viewModel.setName(it.toString())
         }

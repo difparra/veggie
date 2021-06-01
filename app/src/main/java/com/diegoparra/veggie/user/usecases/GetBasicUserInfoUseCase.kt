@@ -21,5 +21,6 @@ class GetBasicUserInfoUseCase @Inject constructor(
     fun isSignedIn() = basicUserInfo.map { it is Either.Right }.distinctUntilChanged()
     fun getName() = basicUserInfo.map { it.map { it.name } }
     fun getEmail() = basicUserInfo.map { it.map { it.email } }
+    fun getPhotoUrl() = basicUserInfo.map { it.map { it.photoUrl } }
 
 }
