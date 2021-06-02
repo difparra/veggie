@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Event
 import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.user.usecases.FacebookSignInUseCase
 import com.diegoparra.veggie.user.usecases.GoogleSignInUseCase
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
@@ -18,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInOptionsViewModel @Inject constructor(
     val googleSignInClient: GoogleSignInClient,
-    private val googleSignInUseCase: GoogleSignInUseCase
+    private val googleSignInUseCase: GoogleSignInUseCase,
+    private val facebookSignInUseCase: FacebookSignInUseCase
 ) : ViewModel() {
 
     private val _loading = MutableLiveData<Boolean>(false)
@@ -33,18 +37,25 @@ class SignInOptionsViewModel @Inject constructor(
     fun onSignInGoogleResult(account: Either<ApiException, GoogleSignInAccount>) {
         viewModelScope.launch {
             _loading.value = true
-            googleSignInUseCase(account).fold(
-                {
-                    _loading.value = false
-                    _failure.value = it
-                    Unit
-                }, {
-                    _loading.value = false
-                    _navigateSignedIn.value = Event(true)
-                    Unit
-                }
-            )
+            googleSignInUseCase(account).fold(::handleFailureLogIn, ::handleSuccessfulLogIn)
         }
+    }
+
+    fun onSignInFacebookResult(result: Either<FacebookException, LoginResult>) {
+        viewModelScope.launch {
+            _loading.value = true
+            facebookSignInUseCase(result).fold(::handleFailureLogIn, ::handleSuccessfulLogIn)
+        }
+    }
+
+    private fun handleFailureLogIn(failure: Failure) {
+        _loading.value = false
+        _failure.value = failure
+    }
+
+    private fun handleSuccessfulLogIn(nothing: Unit) {
+        _loading.value = false
+        _navigateSignedIn.value = Event(true)
     }
 
 }

@@ -3,7 +3,6 @@ package com.diegoparra.veggie.user.data
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.products.IoDispatcher
 import com.diegoparra.veggie.user.data.ToFirebaseTransformations.getAuthCredential
-import com.diegoparra.veggie.user.data.ToFirebaseTransformations.getProfileInfoFirebase
 import com.diegoparra.veggie.user.data.UserTransformations.toBasicUserInfo
 import com.diegoparra.veggie.user.data.UserTransformations.toIsSignedIn
 import com.diegoparra.veggie.user.data.UserTransformations.toSignInMethodList
@@ -11,8 +10,8 @@ import com.diegoparra.veggie.user.entities_and_repo.BasicUserInfo
 import com.diegoparra.veggie.user.entities_and_repo.SignInMethod
 import com.diegoparra.veggie.user.entities_and_repo.User
 import com.diegoparra.veggie.user.entities_and_repo.UserRepository
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -59,7 +58,6 @@ class UserRepositoryImpl @Inject constructor(
         }
 
 
-
     //      ----------      SIGNIN/UP EMAIL        -------------------------------------------------
 
     override suspend fun signUpWithEmailAndPassword(
@@ -85,16 +83,16 @@ class UserRepositoryImpl @Inject constructor(
         }
 
 
-    //      ----------      SIGNIN/UP GOOGLE        ------------------------------------------------
+    //      ----------      SIGNIN/UP GOOGLE & FACEBOOK        -------------------------------------
 
     override suspend fun signInWithGoogleAccount(account: GoogleSignInAccount): Either<Failure, Unit> {
         val credential = account.getAuthCredential()
-        val profileInfo = account.getProfileInfoFirebase()
-        return userApi
-            .signInWithCredential(credential)
-            .suspendFlatMap {
-                userApi.updateProfile(profileInfo)
-            }
+        return userApi.signInWithCredential(credential)
+    }
+
+    override suspend fun signInWithFacebookResult(result: LoginResult): Either<Failure, Unit> {
+        val credential = result.getAuthCredential()
+        return userApi.signInWithCredential(credential)
     }
 
 }

@@ -82,5 +82,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-config-ktx'        //  RemoteConfig
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'   //  For google auth
+    implementation 'com.facebook.android:facebook-login:8.1.0'          //  For facebook auth
+    //implementation 'com.facebook.android:facebook-android-sdk:[4,5)'  //  For facebook auth
 
 }

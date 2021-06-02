@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.user.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,14 +10,21 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
+import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.core.SignInFailure
 import com.diegoparra.veggie.databinding.FragmentSignInOptionsBinding
 import com.diegoparra.veggie.user.ui.utils.getDefaultWrongInputErrorMessage
 import com.diegoparra.veggie.user.ui.utils.getDefaultWrongSignInMethodErrorMessage
 import com.diegoparra.veggie.user.viewmodels.SignInOptionsViewModel
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SignInOptionsFragment : Fragment() {
@@ -36,6 +44,25 @@ class SignInOptionsFragment : Fragment() {
             viewModel.onSignInGoogleResult(it)
         }
 
+    private val callbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
+    private val facebookCallback: FacebookCallback<LoginResult> =
+        object : FacebookCallback<LoginResult> {
+            override fun onSuccess(result: LoginResult?) {
+                result?.let {
+                    viewModel.onSignInFacebookResult(Either.Right(it))
+                } ?: Timber.e("facebook sign in result was null")
+            }
+
+            override fun onCancel() {
+                Timber.w("facebook sign in operation was cancelled.")
+            }
+
+            override fun onError(error: FacebookException?) {
+                error?.let {
+                    viewModel.onSignInFacebookResult(Either.Left(it))
+                } ?: Timber.e("facebook sign in error was null")
+            }
+        }
 
 
     override fun onCreateView(
@@ -62,10 +89,18 @@ class SignInOptionsFragment : Fragment() {
             googleContract.launch(viewModel.googleSignInClient)
         }
         binding.facebookSignIn.setOnClickListener {
-            //  TODO
-            Snackbar.make(binding.root, "TODO()", Snackbar.LENGTH_SHORT).show()
+            binding.progressBar.isVisible = true
+            LoginManager.getInstance()
+                .logInWithReadPermissions(this, listOf("email", "public_profile"))
+            LoginManager.getInstance().registerCallback(callbackManager, facebookCallback)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        callbackManager.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
 
     private fun setUpToSendBackLoginResult() {
         val navController = findNavController()
@@ -82,14 +117,14 @@ class SignInOptionsFragment : Fragment() {
     }
 
     private fun subscribeUi() {
-        viewModel.navigateSignedIn.observe(viewLifecycleOwner, EventObserver{
-            if(it) {
+        viewModel.navigateSignedIn.observe(viewLifecycleOwner, EventObserver {
+            if (it) {
                 setLoginResultAndNavigate(findNavController(), true)
             }
         })
 
         viewModel.failure.observe(viewLifecycleOwner) {
-            val errorMessage = when(it){
+            val errorMessage = when (it) {
                 is SignInFailure.WrongSignInMethod ->
                     getDefaultWrongSignInMethodErrorMessage(binding.root.context, it)
                 is SignInFailure.WrongInput ->

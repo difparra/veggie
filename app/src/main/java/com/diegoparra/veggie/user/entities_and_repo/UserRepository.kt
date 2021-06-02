@@ -2,6 +2,7 @@ package com.diegoparra.veggie.user.entities_and_repo
 
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import kotlinx.coroutines.flow.Flow
 
@@ -18,6 +19,7 @@ interface UserRepository {
     suspend fun sendPasswordResetEmail(email: String): Either<Failure, Unit>
 
     suspend fun signInWithGoogleAccount(account: GoogleSignInAccount): Either<Failure, Unit>
+    suspend fun signInWithFacebookResult(result: LoginResult): Either<Failure, Unit>
 
 
 }

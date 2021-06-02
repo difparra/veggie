@@ -49,6 +49,12 @@
     <string name="reset_password_instructions">Escribe tu correo y te enviaremos un link para que puedas restablecer tu contraseña</string>
     <string name="reset_password_email_sent">Se ha enviado un link a tu correo para restablecer tu contraseña.</string>
 
+    <!-- Facebook -->
+    <string name="facebook_app_id">315214526875872</string>
+    <string name="fb_login_protocol_scheme">fb315214526875872</string>
+
+
+
 
     <!-- Failures strings -->
 
