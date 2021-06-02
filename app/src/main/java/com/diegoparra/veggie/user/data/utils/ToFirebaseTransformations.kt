@@ -1,5 +1,6 @@
-package com.diegoparra.veggie.user.data
+package com.diegoparra.veggie.user.data.utils
 
+import com.diegoparra.veggie.user.data.firebase.ProfileInfoFirebase
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.AuthCredential

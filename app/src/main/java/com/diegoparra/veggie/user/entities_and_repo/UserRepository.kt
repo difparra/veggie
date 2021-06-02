@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
 
     fun isSignedIn(): Flow<Boolean>
-    fun signOut()
+    suspend fun signOut()
 
     fun getBasicUserInfo(): Flow<Either<Failure, BasicUserInfo>>
     suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>>

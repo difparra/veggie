@@ -4,6 +4,7 @@ import android.content.Context
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.user.data.UserRepositoryImpl
 import com.diegoparra.veggie.user.entities_and_repo.UserRepository
+import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -38,6 +39,11 @@ object UserModuleProvides {
                 .requestEmail()
                 .build()
         return GoogleSignIn.getClient(context, gso)
+    }
+
+    @Provides
+    fun providesFacebookLoginManager(): LoginManager {
+        return LoginManager.getInstance()
     }
 
 }

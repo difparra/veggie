@@ -40,12 +40,14 @@
             <ImageView
                 android:id="@+id/photo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                android:layout_marginEnd="@dimen/padding_standard"
+                android:background="@color/green_200"
                 android:importantForAccessibility="no"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginEnd="@dimen/padding_standard"
                 tools:src="@mipmap/ic_launcher" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

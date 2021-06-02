@@ -1,68 +1,68 @@
 package com.diegoparra.veggie.user.data
 
+import android.net.Uri
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.SignInFailure
 import com.diegoparra.veggie.user.entities_and_repo.BasicUserInfo
 import com.diegoparra.veggie.user.entities_and_repo.SignInMethod
-import com.diegoparra.veggie.user.entities_and_repo.User
 import com.google.firebase.auth.*
 import timber.log.Timber
 
 object UserTransformations {
 
-    fun FirebaseUser?.toIsSignedIn(): Boolean {
+    fun FirebaseUser?.isSignedIn(): Boolean {
         return this != null && !isAnonymous
     }
 
-    fun FirebaseUser?.toBasicUserInfo(): Either<Failure, BasicUserInfo> {
+    fun FirebaseUser?.toBasicUserInfo(signedInWith: SignInMethod?, fbToken: String?): Either<Failure, BasicUserInfo> {
         return if (this == null) {
             Either.Left(SignInFailure.SignInState.NotSignedIn)
         } else if (this.isAnonymous) {
             Either.Left(SignInFailure.SignInState.Anonymous)
         } else {
-            //  TODO:   Check if information is correct
-            //          Correct photoUri when signing in with facebook, is the only one that is not correct
-            val profile = providerData.find { it.providerId == providerId }
-            Timber.d("""
-                completeProviderData = 
-                 providerIds = ${providerData.map { it.providerId }.joinToString()}
-                 emails = ${providerData.map { it.email }.joinToString()}
-                 names = ${providerData.map { it.displayName }.joinToString()}
-                 photoUrls = ${providerData.map { it.photoUrl }.joinToString()}
-            """.trimIndent())
-            Timber.d("""
-                profile = $profile
-                Profile Info: providerId = ${profile?.providerId}, email = ${profile?.email}, name = ${profile?.displayName}, photoUri = ${profile?.photoUrl} 
-            """.trimIndent())
-            Timber.d("""
-                user normal: uid = ${this.uid} -> $this
-                userInfo = providerId = ${this.providerId}, email = ${this.email}, name = ${this.displayName}, photoUri = ${this.photoUrl}
-            """.trimIndent())
+            Timber.i("All info provider data:")
+            providerData.forEach {
+                Timber.d("email = ${it.email}, name = ${it.displayName}, photoUrl = ${it.photoUrl}, phoneNumber = ${it.phoneNumber}")
+            }
+            val profile = this.providerData.find {
+                SignInMethod.fromProviderId(it.providerId) == signedInWith
+            }
+            Timber.i("Selected provider data: ")
+            Timber.d("Profile: email = ${profile?.email}, name = ${profile?.displayName}, photoUrl = ${profile?.photoUrl}, phoneNumber = ${profile?.phoneNumber}")
+            val photoUrl = if(profile != null && signedInWith == SignInMethod.FACEBOOK){
+                Uri.parse("${profile.photoUrl}?access_token=$fbToken")
+            } else {
+                profile?.photoUrl ?: photoUrl
+            }
+
             val user = BasicUserInfo(
-                id = this.uid,
-                email = this.email!!,
-                name = profile?.displayName ?: this.displayName ?: email!!.substringBefore('@'),
-                photoUrl = profile?.photoUrl ?: this.photoUrl
+                id = uid,
+                email = email ?: profile?.email ?: "",
+                name = displayName ?: profile?.displayName ?: email?.substringBefore('@') ?: "User",
+                photoUrl = photoUrl
             )
+            Timber.d("user = $user")
             Either.Right(user)
         }
     }
 
-    fun List<String>.toSignInMethodList(): List<SignInMethod> {
-        if (this.isNullOrEmpty()) {
-            return emptyList()
-        }
-        return this
-            .mapNotNull { it.toSignInMethod() }
-    }
 
-    fun String.toSignInMethod(): SignInMethod? {
-        return when (this) {
+    fun SignInMethod.Companion.fromSignInMethod(signInMethodFirebase: String) : SignInMethod {
+        return when (signInMethodFirebase) {
             EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD -> SignInMethod.EMAIL
             GoogleAuthProvider.GOOGLE_SIGN_IN_METHOD -> SignInMethod.GOOGLE
             FacebookAuthProvider.FACEBOOK_SIGN_IN_METHOD -> SignInMethod.FACEBOOK
-            else -> null
+            else -> SignInMethod.UNKNOWN
+        }
+    }
+
+    private fun SignInMethod.Companion.fromProviderId(providerIdFirebase: String) : SignInMethod {
+        return when(providerIdFirebase){
+            EmailAuthProvider.PROVIDER_ID -> SignInMethod.EMAIL
+            GoogleAuthProvider.PROVIDER_ID -> SignInMethod.GOOGLE
+            FacebookAuthProvider.PROVIDER_ID -> SignInMethod.FACEBOOK
+            else -> SignInMethod.UNKNOWN
         }
     }
 

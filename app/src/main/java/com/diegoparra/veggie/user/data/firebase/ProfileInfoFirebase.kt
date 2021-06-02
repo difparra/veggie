@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.user.data
+package com.diegoparra.veggie.user.data.firebase
 
 import android.net.Uri
 

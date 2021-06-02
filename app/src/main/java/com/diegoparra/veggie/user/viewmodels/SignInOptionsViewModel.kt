@@ -10,6 +10,7 @@ import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.user.usecases.FacebookSignInUseCase
 import com.diegoparra.veggie.user.usecases.GoogleSignInUseCase
 import com.facebook.FacebookException
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class SignInOptionsViewModel @Inject constructor(
     val googleSignInClient: GoogleSignInClient,
     private val googleSignInUseCase: GoogleSignInUseCase,
+    val loginManager: LoginManager,
     private val facebookSignInUseCase: FacebookSignInUseCase
 ) : ViewModel() {
 

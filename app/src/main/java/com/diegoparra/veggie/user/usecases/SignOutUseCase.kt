@@ -7,5 +7,5 @@ class SignOutUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
 
-    operator fun invoke() = userRepository.signOut()
+    suspend operator fun invoke() = userRepository.signOut()
 }

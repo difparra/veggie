@@ -20,7 +20,6 @@ import com.diegoparra.veggie.user.viewmodels.SignInOptionsViewModel
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
-import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -90,9 +89,9 @@ class SignInOptionsFragment : Fragment() {
         }
         binding.facebookSignIn.setOnClickListener {
             binding.progressBar.isVisible = true
-            LoginManager.getInstance()
+            viewModel.loginManager
                 .logInWithReadPermissions(this, listOf("email", "public_profile"))
-            LoginManager.getInstance().registerCallback(callbackManager, facebookCallback)
+            viewModel.loginManager.registerCallback(callbackManager, facebookCallback)
         }
     }
 

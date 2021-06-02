@@ -74,7 +74,7 @@ fun getDefaultWrongSignInMethodErrorMessage(
         )
         is SignInFailure.WrongSignInMethod.SignInMethodNotLinked -> getString(
             R.string.failure_not_linked_sign_in_method,
-            failure.linkedSignInMethods.joinToString().lowercase()
+            failure.linkedSignInMethods.joinToString()
         )
         is SignInFailure.WrongSignInMethod.Unknown -> failure.message
     }

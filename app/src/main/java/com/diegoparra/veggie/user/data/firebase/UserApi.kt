@@ -1,10 +1,9 @@
-package com.diegoparra.veggie.user.data
+package com.diegoparra.veggie.user.data.firebase
 
-import android.net.Uri
 import com.diegoparra.veggie.core.*
-import com.diegoparra.veggie.user.data.UserTransformations.toSignInMethod
-import com.diegoparra.veggie.user.entities_and_repo.UserConstants.SignInFields.EMAIL
-import com.diegoparra.veggie.user.entities_and_repo.UserConstants.SignInFields.PASSWORD
+import com.diegoparra.veggie.user.data.utils.FirebaseExceptionsTransformations.toFailure
+import com.diegoparra.veggie.user.data.UserTransformations.fromSignInMethod
+import com.diegoparra.veggie.user.entities_and_repo.SignInMethod
 import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import kotlinx.coroutines.channels.awaitClose
@@ -37,37 +36,46 @@ class UserApi @Inject constructor(
         auth.signOut()
     }
 
-    suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<String>> {
+    suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>> {
         return try {
             val result = auth.fetchSignInMethodsForEmail(email).await()
             Timber.d("email: $email - signInMethods = ${result.signInMethods}")
-            Either.Right(result.signInMethods ?: listOf())
+            val signInMethodList = result.signInMethods?.map {
+                SignInMethod.fromSignInMethod(it)
+            }
+            Either.Right(signInMethodList ?: emptyList())
         } catch (e1: FirebaseAuthInvalidCredentialsException) {
-            Either.Left(SignInFailure.WrongInput.Incorrect(field = EMAIL, input = email))
+            Either.Left(e1.toFailure(email = email))
         } catch (e: Exception) {
             Either.Left(Failure.ServerError(e))
         }
     }
 
     suspend fun updateProfile(
-        profileInfoFirebase: ProfileInfoFirebase
+        profileInfoFirebase: ProfileInfoFirebase,
+        forceNameUpdate: Boolean = true,
+        forcePhotoUpdate: Boolean = true
     ): Either<Failure, Unit> {
         val name = profileInfoFirebase.name
         val photoUrl = profileInfoFirebase.photoUrl
-        if (name == null && photoUrl == null) {
-            Timber.w("Nothing updated. Name and photoUrl are null.")
+        if ((name == null && photoUrl == null) || (!forceNameUpdate && !forcePhotoUpdate)) {
+            Timber.w("Nothing updated. Name and photoUrl are null or forceUpdates were false.")
             return Either.Right(Unit)
         }
         return try {
             auth.currentUser
                 ?.updateProfile(userProfileChangeRequest {
-                    name?.let { displayName = it }
-                    photoUrl?.let { photoUri = it }
+                    if (forceNameUpdate && name != null) {
+                        displayName = name
+                    }
+                    if (forcePhotoUpdate && photoUrl != null) {
+                        photoUri = photoUrl
+                    }
                 })?.await()
             Either.Right(Unit)
         } catch (e1: FirebaseAuthInvalidUserException) {
             //  Email does not exists or has been disabled
-            Either.Left(Failure.ServerError(e1))
+            Either.Left(e1.toFailure(null))
         } catch (e: Exception) {
             Either.Left(Failure.ServerError(e))
         }
@@ -84,19 +92,13 @@ class UserApi @Inject constructor(
             Either.Right(Unit)
         } catch (e1: FirebaseAuthWeakPasswordException) {
             //  Password is not strong enough
-            Either.Left(
-                SignInFailure.WrongInput.Unknown(
-                    field = PASSWORD,
-                    input = password,
-                    message = e1.localizedMessage ?: "Password is weak"
-                )
-            )
+            Either.Left(e1.toFailure(password = password))
         } catch (e2: FirebaseAuthInvalidCredentialsException) {
             //  Email address is malformed
-            Either.Left(SignInFailure.WrongInput.Incorrect(field = EMAIL, input = email))
+            Either.Left(e2.toFailure(email = email))
         } catch (e3: FirebaseAuthUserCollisionException) {
             //  Already exists an account with the given email address
-            Either.Left(e3.toFailure(EmailAuthProvider.getCredential(email, password)))
+            Either.Left(e3.toFailure(SignInMethod.EMAIL, getSignInMethodsForEmail(e3.email!!)))
         } catch (e: Exception) {
             Either.Left(Failure.ServerError(e))
         }
@@ -109,19 +111,13 @@ class UserApi @Inject constructor(
             Either.Right(Unit)
         } catch (e1: FirebaseAuthInvalidUserException) {
             //  Email does not exists or has been disabled, or user/email does not exist
-            Either.Left(
-                SignInFailure.WrongInput.Unknown(
-                    field = EMAIL,
-                    input = email,
-                    message = e1.localizedMessage ?: "Email does not exists or has been disabled."
-                )
-            )
+            Either.Left(e1.toFailure(email = email))
         } catch (e2: FirebaseAuthInvalidCredentialsException) {
             //  Password is incorrect
-            Either.Left(SignInFailure.WrongInput.Incorrect(field = PASSWORD, input = password))
+            Either.Left(e2.toFailure(password = password))
         } catch (e3: FirebaseAuthUserCollisionException) {
             //  If there already exists an account with the email address
-            Either.Left(e3.toFailure(EmailAuthProvider.getCredential(email, password)))
+            Either.Left(e3.toFailure(SignInMethod.EMAIL, getSignInMethodsForEmail(e3.email!!)))
         } catch (e: Exception) {
             Either.Left(Failure.ServerError(e))
         }
@@ -137,7 +133,7 @@ class UserApi @Inject constructor(
     }
 
 
-    //      ----------      SIGNIN/UP GOOGLE        ------------------------------------------------
+    //      ----------      SIGNIN/UP GOOGLE & FACEBOOK       --------------------------------------
 
     suspend fun signInWithCredential(credential: AuthCredential): Either<Failure, Unit> {
         return try {
@@ -145,28 +141,16 @@ class UserApi @Inject constructor(
             Either.Right(Unit)
         } catch (e1: FirebaseAuthInvalidUserException) {
             //  If the user account has been disabled or is EmailAuthCredential for non-existent user/email
-            Either.Left(Failure.ServerError(e1))
+            Either.Left(e1.toFailure(null))
         } catch (e2: FirebaseAuthInvalidCredentialsException) {
             //  If the credential is malformed or has been expired / Password is incorrect
-            Either.Left(Failure.ServerError(e2))
+            Either.Left(e2.toFailure(email = null))
         } catch (e3: FirebaseAuthUserCollisionException) {
             //  If there already exists an account with the email address asserted by the credential
-            Either.Left(e3.toFailure(credential))
+            Either.Left(e3.toFailure(SignInMethod.EMAIL, getSignInMethodsForEmail(e3.email!!)))
         } catch (e: Exception) {
             Either.Left(Failure.ServerError(e))
         }
     }
 
-
-    private suspend fun FirebaseAuthUserCollisionException.toFailure(credential: AuthCredential) : Failure {
-        val email = this.email!!
-        return when(val linkedSignInMethods = getSignInMethodsForEmail(email)){
-            is Either.Left -> linkedSignInMethods.a
-            is Either.Right -> SignInFailure.WrongSignInMethod.SignInMethodNotLinked(
-                email = this.email ?: "",
-                signInMethod = credential.signInMethod.toSignInMethod().toString(),
-                linkedSignInMethods = linkedSignInMethods.b
-            )
-        }
-    }
 }
