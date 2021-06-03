@@ -35,6 +35,8 @@
     <string name="user_addresses">Direcciones</string>
     <string name="user_sign_out">Cerrar sesión</string>
 
+
+    <!-- Auth -->
     <string name="sign_in">Iniciar sesión</string>
     <string name="sign_up">Crear cuenta</string>
     <string name="user_or_sign_in_with">o ingresa con</string>
@@ -66,7 +68,7 @@
     <string name="failure_no_search_result">No hay productos que coincidan con tu búsqueda.</string>
     <string name="failure_empty_cart_list">El carrito está vacío.</string>
 
-    <!-- User -->
+    <!-- Auth -->
     <string name="failure_empty_field">Campo vacío.</string>
     <string name="failure_short_field_m">El %1$s debe tener al menos %2$d caracteres.</string>
     <string name="failure_short_field_f">La %1$s debe tener al menos %2$d caracteres.</string>

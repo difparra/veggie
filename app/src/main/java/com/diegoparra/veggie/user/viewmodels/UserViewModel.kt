@@ -5,40 +5,36 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Event
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.user.entities_and_repo.BasicUserInfo
-import com.diegoparra.veggie.user.usecases.GetBasicUserInfoUseCase
+import com.diegoparra.veggie.user.usecases.GetProfileUseCase
 import com.diegoparra.veggie.user.usecases.SignOutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val getBasicUserInfoUseCase: GetBasicUserInfoUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
     private val signOutUseCase: SignOutUseCase
 ) : ViewModel() {
 
     val isSignedIn =
-        getBasicUserInfoUseCase.isSignedIn()
+        getProfileUseCase.isSignedIn()
             .map { Event(it) }
             .asLiveData()
 
     val name =
-        getBasicUserInfoUseCase.getName()
+        getProfileUseCase.getName()
             .map { if(it is Either.Right) it.b else null }
             .asLiveData()
 
     val email =
-        getBasicUserInfoUseCase.getEmail()
+        getProfileUseCase.getEmail()
             .map { if(it is Either.Right) it.b else null }
             .asLiveData()
 
     val photoUrl =
-        getBasicUserInfoUseCase.getPhotoUrl()
+        getProfileUseCase.getPhotoUrl()
             .map { if(it is Either.Right) it.b else null }
             .asLiveData()
 

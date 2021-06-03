@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.diegoparra.veggie.R
+import com.diegoparra.veggie.auth.ui.SignInOptionsFragment
 import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.databinding.FragmentUserBinding
 import com.diegoparra.veggie.user.viewmodels.UserViewModel

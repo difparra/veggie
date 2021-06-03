@@ -1,11 +1,11 @@
 package com.diegoparra.veggie.user.usecases
 
-import com.diegoparra.veggie.user.entities_and_repo.UserRepository
+import com.diegoparra.veggie.auth.domain.AuthRepository
 import javax.inject.Inject
 
 class SignOutUseCase @Inject constructor(
-    private val userRepository: UserRepository
+    private val authRepository: AuthRepository
 ) {
 
-    suspend operator fun invoke() = userRepository.signOut()
+    suspend operator fun invoke() = authRepository.signOut()
 }

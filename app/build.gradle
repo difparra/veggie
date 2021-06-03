@@ -80,6 +80,8 @@ dependencies {
     //  ----------      Firebase / Bom already added in shared dependencies     --------------------
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-config-ktx'        //  RemoteConfig
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'     //  For notifications reviews in firebase console
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'   //  For google auth
     implementation 'com.facebook.android:facebook-login:8.1.0'          //  For facebook auth
