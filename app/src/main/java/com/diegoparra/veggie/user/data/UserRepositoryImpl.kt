@@ -2,20 +2,35 @@ package com.diegoparra.veggie.user.data
 
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.core.map
+import com.diegoparra.veggie.user.data.DtosTransformations.toUser
+import com.diegoparra.veggie.user.domain.User
 import com.diegoparra.veggie.user.domain.UserRepository
+import timber.log.Timber
 import javax.inject.Inject
 
-class UserRepositoryImpl @Inject constructor() : UserRepository {
+class UserRepositoryImpl @Inject constructor(
+    private val userApi: UserApi
+) : UserRepository {
 
-    override suspend fun getPhoneNumber(): Either<Failure, String> {
-        //  TODO: Get phoneNumber from firestore
-        return Either.Right("301 234 5678")
+    override suspend fun updateUserData(
+        id: String,
+        email: String?, name: String?,
+        phoneNumber: String?, address: String?
+    ): Either<Failure, Unit> {
+        Timber.d("updateUserData() called with: id = $id, email = $email, name = $name, phoneNumber = $phoneNumber, address = $address")
+        return userApi.updateUserData(
+            id = id,
+            email = email,
+            name = name,
+            phoneNumber = phoneNumber,
+            address = address
+        )
     }
 
-    override suspend fun getAddress(): Either<Failure, String> {
-        //  TODO: Get address from firestore
-        return Either.Right("Calle ___ # __ - __")
+    override suspend fun getUser(id: String): Either<Failure, User> {
+        Timber.d("getUser() called with: id = $id")
+        return userApi.getUser(id).map { it.toUser() }
     }
-
 
 }

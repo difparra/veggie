@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.auth.data
 
-import android.net.Uri
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.SignInFailure

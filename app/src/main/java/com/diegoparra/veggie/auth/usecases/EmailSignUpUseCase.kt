@@ -5,11 +5,13 @@ import com.diegoparra.veggie.auth.domain.SignInMethod
 import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.core.TextInputValidation
+import com.diegoparra.veggie.user.domain.UserRepository
 import javax.inject.Inject
 
 class EmailSignUpUseCase @Inject constructor(
-    authRepository: AuthRepository
-) : EmailAuthUseCase<EmailSignUpUseCase.Params>(authRepository) {
+    authRepository: AuthRepository,
+    userRepository: UserRepository
+) : EmailAuthUseCase<EmailSignUpUseCase.Params>(authRepository, userRepository) {
 
     data class Params(
         override val email: String,
@@ -29,17 +31,17 @@ class EmailSignUpUseCase @Inject constructor(
         return emailCollisionValidation.isValidForSignUp(email, SignInMethod.EMAIL)
     }
 
-    override suspend fun signInRepository(params: Params): Either<Failure, Unit> {
+
+    //      ----------------------------------------------------------------------------------------
+
+    override suspend fun signIn(params: Params): Either<Failure, Profile> {
         val profile = Profile(
             id = "",        //  Will be actually created by the repository
             email = params.email,
             name = params.name,
             photoUrl = null
         )
-        return authRepository
-            .signUpWithEmailAndPassword(profile, params.password)
-            .map { Unit }
+        return authRepository.signUpWithEmailAndPassword(profile, params.password)
     }
-
 
 }

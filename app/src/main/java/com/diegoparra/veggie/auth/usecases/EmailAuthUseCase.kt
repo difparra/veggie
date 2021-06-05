@@ -7,40 +7,24 @@ import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.usecases.utils.EmailCollisionValidation
 import com.diegoparra.veggie.core.TextInputValidation
 import com.diegoparra.veggie.core.Fields.EMAIL
-import timber.log.Timber
+import com.diegoparra.veggie.user.domain.UserRepository
 
 abstract class EmailAuthUseCase<Params : EmailAuthUseCase.EmailParams>(
-    protected val authRepository: AuthRepository
-) {
-    protected val emailCollisionValidation = EmailCollisionValidation(authRepository)
+    authRepository: AuthRepository,
+    userRepository: UserRepository
+) : SignInUseCase<Params>(authRepository, userRepository) {
 
+    protected val emailCollisionValidation = EmailCollisionValidation(authRepository)
 
     interface EmailParams {
         val email: String
         val password: String
     }
 
-    suspend operator fun invoke(params: Params): Either<Failure, Unit> {
-        initialValidation(params).let {
-            Timber.d("initialValidation(params) called. Result: $it")
-            if (it is Either.Left) {
-                return it
-            }
-        }
-        signInRepository(params).let {
-            Timber.d("signInRepository(params) called. Result: $it")
-            if (it is Either.Left) {
-                return it
-            }
-        }
-        Timber.d("invoke() called with result: Right(Unit)")
-        return Either.Right(Unit)
-    }
-
 
     //      ----------------------------------------------------------------------------------------
 
-    private suspend fun initialValidation(params: Params): Either<SignInFailure.ValidationFailures, Unit> {
+    override suspend fun validate(params: Params): Either<SignInFailure.ValidationFailures, Unit> {
 
         //  Get input failures
         val inputs =
@@ -70,9 +54,7 @@ abstract class EmailAuthUseCase<Params : EmailAuthUseCase.EmailParams>(
         } else {
             Either.Left(SignInFailure.ValidationFailures(totalFailures))
         }
-
     }
-
 
     //      ----------------------------------------------------------------------------------------
 
@@ -89,9 +71,5 @@ abstract class EmailAuthUseCase<Params : EmailAuthUseCase.EmailParams>(
 
     abstract suspend fun validateNotEmailCollision(email: String): Either<Failure, Unit>
 
-
-    //      ----------------------------------------------------------------------------------------
-
-    protected abstract suspend fun signInRepository(params: Params): Either<Failure, Unit>
 
 }

@@ -13,7 +13,7 @@ class GetBasicAuthInfoUseCase @Inject constructor(
 
     //  Do not send profile to viewModel, as it is from other module do not make it visible in ui layer,
     //  it should be only visible in domain layer and only when necessary
-    private val profile = authRepository.getProfile()
+    private val profile = authRepository.getProfileAsFlow()
 
     fun isSignedIn() = profile.map { it is Either.Right }.distinctUntilChanged()
     fun getName() = profile.map { it.map { it.name } }

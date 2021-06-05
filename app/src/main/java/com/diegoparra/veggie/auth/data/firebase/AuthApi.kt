@@ -25,6 +25,8 @@ class AuthApi @Inject constructor(
 
     //      ----------      BASIC OPERATIONS        ------------------------------------------------
 
+    fun getCurrentUser(): FirebaseUser? = auth.currentUser
+
     fun getCurrentUserAsFlow(): Flow<FirebaseUser?> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener {
             offer(it.currentUser)
@@ -37,21 +39,6 @@ class AuthApi @Inject constructor(
         auth.signOut()
     }
 
-    suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>> {
-        return try {
-            val result = auth.fetchSignInMethodsForEmail(email).await()
-            Timber.d("email: $email - signInMethods = ${result.signInMethods}")
-            val signInMethodList = result.signInMethods?.map {
-                SignInMethod.fromSignInMethod(it)
-            }
-            Either.Right(signInMethodList ?: emptyList())
-        } catch (e1: FirebaseAuthInvalidCredentialsException) {
-            Either.Left(e1.toFailure(email = email))
-        } catch (e: Exception) {
-            Either.Left(Failure.ServerError(e))
-        }
-    }
-
     suspend fun updateProfile(
         name: String? = null, photoUrl: Uri? = null
     ): Either<Failure, Unit> {
@@ -62,13 +49,34 @@ class AuthApi @Inject constructor(
         return try {
             auth.currentUser
                 ?.updateProfile(userProfileChangeRequest {
-                    name?.let { displayName = it }
-                    photoUrl?.let { photoUri = it }
+                    name?.let {
+                        Timber.d("updating name to = $it")
+                        displayName = it
+                    }
+                    photoUrl?.let {
+                        Timber.d("updating photoUrl to = $it")
+                        photoUri = it
+                    }
                 })?.await()
             Either.Right(Unit)
         } catch (e1: FirebaseAuthInvalidUserException) {
             //  Email does not exists or has been disabled
             Either.Left(e1.toFailure(null))
+        } catch (e: Exception) {
+            Either.Left(Failure.ServerError(e))
+        }
+    }
+
+    suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>> {
+        return try {
+            val result = auth.fetchSignInMethodsForEmail(email).await()
+            Timber.d("email: $email - signInMethods = ${result.signInMethods}")
+            val signInMethodList = result.signInMethods?.map {
+                SignInMethod.fromSignInMethod(it)
+            }
+            Either.Right(signInMethodList ?: emptyList())
+        } catch (e1: FirebaseAuthInvalidCredentialsException) {
+            Either.Left(e1.toFailure(email = email))
         } catch (e: Exception) {
             Either.Left(Failure.ServerError(e))
         }

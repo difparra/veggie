@@ -59,11 +59,23 @@ class AuthRepositoryImpl @Inject constructor(
 
     //      ----------      BASIC INFORMATION        -----------------------------------------------
 
-    override fun getProfile(): Flow<Either<Failure, Profile>> {
+    override suspend fun getIdCurrentUser(): Either<Failure, String> {
+        return getProfile().map { it.id }
+    }
+
+    override suspend fun getProfile(): Either<Failure, Profile> = withContext(dispatcher) {
+        authApi.getCurrentUser().toProfile()
+    }
+
+    override fun getProfileAsFlow(): Flow<Either<Failure, Profile>> {
         return authApi
             .getCurrentUserAsFlow()
             .map { it.toProfile() }
             .flowOn(dispatcher)
+    }
+
+    override suspend fun updateProfile(name: String?, photoUrl: Uri?): Either<Failure, Unit> {
+        return authApi.updateProfile(name, photoUrl)
     }
 
     override suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>> =
@@ -81,8 +93,7 @@ class AuthRepositoryImpl @Inject constructor(
             .createUserWithEmailAndPassword(profile.email, password)
             .saveLastSignedInWith(SignInMethod.EMAIL)
             .suspendFlatMap { authResult ->
-                authApi.updateProfile(name = profile.name, photoUrl = profile.photoUrl)
-                    .map { authResult }
+                updateProfile(name = profile.name, photoUrl = profile.photoUrl).map { authResult }
             }
             .suspendFlatMap {
                 it.user.toProfile()
@@ -124,11 +135,18 @@ class AuthRepositoryImpl @Inject constructor(
             .signInWithCredential(credential)
             .saveLastSignedInWith(SignInMethod.FACEBOOK)
             .suspendFlatMap { authResult ->
-                val photoUrl = authResult.user?.photoUrl?.let {
-                    Uri.parse("$it?access_token=${result.accessToken.token}")
+                //  Uri is appending access_token every time, so in order to fix this I am replacing
+                //  the access_token part of the string rather than just adding
+                val currentPhotoUrl = authResult.user?.photoUrl
+                if(currentPhotoUrl != null && !currentPhotoUrl.toString().contains(result.accessToken.token)){
+                    val newUrl = currentPhotoUrl.toString().replaceAfter(
+                        delimiter = "?access_token=",
+                        replacement = result.accessToken.token,
+                        missingDelimiterValue = "$currentPhotoUrl?access_token=${result.accessToken.token}")
+                    updateProfile(photoUrl = Uri.parse(newUrl)).map { authResult }
+                }else{
+                    Either.Right(authResult)
                 }
-                authApi.updateProfile(photoUrl = photoUrl)
-                    .map { authResult }
             }
             .suspendFlatMap {
                 it.user.toProfile()
@@ -141,7 +159,7 @@ class AuthRepositoryImpl @Inject constructor(
     /*
      *  This method is necessary in order to correctly log out.
      */
-    private suspend fun <L,R> Either<L,R>.saveLastSignedInWith(signInMethod: SignInMethod) : Either<L,R> {
+    private suspend fun <L, R> Either<L, R>.saveLastSignedInWith(signInMethod: SignInMethod): Either<L, R> {
         authPrefs.saveLastSignedInWith(signInMethod)
         return this
     }

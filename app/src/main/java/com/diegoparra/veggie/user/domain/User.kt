@@ -7,8 +7,7 @@ data class User (
     val email: String,
     val name: String,
     val phoneNumber: String? = null,
-    val address: String? = null,
-    val photoUrl: Uri? = null
+    val address: String? = null
 )
 
 /*

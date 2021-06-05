@@ -25,6 +25,10 @@ sealed class Failure(open val message: String? = null) {
         object EmptyCartList : CartFailure()
     }
 
+    sealed class UserFailure : Failure() {
+        object UserNotFound : UserFailure()
+    }
+
 }
 
 
@@ -51,8 +55,11 @@ sealed class SignInFailure : Failure() {
         class Empty(field: String, input: String) : WrongInput(field, input)
         class Short(field: String, input: String, val minLength: Int) : WrongInput(field, input)
         class Invalid(field: String, input: String) : WrongInput(field, input)        //  Email
-        class Incorrect(field: String, input: String) : WrongInput(field, input)      //  Password or when authenticating
-        class Unknown(field: String, input: String, override val message: String) : WrongInput(field, input)
+        class Incorrect(field: String, input: String) :
+            WrongInput(field, input)      //  Password or when authenticating
+
+        class Unknown(field: String, input: String, override val message: String) :
+            WrongInput(field, input)
     }
 
     class ValidationFailures(val failures: Set<Failure>) : SignInFailure()

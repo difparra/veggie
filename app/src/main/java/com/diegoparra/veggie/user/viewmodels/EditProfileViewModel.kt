@@ -16,25 +16,26 @@ class EditProfileViewModel @Inject constructor(
     private val saveProfileUseCase: SaveProfileUseCase
 ) : ViewModel() {
 
-    val initialEmail =
-        getUserDataUseCase.getEmail().map { if (it is Either.Right) Event(it.b) else Event(null) }
-            .asLiveData()
+    private val _initialEmail = MutableLiveData(Event(""))
+    val initialEmail: LiveData<Event<String>> = _initialEmail
 
-    val initialName =
-        getUserDataUseCase.getName().map { if (it is Either.Right) Event(it.b) else Event(null) }
-            .asLiveData()
+    private val _initialName = MutableLiveData(Event(""))
+    val initialName: LiveData<Event<String>> = _initialName
 
+    private val _initialPhoneNumber = MutableLiveData(Event(""))
+    val initialPhoneNumber: LiveData<Event<String>> = _initialPhoneNumber
 
-    private val _initialPhoneNumber = MutableLiveData<Event<String?>>()
-    val initialPhoneNumber: LiveData<Event<String?>> = _initialPhoneNumber
     init {
         viewModelScope.launch {
-            getUserDataUseCase.getPhoneNumber().fold(
-                { _initialPhoneNumber.value = Event(null); Unit },
-                { _initialPhoneNumber.value = Event(it); Unit }
-            )
+            getUserDataUseCase().fold({}, {
+                _initialEmail.value = Event(it.email)
+                _initialName.value = Event(it.name)
+                _initialPhoneNumber.value = Event(it.phoneNumber ?: "")
+                Unit
+            })
         }
     }
+
 
     private val _name = MutableStateFlow<Resource<String>>(Resource.Success(""))
     val name = _name.asLiveData()
@@ -50,11 +51,14 @@ class EditProfileViewModel @Inject constructor(
         _name.value = saveProfileUseCase.validateName(name).toResource()
     }
 
+
     fun save(name: String) {
-        saveProfileUseCase.saveName(name).fold(
-            ::handleFailure,
-            ::handleSuccess
-        )
+        viewModelScope.launch {
+            saveProfileUseCase.saveName(name).fold(
+                ::handleFailure,
+                ::handleSuccess
+            )
+        }
     }
 
     private fun handleFailure(failure: Failure) {
@@ -64,7 +68,7 @@ class EditProfileViewModel @Inject constructor(
         }
     }
 
-    private fun handleSuccess(nothing: Unit){
+    private fun handleSuccess(nothing: Unit) {
         _navigateSuccess.value = Event(true)
     }
 

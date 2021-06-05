@@ -3,12 +3,15 @@ package com.diegoparra.veggie.auth.usecases
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.auth.domain.SignInMethod
 import com.diegoparra.veggie.auth.domain.AuthRepository
+import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.core.TextInputValidation
+import com.diegoparra.veggie.user.domain.UserRepository
 import javax.inject.Inject
 
 class EmailSignInUseCase @Inject constructor(
-    authRepository: AuthRepository
-) : EmailAuthUseCase<EmailSignInUseCase.Params>(authRepository) {
+    authRepository: AuthRepository,
+    userRepository: UserRepository
+) : EmailAuthUseCase<EmailSignInUseCase.Params>(authRepository, userRepository) {
 
     data class Params(
         override val email: String,
@@ -33,11 +36,18 @@ class EmailSignInUseCase @Inject constructor(
         return emailCollisionValidation.isValidForSignIn(email, SignInMethod.EMAIL)
     }
 
+    //      ----------------------------------------------------------------------------------------
 
-    override suspend fun signInRepository(params: Params): Either<Failure, Unit> {
-        return authRepository
-            .signInWithEmailAndPassword(params.email, params.password)
-            .map { Unit }
+    override suspend fun signIn(params: Params): Either<Failure, Profile> {
+        return authRepository.signInWithEmailAndPassword(params.email, params.password)
+    }
+
+    //      ----------------------------------------------------------------------------------------
+
+    override suspend fun saveData(profile: Profile): Either<Failure, Unit> {
+        //  There is no need to update firestore data when signing in, as data should already be
+        //  there user has previously signed up.
+        return Either.Right(Unit)
     }
 
 }
