@@ -4,7 +4,7 @@ import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.auth.domain.SignInMethod
 import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.domain.Profile
-import com.diegoparra.veggie.auth.usecases.utils.TextInputValidation
+import com.diegoparra.veggie.core.TextInputValidation
 import javax.inject.Inject
 
 class EmailSignUpUseCase @Inject constructor(
@@ -36,7 +36,9 @@ class EmailSignUpUseCase @Inject constructor(
             name = params.name,
             photoUrl = null
         )
-        return authRepository.signUpWithEmailAndPassword(profile, params.password)
+        return authRepository
+            .signUpWithEmailAndPassword(profile, params.password)
+            .map { Unit }
     }
 
 

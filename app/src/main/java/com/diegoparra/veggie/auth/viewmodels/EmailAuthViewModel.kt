@@ -105,8 +105,8 @@ abstract class EmailAuthViewModel<Params : EmailAuthUseCase.EmailParams>(
     private fun handleInputFailure(field: String, failure: SignInFailure.WrongInput) {
         Timber.d("handleInputFailure() called with: field = $field, failure = $failure")
         when (field) {
-            AuthConstants.Fields.EMAIL -> _email.value = Resource.Error(failure)
-            AuthConstants.Fields.PASSWORD -> _password.value = Resource.Error(failure)
+            Fields.EMAIL -> _email.value = Resource.Error(failure)
+            Fields.PASSWORD -> _password.value = Resource.Error(failure)
             else -> handleInputFailureOnAdditionalFields(failure.field, failure)
         }
     }

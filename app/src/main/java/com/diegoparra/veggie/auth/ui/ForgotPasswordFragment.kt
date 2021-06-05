@@ -11,11 +11,11 @@ import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.databinding.FragmentForgotPasswordBinding
-import com.diegoparra.veggie.auth.domain.AuthConstants
-import com.diegoparra.veggie.auth.ui.utils.getDefaultWrongInputErrorMessage
-import com.diegoparra.veggie.auth.ui.utils.getDefaultWrongSignInMethodErrorMessage
+import com.diegoparra.veggie.core.getDefaultWrongInputErrorMessage
+import com.diegoparra.veggie.core.getDefaultWrongSignInMethodErrorMessage
 import com.diegoparra.veggie.auth.ui.utils.handleError
 import com.diegoparra.veggie.auth.viewmodels.EmailSignInViewModel
+import com.diegoparra.veggie.core.Fields.EMAIL
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
@@ -106,7 +106,7 @@ class ForgotPasswordFragment : Fragment() {
     private fun getPasswordResetFailureMessage(failure: Failure): String {
         return when (failure) {
             is SignInFailure.WrongInput -> {
-                if (failure.field == AuthConstants.Fields.EMAIL) {
+                if (failure.field == EMAIL) {
                     getDefaultWrongInputErrorMessage(
                         context = binding.root.context,
                         field = failure.field,

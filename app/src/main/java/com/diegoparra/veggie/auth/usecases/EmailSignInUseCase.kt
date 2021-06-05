@@ -3,7 +3,7 @@ package com.diegoparra.veggie.auth.usecases
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.auth.domain.SignInMethod
 import com.diegoparra.veggie.auth.domain.AuthRepository
-import com.diegoparra.veggie.auth.usecases.utils.TextInputValidation
+import com.diegoparra.veggie.core.TextInputValidation
 import javax.inject.Inject
 
 class EmailSignInUseCase @Inject constructor(
@@ -35,7 +35,9 @@ class EmailSignInUseCase @Inject constructor(
 
 
     override suspend fun signInRepository(params: Params): Either<Failure, Unit> {
-        return authRepository.signInWithEmailAndPassword(params.email, params.password)
+        return authRepository
+            .signInWithEmailAndPassword(params.email, params.password)
+            .map { Unit }
     }
 
 }

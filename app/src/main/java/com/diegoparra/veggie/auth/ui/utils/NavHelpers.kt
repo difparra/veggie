@@ -3,6 +3,7 @@ package com.diegoparra.veggie.auth.ui.utils
 import androidx.annotation.IdRes
 import androidx.navigation.NavController
 import com.diegoparra.veggie.R
+import com.diegoparra.veggie.auth.domain.AuthConstants
 import com.diegoparra.veggie.auth.ui.SignInOptionsFragment
 
 /**
@@ -25,7 +26,7 @@ fun setLoginResult(navController: NavController, loginSuccessful: Boolean) {
     val originalDestination = getOriginalDestination(navController)
     val originalSavedStateHandle =
         navController.getBackStackEntry(originalDestination).savedStateHandle
-    originalSavedStateHandle.set(SignInOptionsFragment.LOGIN_SUCCESSFUL, loginSuccessful)
+    originalSavedStateHandle.set(AuthConstants.LOGIN_SUCCESSFUL, loginSuccessful)
 }
 
 fun setLoginResultAndNavigate(

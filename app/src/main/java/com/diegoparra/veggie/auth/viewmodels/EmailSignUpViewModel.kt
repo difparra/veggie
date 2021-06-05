@@ -40,7 +40,7 @@ class EmailSignUpViewModel @Inject constructor(
 
     override fun handleInputFailureOnAdditionalFields(field: String, failure: Failure) {
         Timber.d("handleInputFailureOnAdditionalFields() called with: field = $field, failure = $failure")
-        if(field == AuthConstants.Fields.NAME){
+        if(field == Fields.NAME){
             _name.value = Resource.Error(failure)
         }
     }

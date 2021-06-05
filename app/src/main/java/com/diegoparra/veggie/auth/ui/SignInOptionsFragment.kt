@@ -10,12 +10,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
+import com.diegoparra.veggie.auth.domain.AuthConstants
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.core.SignInFailure
 import com.diegoparra.veggie.databinding.FragmentSignInOptionsBinding
-import com.diegoparra.veggie.auth.ui.utils.getDefaultWrongInputErrorMessage
-import com.diegoparra.veggie.auth.ui.utils.getDefaultWrongSignInMethodErrorMessage
+import com.diegoparra.veggie.core.getDefaultWrongInputErrorMessage
+import com.diegoparra.veggie.core.getDefaultWrongSignInMethodErrorMessage
 import com.diegoparra.veggie.auth.ui.utils.setLoginResultAndNavigate
 import com.diegoparra.veggie.auth.viewmodels.SignInOptionsViewModel
 import com.facebook.CallbackManager
@@ -30,7 +31,6 @@ import timber.log.Timber
 class SignInOptionsFragment : Fragment() {
 
     companion object {
-        const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
         const val ORIGINAL_DESTINATION: String = "ORIGINAL_DESTINATION"
     }
 
@@ -106,7 +106,7 @@ class SignInOptionsFragment : Fragment() {
         val navController = findNavController()
         //  Set login successful to false, so that it knows that login flow was started.
         savedStateHandle = navController.previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(LOGIN_SUCCESSFUL, false)
+        savedStateHandle.set(AuthConstants.LOGIN_SUCCESSFUL, false)
         //  Save the original destination in this stateHandle, because it is necessary to modify
         //  its savedStateHandle and send loginResult. It must be done here as there is no
         //  possibility to get a backStackEntry using index nor accessing the backStackIterator.

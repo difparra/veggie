@@ -3,10 +3,10 @@ package com.diegoparra.veggie.auth.usecases
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.SignInFailure
-import com.diegoparra.veggie.auth.domain.AuthConstants
 import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.usecases.utils.EmailCollisionValidation
-import com.diegoparra.veggie.auth.usecases.utils.TextInputValidation
+import com.diegoparra.veggie.core.TextInputValidation
+import com.diegoparra.veggie.core.Fields.EMAIL
 import timber.log.Timber
 
 abstract class EmailAuthUseCase<Params : EmailAuthUseCase.EmailParams>(
@@ -50,7 +50,7 @@ abstract class EmailAuthUseCase<Params : EmailAuthUseCase.EmailParams>(
 
         //  If email is correct, get if failure account linking or null
         var linkedEmailFailure: Failure? = null
-        val isEmailCorrect = inputFailures.none { it.field == AuthConstants.Fields.EMAIL }
+        val isEmailCorrect = inputFailures.none { it.field == EMAIL }
         if (isEmailCorrect) {
             validateNotEmailCollision(params.email).let {
                 if (it is Either.Left) {

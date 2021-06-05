@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.auth.data.utils
 
-import com.diegoparra.veggie.auth.data.firebase.ProfileInfoUpdateFirebase
+import android.net.Uri
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.AuthCredential
@@ -13,11 +13,12 @@ object CredentialToFirebaseAuthTransformations {
         return GoogleAuthProvider.getCredential(this.idToken, null)
     }
 
-    fun GoogleSignInAccount.getProfileInfoFirebase(): ProfileInfoUpdateFirebase {
-        return ProfileInfoUpdateFirebase(
-            name = this.displayName ?: this.email?.substringBefore('@'),
-            photoUrl = this.photoUrl
-        )
+    fun GoogleSignInAccount.getName(): String? {
+        return this.displayName
+    }
+
+    fun GoogleSignInAccount.getPhoto(): Uri? {
+        return this.photoUrl
     }
 
     fun LoginResult.getAuthCredential(): AuthCredential {

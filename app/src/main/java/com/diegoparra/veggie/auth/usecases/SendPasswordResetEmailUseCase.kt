@@ -4,7 +4,7 @@ import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.auth.domain.SignInMethod
 import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.usecases.utils.EmailCollisionValidation
-import com.diegoparra.veggie.auth.usecases.utils.TextInputValidation
+import com.diegoparra.veggie.core.TextInputValidation
 import timber.log.Timber
 import javax.inject.Inject
 

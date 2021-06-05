@@ -10,10 +10,11 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.auth.ui.SignInOptionsFragment
+import com.diegoparra.veggie.auth.domain.AuthConstants
 import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.databinding.FragmentUserBinding
 import com.diegoparra.veggie.user.viewmodels.UserViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -35,7 +36,7 @@ class UserFragment : Fragment() {
             //  currentBackStackEntry is not userFragment but signInOptions. It will cause some error.
         val savedStateHandle = userFragmentAsBackStackEntry.savedStateHandle
         //  Navigate back if login flow was cancelled or failure
-        savedStateHandle.getLiveData<Boolean>(SignInOptionsFragment.LOGIN_SUCCESSFUL)
+        savedStateHandle.getLiveData<Boolean>(AuthConstants.LOGIN_SUCCESSFUL)
             .observe(userFragmentAsBackStackEntry) {
                 //  OK, it is just being called when view is visible, not only if rotating device.
                 Timber.d("LOGIN_SUCCESSFUL = $it")
@@ -63,6 +64,29 @@ class UserFragment : Fragment() {
             }
         })
 
+        subscribeViewsTitle()
+
+        binding.itemProfile.setOnClickListener {
+            val action = UserFragmentDirections.actionNavUserToUserEditProfileFragment()
+            findNavController().navigate(action)
+        }
+
+        binding.itemOrders.setOnClickListener {
+            //  TODO:   Show orders user
+            Snackbar.make(it, "TODO", Snackbar.LENGTH_SHORT).show()
+        }
+
+        binding.itemAddress.setOnClickListener {
+            //  TODO:   Show orders user
+            Snackbar.make(it, "TODO", Snackbar.LENGTH_SHORT).show()
+        }
+
+        binding.signOut.setOnClickListener {
+            viewModel.signOut()
+        }
+    }
+
+    private fun subscribeViewsTitle() {
         viewModel.name.observe(viewLifecycleOwner) {
             binding.name.text = it
         }
@@ -76,10 +100,6 @@ class UserFragment : Fragment() {
             }else{
                 binding.photo.isVisible = false
             }
-        }
-
-        binding.signOut.setOnClickListener {
-            viewModel.signOut()
         }
     }
 

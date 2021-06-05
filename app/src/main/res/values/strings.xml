@@ -6,6 +6,7 @@
     <string name="no">No</string>
     <string name="continuee">Continuar</string>
     <string name="send">Enviar</string>
+    <string name="save">Guardar</string>
 
     <!-- Main navigation -->
     <string name="menu_home">Inicio</string>
@@ -54,6 +55,13 @@
     <!-- Facebook -->
     <string name="facebook_app_id">315214526875872</string>
     <string name="fb_login_protocol_scheme">fb315214526875872</string>
+
+
+    <!-- user -->
+    <string name="phone">Teléfono</string>
+    <string name="prefix_phone_number">+57 </string>
+    <string name="address">Dirección</string>
+    <string name="data_has_been_correctly_updated">Los datos se han actualizado correctamente.</string>
 
 
 

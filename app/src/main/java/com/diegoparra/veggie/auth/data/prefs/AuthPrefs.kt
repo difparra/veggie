@@ -20,7 +20,6 @@ class AuthPrefs @Inject constructor(
 
     companion object {
         val LAST_SIGNED_IN_WITH = stringPreferencesKey("current_signed_in_with")
-        val FB_ACCESS_TOKEN = stringPreferencesKey("fb")
     }
 
     suspend fun saveLastSignedInWith(signInMethod: SignInMethod) {
@@ -35,20 +34,6 @@ class AuthPrefs @Inject constructor(
                 prefs[LAST_SIGNED_IN_WITH]?.let {
                     SignInMethod.valueOfOrUnknown(it)
                 }
-            }.first()
-    }
-
-
-    suspend fun saveFacebookAccessToken(token: String) {
-        context.dataStore.edit { prefs ->
-            prefs[FB_ACCESS_TOKEN] = token
-        }
-    }
-
-    suspend fun getFacebookAccessToken(): String? {
-        return context.dataStore.data
-            .map { prefs ->
-                prefs[FB_ACCESS_TOKEN]
             }.first()
     }
 

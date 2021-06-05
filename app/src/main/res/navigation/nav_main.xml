@@ -63,6 +63,9 @@
         <action
             android:id="@+id/action_nav_user_to_nav_sign_in"
             app:destination="@id/nav_sign_in" />
+        <action
+            android:id="@+id/action_nav_user_to_userEditProfileFragment"
+            app:destination="@id/userEditProfileFragment" />
     </fragment>
     <include app:graph="@navigation/nav_sign_in" />
 
@@ -73,5 +76,10 @@
         android:name="com.diegoparra.veggie.SupportFragment"
         android:label="fragment_support"
         tools:layout="@layout/fragment_support" />
+    <fragment
+        android:id="@+id/userEditProfileFragment"
+        android:name="com.diegoparra.veggie.user.ui.UserEditProfileFragment"
+        android:label="UserEditProfileFragment"
+        tools:layout="@layout/fragment_user_edit_profile" />
 
 </navigation>

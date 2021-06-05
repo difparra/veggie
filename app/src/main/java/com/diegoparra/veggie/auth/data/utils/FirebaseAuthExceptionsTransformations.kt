@@ -4,12 +4,12 @@ import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.SignInFailure
 import com.diegoparra.veggie.auth.domain.SignInMethod
+import com.diegoparra.veggie.core.Fields.EMAIL
+import com.diegoparra.veggie.core.Fields.PASSWORD
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.diegoparra.veggie.auth.domain.AuthConstants.Fields.EMAIL
-import com.diegoparra.veggie.auth.domain.AuthConstants.Fields.PASSWORD
 
 object FirebaseAuthExceptionsTransformations {
 

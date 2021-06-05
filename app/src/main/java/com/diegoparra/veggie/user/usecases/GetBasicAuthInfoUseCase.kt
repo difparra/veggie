@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetProfileUseCase @Inject constructor(
+class GetBasicAuthInfoUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
 

@@ -1,14 +1,15 @@
-package com.diegoparra.veggie.auth.usecases.utils
+package com.diegoparra.veggie.core
 
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.SignInFailure
-import com.diegoparra.veggie.core.validateEmail
-import com.diegoparra.veggie.auth.domain.AuthConstants
+object Fields {
+    const val EMAIL = "email"
+    const val PASSWORD = "password"
+    const val NAME = "name"
+}
 
 object TextInputValidation {
 
     fun forEmail(email: String): Either<SignInFailure.WrongInput, String> {
-        val emailField = AuthConstants.Fields.EMAIL
+        val emailField = Fields.EMAIL
         return if (email.isEmpty()) {
             Either.Left(SignInFailure.WrongInput.Empty(field = emailField, input = email))
         } else if (!validateEmail(email)) {
@@ -19,7 +20,7 @@ object TextInputValidation {
     }
 
     fun forPassword(password: String): Either<SignInFailure.WrongInput, String> {
-        val passwordField = AuthConstants.Fields.PASSWORD
+        val passwordField = Fields.PASSWORD
         return if (password.isEmpty()) {
             Either.Left(SignInFailure.WrongInput.Empty(field = passwordField, input = password))
         } else if (password.length < 6) {
@@ -31,7 +32,7 @@ object TextInputValidation {
 
     fun forName(name: String): Either<SignInFailure.WrongInput, String> {
         return if (name.isEmpty()) {
-            Either.Left(SignInFailure.WrongInput.Empty(field = AuthConstants.Fields.NAME, input = name))
+            Either.Left(SignInFailure.WrongInput.Empty(field = Fields.NAME, input = name))
         } else {
             Either.Right(name)
         }

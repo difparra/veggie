@@ -1,11 +1,11 @@
 package com.diegoparra.veggie.auth.data
 
+import android.net.Uri
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.products.IoDispatcher
 import com.diegoparra.veggie.auth.data.utils.CredentialToFirebaseAuthTransformations.getAuthCredential
-import com.diegoparra.veggie.auth.data.AuthTransformations.toProfile
 import com.diegoparra.veggie.auth.data.AuthTransformations.isSignedIn
-import com.diegoparra.veggie.auth.data.firebase.ProfileInfoUpdateFirebase
+import com.diegoparra.veggie.auth.data.AuthTransformations.toProfile
 import com.diegoparra.veggie.auth.data.firebase.AuthApi
 import com.diegoparra.veggie.auth.data.prefs.AuthPrefs
 import com.diegoparra.veggie.auth.domain.Profile
@@ -36,6 +36,7 @@ class AuthRepositoryImpl @Inject constructor(
     //      ----------      BASIC OPERATIONS        ------------------------------------------------
 
     override fun isSignedIn(): Flow<Boolean> {
+        //  It is also good to get as flow, so that it can deal when user is deleted from firebase.
         return authApi
             .getCurrentUserAsFlow()
             .map { it.isSignedIn() }
@@ -61,12 +62,7 @@ class AuthRepositoryImpl @Inject constructor(
     override fun getProfile(): Flow<Either<Failure, Profile>> {
         return authApi
             .getCurrentUserAsFlow()
-            .map {
-                it.toProfile(
-                    authPrefs.getLastSignedInWith(),
-                    authPrefs.getFacebookAccessToken()
-                )
-            }
+            .map { it.toProfile() }
             .flowOn(dispatcher)
     }
 
@@ -80,21 +76,28 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signUpWithEmailAndPassword(
         profile: Profile, password: String
-    ): Either<Failure, Unit> = withContext(dispatcher) {
+    ): Either<Failure, Profile> = withContext(dispatcher) {
         authApi
             .createUserWithEmailAndPassword(profile.email, password)
-            .suspendFlatMap {
-                authApi.updateProfile(ProfileInfoUpdateFirebase(profile.name, profile.photoUrl))
+            .saveLastSignedInWith(SignInMethod.EMAIL)
+            .suspendFlatMap { authResult ->
+                authApi.updateProfile(name = profile.name, photoUrl = profile.photoUrl)
+                    .map { authResult }
             }
-            .savePrefsSignedInWith(SignInMethod.EMAIL)
+            .suspendFlatMap {
+                it.user.toProfile()
+            }
     }
 
     override suspend fun signInWithEmailAndPassword(
         email: String, password: String
-    ): Either<Failure, Unit> = withContext(dispatcher) {
+    ): Either<Failure, Profile> = withContext(dispatcher) {
         authApi
             .signInWithEmailAndPassword(email, password)
-            .savePrefsSignedInWith(SignInMethod.EMAIL)
+            .saveLastSignedInWith(SignInMethod.EMAIL)
+            .suspendFlatMap {
+                it.user.toProfile()
+            }
     }
 
     override suspend fun sendPasswordResetEmail(email: String): Either<Failure, Unit> =
@@ -105,36 +108,43 @@ class AuthRepositoryImpl @Inject constructor(
 
     //      ----------      SIGNIN/UP GOOGLE & FACEBOOK        -------------------------------------
 
-    override suspend fun signInWithGoogleAccount(account: GoogleSignInAccount): Either<Failure, Unit> {
+    override suspend fun signInWithGoogleAccount(account: GoogleSignInAccount): Either<Failure, Profile> {
         val credential = account.getAuthCredential()
         return authApi
             .signInWithCredential(credential)
-            .savePrefsSignedInWith(SignInMethod.GOOGLE)
+            .saveLastSignedInWith(SignInMethod.GOOGLE)
+            .suspendFlatMap {
+                it.user.toProfile()
+            }
     }
 
-    override suspend fun signInWithFacebookResult(result: LoginResult): Either<Failure, Unit> {
+    override suspend fun signInWithFacebookResult(result: LoginResult): Either<Failure, Profile> {
         val credential = result.getAuthCredential()
         return authApi
             .signInWithCredential(credential)
-            .saveFbAccessToken(result.accessToken.token)
-            .savePrefsSignedInWith(SignInMethod.FACEBOOK)
+            .saveLastSignedInWith(SignInMethod.FACEBOOK)
+            .suspendFlatMap { authResult ->
+                val photoUrl = authResult.user?.photoUrl?.let {
+                    Uri.parse("$it?access_token=${result.accessToken.token}")
+                }
+                authApi.updateProfile(photoUrl = photoUrl)
+                    .map { authResult }
+            }
+            .suspendFlatMap {
+                it.user.toProfile()
+            }
     }
 
 
     //      ----------      UTIL FUNCTIONS TO SAVE PREFS     ----------------------------------------
 
-    private suspend fun <L, R> Either<L, R>.savePrefsSignedInWith(signInMethod: SignInMethod): Either<L, R> {
-        if (this is Either.Right) {
-            authPrefs.saveLastSignedInWith(signInMethod)
-        }
+    /*
+     *  This method is necessary in order to correctly log out.
+     */
+    private suspend fun <L,R> Either<L,R>.saveLastSignedInWith(signInMethod: SignInMethod) : Either<L,R> {
+        authPrefs.saveLastSignedInWith(signInMethod)
         return this
     }
 
-    private suspend fun <L, R> Either<L, R>.saveFbAccessToken(token: String): Either<L, R> {
-        if (this is Either.Right) {
-            authPrefs.saveFacebookAccessToken(token)
-        }
-        return this
-    }
 
 }

@@ -2,11 +2,7 @@ package com.diegoparra.veggie.auth.domain
 
 object AuthConstants {
 
-    object Fields {
-        const val EMAIL = "email"
-        const val PASSWORD = "password"
-        const val NAME = "name"
-    }
+    const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
 
 }
 
