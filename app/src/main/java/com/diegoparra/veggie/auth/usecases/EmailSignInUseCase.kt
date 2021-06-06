@@ -3,6 +3,7 @@ package com.diegoparra.veggie.auth.usecases
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.auth.domain.SignInMethod
 import com.diegoparra.veggie.auth.domain.AuthRepository
+import com.diegoparra.veggie.auth.domain.AuthResults
 import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.core.TextInputValidation
 import com.diegoparra.veggie.user.domain.UserRepository
@@ -38,13 +39,13 @@ class EmailSignInUseCase @Inject constructor(
 
     //      ----------------------------------------------------------------------------------------
 
-    override suspend fun signIn(params: Params): Either<Failure, Profile> {
+    override suspend fun signIn(params: Params): Either<Failure, AuthResults> {
         return authRepository.signInWithEmailAndPassword(params.email, params.password)
     }
 
     //      ----------------------------------------------------------------------------------------
 
-    override suspend fun saveData(profile: Profile): Either<Failure, Unit> {
+    override suspend fun saveData(profile: Profile, isNewUser: Boolean): Either<Failure, Unit> {
         //  There is no need to update firestore data when signing in, as data should already be
         //  there user has previously signed up.
         return Either.Right(Unit)

@@ -1,6 +1,7 @@
 package com.diegoparra.veggie.auth.usecases
 
 import com.diegoparra.veggie.auth.domain.AuthRepository
+import com.diegoparra.veggie.auth.domain.AuthResults
 import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
@@ -17,20 +18,25 @@ abstract class SignInUseCase<Params> constructor(
     suspend operator fun invoke(params: Params): Either<Failure, Unit> {
         return validate(params)
             .suspendFlatMap { signIn(params) }
-            .suspendFlatMap { saveData(it) }
+            .suspendFlatMap { saveData(profile = it.profile, isNewUser = it.isNewUser) }
     }
 
-    abstract suspend fun validate(params: Params) : Either<SignInFailure.ValidationFailures, Unit>
+    abstract suspend fun validate(params: Params): Either<SignInFailure.ValidationFailures, Unit>
 
-    abstract suspend fun signIn(params: Params): Either<Failure, Profile>
+    abstract suspend fun signIn(params: Params): Either<Failure, AuthResults>
 
-    open suspend fun saveData(profile: Profile) : Either<Failure, Unit> {
-        Timber.d("saveData called with profile = $profile")
-        return userRepository.updateUserData(
-            id = profile.id,
-            email = profile.email,
-            name = profile.name
-        )
+    open suspend fun saveData(profile: Profile, isNewUser: Boolean): Either<Failure, Unit> {
+        return if (isNewUser) {
+            Timber.d("isNewUser = $isNewUser, calling to update data with profile = $profile")
+            userRepository.updateUserData(
+                id = profile.id,
+                email = profile.email,
+                name = profile.name
+            )
+        } else {
+            Timber.d("isNewUser = $isNewUser. User is not updated because it is not new and should already exist in database. Profile = $profile")
+            Either.Right(Unit)
+        }
     }
 
 }

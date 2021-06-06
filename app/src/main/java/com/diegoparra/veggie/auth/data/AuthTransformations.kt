@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.auth.data
 
+import com.diegoparra.veggie.auth.domain.AuthResults
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.SignInFailure

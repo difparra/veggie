@@ -11,6 +11,7 @@ import com.diegoparra.veggie.auth.data.prefs.AuthPrefs
 import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.auth.domain.SignInMethod
 import com.diegoparra.veggie.auth.domain.AuthRepository
+import com.diegoparra.veggie.auth.domain.AuthResults
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -88,7 +89,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signUpWithEmailAndPassword(
         profile: Profile, password: String
-    ): Either<Failure, Profile> = withContext(dispatcher) {
+    ): Either<Failure, AuthResults> = withContext(dispatcher) {
         authApi
             .createUserWithEmailAndPassword(profile.email, password)
             .saveLastSignedInWith(SignInMethod.EMAIL)
@@ -96,18 +97,22 @@ class AuthRepositoryImpl @Inject constructor(
                 updateProfile(name = profile.name, photoUrl = profile.photoUrl).map { authResult }
             }
             .suspendFlatMap {
-                it.user.toProfile()
+                it.user.toProfile().map {
+                    AuthResults(profile = it, isNewUser = true)
+                }
             }
     }
 
     override suspend fun signInWithEmailAndPassword(
         email: String, password: String
-    ): Either<Failure, Profile> = withContext(dispatcher) {
+    ): Either<Failure, AuthResults> = withContext(dispatcher) {
         authApi
             .signInWithEmailAndPassword(email, password)
             .saveLastSignedInWith(SignInMethod.EMAIL)
             .suspendFlatMap {
-                it.user.toProfile()
+                it.user.toProfile().map {
+                    AuthResults(profile = it, isNewUser = false)
+                }
             }
     }
 
@@ -119,17 +124,19 @@ class AuthRepositoryImpl @Inject constructor(
 
     //      ----------      SIGNIN/UP GOOGLE & FACEBOOK        -------------------------------------
 
-    override suspend fun signInWithGoogleAccount(account: GoogleSignInAccount): Either<Failure, Profile> {
+    override suspend fun signInWithGoogleAccount(account: GoogleSignInAccount): Either<Failure, AuthResults> {
         val credential = account.getAuthCredential()
         return authApi
             .signInWithCredential(credential)
             .saveLastSignedInWith(SignInMethod.GOOGLE)
-            .suspendFlatMap {
-                it.user.toProfile()
+            .suspendFlatMap { authResult ->
+                authResult.user.toProfile().map {
+                    AuthResults(profile = it, isNewUser = authResult.additionalUserInfo?.isNewUser ?: true)
+                }
             }
     }
 
-    override suspend fun signInWithFacebookResult(result: LoginResult): Either<Failure, Profile> {
+    override suspend fun signInWithFacebookResult(result: LoginResult): Either<Failure, AuthResults> {
         val credential = result.getAuthCredential()
         return authApi
             .signInWithCredential(credential)
@@ -138,18 +145,23 @@ class AuthRepositoryImpl @Inject constructor(
                 //  Uri is appending access_token every time, so in order to fix this I am replacing
                 //  the access_token part of the string rather than just adding
                 val currentPhotoUrl = authResult.user?.photoUrl
-                if(currentPhotoUrl != null && !currentPhotoUrl.toString().contains(result.accessToken.token)){
+                if (currentPhotoUrl != null && !currentPhotoUrl.toString()
+                        .contains(result.accessToken.token)
+                ) {
                     val newUrl = currentPhotoUrl.toString().replaceAfter(
                         delimiter = "?access_token=",
                         replacement = result.accessToken.token,
-                        missingDelimiterValue = "$currentPhotoUrl?access_token=${result.accessToken.token}")
+                        missingDelimiterValue = "$currentPhotoUrl?access_token=${result.accessToken.token}"
+                    )
                     updateProfile(photoUrl = Uri.parse(newUrl)).map { authResult }
-                }else{
+                } else {
                     Either.Right(authResult)
                 }
             }
-            .suspendFlatMap {
-                it.user.toProfile()
+            .suspendFlatMap { authResult ->
+                authResult.user.toProfile().map {
+                    AuthResults(profile = it, isNewUser = authResult.additionalUserInfo?.isNewUser ?: true)
+                }
             }
     }
 

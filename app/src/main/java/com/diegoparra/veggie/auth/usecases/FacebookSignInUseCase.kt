@@ -3,6 +3,7 @@ package com.diegoparra.veggie.auth.usecases
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.auth.domain.AuthRepository
+import com.diegoparra.veggie.auth.domain.AuthResults
 import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.core.SignInFailure
 import com.diegoparra.veggie.user.domain.UserRepository
@@ -21,7 +22,7 @@ class FacebookSignInUseCase @Inject constructor(
         return Either.Right(Unit)
     }
 
-    override suspend fun signIn(params: Either<FacebookException, LoginResult>): Either<Failure, Profile> {
+    override suspend fun signIn(params: Either<FacebookException, LoginResult>): Either<Failure, AuthResults> {
         Timber.d("signIn called with params = $params")
         return when(params){
             is Either.Left -> Either.Left(Failure.ServerError(params.a))

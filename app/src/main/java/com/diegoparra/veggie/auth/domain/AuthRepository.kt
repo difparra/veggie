@@ -19,11 +19,11 @@ interface AuthRepository {
     suspend fun updateProfile(name: String? = null, photoUrl: Uri? = null): Either<Failure, Unit>
     suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>>
 
-    suspend fun signUpWithEmailAndPassword(profile: Profile, password: String): Either<Failure, Profile>
-    suspend fun signInWithEmailAndPassword(email: String, password: String): Either<Failure, Profile>
+    suspend fun signUpWithEmailAndPassword(profile: Profile, password: String): Either<Failure, AuthResults>
+    suspend fun signInWithEmailAndPassword(email: String, password: String): Either<Failure, AuthResults>
     suspend fun sendPasswordResetEmail(email: String): Either<Failure, Unit>
 
-    suspend fun signInWithGoogleAccount(account: GoogleSignInAccount): Either<Failure, Profile>
-    suspend fun signInWithFacebookResult(result: LoginResult): Either<Failure, Profile>
+    suspend fun signInWithGoogleAccount(account: GoogleSignInAccount): Either<Failure, AuthResults>
+    suspend fun signInWithFacebookResult(result: LoginResult): Either<Failure, AuthResults>
 
 }
