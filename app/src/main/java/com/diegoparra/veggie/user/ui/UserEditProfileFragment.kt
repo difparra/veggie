@@ -15,9 +15,11 @@ import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.core.SignInFailure
 import com.diegoparra.veggie.databinding.FragmentUserEditProfileBinding
+import com.diegoparra.veggie.phone_number_verification.PhoneConstants
 import com.diegoparra.veggie.user.viewmodels.EditProfileViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class UserEditProfileFragment : Fragment() {
@@ -26,6 +28,21 @@ class UserEditProfileFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: EditProfileViewModel by viewModels()
     private var nameTextWatcher: TextWatcher? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val navController = findNavController()
+        val userEditProfileFragmentAsBackStackEntry =
+            navController.getBackStackEntry(R.id.userEditProfileFragment)
+        val savedStateHandle = userEditProfileFragmentAsBackStackEntry.savedStateHandle
+        savedStateHandle.getLiveData<Boolean>(PhoneConstants.PHONE_VERIFIED_SUCCESSFUL)
+            .observe(userEditProfileFragmentAsBackStackEntry) {
+                Timber.d("${PhoneConstants.PHONE_VERIFIED_SUCCESSFUL} = $it")
+                if (it) {
+                    viewModel.refreshData(phoneNumber = true)
+                }
+            }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +66,8 @@ class UserEditProfileFragment : Fragment() {
 
         //  It is necessary to set clickable=true and focusable=false on xml in order to get the desired clickListener event.
         binding.phone.setOnClickListener {
-            val action = UserEditProfileFragmentDirections.actionUserEditProfileFragmentToNavVerifyPhoneNumber()
+            val action =
+                UserEditProfileFragmentDirections.actionUserEditProfileFragmentToNavVerifyPhoneNumber()
             findNavController().navigate(action)
         }
 
@@ -58,7 +76,7 @@ class UserEditProfileFragment : Fragment() {
         }
     }
 
-    private fun subscribeInitialValues(){
+    private fun subscribeInitialValues() {
         viewModel.initialEmail.observe(viewLifecycleOwner, EventObserver {
             binding.email.setText(it)
         })
@@ -71,13 +89,13 @@ class UserEditProfileFragment : Fragment() {
         })
     }
 
-    private fun subscribeUi(){
+    private fun subscribeUi() {
         viewModel.name.observe(viewLifecycleOwner) {
             with(binding.nameLayout) {
-                error = when(it) {
+                error = when (it) {
                     is Resource.Success -> null
                     is Resource.Error -> {
-                        when(val failure = it.failure){
+                        when (val failure = it.failure) {
                             is SignInFailure.WrongInput -> getDefaultWrongInputErrorMessage(
                                 context, binding.name.hint.toString().lowercase(),
                                 failure, false
@@ -89,15 +107,21 @@ class UserEditProfileFragment : Fragment() {
                 }
             }
         }
+        viewModel.nameIsChanged.observe(viewLifecycleOwner) {
+            binding.btnSave.isEnabled = it
+        }
         viewModel.failure.observe(viewLifecycleOwner, EventObserver {
             Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_SHORT).show()
         })
         viewModel.navigateSuccess.observe(viewLifecycleOwner, EventObserver {
-            Snackbar.make(binding.root, R.string.data_has_been_correctly_updated, Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                binding.root,
+                R.string.data_has_been_correctly_updated,
+                Snackbar.LENGTH_SHORT
+            ).show()
             findNavController().popBackStack()
         })
     }
-
 
 
     override fun onDestroyView() {

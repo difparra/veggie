@@ -1,9 +1,7 @@
 package com.diegoparra.veggie.auth.domain
 
 object AuthConstants {
-
     const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
-
 }
 
 

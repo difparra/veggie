@@ -11,14 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.auth.domain.AuthConstants
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.EventObserver
-import com.diegoparra.veggie.core.SignInFailure
+import com.diegoparra.veggie.auth.ui.utils.AuthResultNavigation
 import com.diegoparra.veggie.databinding.FragmentSignInOptionsBinding
-import com.diegoparra.veggie.core.getDefaultWrongInputErrorMessage
-import com.diegoparra.veggie.core.getDefaultWrongSignInMethodErrorMessage
-import com.diegoparra.veggie.auth.ui.utils.setLoginResultAndNavigate
 import com.diegoparra.veggie.auth.viewmodels.SignInOptionsViewModel
+import com.diegoparra.veggie.core.*
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -30,13 +26,8 @@ import timber.log.Timber
 @AndroidEntryPoint
 class SignInOptionsFragment : Fragment() {
 
-    companion object {
-        const val ORIGINAL_DESTINATION: String = "ORIGINAL_DESTINATION"
-    }
-
     private var _binding: FragmentSignInOptionsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var savedStateHandle: SavedStateHandle
     private val viewModel: SignInOptionsViewModel by viewModels()
 
     private val googleContract =
@@ -104,23 +95,17 @@ class SignInOptionsFragment : Fragment() {
 
     private fun setUpToSendBackLoginResult() {
         val navController = findNavController()
-        //  Set login successful to false, so that it knows that login flow was started.
-        savedStateHandle = navController.previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(AuthConstants.LOGIN_SUCCESSFUL, false)
         //  Save the original destination in this stateHandle, because it is necessary to modify
         //  its savedStateHandle and send loginResult. It must be done here as there is no
         //  possibility to get a backStackEntry using index nor accessing the backStackIterator.
-        navController.currentBackStackEntry?.savedStateHandle?.set(
-            ORIGINAL_DESTINATION,
-            navController.previousBackStackEntry?.destination?.id!!
-        )
+        AuthResultNavigation.setPreviousDestinationAsOriginal(navController)
+        //  Set login successful to false, so that it knows that login flow was started.
+        AuthResultNavigation.setResult(navController, result = false)
     }
 
     private fun subscribeUi() {
         viewModel.navigateSignedIn.observe(viewLifecycleOwner, EventObserver {
-            if (it) {
-                setLoginResultAndNavigate(findNavController(), true)
-            }
+            AuthResultNavigation.setResultAndNavigate(findNavController(), it)
         })
 
         viewModel.failure.observe(viewLifecycleOwner) {

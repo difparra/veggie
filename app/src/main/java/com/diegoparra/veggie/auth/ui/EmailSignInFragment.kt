@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
+import com.diegoparra.veggie.auth.ui.utils.AuthResultNavigation
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.databinding.FragmentEmailSignInBinding
 import com.diegoparra.veggie.auth.ui.utils.handleError
-import com.diegoparra.veggie.auth.ui.utils.setLoginResultAndNavigate
 import com.diegoparra.veggie.auth.viewmodels.EmailSignInViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -94,7 +94,7 @@ class EmailSignInFragment : Fragment() {
 
     private fun subscribeNavigateSignedIn() {
         viewModel.navigateSignedIn.observe(viewLifecycleOwner, EventObserver {
-            setLoginResultAndNavigate(findNavController(), true)
+            AuthResultNavigation.setResultAndNavigate(findNavController(), it)
         })
     }
 

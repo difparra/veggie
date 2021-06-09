@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.diegoparra.veggie.auth.ui.utils.AuthResultNavigation
 import com.diegoparra.veggie.auth.ui.utils.handleError
-import com.diegoparra.veggie.auth.ui.utils.setLoginResultAndNavigate
 import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.databinding.FragmentEmailSignUpBinding
 import com.diegoparra.veggie.auth.viewmodels.EmailSignUpViewModel
@@ -112,7 +112,7 @@ class EmailSignUpFragment : Fragment() {
     private fun subscribeNavigateSignedIn() {
         viewModel.navigateSignedIn.observe(viewLifecycleOwner, EventObserver {
             Timber.d("navigateSignedIn received: $it")
-            setLoginResultAndNavigate(findNavController(), true)
+            AuthResultNavigation.setResultAndNavigate(findNavController(), it)
         })
     }
 

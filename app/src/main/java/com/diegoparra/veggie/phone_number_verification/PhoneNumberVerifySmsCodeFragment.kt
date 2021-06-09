@@ -16,9 +16,7 @@ import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.hideKeyboard
 import com.diegoparra.veggie.databinding.FragmentPhoneNumberVerifySmsCodeBinding
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.FirebaseException
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class PhoneNumberVerifySmsCodeFragment : Fragment() {
@@ -46,6 +44,11 @@ class PhoneNumberVerifySmsCodeFragment : Fragment() {
         binding.description.text =
             getString(R.string.verify_phone_number_description, args.phoneNumber)
 
+        binding.resendCode.setOnClickListener {
+            it.hideKeyboard()
+            viewModel.resendVerificationCode(requireActivity())
+        }
+
         binding.btnVerify.setOnClickListener {
             it.hideKeyboard()
             viewModel.verifyPhoneNumberWithSmsCode(binding.smsCode.text.toString())
@@ -65,9 +68,10 @@ class PhoneNumberVerifySmsCodeFragment : Fragment() {
             Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
         })
         viewModel.navigateSuccess.observe(viewLifecycleOwner, EventObserver {
-            if (it) {
-                findNavController().navigate(NavVerifyPhoneNumberDirections.actionNavVerifyPhoneNumberPop())
-            }
+            PhoneResultNav.setResultAndNavigate(navController = findNavController(), result = it)
+        })
+        viewModel.codeSent.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(binding.root, R.string.code_has_been_resent, Snackbar.LENGTH_SHORT).show()
         })
     }
 

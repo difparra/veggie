@@ -23,6 +23,7 @@ class PhoneNumberViewModel @Inject constructor(
     private val _phoneNumber = savedStateHandle.getLiveData<String>(PHONE_NUMBER_SAVED_STATE_KEY)
     private val _verificationId =
         savedStateHandle.getLiveData<String>(VERIFICATION_ID_SAVED_STATE_KEY)
+    private var forceResendingToken: PhoneAuthProvider.ForceResendingToken? = null
 
     private val _loading = MutableLiveData<Boolean>(false)
     val loading: LiveData<Boolean> = _loading
@@ -31,8 +32,8 @@ class PhoneNumberViewModel @Inject constructor(
     private val _navigateSuccess = MutableLiveData<Event<Boolean>>()
     val navigateSuccess: LiveData<Event<Boolean>> = _navigateSuccess
 
-    private val _displayEnterCodeUi = MutableLiveData<Event<Pair<String, String>>>()
-    val displayEnterCodeUi: LiveData<Event<Pair<String, String>>> = _displayEnterCodeUi
+    private val _codeSent = MutableLiveData<Event<Pair<String, String>>>()
+    val codeSent: LiveData<Event<Pair<String, String>>> = _codeSent
 
 
 
@@ -52,6 +53,23 @@ class PhoneNumberViewModel @Inject constructor(
                 PhoneAuthProvider.verifyPhoneNumber(options)
             }
         )
+    }
+
+    fun resendVerificationCode(activity: Activity) {
+        if(_phoneNumber.value == null || forceResendingToken == null) {
+            Timber.e("Can't resend verification code, as phone number, or token are null")
+            return
+        }
+        _loading.value = true
+        val options =
+            PhoneAuthOptions.newBuilder(auth)
+                .setPhoneNumber(_phoneNumber.value!!)
+                .setTimeout(60, TimeUnit.SECONDS)
+                .setActivity(activity)
+                .setCallbacks(phoneAuthCallbacks)
+                .setForceResendingToken(forceResendingToken!!)
+                .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
     fun verifyPhoneNumberWithSmsCode(smsCode: String) {
@@ -95,7 +113,8 @@ class PhoneNumberViewModel @Inject constructor(
         ) {
             _loading.value = false
             savedStateHandle.set(VERIFICATION_ID_SAVED_STATE_KEY, verificationId)
-            _displayEnterCodeUi.value = Event(Pair(_phoneNumber.value!!, verificationId))
+            forceResendingToken = token
+            _codeSent.value = Event(Pair(_phoneNumber.value!!, verificationId))
         }
     }
 

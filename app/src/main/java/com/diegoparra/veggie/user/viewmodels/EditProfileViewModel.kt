@@ -5,8 +5,7 @@ import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.user.usecases.GetUserDataUseCase
 import com.diegoparra.veggie.user.usecases.SaveProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,16 +24,36 @@ class EditProfileViewModel @Inject constructor(
     private val _initialPhoneNumber = MutableLiveData(Event(""))
     val initialPhoneNumber: LiveData<Event<String>> = _initialPhoneNumber
 
+
     init {
+        refreshData(email = true, name = true, phoneNumber = true)
+    }
+
+    fun refreshData(email: Boolean = false, name: Boolean = false, phoneNumber: Boolean = false) {
         viewModelScope.launch {
             getUserDataUseCase().fold({}, {
-                _initialEmail.value = Event(it.email)
-                _initialName.value = Event(it.name)
-                _initialPhoneNumber.value = Event(it.phoneNumber ?: "")
+                //  Refresh all data if no parameter was inserted, in other words, if all parameters are false
+                if (!email && !name && !phoneNumber) {
+                    _initialEmail.value = Event(it.email)
+                    _initialName.value = Event(it.name)
+                    _initialPhoneNumber.value = Event(it.phoneNumber ?: "")
+                }
+
+                //  Refresh just specified data in other case
+                if (email) {
+                    _initialEmail.value = Event(it.email)
+                }
+                if (name) {
+                    _initialName.value = Event(it.name)
+                }
+                if (phoneNumber) {
+                    _initialPhoneNumber.value = Event(it.phoneNumber ?: "")
+                }
                 Unit
             })
         }
     }
+
 
 
     private val _name = MutableStateFlow<Resource<String>>(Resource.Success(""))
@@ -46,11 +65,13 @@ class EditProfileViewModel @Inject constructor(
     private val _navigateSuccess = MutableLiveData<Event<Boolean>>()
     val navigateSuccess: LiveData<Event<Boolean>> = _navigateSuccess
 
-
     fun setName(name: String) {
         _name.value = saveProfileUseCase.validateName(name).toResource()
     }
 
+    val nameIsChanged = _name.map {
+        !(it is Resource.Success && it.data == _initialName.value?.peekContent())
+    }.distinctUntilChanged().asLiveData()
 
     fun save(name: String) {
         viewModelScope.launch {

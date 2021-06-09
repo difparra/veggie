@@ -7,13 +7,11 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.NavVerifyPhoneNumberDirections
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.EventObserver
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.SignInFailure
-import com.diegoparra.veggie.core.hideKeyboard
+import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.databinding.FragmentPhoneNumberAddBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +33,7 @@ class PhoneNumberAddFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setUpToSendBackPhoneVerificationResult()
         subscribeUi()
 
         binding.btnBack.setOnClickListener {
@@ -50,13 +49,20 @@ class PhoneNumberAddFragment : Fragment() {
         }
     }
 
+    private fun setUpToSendBackPhoneVerificationResult() {
+        //  Initiate phone_verified to false and save the original destination
+        val navController = findNavController()
+        PhoneResultNav.setPreviousDestinationAsOriginal(navController)
+        PhoneResultNav.setResult(navController, false)
+    }
+
     private fun subscribeUi() {
         subscribeNavigation()
         subscribeStates()
     }
 
     private fun subscribeNavigation() {
-        viewModel.displayEnterCodeUi.observe(viewLifecycleOwner, EventObserver {
+        viewModel.codeSent.observe(viewLifecycleOwner, EventObserver {
             val action =
                 PhoneNumberAddFragmentDirections.actionPhoneNumberAddFragmentToPhoneNumberVerifySmsCodeFragment(
                     phoneNumber = it.first,
@@ -65,9 +71,7 @@ class PhoneNumberAddFragment : Fragment() {
             findNavController().navigate(action)
         })
         viewModel.navigateSuccess.observe(viewLifecycleOwner, EventObserver {
-            if (it) {
-                findNavController().navigate(NavVerifyPhoneNumberDirections.actionNavVerifyPhoneNumberPop())
-            }
+            PhoneResultNav.setResultAndNavigate(navController = findNavController(), result = it)
         })
     }
 
@@ -77,9 +81,9 @@ class PhoneNumberAddFragment : Fragment() {
         }
         viewModel.failure.observe(viewLifecycleOwner, EventObserver {
             val message = when (it) {
-                is Failure.PhoneAuthFailures.InvalidRequest -> getString(R.string.invalid_request_phone_number)
-                is Failure.PhoneAuthFailures.TooManyRequests -> getString(R.string.too_many_requests)
-                is SignInFailure.WrongInput -> getString(R.string.invalid_request_phone_number)
+                is Failure.PhoneAuthFailures.InvalidRequest -> getString(R.string.failure_invalid_request_phone_number)
+                is Failure.PhoneAuthFailures.TooManyRequests -> getString(R.string.failure_too_many_requests)
+                is SignInFailure.WrongInput -> getString(R.string.failure_invalid_request_phone_number)
                 else -> it.toString()
             }
             Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
