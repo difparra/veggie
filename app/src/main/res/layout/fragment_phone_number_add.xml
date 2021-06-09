@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".user.ui.UserEditProfileFragment">
+    tools:context=".phone_number_verification.PhoneNumberAddFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
 
             <TextView
                 style="@style/Widget.Veggie.AppBarLayout.Title"
-                android:text="@string/user_profile" />
+                android:text="@string/add_phone_number" />
         </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -41,40 +41,15 @@
             android:orientation="vertical"
             android:padding="@dimen/padding_big">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/email_layout"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/email"
-                app:startIconDrawable="@drawable/ic_email_outline"
-                android:enabled="false">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
+                android:text="@string/add_phone_number_description"
+                android:layout_marginVertical="@dimen/padding_standard"
+                android:maxLines="10" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/name_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/padding_small"
-                android:hint="@string/name"
-                app:startIconDrawable="@drawable/ic_person_outline">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textCapWords"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/phone_layout"
+                android:id="@+id/phone_number_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/phone"
@@ -82,22 +57,25 @@
                 app:prefixText="@string/prefix_phone_number">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/phone"
+                    android:id="@+id/phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="false"
                     android:inputType="phone" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/btn_save"
+                android:id="@+id/btn_send_sms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_standard"
-                android:text="@string/save" />
+                android:layout_marginVertical="@dimen/padding_standard"
+                android:text="@string/send_sms" />
 
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
 
         </LinearLayout>
 

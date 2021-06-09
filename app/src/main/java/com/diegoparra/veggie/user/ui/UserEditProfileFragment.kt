@@ -36,6 +36,7 @@ class UserEditProfileFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        subscribeInitialValues()
         subscribeUi()
 
         binding.btnBack.setOnClickListener {
@@ -46,28 +47,35 @@ class UserEditProfileFragment : Fragment() {
             viewModel.setName(it.toString())
         }
 
+        //  It is necessary to set clickable=true and focusable=false on xml in order to get the desired clickListener event.
+        binding.phone.setOnClickListener {
+            val action = UserEditProfileFragmentDirections.actionUserEditProfileFragmentToNavVerifyPhoneNumber()
+            findNavController().navigate(action)
+        }
+
         binding.btnSave.setOnClickListener {
             viewModel.save(binding.name.text.toString())
         }
     }
 
-    private fun subscribeUi(){
+    private fun subscribeInitialValues(){
         viewModel.initialEmail.observe(viewLifecycleOwner, EventObserver {
             binding.email.setText(it)
         })
-
         viewModel.initialName.observe(viewLifecycleOwner, EventObserver {
             binding.name.setText(it)
         })
         viewModel.initialPhoneNumber.observe(viewLifecycleOwner, EventObserver {
-            binding.phone.setText(it)
+            val phoneNumber = it.replace(getString(R.string.prefix_phone_number), "")
+            binding.phone.setText(phoneNumber)
         })
+    }
+
+    private fun subscribeUi(){
         viewModel.name.observe(viewLifecycleOwner) {
             with(binding.nameLayout) {
                 error = when(it) {
-                    is Resource.Success -> {
-                        null
-                    }
+                    is Resource.Success -> null
                     is Resource.Error -> {
                         when(val failure = it.failure){
                             is SignInFailure.WrongInput -> getDefaultWrongInputErrorMessage(
@@ -81,11 +89,16 @@ class UserEditProfileFragment : Fragment() {
                 }
             }
         }
+        viewModel.failure.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_SHORT).show()
+        })
         viewModel.navigateSuccess.observe(viewLifecycleOwner, EventObserver {
             Snackbar.make(binding.root, R.string.data_has_been_correctly_updated, Snackbar.LENGTH_SHORT).show()
             findNavController().popBackStack()
         })
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

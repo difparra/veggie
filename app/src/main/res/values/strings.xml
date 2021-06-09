@@ -30,13 +30,6 @@
                                                         crash if used here as \% or simply % because of the formats -->
 
 
-    <!-- User -->
-    <string name="user_profile">Mi cuenta</string>
-    <string name="user_orders">Pedidos</string>
-    <string name="user_addresses">Direcciones</string>
-    <string name="user_sign_out">Cerrar sesión</string>
-
-
     <!-- Auth -->
     <string name="sign_in">Iniciar sesión</string>
     <string name="sign_up">Crear cuenta</string>
@@ -57,14 +50,25 @@
     <string name="fb_login_protocol_scheme">fb315214526875872</string>
 
 
-    <!-- user -->
+    <!-- User -->
+    <string name="user_profile">Mi cuenta</string>
+    <string name="user_orders">Pedidos</string>
+    <string name="user_addresses">Direcciones</string>
+    <string name="user_sign_out">Cerrar sesión</string>
+
     <string name="phone">Teléfono</string>
     <string name="prefix_phone_number">+57 </string>
     <string name="address">Dirección</string>
     <string name="data_has_been_correctly_updated">Los datos se han actualizado correctamente.</string>
-
-
-
+    <string name="add_phone_number">Agrega un número de teléfono</string>
+    <string name="add_phone_number_description">Enviaremos un código de verificación mediante sms a este número de teléfono.</string>
+    <string name="send_sms">Enviar SMS</string>
+    <string name="sms_code">SMS Code</string>
+    <string name="invalid_request_phone_number">Petición inválida. Revisa el número de teléfono ingresado.</string>
+    <string name="too_many_requests">Ha ocurrido un error. Por favor intenta de nuevo en 2 minutos.</string>
+    <string name="verify_phone_number">Verifica tu número de teléfono</string>
+    <string name="verify_phone_number_description">Ingresa el código que hemos enviado al número %s</string>
+    <string name="verify">Verificar</string>
 
     <!-- Failures strings -->
 
@@ -89,5 +93,6 @@
     <string name="failure_new_user">Este correo aún no está registrado. Crea una cuenta para continuar.</string>
     <string name="failure_existent_user">Este correo ya se encuentra registrado. Para crear una cuenta usa un correo diferente, o prueba iniciando sesión.</string>
 
+    <string name="failure_code_has_expired">El código ha expirado. Intenta enviar otro código de nuevo.</string>
 
 </resources>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_verify_phone_number"
+    app:startDestination="@id/phoneNumberAddFragment">
+
+    <fragment
+        android:id="@+id/phoneNumberAddFragment"
+        android:name="com.diegoparra.veggie.phone_number_verification.PhoneNumberAddFragment"
+        android:label="fragment_add_phone_number"
+        tools:layout="@layout/fragment_phone_number_add" >
+        <action
+            android:id="@+id/action_phoneNumberAddFragment_to_phoneNumberVerifySmsCodeFragment"
+            app:destination="@id/phoneNumberVerifySmsCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/phoneNumberVerifySmsCodeFragment"
+        android:name="com.diegoparra.veggie.phone_number_verification.PhoneNumberVerifySmsCodeFragment"
+        android:label="fragment_phone_number_verify_sms_code"
+        tools:layout="@layout/fragment_phone_number_verify_sms_code" >
+        <argument
+            android:name="phone_number"
+            app:argType="string" />
+        <argument
+            android:name="verification_id"
+            app:argType="string" />
+    </fragment>
+    <action
+        android:id="@+id/action_nav_verify_phone_number_pop"
+        app:popUpTo="@id/nav_verify_phone_number"
+        app:popUpToInclusive="true" />
+
+
+</navigation>

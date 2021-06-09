@@ -1,9 +1,12 @@
 package com.diegoparra.veggie.core
 
+import timber.log.Timber
+
 object Fields {
     const val EMAIL = "email"
     const val PASSWORD = "password"
     const val NAME = "name"
+    const val PHONE_NUMBER = "phone_number"
 }
 
 object TextInputValidation {
@@ -24,7 +27,13 @@ object TextInputValidation {
         return if (password.isEmpty()) {
             Either.Left(SignInFailure.WrongInput.Empty(field = passwordField, input = password))
         } else if (password.length < 6) {
-            Either.Left(SignInFailure.WrongInput.Short(field = passwordField, input = password, minLength = 6))
+            Either.Left(
+                SignInFailure.WrongInput.Short(
+                    field = passwordField,
+                    input = password,
+                    minLength = 6
+                )
+            )
         } else {
             Either.Right(password)
         }
@@ -35,6 +44,20 @@ object TextInputValidation {
             Either.Left(SignInFailure.WrongInput.Empty(field = Fields.NAME, input = name))
         } else {
             Either.Right(name)
+        }
+    }
+
+    fun forPhoneNumber(phoneNumber: String): Either<SignInFailure.WrongInput, String> {
+        Timber.d("phoneNumber = $phoneNumber, phoneNumberLength = ${phoneNumber.length}")
+        return if (phoneNumber.isEmpty()) {
+            Either.Left(SignInFailure.WrongInput.Empty(field = phoneNumber, input = phoneNumber))
+        } else if (
+            !(phoneNumber.startsWith("+57 3") || phoneNumber.startsWith("+573"))
+            || phoneNumber.length != 13
+        ) {
+            Either.Left(SignInFailure.WrongInput.Invalid(field = phoneNumber, input = phoneNumber))
+        } else {
+            Either.Right(phoneNumber)
         }
     }
 

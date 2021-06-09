@@ -83,6 +83,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'     //  For notifications reviews in firebase console
     implementation 'com.google.firebase:firebase-auth-ktx'
+    // implementation "androidx.browser:browser:1.3.0"  //  Could be needed for auth with phoneNumber,
+    // as it verifies recaptcha with the browser. But after updating firebaseBom to 28.0.1 and google
+    // services, there was no additional errors, and it is not currently needed
     implementation 'com.google.android.gms:play-services-auth:19.0.0'   //  For google auth
     implementation 'com.facebook.android:facebook-login:8.1.0'          //  For facebook auth
     //implementation 'com.facebook.android:facebook-android-sdk:[4,5)'  //  For facebook auth

@@ -80,6 +80,11 @@
         android:id="@+id/userEditProfileFragment"
         android:name="com.diegoparra.veggie.user.ui.UserEditProfileFragment"
         android:label="UserEditProfileFragment"
-        tools:layout="@layout/fragment_user_edit_profile" />
+        tools:layout="@layout/fragment_user_edit_profile" >
+        <action
+            android:id="@+id/action_userEditProfileFragment_to_nav_verify_phone_number"
+            app:destination="@id/nav_verify_phone_number" />
+    </fragment>
+    <include app:graph="@navigation/nav_verify_phone_number" />
 
 </navigation>

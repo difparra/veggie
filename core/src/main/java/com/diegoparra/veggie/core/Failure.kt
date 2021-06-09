@@ -29,6 +29,13 @@ sealed class Failure(open val message: String? = null) {
         object UserNotFound : UserFailure()
     }
 
+    sealed class PhoneAuthFailures: Failure() {
+        object InvalidRequest: PhoneAuthFailures()
+        object TooManyRequests: PhoneAuthFailures()
+        object InvalidSmsCode: PhoneAuthFailures()
+        object ExpiredSmsCode: PhoneAuthFailures()
+    }
+
 }
 
 

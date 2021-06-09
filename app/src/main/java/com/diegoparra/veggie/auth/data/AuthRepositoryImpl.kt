@@ -16,6 +16,7 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.firebase.auth.PhoneAuthCredential
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -77,6 +78,10 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun updateProfile(name: String?, photoUrl: Uri?): Either<Failure, Unit> {
         return authApi.updateProfile(name, photoUrl)
+    }
+
+    override suspend fun updatePhoneNumber(credential: PhoneAuthCredential): Either<Failure, Unit> {
+        return authApi.updatePhoneNumber(credential)
     }
 
     override suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>> =

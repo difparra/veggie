@@ -5,6 +5,7 @@ import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.firebase.auth.PhoneAuthCredential
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -17,6 +18,7 @@ interface AuthRepository {
     fun getProfileAsFlow(): Flow<Either<Failure, Profile>>
 
     suspend fun updateProfile(name: String? = null, photoUrl: Uri? = null): Either<Failure, Unit>
+    suspend fun updatePhoneNumber(credential: PhoneAuthCredential): Either<Failure, Unit>
     suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>>
 
     suspend fun signUpWithEmailAndPassword(profile: Profile, password: String): Either<Failure, AuthResults>
