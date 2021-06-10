@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import javax.inject.Inject
 
-class VerifyPhoneNumberUseCase @Inject constructor(
+class SavePhoneNumberUseCase @Inject constructor(
     val auth: FirebaseAuth,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository

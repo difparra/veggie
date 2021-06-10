@@ -31,29 +31,20 @@ class EditProfileViewModel @Inject constructor(
 
     fun refreshData(email: Boolean = false, name: Boolean = false, phoneNumber: Boolean = false) {
         viewModelScope.launch {
-            getUserDataUseCase().fold({}, {
-                //  Refresh all data if no parameter was inserted, in other words, if all parameters are false
-                if (!email && !name && !phoneNumber) {
+            getUserDataUseCase.getProfile().fold({}, {
+                if(!email && !name && !phoneNumber) {
                     _initialEmail.value = Event(it.email)
                     _initialName.value = Event(it.name)
                     _initialPhoneNumber.value = Event(it.phoneNumber ?: "")
-                }
-
-                //  Refresh just specified data in other case
-                if (email) {
-                    _initialEmail.value = Event(it.email)
-                }
-                if (name) {
-                    _initialName.value = Event(it.name)
-                }
-                if (phoneNumber) {
-                    _initialPhoneNumber.value = Event(it.phoneNumber ?: "")
+                }else{
+                    email.runIfTrue { _initialEmail.value = Event(it.email) }
+                    name.runIfTrue { _initialName.value = Event(it.name) }
+                    phoneNumber.runIfTrue { _initialPhoneNumber.value = Event(it.phoneNumber ?: "") }
                 }
                 Unit
             })
         }
     }
-
 
 
     private val _name = MutableStateFlow<Resource<String>>(Resource.Success(""))

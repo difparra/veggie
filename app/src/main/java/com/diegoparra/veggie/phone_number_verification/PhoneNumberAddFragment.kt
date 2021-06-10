@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
-import com.diegoparra.veggie.NavVerifyPhoneNumberDirections
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.databinding.FragmentPhoneNumberAddBinding
@@ -52,8 +50,8 @@ class PhoneNumberAddFragment : Fragment() {
     private fun setUpToSendBackPhoneVerificationResult() {
         //  Initiate phone_verified to false and save the original destination
         val navController = findNavController()
-        PhoneResultNav.setPreviousDestinationAsOriginal(navController)
-        PhoneResultNav.setResult(navController, false)
+        PhoneResultNavigation.setPreviousDestinationAsOriginal(navController)
+        PhoneResultNavigation.setResult(navController, false)
     }
 
     private fun subscribeUi() {
@@ -71,7 +69,7 @@ class PhoneNumberAddFragment : Fragment() {
             findNavController().navigate(action)
         })
         viewModel.navigateSuccess.observe(viewLifecycleOwner, EventObserver {
-            PhoneResultNav.setResultAndNavigate(navController = findNavController(), result = it)
+            PhoneResultNavigation.setResultAndNavigate(navController = findNavController(), result = it)
         })
     }
 

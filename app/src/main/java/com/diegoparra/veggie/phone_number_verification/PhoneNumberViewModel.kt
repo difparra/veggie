@@ -15,11 +15,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhoneNumberViewModel @Inject constructor(
-    private val verifyPhoneNumberUseCase: VerifyPhoneNumberUseCase,
+    private val savePhoneNumberUseCase: SavePhoneNumberUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val auth = verifyPhoneNumberUseCase.auth
+    val auth = savePhoneNumberUseCase.auth
     private val _phoneNumber = savedStateHandle.getLiveData<String>(PHONE_NUMBER_SAVED_STATE_KEY)
     private val _verificationId =
         savedStateHandle.getLiveData<String>(VERIFICATION_ID_SAVED_STATE_KEY)
@@ -39,7 +39,7 @@ class PhoneNumberViewModel @Inject constructor(
 
     fun sendVerificationCode(phoneNumber: String, activity: Activity) {
         _loading.value = true
-        verifyPhoneNumberUseCase.validatePhoneNumber(phoneNumber).fold(
+        savePhoneNumberUseCase.validatePhoneNumber(phoneNumber).fold(
             { _failure.value = Event(it); Unit },
             {
                 savedStateHandle.set(PHONE_NUMBER_SAVED_STATE_KEY, it)
@@ -120,7 +120,7 @@ class PhoneNumberViewModel @Inject constructor(
 
     private fun verifyPhoneNumberWithPhoneAuthCredential(phoneAuthCredential: PhoneAuthCredential) {
         viewModelScope.launch {
-            verifyPhoneNumberUseCase.verifyPhoneNumberWithPhoneAuthCredential(_phoneNumber.value!!, phoneAuthCredential).fold(
+            savePhoneNumberUseCase.verifyPhoneNumberWithPhoneAuthCredential(_phoneNumber.value!!, phoneAuthCredential).fold(
                 {
                     _loading.value = false
                     _failure.value = Event(it)

@@ -4,7 +4,6 @@ import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.domain.AuthResults
-import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.core.SignInFailure
 import com.diegoparra.veggie.user.domain.UserRepository
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount

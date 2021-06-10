@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.diegoparra.veggie.NavVerifyPhoneNumberDirections
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.EventObserver
 import com.diegoparra.veggie.core.Failure
@@ -68,7 +67,7 @@ class PhoneNumberVerifySmsCodeFragment : Fragment() {
             Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
         })
         viewModel.navigateSuccess.observe(viewLifecycleOwner, EventObserver {
-            PhoneResultNav.setResultAndNavigate(navController = findNavController(), result = it)
+            PhoneResultNavigation.setResultAndNavigate(navController = findNavController(), result = it)
         })
         viewModel.codeSent.observe(viewLifecycleOwner, EventObserver {
             Snackbar.make(binding.root, R.string.code_has_been_resent, Snackbar.LENGTH_SHORT).show()

@@ -40,7 +40,8 @@ class EmailSignUpUseCase @Inject constructor(
             id = "",        //  Will be actually created by the repository
             email = params.email,
             name = params.name,
-            photoUrl = null
+            photoUrl = null,
+            phoneNumber = null
         )
         return authRepository.signUpWithEmailAndPassword(profile, params.password)
     }

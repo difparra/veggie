@@ -1,11 +1,9 @@
 package com.diegoparra.veggie.user.data
 
-import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.putIfNotNull
 import com.diegoparra.veggie.user.data.UserFirebaseConstants.Keys
-import com.diegoparra.veggie.user.domain.User
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject

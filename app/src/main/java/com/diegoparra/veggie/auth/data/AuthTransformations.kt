@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.auth.data
 
-import com.diegoparra.veggie.auth.domain.AuthResults
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.SignInFailure
@@ -29,7 +28,8 @@ object AuthTransformations {
                 id = uid,
                 email = email ?: "",
                 name = displayName ?: email?.substringBefore('@') ?: "User",
-                photoUrl = photoUrl
+                photoUrl = photoUrl,
+                phoneNumber = phoneNumber
             )
             Timber.d("final user sent: $profile")
             Either.Right(profile)

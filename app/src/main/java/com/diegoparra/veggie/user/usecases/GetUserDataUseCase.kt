@@ -4,11 +4,9 @@ import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.map
 import com.diegoparra.veggie.core.suspendFlatMap
 import com.diegoparra.veggie.user.domain.User
 import com.diegoparra.veggie.user.domain.UserRepository
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetUserDataUseCase @Inject constructor(
@@ -23,6 +21,10 @@ class GetUserDataUseCase @Inject constructor(
             .suspendFlatMap {
                 userRepository.getUser(it)
             }
+    }
+
+    suspend fun getProfile(): Either<Failure, Profile> {
+        return authRepository.getProfile()
     }
 
 }

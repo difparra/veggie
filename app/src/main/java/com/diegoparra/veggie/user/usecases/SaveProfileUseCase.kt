@@ -14,18 +14,19 @@ class SaveProfileUseCase @Inject constructor(
         return TextInputValidation.forName(name)
     }
 
+
     suspend fun saveName(name: String) : Either<Failure, Unit> {
+        //  Validate fields
         validateName(name).let {
             if(it is Either.Left) {
                 return it
             }
         }
-        return updateName(name)
-    }
 
-    private suspend fun updateName(name: String): Either<Failure, Unit> {
+        //  Update in authRepo and userRepo
         return updateAuthRepo(name)
             .suspendFlatMap { updateUserRepo(name) }
+
     }
 
     private suspend fun updateAuthRepo(name: String): Either<Failure, Unit> {
@@ -37,7 +38,5 @@ class SaveProfileUseCase @Inject constructor(
             userRepository.updateUserData(id = it, name = name)
         }
     }
-
-
 
 }

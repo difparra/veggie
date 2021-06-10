@@ -9,5 +9,6 @@ data class Profile(
     val id: String,
     val email: String,
     val name: String,
-    val photoUrl: Uri? = null
+    val photoUrl: Uri?,
+    val phoneNumber: String?
 )
