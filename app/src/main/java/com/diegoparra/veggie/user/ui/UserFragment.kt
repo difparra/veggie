@@ -77,8 +77,8 @@ class UserFragment : Fragment() {
         }
 
         binding.itemAddress.setOnClickListener {
-            //  TODO:   Show orders user
-            Snackbar.make(it, "TODO", Snackbar.LENGTH_SHORT).show()
+            val action = UserFragmentDirections.actionNavUserToAddressFragment()
+            findNavController().navigate(action)
         }
 
         binding.signOut.setOnClickListener {

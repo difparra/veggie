@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.user.data
 
+import com.diegoparra.veggie.user.domain.Address
 import com.diegoparra.veggie.user.domain.User
 
 object DtosTransformations {
@@ -9,7 +10,12 @@ object DtosTransformations {
         email = email,
         name = name,
         phoneNumber = phoneNumber,
-        address = address
+        address = address?.map { it.toAddress() }
+    )
+
+    fun AddressDto.toAddress() = Address(
+        address = address,
+        details = details
     )
 
 }

@@ -66,6 +66,9 @@
         <action
             android:id="@+id/action_nav_user_to_userEditProfileFragment"
             app:destination="@id/userEditProfileFragment" />
+        <action
+            android:id="@+id/action_nav_user_to_addressFragment"
+            app:destination="@id/addressFragment" />
     </fragment>
     <include app:graph="@navigation/nav_sign_in" />
 
@@ -86,5 +89,10 @@
             app:destination="@id/nav_verify_phone_number" />
     </fragment>
     <include app:graph="@navigation/nav_verify_phone_number" />
+    <fragment
+        android:id="@+id/addressFragment"
+        android:name="com.diegoparra.veggie.user.ui.AddressFragment"
+        android:label="fragment_address"
+        tools:layout="@layout/fragment_address" />
 
 </navigation>

@@ -15,4 +15,6 @@ interface UserRepository {
 
     suspend fun getUser(id: String) : Either<Failure, User>
 
+    suspend fun getAddressListForUser(id: String): Either<Failure, List<Address>>
+
 }

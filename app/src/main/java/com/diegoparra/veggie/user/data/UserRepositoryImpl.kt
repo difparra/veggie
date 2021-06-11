@@ -3,7 +3,9 @@ package com.diegoparra.veggie.user.data
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.Failure
 import com.diegoparra.veggie.core.map
+import com.diegoparra.veggie.user.data.DtosTransformations.toAddress
 import com.diegoparra.veggie.user.data.DtosTransformations.toUser
+import com.diegoparra.veggie.user.domain.Address
 import com.diegoparra.veggie.user.domain.User
 import com.diegoparra.veggie.user.domain.UserRepository
 import timber.log.Timber
@@ -31,6 +33,12 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUser(id: String): Either<Failure, User> {
         Timber.d("getUser() called with: id = $id")
         return userApi.getUser(id).map { it.toUser() }
+    }
+
+    override suspend fun getAddressListForUser(id: String): Either<Failure, List<Address>> {
+        return userApi.getUser(id).map {
+            it.address?.map { it.toAddress() } ?: emptyList()
+        }
     }
 
 }

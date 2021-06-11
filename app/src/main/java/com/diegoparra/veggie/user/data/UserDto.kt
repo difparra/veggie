@@ -5,7 +5,7 @@ data class UserDto (
     val email: String,
     val name: String,
     val phoneNumber: String?,
-    val address: String?
+    val address: List<AddressDto>?
 ) {
     //  Required empty constructor for firebase
     constructor() : this(
@@ -15,5 +15,4 @@ data class UserDto (
         phoneNumber = null,
         address = null
     )
-
 }

@@ -53,8 +53,8 @@ class UserApi @Inject constructor(
                 .toObject<UserDto>()
             user?.let {
                 Either.Right(it)
-            }?: Either.Left(Failure.UserFailure.UserNotFound)
-        }catch (e: Exception) {
+            } ?: Either.Left(Failure.UserFailure.UserNotFound)
+        } catch (e: Exception) {
             Either.Left(Failure.ServerError(e))
         }
     }

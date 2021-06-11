@@ -28,8 +28,8 @@
         <item name="appBarLayoutStyle">@style/Widget.Veggie.AppBarLayout</item>
         <item name="android:progressBarStyle">@style/Widget.Veggie.ProgressBar</item>
         <item name="textInputStyle">@style/Widget.Veggie.TextInputLayout</item>
+        <item name="radioButtonStyle">@style/Widget.Veggie.RadioButton</item>
     </style>
-
 
     <!--    For theme   -->
 
@@ -62,6 +62,20 @@
         <item name="boxBackgroundColor">?attr/colorSurface</item>
         <item name="errorEnabled">true</item>
     </style>
+
+    <!-- As theme -->
+    <style name="Widget.Veggie.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:paddingStart">@dimen/padding_small</item>
+        <item name="android:paddingTop">@dimen/padding_standard</item>
+        <item name="android:paddingBottom">@dimen/padding_standard</item>
+    </style>
+    <!-- As element -->
+    <style name="Widget.Veggie.RadioGroup" parent="">
+        <item name="android:showDividers">middle</item>
+        <item name="android:divider">?attr/colorOnSurface</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
 
 
 
