@@ -35,7 +35,7 @@ class SaveProfileUseCase @Inject constructor(
 
     private suspend fun updateUserRepo(name: String): Either<Failure, Unit> {
         return authRepository.getIdCurrentUser().suspendFlatMap {
-            userRepository.updateUserData(id = it, name = name)
+            userRepository.updateUserData(userId = it, name = name)
         }
     }
 

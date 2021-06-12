@@ -16,15 +16,15 @@ class SavePhoneNumberUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
 
-    fun validatePhoneNumber(phoneNumber: String): Either<Failure, String> {
-        return TextInputValidation.forPhoneNumber(phoneNumber.trim())
-    }
-
     suspend fun verifyPhoneNumberWithPhoneAuthCredential(phoneNumber: String, phoneAuthCredential: PhoneAuthCredential): Either<Failure, Unit> {
         return updateAuthRepo(credential = phoneAuthCredential)
             .suspendFlatMap {
                 updateUserRepo(phoneNumber = phoneNumber)
             }
+    }
+
+    fun validatePhoneNumber(phoneNumber: String): Either<Failure, String> {
+        return TextInputValidation.forPhoneNumber(phoneNumber.trim())
     }
 
     private suspend fun updateAuthRepo(credential: PhoneAuthCredential): Either<Failure, Unit>{
@@ -33,7 +33,7 @@ class SavePhoneNumberUseCase @Inject constructor(
 
     private suspend fun updateUserRepo(phoneNumber: String): Either<Failure, Unit>{
         return authRepository.getIdCurrentUser().suspendFlatMap {
-            userRepository.updateUserData(id = it, phoneNumber = phoneNumber)
+            userRepository.updateUserData(userId = it, phoneNumber = phoneNumber)
         }
     }
 

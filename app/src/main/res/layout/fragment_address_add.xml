@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".user.ui.AddressFragment">
+    tools:context=".address.AddressAddFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
 
             <TextView
                 style="@style/Widget.Veggie.AppBarLayout.Title"
-                android:text="@string/user_addresses" />
+                android:text="@string/add_address" />
         </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -39,44 +39,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:gravity="center"
             android:padding="@dimen/padding_big">
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:id="@+id/error_text"
-                style="@style/Widget.Veggie.ErrorText"
-                android:layout_gravity="center"
-                android:text="@string/failure_generic"/>
-
-            <RadioGroup
-                android:id="@+id/address_radio_group"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/address_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:showDividers="middle"
-                android:divider="?attr/colorOnSurface"
-                android:orientation="vertical">
-                <RadioButton
+                android:hint="@string/address"
+                app:helperText="@string/address_example"
+                android:layout_marginBottom="@dimen/padding_standard">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Calle XXX # XX - XX \nTorre X Apto XX" />
-                <RadioButton
+                    android:inputType="text"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/details_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/details"
+                app:helperText="@string/details_example"
+                android:layout_marginBottom="@dimen/padding_standard">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Calle XXX # XX - XX" />
-            </RadioGroup>
+                    android:inputType="textMultiLine"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/btn_add_address"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_standard"
-                android:text="@string/add_address" />
+                android:text="@string/save" />
 
 
         </LinearLayout>

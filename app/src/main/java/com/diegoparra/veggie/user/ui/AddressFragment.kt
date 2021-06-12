@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.user.ui
 
-import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +10,17 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Resource
 import com.diegoparra.veggie.databinding.FragmentAddressBinding
-import com.diegoparra.veggie.user.domain.Address
+import com.diegoparra.veggie.address.Address
+import com.diegoparra.veggie.address.AddressConstants
+import com.diegoparra.veggie.core.EventObserver
+import com.diegoparra.veggie.core.runIfTrue
 import com.diegoparra.veggie.user.viewmodels.AddressViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class AddressFragment : Fragment() {
@@ -24,6 +28,20 @@ class AddressFragment : Fragment() {
     private var _binding: FragmentAddressBinding? = null
     private val binding get() = _binding!!
     private val viewModel: AddressViewModel by viewModels()
+    private val mapAddressToRadioButtonId: MutableMap<String, Int> = mutableMapOf()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val navController = findNavController()
+        val addressFragmentAsBackStackEntry =
+            navController.getBackStackEntry(R.id.addressFragment)
+        val savedStateHandle = addressFragmentAsBackStackEntry.savedStateHandle
+        savedStateHandle.getLiveData<Boolean>(AddressConstants.ADDRESS_ADDED_SUCCESSFULLY)
+            .observe(addressFragmentAsBackStackEntry) {
+                Timber.d("${AddressConstants.ADDRESS_ADDED_SUCCESSFULLY} = $it")
+                it.runIfTrue { viewModel.refreshData() }
+            }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,14 +57,16 @@ class AddressFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.btnAddAddress.setOnClickListener {
-            //  TODO: Add address functionality
-            Snackbar.make(it, "TODO()", Snackbar.LENGTH_SHORT).show()
+            val action = AddressFragmentDirections.actionAddressFragmentToAddressAddFragment()
+            findNavController().navigate(action)
         }
     }
 
     private fun subscribeUi() {
         viewModel.addressList.observe(viewLifecycleOwner) {
-            when(it) {
+            binding.addressRadioGroup.removeAllViews()
+            mapAddressToRadioButtonId.clear()
+            when (it) {
                 is Resource.Loading -> {
                     binding.progressBar.isVisible = true
                     binding.addressRadioGroup.isVisible = false
@@ -69,16 +89,62 @@ class AddressFragment : Fragment() {
                 }
             }
         }
+        viewModel.selectedAddressId.observe(viewLifecycleOwner) {
+            val radioButtonId = mapAddressToRadioButtonId[it]
+            radioButtonId?.let { binding.addressRadioGroup.check(it) }
+        }
+        viewModel.failure.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_SHORT).show()
+        })
     }
 
     private fun renderAddressList(addressList: List<Address>) {
-        binding.addressRadioGroup.removeAllViews()
-        addressList.forEach {
-            val radioButton = RadioButton(context)
-            radioButton.id = View.generateViewId()
-            radioButton.text = it.address + (it.details?.let { "\n" + it } ?: "")
+        addressList.forEach { address ->
+            val radioButton = createRadioButton()
+            mapAddressToRadioButtonId[address.id] = radioButton.id
+            radioButton.text = getAddressString(address)
+            radioButton.setOnClickListener { viewModel.selectAddress(address.id) }
+            radioButton.setOnLongClickListener { showActionsDialogForAddress(address); true }
+            /*
+            //  Could be needed if selectedAddressId observer was already called, before
+            //  radioButtons being created, but it is currently working without it.
+            viewModel.selectedAddressId.value?.let {
+                if(it == address.id) { radioButton.isChecked = true }
+            }*/
             binding.addressRadioGroup.addView(radioButton)
         }
+    }
+
+    private fun createRadioButton(): RadioButton {
+        val paddingSmall = resources.getDimension(R.dimen.padding_small).toInt()
+        val paddingStandard = resources.getDimension(R.dimen.padding_standard).toInt()
+        val radioButton = RadioButton(context)
+        radioButton.id = View.generateViewId()
+        radioButton.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        radioButton.setPadding(
+            paddingSmall, paddingStandard, 0, paddingStandard
+        )
+        return radioButton
+    }
+
+    private fun getAddressString(address: Address): String {
+        return address.address + (address.details?.let { "\n" + it } ?: "")
+    }
+
+    private fun showActionsDialogForAddress(address: Address) {
+        AlertDialog.Builder(binding.root.context)
+            .setMessage("¿Qué deseas hacer con esta dirección?")
+            .setPositiveButton("Marcar como principal") { _, _ ->
+                viewModel.selectAddress(address.id)
+            }
+            .setNegativeButton("Eliminar") { _, _ ->
+                viewModel.deleteAddress(address)
+            }
+            .create()
+            .show()
     }
 
 

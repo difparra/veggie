@@ -10,10 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.getDefaultWrongInputErrorMessage
-import com.diegoparra.veggie.core.EventObserver
-import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.core.SignInFailure
+import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.databinding.FragmentUserEditProfileBinding
 import com.diegoparra.veggie.phone_number_verification.PhoneConstants
 import com.diegoparra.veggie.user.viewmodels.EditProfileViewModel
@@ -38,9 +35,7 @@ class UserEditProfileFragment : Fragment() {
         savedStateHandle.getLiveData<Boolean>(PhoneConstants.PHONE_VERIFIED_SUCCESSFUL)
             .observe(userEditProfileFragmentAsBackStackEntry) {
                 Timber.d("${PhoneConstants.PHONE_VERIFIED_SUCCESSFUL} = $it")
-                if (it) {
-                    viewModel.refreshData(phoneNumber = true)
-                }
+                it.runIfTrue { viewModel.refreshData(phoneNumber = true) }
             }
     }
 

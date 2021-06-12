@@ -10,23 +10,23 @@ fun getDefaultWrongInputErrorMessage(
         is SignInFailure.WrongInput.Empty -> getString(R.string.failure_empty_field)
         is SignInFailure.WrongInput.Short -> {
             if (femaleString) {
-                getString(R.string.failure_short_field_f, field, failure.minLength)
+                getString(R.string.failure_short_field_f, field.lowercase(), failure.minLength)
             } else {
-                getString(R.string.failure_short_field_m, field, failure.minLength)
+                getString(R.string.failure_short_field_m, field.lowercase(), failure.minLength)
             }
         }
         is SignInFailure.WrongInput.Invalid -> {
             if (femaleString) {
-                getString(R.string.failure_invalid_field_f, field)
+                getString(R.string.failure_invalid_field_f, field.lowercase())
             } else {
-                getString(R.string.failure_invalid_field_m, field)
+                getString(R.string.failure_invalid_field_m, field.lowercase())
             }
         }
         is SignInFailure.WrongInput.Incorrect -> {
             if (femaleString) {
-                getString(R.string.failure_incorrect_field_f, field)
+                getString(R.string.failure_incorrect_field_f, field.lowercase())
             } else {
-                getString(R.string.failure_incorrect_field_m, field)
+                getString(R.string.failure_incorrect_field_m, field.lowercase())
             }
         }
         is SignInFailure.WrongInput.Unknown -> failure.message

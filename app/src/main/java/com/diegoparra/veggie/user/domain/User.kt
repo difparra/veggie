@@ -1,5 +1,7 @@
 package com.diegoparra.veggie.user.domain
 
+import com.diegoparra.veggie.address.Address
+
 data class User (
     val id: String,
     val email: String,

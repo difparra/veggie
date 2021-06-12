@@ -93,6 +93,15 @@
         android:id="@+id/addressFragment"
         android:name="com.diegoparra.veggie.user.ui.AddressFragment"
         android:label="fragment_address"
-        tools:layout="@layout/fragment_address" />
+        tools:layout="@layout/fragment_address" >
+        <action
+            android:id="@+id/action_addressFragment_to_addressAddFragment"
+            app:destination="@id/addressAddFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addressAddFragment"
+        android:name="com.diegoparra.veggie.address.AddressAddFragment"
+        android:label="fragment_address_add"
+        tools:layout="@layout/fragment_address_add" />
 
 </navigation>

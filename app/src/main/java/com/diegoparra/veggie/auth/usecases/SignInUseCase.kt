@@ -29,7 +29,7 @@ abstract class SignInUseCase<Params> constructor(
         return if (isNewUser) {
             Timber.d("isNewUser = $isNewUser, calling to update data with profile = $profile")
             userRepository.updateUserData(
-                id = profile.id,
+                userId = profile.id,
                 email = profile.email,
                 name = profile.name
             )

@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.user.data
+package com.diegoparra.veggie.user.data.firebase
 
 object UserFirebaseConstants {
 
@@ -11,7 +11,7 @@ object UserFirebaseConstants {
         const val email = "email"
         const val name = "name"
         const val phoneNumber = "phoneNumber"
-        const val address = "address"
+        const val addressList = "addressList"
     }
 
 }

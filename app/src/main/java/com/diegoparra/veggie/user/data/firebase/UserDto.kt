@@ -1,11 +1,11 @@
-package com.diegoparra.veggie.user.data
+package com.diegoparra.veggie.user.data.firebase
 
 data class UserDto (
     val id: String,
     val email: String,
     val name: String,
     val phoneNumber: String?,
-    val address: List<AddressDto>?
+    val addressList: List<AddressDto>?
 ) {
     //  Required empty constructor for firebase
     constructor() : this(
@@ -13,6 +13,6 @@ data class UserDto (
         email = "",
         name = "",
         phoneNumber = null,
-        address = null
+        addressList = null
     )
 }

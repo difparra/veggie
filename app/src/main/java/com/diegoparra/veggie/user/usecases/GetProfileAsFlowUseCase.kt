@@ -3,11 +3,12 @@ package com.diegoparra.veggie.user.usecases
 import com.diegoparra.veggie.core.Either
 import com.diegoparra.veggie.core.map
 import com.diegoparra.veggie.auth.domain.AuthRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetBasicAuthInfoUseCase @Inject constructor(
+class GetProfileAsFlowUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
 

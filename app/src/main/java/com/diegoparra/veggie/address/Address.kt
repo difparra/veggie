@@ -1,6 +1,7 @@
-package com.diegoparra.veggie.user.domain
+package com.diegoparra.veggie.address
 
 data class Address(
+    val id: String,
     val address: String,
     val details: String?
 )

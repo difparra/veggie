@@ -2,7 +2,7 @@ package com.diegoparra.veggie.user.viewmodels
 
 import androidx.lifecycle.*
 import com.diegoparra.veggie.core.*
-import com.diegoparra.veggie.user.usecases.GetUserDataUseCase
+import com.diegoparra.veggie.user.usecases.GetProfileUseCase
 import com.diegoparra.veggie.user.usecases.SaveProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
-    private val getUserDataUseCase: GetUserDataUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
     private val saveProfileUseCase: SaveProfileUseCase
 ) : ViewModel() {
 
@@ -31,7 +31,7 @@ class EditProfileViewModel @Inject constructor(
 
     fun refreshData(email: Boolean = false, name: Boolean = false, phoneNumber: Boolean = false) {
         viewModelScope.launch {
-            getUserDataUseCase.getProfile().fold({}, {
+            getProfileUseCase.getProfile().fold({}, {
                 if(!email && !name && !phoneNumber) {
                     _initialEmail.value = Event(it.email)
                     _initialName.value = Event(it.name)

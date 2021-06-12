@@ -72,7 +72,10 @@
 
     <!-- address strings -->
     <string name="address">Dirección</string>
-    <string name="add_address">+ Agregar dirección</string>
+    <string name="address_example">E.g.: Calle __ No. __ - __</string>
+    <string name="details">Detalles</string>
+    <string name="details_example">E.g.: Torre 1 Apto ___ ó indicaciones</string>
+    <string name="add_address">Agregar dirección</string>
 
 
 
