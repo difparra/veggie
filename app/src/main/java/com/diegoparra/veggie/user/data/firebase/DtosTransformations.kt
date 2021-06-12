@@ -21,7 +21,7 @@ object DtosTransformations {
     )
 
     fun Address.toAddressDto() = AddressDto(
-        id = UUID.randomUUID().toString(),
+        id = id,
         address = address,
         details = if(details.isNullOrBlank()) null else details
     )

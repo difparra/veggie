@@ -3,6 +3,7 @@ package com.diegoparra.veggie.address
 import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.user.domain.UserRepository
+import java.util.*
 import javax.inject.Inject
 
 class SaveAddressUseCase @Inject constructor(
@@ -27,10 +28,8 @@ class SaveAddressUseCase @Inject constructor(
     private suspend fun saveInDatabase(address: String, details: String): Either<Failure, Unit> {
         return getIdCurrentUser()
             .suspendFlatMap {
-                //  Do not need to add logic for id in here, that will correspond to DtosTransformations, that
-                //  will generate the corresponding id to save in database.
                 val addressObj = Address(
-                    id = "",
+                    id = UUID.randomUUID().toString(),
                     address = address,
                     details = details
                 )
