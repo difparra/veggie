@@ -27,9 +27,9 @@ class AddressAddViewModel @Inject constructor(
     val addressFailure: LiveData<Event<SignInFailure.WrongInput>> = _addressFailure
 
 
-    fun saveAddress(address: String, details: String) {
+    fun saveAddress(address: String, details: String, instructions: String) {
         viewModelScope.launch {
-            saveAddressUseCase(address, details).fold(
+            saveAddressUseCase(address, details, instructions).fold(
                 {
                     when(it) {
                         is SignInFailure.WrongInput -> {

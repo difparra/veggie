@@ -11,6 +11,7 @@ import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.user.usecases.GetAddressUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,7 +19,7 @@ class AddressViewModel @Inject constructor(
     private val addressUseCase: GetAddressUseCase,
     private val selectMainAddressUseCase: SelectMainAddressUseCase,
     private val deleteAddressUseCase: DeleteAddressUseCase
-): ViewModel() {
+) : ViewModel() {
 
     private val _addressList = MutableLiveData<Resource<List<Address>>>()
     val addressList: LiveData<Resource<List<Address>>> = _addressList
@@ -50,6 +51,21 @@ class AddressViewModel @Inject constructor(
                     refreshData()
                 }
             )
+        }
+    }
+
+    fun deleteAddress(addressId: String) {
+        viewModelScope.launch {
+            try {
+                val addressList = addressList.value as Resource.Success
+                val address = addressList.data.find { it.id == addressId }!!
+                deleteAddress(address)
+            } catch (e: Exception) {
+                Timber.e("Either addressList is not success, or addressId is not in addressList")
+                _failure.value =
+                    Event(Failure.ServerError(message = "Ha ocurrido un error inesperado. Intenta de nuevo más tarde."))
+            }
+
         }
     }
 

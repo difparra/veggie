@@ -17,13 +17,15 @@ object DtosTransformations {
     fun AddressDto.toAddress() = Address(
         id = id,
         address = address,
-        details = details
+        details = details,
+        instructions = instructions
     )
 
     fun Address.toAddressDto() = AddressDto(
         id = id,
         address = address,
-        details = if(details.isNullOrBlank()) null else details
+        details = if(details.isNullOrBlank()) null else details,
+        instructions = if(instructions.isNullOrBlank()) null else instructions
     )
 
 }

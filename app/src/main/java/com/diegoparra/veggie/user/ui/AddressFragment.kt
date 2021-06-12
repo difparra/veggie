@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.user.ui
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.Resource
@@ -27,7 +26,7 @@ class AddressFragment : Fragment() {
 
     private var _binding: FragmentAddressBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: AddressViewModel by viewModels()
+    private val viewModel: AddressViewModel by hiltNavGraphViewModels(R.id.nav_main)
     private val mapAddressToRadioButtonId: MutableMap<String, Int> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,16 +134,11 @@ class AddressFragment : Fragment() {
     }
 
     private fun showActionsDialogForAddress(address: Address) {
-        AlertDialog.Builder(binding.root.context)
-            .setMessage("¿Qué deseas hacer con esta dirección?")
-            .setPositiveButton("Marcar como principal") { _, _ ->
-                viewModel.selectAddress(address.id)
-            }
-            .setNegativeButton("Eliminar") { _, _ ->
-                viewModel.deleteAddress(address)
-            }
-            .create()
-            .show()
+        val action = AddressFragmentDirections.actionAddressFragmentToAddressActionsDialogFragment(
+            addressId = address.id,
+            addressString = getAddressString(address)
+        )
+        findNavController().navigate(action)
     }
 
 

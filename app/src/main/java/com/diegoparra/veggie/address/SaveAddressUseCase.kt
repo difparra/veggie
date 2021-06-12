@@ -11,27 +11,28 @@ class SaveAddressUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
 
-    suspend operator fun invoke(address: String, details: String) : Either<Failure, Unit> {
+    suspend operator fun invoke(address: String, details: String, instructions: String) : Either<Failure, Unit> {
         //  Validate fields
         validateAddress(address).let {
             if(it is Either.Left) {
                 return it
             }
         }
-        return saveInDatabase(address, details)
+        return saveInDatabase(address, details, instructions)
     }
 
     private fun validateAddress(address: String) : Either<SignInFailure.WrongInput, String> {
         return TextInputValidation.forAddress(address)
     }
 
-    private suspend fun saveInDatabase(address: String, details: String): Either<Failure, Unit> {
+    private suspend fun saveInDatabase(address: String, details: String, instructions: String): Either<Failure, Unit> {
         return getIdCurrentUser()
             .suspendFlatMap {
                 val addressObj = Address(
                     id = UUID.randomUUID().toString(),
                     address = address,
-                    details = details
+                    details = details,
+                    instructions = instructions
                 )
                 userRepository.addAddress(userId = it, address = addressObj)
             }

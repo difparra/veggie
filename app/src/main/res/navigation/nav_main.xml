@@ -51,7 +51,7 @@
         android:id="@+id/clearCartDialogFragment"
         android:name="com.diegoparra.veggie.products.ui.ClearCartDialogFragment"
         android:label="ClearCartDialogFragment"
-        tools:layout="@layout/dialog_clear_cart" />
+        tools:layout="@layout/dialog_generic" />
 
 
     <!--    .....   USER    .....   -->
@@ -97,11 +97,25 @@
         <action
             android:id="@+id/action_addressFragment_to_addressAddFragment"
             app:destination="@id/addressAddFragment" />
+        <action
+            android:id="@+id/action_addressFragment_to_addressActionsDialogFragment"
+            app:destination="@id/addressActionsDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/addressAddFragment"
         android:name="com.diegoparra.veggie.address.AddressAddFragment"
         android:label="fragment_address_add"
         tools:layout="@layout/fragment_address_add" />
+    <dialog
+        android:id="@+id/addressActionsDialogFragment"
+        android:name="com.diegoparra.veggie.user.ui.AddressActionsDialogFragment"
+        android:label="AddressActionsDialogFragment" >
+        <argument
+            android:name="addressId"
+            app:argType="string" />
+        <argument
+            android:name="addressString"
+            app:argType="string" />
+    </dialog>
 
 </navigation>

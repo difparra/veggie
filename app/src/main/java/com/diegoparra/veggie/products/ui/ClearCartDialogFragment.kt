@@ -22,8 +22,8 @@ class ClearCartDialogFragment : DialogFragment() {
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it)
 
-            val inflater = requireActivity().layoutInflater
-            val view = inflater.inflate(R.layout.dialog_clear_cart, null)
+            val inflater = it.layoutInflater
+            val view = inflater.inflate(R.layout.dialog_generic, null)
             builder.setView(view)
             loadDialogProperties(view)
 

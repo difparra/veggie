@@ -47,7 +47,8 @@ class AddressAddFragment : Fragment() {
         binding.btnSave.setOnClickListener {
             viewModel.saveAddress(
                 address = binding.address.text.toString(),
-                details = binding.details.text.toString()
+                details = binding.details.text.toString(),
+                instructions = binding.instructions.text.toString()
             )
         }
     }

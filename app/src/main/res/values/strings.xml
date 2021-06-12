@@ -72,12 +72,16 @@
 
     <!-- address strings -->
     <string name="address">Dirección</string>
-    <string name="address_example">E.g.: Calle __ No. __ - __</string>
+    <string name="address_example">Ej: Calle 80 # 72 – 94</string>
     <string name="details">Detalles</string>
-    <string name="details_example">E.g.: Torre 1 Apto ___ ó indicaciones</string>
+    <string name="details_example">Ej: Torre, Apto, Casa</string>
+    <string name="instructions">Indicaciones (opcional)</string>
+    <string name="instructions_example">Ej: Al lado de, cerca de …</string>
     <string name="add_address">Agregar dirección</string>
 
-
+    <string name="address_actions_dialog_message">¿Qué deseas hacer con esta dirección?<br/> %s</string>
+    <string name="address_actions_dialog_check_address">Marcar como principal</string>
+    <string name="address_actions_dialog_delete_address">Eliminar</string>
 
 
 
