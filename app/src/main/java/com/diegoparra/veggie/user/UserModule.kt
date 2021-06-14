@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.user
 
 import com.diegoparra.veggie.user.data.UserRepositoryImpl
-import com.diegoparra.veggie.user.domain.UserRepository
+import com.diegoparra.veggie.user.address.domain.AddressRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,6 +14,11 @@ abstract class UserModule {
     @Binds
     abstract fun bindsUserRepository(
         userRepositoryImpl: UserRepositoryImpl
-    ) : UserRepository
+    ): UserRepository
+
+    @Binds
+    abstract fun bindsAddressRepository(
+        userRepositoryImpl: UserRepositoryImpl
+    ): AddressRepository
 
 }

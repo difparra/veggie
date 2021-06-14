@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".phone_number_verification.PhoneNumberVerifySmsCodeFragment">
+    tools:context=".user.edit_profile.auth_phone_number.ui.PhoneNumberVerifySmsCodeFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

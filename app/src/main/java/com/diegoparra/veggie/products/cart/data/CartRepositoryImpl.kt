@@ -25,7 +25,6 @@ class CartRepositoryImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : CartRepository {
 
-
     override fun getAllCartItems(): Flow<Either<Failure, List<CartItem>>> {
         return cartDao.getAllCartItems().map {
             Either.Right(it.map { it.toCartItem() })
@@ -34,9 +33,9 @@ class CartRepositoryImpl @Inject constructor(
 
     override fun getProdIdsList(): Flow<Either<Failure, List<ProductId>>> {
         return cartDao.getProductIds().map {
-            if(it.isNullOrEmpty()){
+            if (it.isNullOrEmpty()) {
                 Either.Left(Failure.CartFailure.EmptyCartList)
-            }else{
+            } else {
                 Either.Right(it.map { it.toProductId() })
             }
         }.flowOn(dispatcher)
@@ -60,7 +59,10 @@ class CartRepositoryImpl @Inject constructor(
         }.flowOn(dispatcher)
     }
 
-    override fun getQuantityMapByVariation(mainId: String, varId: String): Flow<Either<Failure, Map<String?, Int>>> {
+    override fun getQuantityMapByVariation(
+        mainId: String,
+        varId: String
+    ): Flow<Either<Failure, Map<String?, Int>>> {
         return cartDao.getVariations(mainId, varId).map {
             Either.Right(it.toMapQuantitiesByDetail())
         }.flowOn(dispatcher)
@@ -74,21 +76,24 @@ class CartRepositoryImpl @Inject constructor(
         cartDao.deleteItem(productId.toProdIdRoom())
     }
 
-    override suspend fun updateQuantityItem(productId: ProductId, newQuantity: Int)  = withContext(dispatcher) {
-        cartDao.updateQuantityItem(productId.toProdIdRoom(), newQuantity)
-    }
+    override suspend fun updateQuantityItem(productId: ProductId, newQuantity: Int) =
+        withContext(dispatcher) {
+            cartDao.updateQuantityItem(productId.toProdIdRoom(), newQuantity)
+        }
 
-    override suspend fun getItem(productId: ProductId): Either<Failure, CartItem>  = withContext(dispatcher) {
-        val cartEntity = cartDao.getItem(productId.toProdIdRoom())
-        return@withContext cartEntity?.let {
-            Either.Right(it.toCartItem())
-        } ?: Either.Left(Failure.ProductsFailure.ProductsNotFound)
-    }
+    override suspend fun getItem(productId: ProductId): Either<Failure, CartItem> =
+        withContext(dispatcher) {
+            val cartEntity = cartDao.getItem(productId.toProdIdRoom())
+            return@withContext cartEntity?.let {
+                Either.Right(it.toCartItem())
+            } ?: Either.Left(Failure.ProductsFailure.ProductsNotFound)
+        }
 
-    override suspend fun getCurrentQuantityItem(productId: ProductId): Either<Failure, Int>  = withContext(dispatcher) {
-        val quantity = cartDao.getCurrentQuantityItem(productId.toProdIdRoom())
-        return@withContext Either.Right(quantity ?: 0)
-    }
+    override suspend fun getCurrentQuantityItem(productId: ProductId): Either<Failure, Int> =
+        withContext(dispatcher) {
+            val quantity = cartDao.getCurrentQuantityItem(productId.toProdIdRoom())
+            return@withContext Either.Right(quantity ?: 0)
+        }
 
     override suspend fun deleteAllItems() = withContext(dispatcher) {
         cartDao.deleteAllItems()

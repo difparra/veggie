@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-private val Context.dataStore : DataStore<Preferences> by preferencesDataStore(name = "user_prefs")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_prefs")
 
 class UserPrefs @Inject constructor(
     @ApplicationContext private val context: Context
-){
+) {
 
     companion object {
         val SELECTED_ADDRESS_ID = stringPreferencesKey("selected_address")

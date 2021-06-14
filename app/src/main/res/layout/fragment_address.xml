@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".user.ui.AddressFragment">
+    tools:context=".user.address.ui.AddressFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.user.data.firebase
 
-data class UserDto (
+data class UserDto(
     val id: String,
     val email: String,
     val name: String,

@@ -2,7 +2,6 @@ package com.diegoparra.veggie
 
 import android.content.Context
 import androidx.room.Room
-import com.diegoparra.veggie.products.VeggieDatabase
 import com.diegoparra.veggie.products.cart.data.room.CartDao
 import com.diegoparra.veggie.products.data.room.ProductsDao
 import com.google.firebase.auth.FirebaseAuth
@@ -31,13 +30,13 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesFirebaseDatabase() : FirebaseFirestore {
+    fun providesFirebaseDatabase(): FirebaseFirestore {
         return Firebase.firestore
     }
 
     @Singleton
     @Provides
-    fun providesFirebaseRemoteConfig() : FirebaseRemoteConfig {
+    fun providesFirebaseRemoteConfig(): FirebaseRemoteConfig {
         return Firebase.remoteConfig.apply {
             setConfigSettingsAsync(remoteConfigSettings {
                 //  TODO:   Change minimumFetchInterval for RemoteConfig when in production
@@ -50,7 +49,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesFirebaseAuth() : FirebaseAuth {
+    fun providesFirebaseAuth(): FirebaseAuth {
         return Firebase.auth.apply {
             //  OK: It will be the languge set on the phone (e.g. German)
             useAppLanguage()
@@ -64,19 +63,19 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesVeggieDatabase(@ApplicationContext appContext: Context) : VeggieDatabase {
+    fun providesVeggieDatabase(@ApplicationContext appContext: Context): VeggieDatabase {
         return Room
             .databaseBuilder(appContext, VeggieDatabase::class.java, VeggieDatabase.DB_NAME)
             .build()
     }
 
     @Provides
-    fun providesProductsDao(veggieDatabase: VeggieDatabase) : ProductsDao {
+    fun providesProductsDao(veggieDatabase: VeggieDatabase): ProductsDao {
         return veggieDatabase.productsDao()
     }
 
     @Provides
-    fun providesCartDao(veggieDatabase: VeggieDatabase) : CartDao {
+    fun providesCartDao(veggieDatabase: VeggieDatabase): CartDao {
         return veggieDatabase.cartDao()
     }
 

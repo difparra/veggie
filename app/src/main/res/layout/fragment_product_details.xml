@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingBottom="@dimen/padding_big"
     android:paddingTop="@dimen/padding_big_half"
-    tools:context=".products.ui.ProductDetailsFragment">
+    tools:context=".products.app.ui.ProductDetailsFragment">
 
     <TextView
         android:id="@+id/title"

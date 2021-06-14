@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/signInOptionsFragment"
-        android:name="com.diegoparra.veggie.auth.ui.SignInOptionsFragment"
+        android:name="com.diegoparra.veggie.user.auth.ui.SignInOptionsFragment"
         android:label="fragment_sign_in_options"
         tools:layout="@layout/fragment_sign_in_options" >
         <action
@@ -18,7 +18,7 @@
     <!-- Internally has a viewPager with email options: SignIn/SignUp -->
     <fragment
         android:id="@+id/emailViewPagerFragment"
-        android:name="com.diegoparra.veggie.auth.ui.EmailViewPagerFragment"
+        android:name="com.diegoparra.veggie.user.auth.ui.EmailViewPagerFragment"
         android:label="fragment_email"
         tools:layout="@layout/fragment_email_view_pager" >
         <action
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="com.diegoparra.veggie.auth.ui.ForgotPasswordFragment"
+        android:name="com.diegoparra.veggie.user.auth.ui.ForgotPasswordFragment"
         android:label="fragment_forgot_password"
         tools:layout="@layout/fragment_forgot_password" />
 </navigation>

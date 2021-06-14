@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/phoneNumberAddFragment"
-        android:name="com.diegoparra.veggie.phone_number_verification.PhoneNumberAddFragment"
+        android:name="com.diegoparra.veggie.user.edit_profile.auth_phone_number.ui.PhoneNumberAddFragment"
         android:label="fragment_add_phone_number"
         tools:layout="@layout/fragment_phone_number_add" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/phoneNumberVerifySmsCodeFragment"
-        android:name="com.diegoparra.veggie.phone_number_verification.PhoneNumberVerifySmsCodeFragment"
+        android:name="com.diegoparra.veggie.user.edit_profile.auth_phone_number.ui.PhoneNumberVerifySmsCodeFragment"
         android:label="fragment_phone_number_verify_sms_code"
         tools:layout="@layout/fragment_phone_number_verify_sms_code" >
         <argument
