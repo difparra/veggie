@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.data.firebase
 
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject

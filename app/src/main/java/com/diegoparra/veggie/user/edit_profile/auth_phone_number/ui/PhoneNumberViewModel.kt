@@ -2,8 +2,9 @@ package com.diegoparra.veggie.user.edit_profile.auth_phone_number.ui
 
 import android.app.Activity
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.Event
-import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.core.kotlin.Event
+import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.user.edit_profile.auth_phone_number.domain.SavePhoneNumberUseCase
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
@@ -101,8 +102,8 @@ class PhoneNumberViewModel @Inject constructor(
             // for instance if the the phone number format is not valid.
             _loading.value = false
             val failure = when(e) {
-                is FirebaseAuthInvalidCredentialsException -> Failure.PhoneAuthFailures.InvalidRequest
-                is FirebaseTooManyRequestsException -> Failure.PhoneAuthFailures.TooManyRequests
+                is FirebaseAuthInvalidCredentialsException -> AuthFailure.PhoneAuthFailures.InvalidRequest
+                is FirebaseTooManyRequestsException -> AuthFailure.PhoneAuthFailures.TooManyRequests
                 else -> Failure.ServerError(e)
             }
             _failure.value = Event(failure)

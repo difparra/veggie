@@ -1,9 +1,9 @@
 package com.diegoparra.veggie.user.address.usecases
 
-import com.diegoparra.veggie.user.auth.domain.AuthRepository
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.suspendFlatMap
+import com.diegoparra.veggie.auth.domain.AuthRepository
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.suspendFlatMap
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.domain.AddressRepository
 import javax.inject.Inject

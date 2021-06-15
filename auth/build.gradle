@@ -1,0 +1,101 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id 'androidx.navigation.safeargs.kotlin'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+
+    //  Modules
+    implementation project(':core')
+
+    //  Basic dependencies
+    implementation "androidx.appcompat:appcompat:$appCompat"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "androidx.core:core-ktx:$coreKtx"
+    implementation "com.jakewharton.timber:timber:$timber"
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
+
+    //  Data
+    implementation "androidx.datastore:datastore-preferences:$dataStoreVersion"
+    implementation platform("com.google.firebase:firebase-bom:$firebaseBomVersion")      //  Manage all Firebase Library versions
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$firebaseCoroutines"
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'   //  For google auth
+    implementation 'com.facebook.android:facebook-login:8.1.0'          //  For facebook auth
+
+
+    //  UI DEPENDENCIES
+
+    //  LiveData & ViewModel
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltViewModel"                  //  In order to inject viewModels
+    kapt "androidx.hilt:hilt-compiler:$hiltViewModelCompiler"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion"    //  Saved state module for viewModel
+
+    //  Ui elements
+    implementation "com.google.android.material:material:$materialVersion"             //  Material design
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "io.coil-kt:coil:$coil"
+
+    //  Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
+    implementation "androidx.hilt:hilt-navigation-fragment:$navHiltVersion" //  In order to scope hiltNavGraphViewModels
+
+
+
+    //  TEST DEPENDENCIES
+
+    //  Testing
+    testImplementation "junit:junit:$junit"
+    testImplementation "com.google.truth:truth:$truth"                       //  Easily write assertions
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTest"        //  Kotlin coroutines test
+    //  Instrumented test
+    androidTestImplementation "androidx.test.ext:junit:$androidJunit"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
+    androidTestImplementation "com.google.truth:truth:$truth"                //  Easily write assertions
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTest"        //  Kotlin coroutines test
+
+
+}

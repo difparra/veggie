@@ -15,18 +15,4 @@
         <attr name="state_qty_max" format="boolean" />
     </declare-styleable>
 
-
-    <!--    Additional theme attributes     -->
-    <declare-styleable name="additional_theme_colors">
-        <attr name="colorsRandom" format="reference" /> <!-- colors for labels -->
-        <attr name="colorWarning" format="reference" />
-        <attr name="colorOnWarning" format="reference" />
-    </declare-styleable>
-    <declare-styleable name="alpha_list">
-        <attr name="alphaSecondaryText" format="float"/>
-    </declare-styleable>
-    <declare-styleable name="dimensions">
-        <attr name="appBarHeight" format="dimension"/>
-        <attr name="appBarElevation" format="dimension"/>
-    </declare-styleable>
 </resources>

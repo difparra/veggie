@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="app_bar_height">48dp</dimen>
+    <dimen name="app_bar_elevation">2dp</dimen>
+
+    <dimen name="padding_standard">20dp</dimen>         <!--    padding used in appBar   -->
+    <dimen name="padding_big">30dp</dimen>
+    <dimen name="padding_small">6dp</dimen>
+
+    <dimen name="progress_bar_size">48dp</dimen>
+    <dimen name="divider_height">0.75dp</dimen>
+
+    <!--    It is mainly for recycler view list and items  -->
+    <dimen name="padding_standard_half">10dp</dimen>
+
+</resources>

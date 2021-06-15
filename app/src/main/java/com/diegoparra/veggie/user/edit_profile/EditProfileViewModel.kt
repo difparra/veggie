@@ -1,9 +1,10 @@
 package com.diegoparra.veggie.user.edit_profile
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.*
-import com.diegoparra.veggie.user.auth.usecases.GetProfileUseCase
-import com.diegoparra.veggie.user.auth.usecases.SaveNameUseCase
+import com.diegoparra.veggie.auth.usecases.GetProfileUseCase
+import com.diegoparra.veggie.auth.usecases.SaveNameUseCase
+import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.core.kotlin.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -77,7 +78,7 @@ class EditProfileViewModel @Inject constructor(
 
     private fun handleFailure(failure: Failure) {
         when (failure) {
-            is SignInFailure.WrongInput -> _name.value = Resource.Error(failure)
+            is AuthFailure.WrongInput -> _name.value = Resource.Error(failure)
             else -> _failure.value = Event(failure)
         }
     }

@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.app.usecases
 
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.products.cart.domain.CartItem
 import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.cart.domain.CartRepository

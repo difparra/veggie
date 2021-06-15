@@ -8,9 +8,9 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.getColorFromAttr
-import com.diegoparra.veggie.core.getColorWithAlphaFromAttrs
-import com.diegoparra.veggie.core.roundToMultiple
+import com.diegoparra.veggie.core.android.getColorFromAttr
+import com.diegoparra.veggie.core.android.getColorWithAlphaFromAttrs
+import com.diegoparra.veggie.core.kotlin.roundToMultiple
 import java.text.NumberFormat
 import java.util.Locale
 

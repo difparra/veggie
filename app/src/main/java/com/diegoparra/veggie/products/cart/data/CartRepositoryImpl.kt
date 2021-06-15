@@ -1,8 +1,8 @@
 package com.diegoparra.veggie.products.cart.data
 
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.products.IoDispatcher
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.android.IoDispatcher
 import com.diegoparra.veggie.products.cart.data.CartTransformations.toCartEntity
 import com.diegoparra.veggie.products.cart.data.CartTransformations.toCartItem
 import com.diegoparra.veggie.products.cart.data.CartTransformations.toMapQuantitiesByDetail

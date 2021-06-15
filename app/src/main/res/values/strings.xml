@@ -1,12 +1,19 @@
 <resources>
     <string name="app_name">Veggie</string>
-
-
+    
+    <!-- Basics -->
     <string name="yes">Si</string>
     <string name="no">No</string>
     <string name="continuee">Continuar</string>
     <string name="send">Enviar</string>
     <string name="save">Guardar</string>
+
+    <!-- Auth -->
+    <!-- Facebook -->
+    <string name="facebook_app_id">315214526875872</string>
+    <string name="fb_login_protocol_scheme">fb315214526875872</string>
+
+
 
     <!-- Main navigation -->
     <string name="menu_home">Inicio</string>
@@ -29,25 +36,6 @@
     <string name="label_discounted">%s Off</string>     <!-- use percentage sign in the string %s as app will
                                                         crash if used here as \% or simply % because of the formats -->
 
-
-
-    <!-- Auth -->
-    <string name="sign_in">Iniciar sesión</string>
-    <string name="sign_up">Crear cuenta</string>
-    <string name="user_or_sign_in_with">o ingresa con</string>
-    <string name="btn_google">Ingresa con Google</string>
-    <string name="btn_facebook">Ingresa con Facebook</string>
-    <string name="btn_email">Ingresa con Email</string>
-    <!-- emailAuth -->
-    <string name="name">Nombre</string>
-    <string name="email">Email</string>
-    <string name="password">Contraseña</string>
-    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
-    <string name="reset_password_instructions">Escribe tu correo y te enviaremos un link para que puedas restablecer tu contraseña</string>
-    <string name="reset_password_email_sent">Se ha enviado un link a tu correo para restablecer tu contraseña.</string>
-    <!-- Facebook -->
-    <string name="facebook_app_id">315214526875872</string>
-    <string name="fb_login_protocol_scheme">fb315214526875872</string>
 
 
     <!-- User -->
@@ -100,19 +88,7 @@
     <string name="failure_no_search_result">No hay productos que coincidan con tu búsqueda.</string>
     <string name="failure_empty_cart_list">El carrito está vacío.</string>
 
-    <!-- Auth -->
-    <string name="failure_empty_field">Campo vacío.</string>
-    <string name="failure_short_field_m">El %1$s debe tener al menos %2$d caracteres.</string>
-    <string name="failure_short_field_f">La %1$s debe tener al menos %2$d caracteres.</string>
-    <string name="failure_invalid_field_m">Por favor ingresa un %s válido.</string>
-    <string name="failure_invalid_field_f">Por favor ingresa una %s válida.</string>
-    <string name="failure_incorrect_field_m">El %s es incorrecto.</string>
-    <string name="failure_incorrect_field_f">La %s es incorrecta.</string>
-
-    <string name="failure_not_linked_sign_in_method">Este correo ya se encuentra registrado. Para iniciar sesión accede mediante %s en la pantalla anterior.</string>
-    <string name="failure_new_user">Este correo aún no está registrado. Crea una cuenta para continuar.</string>
-    <string name="failure_existent_user">Este correo ya se encuentra registrado. Para crear una cuenta usa un correo diferente, o prueba iniciando sesión.</string>
-
+    <!-- Auth Phone Number -->
     <string name="failure_invalid_request_phone_number">Petición inválida. Revisa el número de teléfono ingresado.</string>
     <string name="failure_code_has_expired">El código ha expirado. Intenta enviar otro código de nuevo.</string>
     <string name="failure_too_many_requests">Ha ocurrido un error. Por favor intenta de nuevo más tarde.</string>

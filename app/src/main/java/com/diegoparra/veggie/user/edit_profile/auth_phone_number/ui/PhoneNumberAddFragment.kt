@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.*
+import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.core.android.EventObserver
+import com.diegoparra.veggie.core.android.hideKeyboard
 import com.diegoparra.veggie.databinding.FragmentPhoneNumberAddBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -79,9 +81,9 @@ class PhoneNumberAddFragment : Fragment() {
         }
         viewModel.failure.observe(viewLifecycleOwner, EventObserver {
             val message = when (it) {
-                is Failure.PhoneAuthFailures.InvalidRequest -> getString(R.string.failure_invalid_request_phone_number)
-                is Failure.PhoneAuthFailures.TooManyRequests -> getString(R.string.failure_too_many_requests)
-                is SignInFailure.WrongInput -> getString(R.string.failure_invalid_request_phone_number)
+                is AuthFailure.PhoneAuthFailures.InvalidRequest -> getString(R.string.failure_invalid_request_phone_number)
+                is AuthFailure.PhoneAuthFailures.TooManyRequests -> getString(R.string.failure_too_many_requests)
+                is AuthFailure.WrongInput -> getString(R.string.failure_invalid_request_phone_number)
                 else -> it.toString()
             }
             Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()

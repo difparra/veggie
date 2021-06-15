@@ -8,8 +8,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.databinding.FragmentProductsListBinding
 import com.diegoparra.veggie.products.app.entities.ProductMain
 import com.diegoparra.veggie.products.app.viewmodels.ProductsListViewModel

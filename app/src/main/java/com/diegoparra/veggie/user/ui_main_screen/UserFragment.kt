@@ -10,8 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.user.auth.domain.AuthConstants
-import com.diegoparra.veggie.core.EventObserver
+import com.diegoparra.veggie.auth.utils.AuthConstants
+import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.databinding.FragmentUserBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint

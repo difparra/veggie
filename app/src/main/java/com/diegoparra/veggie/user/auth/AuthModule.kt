@@ -2,10 +2,7 @@ package com.diegoparra.veggie.user.auth
 
 import android.content.Context
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.user.auth.data.AuthRepositoryImpl
-import com.diegoparra.veggie.user.auth.domain.AuthCallbacks
-import com.diegoparra.veggie.user.auth.domain.AuthRepository
-import com.facebook.login.LoginManager
+import com.diegoparra.veggie.auth.utils.AuthCallbacks
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -18,12 +15,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class AuthModule {
-
-    @Binds
-    abstract fun bindsAuthRepository(
-        authRepositoryImpl: AuthRepositoryImpl
-    ): AuthRepository
+abstract class AuthModuleExtras {
 
     @Binds
     abstract fun bindsAuthCallbacks(
@@ -34,7 +26,7 @@ abstract class AuthModule {
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AuthModuleProvides {
+object AuthModuleProvidesExtras {
 
     @Provides
     fun providesGoogleSignInClient(@ApplicationContext context: Context): GoogleSignInClient {
@@ -44,11 +36,6 @@ object AuthModuleProvides {
                 .requestEmail()
                 .build()
         return GoogleSignIn.getClient(context, gso)
-    }
-
-    @Provides
-    fun providesFacebookLoginManager(): LoginManager {
-        return LoginManager.getInstance()
     }
 
 }

@@ -1,13 +1,12 @@
 package com.diegoparra.veggie.user.auth
 
 import android.net.Uri
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.suspendFlatMap
+import com.diegoparra.veggie.auth.utils.AuthCallbacks
+import com.diegoparra.veggie.auth.domain.Profile
+import com.diegoparra.veggie.auth.domain.SignInMethod
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.user.UserRepository
-import com.diegoparra.veggie.user.auth.domain.AuthCallbacks
-import com.diegoparra.veggie.user.auth.domain.Profile
-import com.diegoparra.veggie.user.auth.domain.SignInMethod
 import timber.log.Timber
 import javax.inject.Inject
 

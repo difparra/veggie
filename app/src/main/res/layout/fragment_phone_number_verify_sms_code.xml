@@ -39,14 +39,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/padding_big">
+            android:padding="?attr/paddingBig">
 
             <TextView
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/verify_phone_number_description"
-                android:layout_marginVertical="@dimen/padding_standard"
+                android:layout_marginVertical="?attr/paddingStandard"
                 android:maxLines="10" />
 
             <EditText
@@ -65,15 +65,15 @@
                 android:text="@string/resend_code"
                 android:textAlignment="center"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/padding_standard"
-                android:layout_marginBottom="@dimen/padding_small"
+                android:layout_marginTop="?attr/paddingStandard"
+                android:layout_marginBottom="?attr/paddingSmall"
                 android:maxLines="10" />
 
             <Button
                 android:id="@+id/btn_verify"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/padding_standard"
+                android:layout_marginVertical="?attr/paddingStandard"
                 android:text="@string/verify" />
 
             <ProgressBar

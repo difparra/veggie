@@ -14,7 +14,7 @@ import coil.load
 import com.diegoparra.veggie.NavMainDirections
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.QtyButton
-import com.diegoparra.veggie.core.getColorWithAlphaFromAttrs
+import com.diegoparra.veggie.core.android.getColorWithAlphaFromAttrs
 import com.diegoparra.veggie.products.domain.Label
 import com.diegoparra.veggie.databinding.ListItemMainProductBinding
 import com.diegoparra.veggie.products.app.entities.ProductMain

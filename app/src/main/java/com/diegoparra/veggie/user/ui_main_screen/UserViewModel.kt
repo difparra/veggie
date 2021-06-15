@@ -3,10 +3,10 @@ package com.diegoparra.veggie.user.ui_main_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Event
-import com.diegoparra.veggie.user.auth.usecases.GetProfileAsFlowUseCase
-import com.diegoparra.veggie.user.auth.usecases.SignOutUseCase
+import com.diegoparra.veggie.auth.usecases.GetProfileAsFlowUseCase
+import com.diegoparra.veggie.auth.usecases.SignOutUseCase
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch

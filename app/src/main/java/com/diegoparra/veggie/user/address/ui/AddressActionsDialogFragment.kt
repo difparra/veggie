@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.navArgs
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.getColorFromAttr
+import com.diegoparra.veggie.core.android.getColorFromAttr
 import com.diegoparra.veggie.user.address.viewmodels.AddressViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint

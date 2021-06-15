@@ -1,6 +1,9 @@
 package com.diegoparra.veggie.products.app.usecases
 
-import com.diegoparra.veggie.core.*
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.map
+import com.diegoparra.veggie.core.kotlin.mapListAndFlattenFailure
 import com.diegoparra.veggie.products.app.entities.*
 import com.diegoparra.veggie.products.cart.domain.CartRepository
 import com.diegoparra.veggie.products.domain.ProductsRepository

@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.products.app.usecases
 
-import com.diegoparra.veggie.core.Either
+import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.products.cart.domain.CartRepository
 import javax.inject.Inject
 

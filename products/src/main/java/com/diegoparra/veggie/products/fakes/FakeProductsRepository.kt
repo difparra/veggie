@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.fakes
 
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Failure
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.products.domain.*
 import com.diegoparra.veggie.products.fakes.UtilsFakes.toProduct
 import timber.log.Timber

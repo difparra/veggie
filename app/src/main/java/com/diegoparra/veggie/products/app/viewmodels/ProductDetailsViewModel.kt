@@ -1,8 +1,8 @@
 package com.diegoparra.veggie.products.app.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.app.entities.ProductVariation
 import com.diegoparra.veggie.products.app.usecases.GetVariationsUseCase

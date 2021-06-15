@@ -109,7 +109,8 @@
     <dialog
         android:id="@+id/addressActionsDialogFragment"
         android:name="com.diegoparra.veggie.user.address.ui.AddressActionsDialogFragment"
-        android:label="AddressActionsDialogFragment" >
+        android:label="AddressActionsDialogFragment"
+        tools:layout="@layout/dialog_generic" >
         <argument
             android:name="addressId"
             app:argType="string" />

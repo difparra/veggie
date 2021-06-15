@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.products.data
 
-import com.diegoparra.veggie.core.removeCaseAndAccents
+import com.diegoparra.veggie.core.kotlin.removeCaseAndAccents
 import com.diegoparra.veggie.products.data.firebase.ProductDto
 import com.diegoparra.veggie.products.data.firebase.TagDto
 import com.diegoparra.veggie.products.data.firebase.VariationDto

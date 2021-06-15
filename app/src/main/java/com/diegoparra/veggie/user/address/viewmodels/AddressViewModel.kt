@@ -4,10 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.diegoparra.veggie.core.kotlin.Event
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.Resource
+import com.diegoparra.veggie.core.kotlin.toResource
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.usecases.DeleteAddressUseCase
 import com.diegoparra.veggie.user.address.usecases.SelectMainAddressUseCase
-import com.diegoparra.veggie.core.*
 import com.diegoparra.veggie.user.address.usecases.GetAddressUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

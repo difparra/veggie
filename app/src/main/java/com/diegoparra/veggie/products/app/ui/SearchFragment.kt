@@ -10,12 +10,12 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.Resource
-import com.diegoparra.veggie.core.addTextChangedListenerDistinctChanged
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.Resource
+import com.diegoparra.veggie.core.android.addTextChangedListenerDistinctChanged
+import com.diegoparra.veggie.core.android.hideKeyboard
 import com.diegoparra.veggie.databinding.FragmentSearchBinding
 import com.diegoparra.veggie.products.app.entities.ProductMain
-import com.diegoparra.veggie.core.hideKeyboard
 import com.diegoparra.veggie.products.app.viewmodels.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

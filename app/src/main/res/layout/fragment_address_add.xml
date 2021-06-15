@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="@dimen/padding_big">
+            android:padding="?attr/paddingBig">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/address_layout"
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/address"
                 app:helperText="@string/address_example"
-                android:layout_marginBottom="@dimen/padding_standard">
+                android:layout_marginBottom="?attr/paddingStandard">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/address"
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/details"
                 app:helperText="@string/details_example"
-                android:layout_marginBottom="@dimen/padding_standard">
+                android:layout_marginBottom="?attr/paddingStandard">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/details"
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/instructions"
                 app:helperText="@string/instructions_example"
-                android:layout_marginBottom="@dimen/padding_standard">
+                android:layout_marginBottom="?attr/paddingStandard">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/instructions"
@@ -94,7 +94,7 @@
                 android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_standard"
+                android:layout_marginTop="?attr/paddingStandard"
                 android:text="@string/save" />
 
 

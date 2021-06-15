@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/padding_big">
+            android:padding="?attr/paddingBig">
 
             <ProgressBar
                 android:id="@+id/progress_bar"
@@ -75,7 +75,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_standard"
+                android:layout_marginTop="?attr/paddingStandard"
                 android:text="@string/add_address" />
 
 

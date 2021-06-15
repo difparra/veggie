@@ -1,8 +1,8 @@
 package com.diegoparra.veggie.products.app.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.products.app.entities.ProductMain
 import com.diegoparra.veggie.products.app.usecases.GetMainProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -5,14 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/padding_small">
+    android:layout_marginVertical="?attr/paddingSmall">
 
     <TextView
         android:id="@+id/price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceBody1"
-        android:layout_marginEnd="@dimen/padding_small"
+        android:layout_marginEnd="?attr/paddingSmall"
         app:layout_constraintEnd_toStartOf="@+id/btn_reduce"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -46,7 +46,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/btn_add"
         app:layout_constraintEnd_toStartOf="@+id/btn_add"
         app:layout_constraintTop_toTopOf="@+id/btn_add"
-        android:paddingHorizontal="@dimen/padding_small"
+        android:paddingHorizontal="?attr/paddingSmall"
         android:minWidth="@dimen/qty_button_size"
         android:minHeight="@dimen/qty_button_size"
         android:gravity="center"

@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/padding_big">
+            android:padding="?attr/paddingBig">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email_layout"
@@ -61,7 +61,7 @@
                 android:id="@+id/name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/padding_small"
+                android:layout_marginVertical="?attr/paddingSmall"
                 android:hint="@string/name"
                 app:startIconDrawable="@drawable/ic_person_outline">
 
@@ -95,7 +95,7 @@
                 android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_standard"
+                android:layout_marginTop="?attr/paddingStandard"
                 android:text="@string/save" />
 
 

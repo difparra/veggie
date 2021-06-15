@@ -3,7 +3,7 @@ package com.diegoparra.veggie.products.data.room
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.diegoparra.veggie.core.removeCaseAndAccents
+import com.diegoparra.veggie.core.kotlin.removeCaseAndAccents
 
 @Entity(tableName = "Main",
         indices = [

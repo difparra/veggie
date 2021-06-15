@@ -52,6 +52,7 @@ dependencies {
     //  Modules
     implementation project(':core')
     implementation project(':products')
+    implementation project(':auth')
 
 
     //  ----------       LiveData & ViewModel       ------------------------------------------------

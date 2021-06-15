@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.products.domain.Tag
 import com.diegoparra.veggie.products.app.usecases.GetTagsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

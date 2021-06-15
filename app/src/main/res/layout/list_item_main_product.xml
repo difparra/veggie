@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingHorizontal="@dimen/padding_standard_half"
     android:paddingVertical="@dimen/padding_standard_half"
-    android:layout_marginVertical="@dimen/padding_small">
+    android:layout_marginVertical="?attr/paddingSmall">
 
     <ImageView
         android:id="@+id/image"
@@ -14,7 +14,7 @@
         android:layout_height="144dp"
         android:scaleType="fitCenter"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/padding_small"
+        android:layout_marginBottom="?attr/paddingSmall"
         tools:src="@mipmap/ic_launcher"
         android:importantForAccessibility="no" />
 

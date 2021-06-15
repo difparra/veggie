@@ -1,8 +1,8 @@
 package com.diegoparra.veggie.user.data.firebase
 
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.putIfNotNull
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.putIfNotNull
 import com.diegoparra.veggie.user.data.firebase.UserFirebaseConstants.Keys
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore

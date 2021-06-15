@@ -6,8 +6,8 @@ import androidx.core.view.children
 import androidx.core.view.isVisible
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.QtyButton
-import com.diegoparra.veggie.core.getColorFromAttr
-import com.diegoparra.veggie.core.getResourcesFromAttr
+import com.diegoparra.veggie.core.android.getColorFromAttr
+import com.diegoparra.veggie.core.android.getResourcesFromAttr
 import com.diegoparra.veggie.products.domain.Label
 import com.google.android.material.chip.Chip
 import com.google.android.material.color.MaterialColors

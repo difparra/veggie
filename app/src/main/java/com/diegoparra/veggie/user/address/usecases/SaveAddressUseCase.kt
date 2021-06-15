@@ -1,7 +1,11 @@
 package com.diegoparra.veggie.user.address.usecases
 
-import com.diegoparra.veggie.user.auth.domain.AuthRepository
-import com.diegoparra.veggie.core.*
+import com.diegoparra.veggie.auth.domain.AuthRepository
+import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.auth.utils.TextInputValidation
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.suspendFlatMap
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.domain.AddressRepository
 import java.util.*
@@ -26,7 +30,7 @@ class SaveAddressUseCase @Inject constructor(
         return saveInDatabase(address, details, instructions)
     }
 
-    private fun validateAddress(address: String): Either<SignInFailure.WrongInput, String> {
+    private fun validateAddress(address: String): Either<AuthFailure.WrongInput, String> {
         return TextInputValidation.forAddress(address)
     }
 

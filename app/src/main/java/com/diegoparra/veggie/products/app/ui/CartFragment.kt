@@ -9,13 +9,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.Resource
+import com.diegoparra.veggie.core.android.getColorFromAttr
 import com.diegoparra.veggie.databinding.FragmentCartBinding
 import com.diegoparra.veggie.products.app.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.app.ui.utils.addPriceFormat
-import com.diegoparra.veggie.core.getColorFromAttr
 import com.diegoparra.veggie.products.app.viewmodels.CartViewModel
 import com.diegoparra.veggie.products.app.viewmodels.Total
 import com.google.android.material.snackbar.Snackbar

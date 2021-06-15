@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.data.room
 
 import androidx.room.*
-import com.diegoparra.veggie.core.removeCaseAndAccents
+import com.diegoparra.veggie.core.kotlin.removeCaseAndAccents
 
 @Dao
 abstract class ProductsDao {

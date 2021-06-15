@@ -10,8 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.EventObserver
-import com.diegoparra.veggie.core.getDefaultWrongInputErrorMessage
+import com.diegoparra.veggie.auth.ui.utils.getDefaultWrongInputErrorMessage
+import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.databinding.FragmentAddressAddBinding
 import com.diegoparra.veggie.user.address.domain.AddressConstants
 import com.diegoparra.veggie.user.address.viewmodels.AddressAddViewModel

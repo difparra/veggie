@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.Veggie.Button.SignIn" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="layout_constraintWidth_max">230dp</item>
+        <item name="android:layout_marginTop">?attr/paddingSmall</item>
+        <item name="android:layout_marginBottom">?attr/paddingSmall</item>
+    </style>
+</resources>

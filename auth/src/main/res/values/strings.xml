@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="send">Enviar</string>
+
+    <!-- Auth -->
+    <string name="sign_in">Iniciar sesión</string>
+    <string name="sign_up">Crear cuenta</string>
+    <string name="btn_google">Ingresa con Google</string>
+    <string name="btn_facebook">Ingresa con Facebook</string>
+    <string name="btn_email">Ingresa con Email</string>
+    <!-- emailAuth -->
+    <string name="name">Nombre</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="reset_password_instructions">Escribe tu correo y te enviaremos un link para que puedas restablecer tu contraseña</string>
+    <string name="reset_password_email_sent">Se ha enviado un link a tu correo para restablecer tu contraseña.</string>
+    <!-- Facebook -->
+    <string name="facebook_app_id">315214526875872</string>
+    <string name="fb_login_protocol_scheme">fb315214526875872</string>
+
+
+
+    <!-- Failures -->
+    <!-- WrongInput -->
+    <string name="failure_empty_field">Campo vacío.</string>
+    <string name="failure_short_field_m">El %1$s debe tener al menos %2$d caracteres.</string>
+    <string name="failure_short_field_f">La %1$s debe tener al menos %2$d caracteres.</string>
+    <string name="failure_invalid_field_m">Por favor ingresa un %s válido.</string>
+    <string name="failure_invalid_field_f">Por favor ingresa una %s válida.</string>
+    <string name="failure_incorrect_field_m">El %s es incorrecto.</string>
+    <string name="failure_incorrect_field_f">La %s es incorrecta.</string>
+
+    <!-- WrongSignInMethod -->
+    <string name="failure_not_linked_sign_in_method">Este correo ya se encuentra registrado. Para iniciar sesión accede mediante %s en la pantalla anterior.</string>
+    <string name="failure_new_user">Este correo aún no está registrado. Crea una cuenta para continuar.</string>
+    <string name="failure_existent_user">Este correo ya se encuentra registrado. Para crear una cuenta usa un correo diferente, o prueba iniciando sesión.</string>
+
+</resources>

@@ -1,9 +1,9 @@
 package com.diegoparra.veggie.user.data
 
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.map
-import com.diegoparra.veggie.products.IoDispatcher
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.android.IoDispatcher
+import com.diegoparra.veggie.core.kotlin.map
 import com.diegoparra.veggie.user.data.DtosTransformations.toAddress
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.data.DtosTransformations.toAddressDto

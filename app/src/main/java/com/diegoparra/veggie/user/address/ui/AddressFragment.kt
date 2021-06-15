@@ -10,12 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.kotlin.Resource
+import com.diegoparra.veggie.core.android.EventObserver
+import com.diegoparra.veggie.core.android.getResourcesFromAttr
 import com.diegoparra.veggie.databinding.FragmentAddressBinding
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.domain.AddressConstants
-import com.diegoparra.veggie.core.EventObserver
-import com.diegoparra.veggie.core.runIfTrue
+import com.diegoparra.veggie.core.kotlin.runIfTrue
 import com.diegoparra.veggie.user.address.viewmodels.AddressViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -115,6 +116,7 @@ class AddressFragment : Fragment() {
     }
 
     private fun createRadioButton(): RadioButton {
+        //  TODO:   Get dimensions from attributes
         val paddingSmall = resources.getDimension(R.dimen.padding_small).toInt()
         val paddingStandard = resources.getDimension(R.dimen.padding_standard).toInt()
         val radioButton = RadioButton(context)

@@ -1,8 +1,8 @@
 package com.diegoparra.veggie.products.data
 
-import com.diegoparra.veggie.core.Either
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.products.IoDispatcher
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.android.IoDispatcher
 import com.diegoparra.veggie.products.data.DtoToEntityTransformations.toTimestamp
 import com.diegoparra.veggie.products.data.firebase.ProductsApi
 import com.diegoparra.veggie.products.data.prefs.ProductPrefs

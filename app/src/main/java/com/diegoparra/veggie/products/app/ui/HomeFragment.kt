@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.Failure
-import com.diegoparra.veggie.core.Resource
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.databinding.FragmentHomeBinding
 import com.diegoparra.veggie.products.domain.Tag
 import com.diegoparra.veggie.products.app.viewmodels.TagsViewModel

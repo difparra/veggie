@@ -10,7 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.*
+import com.diegoparra.veggie.auth.ui.utils.getDefaultWrongInputErrorMessage
+import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.core.kotlin.Resource
+import com.diegoparra.veggie.core.android.EventObserver
+import com.diegoparra.veggie.core.kotlin.runIfTrue
 import com.diegoparra.veggie.databinding.FragmentUserEditProfileBinding
 import com.diegoparra.veggie.user.edit_profile.auth_phone_number.domain.PhoneConstants
 import com.google.android.material.snackbar.Snackbar
@@ -90,7 +94,7 @@ class UserEditProfileFragment : Fragment() {
                     is Resource.Success -> null
                     is Resource.Error -> {
                         when (val failure = it.failure) {
-                            is SignInFailure.WrongInput -> getDefaultWrongInputErrorMessage(
+                            is AuthFailure.WrongInput -> getDefaultWrongInputErrorMessage(
                                 context, binding.name.hint.toString().lowercase(),
                                 failure, false
                             )

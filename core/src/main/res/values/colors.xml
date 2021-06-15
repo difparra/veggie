@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Color palette -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="green_500">#5BBE10</color>     <!-- Color Primary -->
+    <color name="green_700">#329A00</color>     <!-- Color Primary Variant -->
+    <color name="green_200">#B1De94</color>     <!-- Color Primary (Dark) -->
+    <color name="red_700">#DA291C</color>       <!-- Color Secondary & Error -->
+    <color name="red_200">#F69993</color>       <!-- Color Secondary & Error (Dark) -->
+    <color name="black_light">#B31F1D1D</color>
+    <color name="orange">#FA8C32</color>
+    <color name="orange_light">#BFFA8C32</color>
+
+    <integer-array name="dark_colors">
+        <item>@android:color/holo_blue_dark</item>
+        <item>@android:color/holo_orange_dark</item>
+        <item>@android:color/holo_purple</item>
+    </integer-array>
+
+    <integer-array name="light_colors">
+        <item>@android:color/holo_green_light</item>
+        <item>@android:color/holo_blue_light</item>
+        <item>@android:color/holo_purple</item>
+    </integer-array>
+
+</resources>
