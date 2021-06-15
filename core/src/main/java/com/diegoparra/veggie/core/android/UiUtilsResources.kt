@@ -2,6 +2,7 @@ package com.diegoparra.veggie.core.android
 
 import android.content.Context
 import android.graphics.Color
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -19,18 +20,25 @@ fun Context.getResourcesFromAttr(
 }
 
 
-@ColorInt
-fun Context.getColorFromAttr(
-        @AttrRes colorAttr: Int, typedValue: TypedValue = TypedValue(), resolveRefs: Boolean = true
-) : Int = getResourcesFromAttr(colorAttr, typedValue, resolveRefs)
+fun Context.getDimensionFromAttr(
+    @AttrRes attrRes: Int, typedValue: TypedValue = TypedValue(), resolveRefs: Boolean = true
+) : Int {
+    theme.resolveAttribute(attrRes, typedValue, resolveRefs)
+    return typedValue.getDimension(resources.displayMetrics).toInt()
+}
 
-private fun Context.getFloatFromAttr(
+fun Context.getFloatFromAttr(
         @AttrRes attrRes: Int, typedValue: TypedValue = TypedValue(), resolveRefs: Boolean = true
 ) : Float {
     theme.resolveAttribute(attrRes, typedValue, resolveRefs)
     return typedValue.float
 }
 
+
+@ColorInt
+fun Context.getColorFromAttr(
+    @AttrRes colorAttr: Int, typedValue: TypedValue = TypedValue(), resolveRefs: Boolean = true
+) : Int = getResourcesFromAttr(colorAttr, typedValue, resolveRefs)
 
 @ColorInt
 fun Context.getColorWithAlphaFromAttrs(
@@ -47,8 +55,6 @@ fun Context.getColorWithAlphaFromAttrs(
             }
     return colorWithAlpha(color, alpha)
 }
-
-
 
 @ColorInt
 private fun colorWithAlpha(@ColorInt color: Int, alphaFactor: Float) : Int {

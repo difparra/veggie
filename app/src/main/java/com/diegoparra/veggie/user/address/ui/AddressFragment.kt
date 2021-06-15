@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.android.EventObserver
+import com.diegoparra.veggie.core.android.getDimensionFromAttr
+import com.diegoparra.veggie.core.android.getFloatFromAttr
 import com.diegoparra.veggie.databinding.FragmentAddressBinding
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.domain.AddressConstants
@@ -115,9 +117,8 @@ class AddressFragment : Fragment() {
     }
 
     private fun createRadioButton(): RadioButton {
-        //  TODO:   Get dimensions from attributes
-        val paddingSmall = resources.getDimension(R.dimen.padding_small).toInt()
-        val paddingStandard = resources.getDimension(R.dimen.padding_standard).toInt()
+        val paddingSmall = requireContext().getDimensionFromAttr(R.attr.paddingSmall)
+        val paddingStandard = requireContext().getDimensionFromAttr(R.attr.paddingStandard)
         val radioButton = RadioButton(context)
         radioButton.id = View.generateViewId()
         radioButton.layoutParams = ViewGroup.LayoutParams(

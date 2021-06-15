@@ -21,8 +21,8 @@
             }
         </value>
     </entry>
-    <!--<entry>
-        <key>minTotal</key>
+    <entry>
+        <key>min_order</key>
         <value>80000</value>
-    </entry>-->
+    </entry>
 </defaultsMap>

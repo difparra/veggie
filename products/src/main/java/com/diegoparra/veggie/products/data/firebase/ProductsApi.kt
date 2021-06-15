@@ -14,9 +14,9 @@ import javax.inject.Inject
 
 class ProductsApi @Inject constructor(
         private val database: FirebaseFirestore,
-        private val remoteConfig: FirebaseRemoteConfig
+        private val remoteConfig: FirebaseRemoteConfig,
+        private val gson: Gson
 ) {
-    private val gson by lazy { Gson() }
 
     suspend fun getTags(): Either<Failure, List<TagDto>> {
         return try {

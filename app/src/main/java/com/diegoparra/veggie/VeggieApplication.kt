@@ -2,25 +2,27 @@ package com.diegoparra.veggie
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @HiltAndroidApp
 class VeggieApplication : Application() {
 
-    //private val applicationScope = CoroutineScope(Dispatchers.Default)
+    private val applicationScope = CoroutineScope(Dispatchers.Default)
 
     override fun onCreate() {
         super.onCreate()
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
+        asyncInitTimber()
     }
 
-    /*  TODO: Insert this method in onCreate in order to load Timber asynchronously
-    private fun delayedInit() {
+    private fun asyncInitTimber() {
         applicationScope.launch {
-            Timber.plant(Timber.DebugTree())
+            if(BuildConfig.DEBUG) {
+                Timber.plant(Timber.DebugTree())
+            }
         }
-    }*/
+    }
 
 }

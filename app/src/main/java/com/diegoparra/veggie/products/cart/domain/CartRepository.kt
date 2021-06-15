@@ -26,6 +26,6 @@ interface CartRepository {
     suspend fun deleteAllItems()
 
 
-    fun getMinOrder(): Either<Failure, Int>
+    suspend fun getMinOrder(): Either<Failure, Int>
 
 }

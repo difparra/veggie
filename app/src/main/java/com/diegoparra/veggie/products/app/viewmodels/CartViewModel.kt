@@ -8,7 +8,9 @@ import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.app.usecases.GetCartProductsUseCase
 import com.diegoparra.veggie.products.app.usecases.GetMinOrderCartUseCase
 import com.diegoparra.veggie.products.app.usecases.UpdateQuantityUseCase
+import com.diegoparra.veggie.products.cart.domain.CartConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -101,7 +103,12 @@ class CartViewModel @Inject constructor(
 
     //      ----------------------------------------------------------------------------------------
 
-    private val minOrder = getMinOrderCartUseCase()
+    private var minOrder: Int = CartConstants.DEFAULT_VALUE_MIN_ORDER
+    init {
+        viewModelScope.launch {
+            minOrder = getMinOrderCartUseCase()
+        }
+    }
 
     val total = _products.map {
         if (it is Resource.Success) {

@@ -18,8 +18,13 @@ abstract class AuthModule {
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
 
-    /*
-        TODO:   Add authCallbacks in external module
+    /*  //  Add in external modules with the implementation of the AuthCallbacks interface
+        //  Should create implementation according to the needings, but if it not necessary,
+        //  all the methods can be empty.
+    @Binds
+    abstract fun bindsAuthCallbacks(
+        authCallbackImpl: AuthCallbackImpl
+    ): AuthCallbacks
      */
 }
 
@@ -27,7 +32,7 @@ abstract class AuthModule {
 @InstallIn(SingletonComponent::class)
 object AuthModuleProvides {
 
-    /*  //  TODO: Added in external module
+    /*  //  Add in external module, with the google auth configuration
     @Provides
     fun providesGoogleSignInClient(@ApplicationContext context: Context): GoogleSignInClient {
         val gso = GoogleSignInOptions
