@@ -54,14 +54,14 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
 
-    //  Data
+    //  Data - datastore (prefs) & firebase
     implementation "androidx.datastore:datastore-preferences:$dataStoreVersion"
     implementation platform("com.google.firebase:firebase-bom:$firebaseBomVersion")      //  Manage all Firebase Library versions
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$firebaseCoroutines"
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'   //  For google auth
-    implementation 'com.facebook.android:facebook-login:8.1.0'          //  For facebook auth
+    implementation "com.google.android.gms:play-services-auth:$googleAuth"      //  For google auth
+    implementation "com.facebook.android:facebook-login:$facebookAuth"          //  For facebook auth
 
 
     //  UI DEPENDENCIES

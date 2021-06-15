@@ -66,7 +66,7 @@ class UserFragment : Fragment() {
         subscribeViewsTitle()
 
         binding.itemProfile.setOnClickListener {
-            val action = UserFragmentDirections.actionNavUserToUserEditProfileFragment()
+            val action = UserFragmentDirections.actionNavUserToNavEditProfile()
             findNavController().navigate(action)
         }
 

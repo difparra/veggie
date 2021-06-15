@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.user.edit_profile
+package com.diegoparra.veggie.auth.additional_features.edit_profile
 
 import androidx.lifecycle.*
 import com.diegoparra.veggie.auth.usecases.GetProfileUseCase

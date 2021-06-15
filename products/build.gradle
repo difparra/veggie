@@ -1,7 +1,9 @@
-apply plugin: 'com.android.library'
-apply from: '../shared_dependencies.gradle'
-apply from: '../test_dependencies.gradle'
-
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
 
 android {
     compileSdkVersion 30
@@ -37,9 +39,42 @@ dependencies {
     //  Modules
     implementation project(':core')
 
-    //  ----------      Firebase / Bom already added in shared dependencies     --------------------
+    //  Basic dependencies
+    implementation "androidx.appcompat:appcompat:$appCompat"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "androidx.core:core-ktx:$coreKtx"
+    implementation "com.jakewharton.timber:timber:$timber"
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
+
+
+
+    //  DATA DEPENDENCIES
+
+    //  Data - Room & datastore (prefs)
+    implementation "androidx.room:room-runtime:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"           //  Coroutines support for room
+    implementation "androidx.datastore:datastore-preferences:$dataStoreVersion"
+
+    //  Firebase
+    implementation platform("com.google.firebase:firebase-bom:$firebaseBomVersion")      //  Manage all Firebase Library versions
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$firebaseCoroutines"     // await function to work with suspend and coroutines
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-config-ktx'        //  RemoteConfig
 
 
+    //  TEST DEPENDENCIES
+
+    //  Testing
+    testImplementation "junit:junit:$junit"
+    testImplementation "com.google.truth:truth:$truth"                       //  Easily write assertions
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTest"        //  Kotlin coroutines test
+    //  Instrumented test
+    androidTestImplementation "androidx.test.ext:junit:$androidJunit"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
+    androidTestImplementation "com.google.truth:truth:$truth"                //  Easily write assertions
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTest"        //  Kotlin coroutines test
 }

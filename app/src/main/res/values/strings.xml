@@ -1,12 +1,5 @@
 <resources>
     <string name="app_name">Veggie</string>
-    
-    <!-- Basics -->
-    <string name="yes">Si</string>
-    <string name="no">No</string>
-    <string name="continuee">Continuar</string>
-    <string name="send">Enviar</string>
-    <string name="save">Guardar</string>
 
     <!-- Auth -->
     <!-- Facebook -->
@@ -39,24 +32,10 @@
 
 
     <!-- User -->
-    <string name="user_profile">Mi cuenta</string>
+    <!--<string name="user_profile">Mi cuenta</string>  - In auth module-->
     <string name="user_orders">Pedidos</string>
     <string name="user_addresses">Direcciones</string>
     <string name="user_sign_out">Cerrar sesión</string>
-
-    <!-- phoneNumber strings -->
-    <string name="phone">Teléfono</string>
-    <string name="prefix_phone_number">+57 </string>
-    <string name="data_has_been_correctly_updated">Los datos se han actualizado correctamente.</string>
-    <string name="add_phone_number">Agrega un número de teléfono</string>
-    <string name="add_phone_number_description">Enviaremos un código de verificación mediante sms a este número de teléfono.</string>
-    <string name="send_sms">Enviar SMS</string>
-    <string name="sms_code">SMS Code</string>
-    <string name="verify_phone_number">Verifica tu número de teléfono</string>
-    <string name="verify_phone_number_description">Ingresa el código que hemos enviado al número %s</string>
-    <string name="resend_code">¿No has recibido el código? <br/> <b>Reenviar</b></string>
-    <string name="code_has_been_resent">Se ha enviado el código.</string>
-    <string name="verify">Verificar</string>
 
     <!-- address strings -->
     <string name="address">Dirección</string>
@@ -87,10 +66,5 @@
     <string name="failure_empty_search_query">Ingresa un valor en la barra de búsqueda.</string>
     <string name="failure_no_search_result">No hay productos que coincidan con tu búsqueda.</string>
     <string name="failure_empty_cart_list">El carrito está vacío.</string>
-
-    <!-- Auth Phone Number -->
-    <string name="failure_invalid_request_phone_number">Petición inválida. Revisa el número de teléfono ingresado.</string>
-    <string name="failure_code_has_expired">El código ha expirado. Intenta enviar otro código de nuevo.</string>
-    <string name="failure_too_many_requests">Ha ocurrido un error. Por favor intenta de nuevo más tarde.</string>
 
 </resources>

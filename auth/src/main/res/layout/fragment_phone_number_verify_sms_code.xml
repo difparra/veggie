@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".user.edit_profile.auth_phone_number.ui.PhoneNumberAddFragment">
+    tools:context=".additional_features.phone_number.ui.PhoneNumberVerifySmsCodeFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
 
             <TextView
                 style="@style/Widget.Veggie.AppBarLayout.Title"
-                android:text="@string/add_phone_number" />
+                android:text="@string/verify_phone_number" />
         </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -42,34 +42,39 @@
             android:padding="?attr/paddingBig">
 
             <TextView
+                android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/add_phone_number_description"
+                android:text="@string/verify_phone_number_description"
                 android:layout_marginVertical="?attr/paddingStandard"
                 android:maxLines="10" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/phone_number_layout"
+            <EditText
+                android:id="@+id/sms_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/phone"
-                app:startIconDrawable="@drawable/ic_phone_outline"
-                app:prefixText="@string/prefix_phone_number">
+                android:textAppearance="@style/TextAppearance.Veggie.Body1"
+                android:textAlignment="center"
+                android:hint="@string/sms_code"
+                android:inputType="number" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/phone_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="phone" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/resend_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/resend_code"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:layout_marginTop="?attr/paddingStandard"
+                android:layout_marginBottom="?attr/paddingSmall"
+                android:maxLines="10" />
 
             <Button
-                android:id="@+id/btn_send_sms"
+                android:id="@+id/btn_verify"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="?attr/paddingStandard"
-                android:text="@string/send_sms" />
+                android:text="@string/verify" />
 
             <ProgressBar
                 android:id="@+id/progress_bar"

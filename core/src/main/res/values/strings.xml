@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Basics -->
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="continuee">Continuar</string>
+    <string name="send">Enviar</string>
+    <string name="save">Guardar</string>
+</resources>

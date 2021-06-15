@@ -7,6 +7,8 @@ buildscript {
         googleServicesVersion = '4.3.8'
         firebaseBomVersion = '28.0.1'
         firebaseCoroutines = '1.4.3'
+        googleAuth = '19.0.0'
+        facebookAuth = '8.1.0'
 
         coreKtx = '1.3.2'
         appCompat = '1.2.0'

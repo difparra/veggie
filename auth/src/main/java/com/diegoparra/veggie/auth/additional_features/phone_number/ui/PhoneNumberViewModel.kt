@@ -1,11 +1,11 @@
-package com.diegoparra.veggie.user.edit_profile.auth_phone_number.ui
+package com.diegoparra.veggie.auth.additional_features.phone_number.ui
 
 import android.app.Activity
 import androidx.lifecycle.*
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.core.kotlin.Event
 import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.user.edit_profile.auth_phone_number.domain.SavePhoneNumberUseCase
+import com.diegoparra.veggie.auth.additional_features.phone_number.domain.SavePhoneNumberUseCase
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*

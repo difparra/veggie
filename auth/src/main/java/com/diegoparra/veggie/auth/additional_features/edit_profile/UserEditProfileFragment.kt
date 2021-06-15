@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.user.edit_profile
+package com.diegoparra.veggie.auth.additional_features.edit_profile
 
 import android.os.Bundle
 import android.text.TextWatcher
@@ -9,14 +9,14 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.diegoparra.veggie.R
+import com.diegoparra.veggie.auth.R
 import com.diegoparra.veggie.auth.ui.utils.getDefaultWrongInputErrorMessage
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.core.kotlin.runIfTrue
-import com.diegoparra.veggie.databinding.FragmentUserEditProfileBinding
-import com.diegoparra.veggie.user.edit_profile.auth_phone_number.domain.PhoneConstants
+import com.diegoparra.veggie.auth.additional_features.phone_number.domain.PhoneConstants
+import com.diegoparra.veggie.auth.databinding.FragmentUserEditProfileBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

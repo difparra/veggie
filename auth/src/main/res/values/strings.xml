@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="send">Enviar</string>
+    <string name="user_profile">Mi cuenta</string>
+
 
     <!-- Auth -->
     <string name="sign_in">Iniciar sesión</string>
@@ -16,10 +17,20 @@
     <string name="forgot_password">¿Olvidaste tu contraseña?</string>
     <string name="reset_password_instructions">Escribe tu correo y te enviaremos un link para que puedas restablecer tu contraseña</string>
     <string name="reset_password_email_sent">Se ha enviado un link a tu correo para restablecer tu contraseña.</string>
-    <!-- Facebook -->
-    <string name="facebook_app_id">315214526875872</string>
-    <string name="fb_login_protocol_scheme">fb315214526875872</string>
 
+    <!-- phoneNumber strings -->
+    <string name="phone">Teléfono</string>
+    <string name="prefix_phone_number">+57 </string>
+    <string name="data_has_been_correctly_updated">Los datos se han actualizado correctamente.</string>
+    <string name="add_phone_number">Agrega un número de teléfono</string>
+    <string name="add_phone_number_description">Enviaremos un código de verificación mediante sms a este número de teléfono.</string>
+    <string name="send_sms">Enviar SMS</string>
+    <string name="sms_code">SMS Code</string>
+    <string name="verify_phone_number">Verifica tu número de teléfono</string>
+    <string name="verify_phone_number_description">Ingresa el código que hemos enviado al número %s</string>
+    <string name="resend_code">¿No has recibido el código? <br/> <b>Reenviar</b></string>
+    <string name="code_has_been_resent">Se ha enviado el código.</string>
+    <string name="verify">Verificar</string>
 
 
     <!-- Failures -->
@@ -36,5 +47,10 @@
     <string name="failure_not_linked_sign_in_method">Este correo ya se encuentra registrado. Para iniciar sesión accede mediante %s en la pantalla anterior.</string>
     <string name="failure_new_user">Este correo aún no está registrado. Crea una cuenta para continuar.</string>
     <string name="failure_existent_user">Este correo ya se encuentra registrado. Para crear una cuenta usa un correo diferente, o prueba iniciando sesión.</string>
+
+    <!-- Auth Phone Number -->
+    <string name="failure_invalid_request_phone_number">Petición inválida. Revisa el número de teléfono ingresado.</string>
+    <string name="failure_code_has_expired">El código ha expirado. Intenta enviar otro código de nuevo.</string>
+    <string name="failure_too_many_requests">Ha ocurrido un error. Por favor intenta de nuevo más tarde.</string>
 
 </resources>

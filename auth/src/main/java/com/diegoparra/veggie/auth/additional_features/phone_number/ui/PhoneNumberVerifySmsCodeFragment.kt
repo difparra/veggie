@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.user.edit_profile.auth_phone_number.ui
+package com.diegoparra.veggie.auth.additional_features.phone_number.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.diegoparra.veggie.R
+import com.diegoparra.veggie.auth.R
+import com.diegoparra.veggie.auth.additional_features.phone_number.ui.PhoneNumberViewModel
+import com.diegoparra.veggie.auth.additional_features.phone_number.ui.PhoneResultNavigation
+import com.diegoparra.veggie.auth.databinding.FragmentPhoneNumberVerifySmsCodeBinding
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.core.android.hideKeyboard
-import com.diegoparra.veggie.databinding.FragmentPhoneNumberVerifySmsCodeBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 

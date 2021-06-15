@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_edit_profile"
+    app:startDestination="@id/userEditProfileFragment">
+
+    <fragment
+        android:id="@+id/userEditProfileFragment"
+        android:name="com.diegoparra.veggie.auth.additional_features.edit_profile.UserEditProfileFragment"
+        android:label="fragment_user_edit_profile"
+        tools:layout="@layout/fragment_user_edit_profile" >
+        <action
+            android:id="@+id/action_userEditProfileFragment_to_nav_verify_phone_number"
+            app:destination="@id/nav_verify_phone_number" />
+    </fragment>
+    <include app:graph="@navigation/nav_verify_phone_number" />
+</navigation>

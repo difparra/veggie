@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.user.edit_profile.auth_phone_number.domain
+package com.diegoparra.veggie.auth.additional_features.phone_number.domain
 
 import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.utils.AuthCallbacks
