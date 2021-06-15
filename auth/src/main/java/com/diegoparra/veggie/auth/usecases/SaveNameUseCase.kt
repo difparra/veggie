@@ -29,14 +29,16 @@ class SaveNameUseCase @Inject constructor(
 
         //  Update in authRepo and userRepo
         return authRepository.updateProfile(name = name)
+            .suspendFlatMap { triggerCallbacks(name = name) }
+    }
+
+    private suspend fun triggerCallbacks(name: String): Either<Failure, Unit> {
+        return authRepository.getIdCurrentUser()
             .suspendFlatMap {
-                authRepository.getIdCurrentUser()
-                    .suspendFlatMap {
-                        authCallbacks.onUpdateProfile(
-                            userId = it,
-                            name = name
-                        )
-                    }
+                authCallbacks.onUpdateProfile(
+                    userId = it,
+                    name = name
+                )
             }
     }
 

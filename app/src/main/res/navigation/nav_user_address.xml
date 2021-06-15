@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_user_address"
+    app:startDestination="@id/addressFragment_navAddress">
+
+    <fragment
+        android:id="@+id/addressFragment_navAddress"
+        android:name="com.diegoparra.veggie.user.address.ui.AddressFragment"
+        android:label="fragment_address"
+        tools:layout="@layout/fragment_address" >
+        <action
+            android:id="@+id/action_addressFragment_navAddress_to_addressActionsDialogFragment_navAddress"
+            app:destination="@id/addressActionsDialogFragment_navAddress" />
+        <action
+            android:id="@+id/action_addressFragment_navAddress_to_addressAddFragment_navAddress"
+            app:destination="@id/addressAddFragment_navAddress" />
+    </fragment>
+    <dialog
+        android:id="@+id/addressActionsDialogFragment_navAddress"
+        android:name="com.diegoparra.veggie.user.address.ui.AddressActionsDialogFragment"
+        android:label="AddressActionsDialogFragment"
+        tools:layout="@layout/dialog_generic" >
+        <argument
+            android:name="addressId"
+            app:argType="string" />
+        <argument
+            android:name="addressString"
+            app:argType="string" />
+    </dialog>
+    <fragment
+        android:id="@+id/addressAddFragment_navAddress"
+        android:name="com.diegoparra.veggie.user.address.ui.AddressAddFragment"
+        android:label="fragment_address_add"
+        tools:layout="@layout/fragment_address_add" />
+
+</navigation>

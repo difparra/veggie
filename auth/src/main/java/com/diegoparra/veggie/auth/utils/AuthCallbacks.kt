@@ -16,5 +16,6 @@ interface AuthCallbacks {
         name: String? = null,
         photoUrl: Uri? = null
     ): Either<Failure, Unit>
+    suspend fun onSignOut(userId: String)
 
 }

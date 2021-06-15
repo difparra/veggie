@@ -17,21 +17,20 @@ class UserPrefs @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    companion object {
-        val SELECTED_ADDRESS_ID = stringPreferencesKey("selected_address")
-    }
+    private fun getAddressKeyForUser(userId: String) =
+        stringPreferencesKey("sel_address_$userId")
 
 
-    suspend fun setSelectedAddress(addressId: String) {
+    suspend fun setSelectedAddress(userId: String, addressId: String) {
         context.dataStore.edit { prefs ->
-            prefs[SELECTED_ADDRESS_ID] = addressId
+            prefs[getAddressKeyForUser(userId)] = addressId
         }
     }
 
-    suspend fun getSelectedAddress(): String? {
+    suspend fun getSelectedAddress(userId: String): String? {
         return context.dataStore.data
             .map { prefs ->
-                prefs[SELECTED_ADDRESS_ID]
+                prefs[getAddressKeyForUser(userId)]
             }.first()
     }
 

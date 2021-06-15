@@ -52,4 +52,8 @@ class AuthCallbackImpl @Inject constructor(
         }
     }
 
+    override suspend fun onSignOut(userId: String) {
+        /* For now, there is nothing to do when user sign out */
+    }
+
 }

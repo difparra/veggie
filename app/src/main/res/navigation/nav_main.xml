@@ -64,11 +64,11 @@
             android:id="@+id/action_nav_user_to_nav_sign_in"
             app:destination="@id/nav_sign_in" />
         <action
-            android:id="@+id/action_nav_user_to_addressFragment"
-            app:destination="@id/addressFragment" />
-        <action
             android:id="@+id/action_nav_user_to_nav_edit_profile"
             app:destination="@id/nav_edit_profile" />
+        <action
+            android:id="@+id/action_nav_user_to_nav_user_address"
+            app:destination="@id/nav_user_address" />
     </fragment>
     <include app:graph="@navigation/nav_sign_in" />
 
@@ -79,35 +79,7 @@
         android:name="com.diegoparra.veggie.SupportFragment"
         android:label="fragment_support"
         tools:layout="@layout/fragment_support" />
-    <fragment
-        android:id="@+id/addressFragment"
-        android:name="com.diegoparra.veggie.user.address.ui.AddressFragment"
-        android:label="fragment_address"
-        tools:layout="@layout/fragment_address" >
-        <action
-            android:id="@+id/action_addressFragment_to_addressAddFragment"
-            app:destination="@id/addressAddFragment" />
-        <action
-            android:id="@+id/action_addressFragment_to_addressActionsDialogFragment"
-            app:destination="@id/addressActionsDialogFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/addressAddFragment"
-        android:name="com.diegoparra.veggie.user.address.ui.AddressAddFragment"
-        android:label="fragment_address_add"
-        tools:layout="@layout/fragment_address_add" />
-    <dialog
-        android:id="@+id/addressActionsDialogFragment"
-        android:name="com.diegoparra.veggie.user.address.ui.AddressActionsDialogFragment"
-        android:label="AddressActionsDialogFragment"
-        tools:layout="@layout/dialog_generic" >
-        <argument
-            android:name="addressId"
-            app:argType="string" />
-        <argument
-            android:name="addressString"
-            app:argType="string" />
-    </dialog>
     <include app:graph="@navigation/nav_edit_profile" />
+    <include app:graph="@navigation/nav_user_address" />
 
 </navigation>

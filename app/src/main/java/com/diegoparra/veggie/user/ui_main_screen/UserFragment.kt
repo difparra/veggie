@@ -76,7 +76,7 @@ class UserFragment : Fragment() {
         }
 
         binding.itemAddress.setOnClickListener {
-            val action = UserFragmentDirections.actionNavUserToAddressFragment()
+            val action = UserFragmentDirections.actionNavUserToNavUserAddress()
             findNavController().navigate(action)
         }
 

@@ -18,7 +18,7 @@ import java.lang.IllegalStateException
 @AndroidEntryPoint
 class AddressActionsDialogFragment : DialogFragment() {
 
-    val viewModel: AddressViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    val viewModel: AddressViewModel by hiltNavGraphViewModels(R.id.nav_user_address)
     private val args: AddressActionsDialogFragmentArgs by navArgs()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

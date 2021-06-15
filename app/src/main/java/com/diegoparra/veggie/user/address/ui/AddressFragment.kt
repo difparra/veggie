@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.android.EventObserver
-import com.diegoparra.veggie.core.android.getResourcesFromAttr
 import com.diegoparra.veggie.databinding.FragmentAddressBinding
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.domain.AddressConstants
@@ -27,14 +26,14 @@ class AddressFragment : Fragment() {
 
     private var _binding: FragmentAddressBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: AddressViewModel by hiltNavGraphViewModels(R.id.nav_main)
+    private val viewModel: AddressViewModel by hiltNavGraphViewModels(R.id.nav_user_address)
     private val mapAddressToRadioButtonId: MutableMap<String, Int> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val navController = findNavController()
         val addressFragmentAsBackStackEntry =
-            navController.getBackStackEntry(R.id.addressFragment)
+            navController.getBackStackEntry(R.id.addressFragment_navAddress)
         val savedStateHandle = addressFragmentAsBackStackEntry.savedStateHandle
         savedStateHandle.getLiveData<Boolean>(AddressConstants.ADDRESS_ADDED_SUCCESSFULLY)
             .observe(addressFragmentAsBackStackEntry) {
@@ -57,7 +56,7 @@ class AddressFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.btnAddAddress.setOnClickListener {
-            val action = AddressFragmentDirections.actionAddressFragmentToAddressAddFragment()
+            val action = AddressFragmentDirections.actionAddressFragmentNavAddressToAddressAddFragmentNavAddress()
             findNavController().navigate(action)
         }
     }
@@ -136,7 +135,7 @@ class AddressFragment : Fragment() {
     }
 
     private fun showActionsDialogForAddress(address: Address) {
-        val action = AddressFragmentDirections.actionAddressFragmentToAddressActionsDialogFragment(
+        val action = AddressFragmentDirections.actionAddressFragmentNavAddressToAddressActionsDialogFragmentNavAddress(
             addressId = address.id,
             addressString = getAddressString(address)
         )

@@ -4,6 +4,7 @@ import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.getOrElse
 import com.diegoparra.veggie.core.kotlin.suspendFlatMap
 import com.diegoparra.veggie.user.address.domain.AddressRepository
 import javax.inject.Inject
@@ -20,7 +21,9 @@ class GetAddressUseCase @Inject constructor(
     }
 
     suspend fun getSelectedAddressId(): String? {
-        return when (val addressId = addressRepository.getSelectedAddressId()) {
+        val currentUserId = authRepository.getIdCurrentUser().getOrElse("")
+        return when (val addressId =
+            addressRepository.getSelectedAddressId(userId = currentUserId)) {
             is Either.Left -> null
             is Either.Right -> addressId.b
         }

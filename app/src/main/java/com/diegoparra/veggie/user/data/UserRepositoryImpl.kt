@@ -67,12 +67,12 @@ class UserRepositoryImpl @Inject constructor(
             )
         }
 
-    override suspend fun setSelectedAddressId(addressId: String) = withContext(dispatcher) {
-        userPrefs.setSelectedAddress(addressId)
+    override suspend fun setSelectedAddressId(userId: String, addressId: String) = withContext(dispatcher) {
+        userPrefs.setSelectedAddress(userId = userId, addressId = addressId)
     }
 
-    override suspend fun getSelectedAddressId(): Either<Failure, String> = withContext(dispatcher) {
-        userPrefs.getSelectedAddress()?.let {
+    override suspend fun getSelectedAddressId(userId: String): Either<Failure, String> = withContext(dispatcher) {
+        userPrefs.getSelectedAddress(userId = userId)?.let {
             Either.Right(it)
         } ?: Either.Left(Failure.ServerError(message = "No address has been saved as selected."))
     }
