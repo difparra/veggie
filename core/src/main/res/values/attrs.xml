@@ -9,6 +9,7 @@
     </declare-styleable>
     <declare-styleable name="alpha_list">
         <attr name="alphaSecondaryText" format="float"/>
+        <attr name="alphaDisabled" format="float"/>
     </declare-styleable>
     <declare-styleable name="dimensions">
         <attr name="appBarHeight" format="dimension"/>

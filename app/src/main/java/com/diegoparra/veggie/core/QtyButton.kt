@@ -1,7 +1,10 @@
 package com.diegoparra.veggie.core
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.AttributeSet
+import android.widget.RelativeLayout
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatButton
 import com.diegoparra.veggie.R
@@ -23,11 +26,40 @@ class QtyButton(context: Context, attrs: AttributeSet) : AppCompatButton(context
             ONE(R.attr.state_qty_one),
             NORMAL(R.attr.state_qty_normal),
             MAX(R.attr.state_qty_max) }
+
+        private class SavedState : BaseSavedState {
+            var mEnabledBehaviour: EnabledBehaviour? = null
+            var mQtyState: QtyStates? = null
+
+            constructor(superState: Parcelable) : super(superState)
+            private constructor(ins: Parcel?) : super(ins) {
+                ins?.let {
+                    mEnabledBehaviour = it.readValue(EnabledBehaviour::class.java.classLoader) as EnabledBehaviour
+                    mQtyState = it.readValue(QtyStates::class.java.classLoader) as QtyStates
+                }
+            }
+
+            override fun writeToParcel(out: Parcel?, flags: Int) {
+                super.writeToParcel(out, flags)
+                out?.writeValue(mEnabledBehaviour)
+                out?.writeValue(mQtyState)
+            }
+
+            companion object CREATOR : Parcelable.Creator<SavedState> {
+                override fun createFromParcel(parcel: Parcel): SavedState {
+                    return SavedState(parcel)
+                }
+
+                override fun newArray(size: Int): Array<SavedState?> {
+                    return arrayOfNulls(size)
+                }
+            }
+        }
     }
 
     //  Can be nullable depending on which method are they called.
     //  For example, mQtyState was null when calling in onCreateDrawableState
-    private val mEnabledBehaviour: EnabledBehaviour?
+    private var mEnabledBehaviour: EnabledBehaviour? = EnabledBehaviour.UNDEFINED
     private var mQtyState: QtyStates? = QtyStates.NORMAL
 
     init{
@@ -97,5 +129,29 @@ class QtyButton(context: Context, attrs: AttributeSet) : AppCompatButton(context
         } ?: drawableState
     }
 
+
+
+
+
+    //  TODO:   Test
+
+    override fun onSaveInstanceState(): Parcelable? {
+        return super.onSaveInstanceState()?.let {
+            val ss = SavedState(it)
+            ss.mEnabledBehaviour = mEnabledBehaviour
+            ss.mQtyState = mQtyState
+            ss
+        }
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        state?.let {
+            val ss = it as SavedState
+            super.onRestoreInstanceState(ss.superState)
+            mEnabledBehaviour = ss.mEnabledBehaviour
+            setQuantityState(ss.mQtyState ?: QtyStates.NORMAL)
+            requestLayout()
+        } ?: super.onRestoreInstanceState(state)
+    }
 
 }

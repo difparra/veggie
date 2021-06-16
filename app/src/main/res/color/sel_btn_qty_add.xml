@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto">
 
-    <item android:alpha="0.38"
+    <item android:alpha="?attr/alphaDisabled"
         android:color="?attr/colorOnSurface"
         android:state_enabled="false" />
 

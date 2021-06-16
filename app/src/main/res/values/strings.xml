@@ -54,6 +54,7 @@
 
     <!-- Order flow in cart -->
     <string name="shipping_info">Datos de envío</string>
+    <string name="schedule_your_delivery">Fecha y hora de entrega</string>
 
 
 

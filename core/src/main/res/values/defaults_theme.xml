@@ -18,6 +18,7 @@
         <item name="colorOnWarning">@color/white</item>
         <item name="colorsRandom">@array/dark_colors</item> <!-- onRandomDark will be onSecondary -->
         <item name="alphaSecondaryText">0.5</item>
+        <item name="alphaDisabled">0.38</item>
         <item name="appBarHeight">@dimen/app_bar_height</item>
         <item name="appBarElevation">@dimen/app_bar_elevation</item>
         <item name="paddingStandard">@dimen/padding_standard</item>
@@ -31,6 +32,7 @@
         <item name="appBarLayoutStyle">@style/Widget.Veggie.AppBarLayout</item>
         <item name="android:progressBarStyle">@style/Widget.Veggie.ProgressBar</item>
         <item name="textInputStyle">@style/Widget.Veggie.TextInputLayout</item>
+        <item name="radioButtonStyle">@style/Widget.Veggie.RadioButton</item>
     </style>
 
     <!--    For theme   -->
@@ -65,6 +67,10 @@
         <item name="errorEnabled">true</item>
     </style>
 
+    <style name="Widget.Veggie.RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:buttonTint">@color/color_radio_button</item>
+        <item name="android:padding">16dp</item>
+    </style>
 
 
 

@@ -31,75 +31,14 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_shipping_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="?attr/paddingStandard">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/phone_number_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/phone"
-                app:startIconDrawable="@drawable/ic_phone_outline"
-                app:errorEnabled="false"
-                app:boxStrokeWidth="0dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/phone_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="phone"
-                    tools:text="+57 300 123 1234"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="?attr/paddingSmall" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/address_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/address"
-                app:startIconDrawable="@drawable/ic_pin_drop_outline"
-                app:errorEnabled="false"
-                app:boxStrokeWidth="0dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textCapSentences"
-                    tools:text="Calle 80 # 72 – 94"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <View
-                style="@style/Widget.Veggie.Divider"
-                android:layout_marginVertical="?attr/paddingStandard"/>
-
-            <!--    TODO: Create view as date selector picker, just as QtyButton -->
-
-            <!--<androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_dates"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="10"
-                tools:listitem="@layout/list_item_main_product" />-->
-
-        </LinearLayout>
-
-    </ScrollView>
+        android:padding="?attr/paddingStandard"
+        android:clipToPadding="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="5"
+        tools:listitem="@layout/list_item_shipping_time" />
 
 </LinearLayout>
