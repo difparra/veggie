@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".user.address.ui.AddressAddFragment">
+    tools:context=".order.ui.ShippingInfoFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -14,21 +15,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
             <ImageView
                 android:id="@+id/btn_back"
                 style="@style/Widget.Veggie.AppBarLayout.ButtonImageView"
                 android:src="@drawable/ic_arrow_back"
                 android:importantForAccessibility="no"
                 app:tint="?attr/colorPrimary" />
-
             <TextView
                 style="@style/Widget.Veggie.AppBarLayout.Title"
-                android:text="@string/add_address" />
+                android:text="@string/shipping_info"
+                android:paddingStart="?attr/paddingSmall"
+                android:paddingEnd="?attr/paddingSmall"/>
         </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,64 +40,63 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center"
-            android:padding="?attr/paddingBig">
+            android:padding="?attr/paddingStandard">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phone_number_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/phone"
+                app:startIconDrawable="@drawable/ic_phone_outline"
+                app:errorEnabled="false"
+                app:boxStrokeWidth="0dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    tools:text="+57 300 123 1234"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="?attr/paddingSmall" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/address_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/address"
-                app:helperText="@string/address_example"
-                android:layout_marginBottom="?attr/paddingStandard">
+                app:startIconDrawable="@drawable/ic_pin_drop_outline"
+                app:errorEnabled="false"
+                app:boxStrokeWidth="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapSentences"/>
+                    android:inputType="textCapSentences"
+                    tools:text="Calle 80 # 72 – 94"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/details_layout"
+            <View
+                style="@style/Widget.Veggie.Divider"
+                android:layout_marginVertical="?attr/paddingStandard"/>
+
+            <!--    TODO: Create view as date selector picker, just as QtyButton -->
+
+            <!--<androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_dates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/details"
-                app:helperText="@string/details_example"
-                android:layout_marginBottom="?attr/paddingStandard">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/details"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textCapSentences"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/instructions_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/instructions"
-                app:helperText="@string/instructions_example"
-                android:layout_marginBottom="?attr/paddingStandard">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/instructions"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/btn_save"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="?attr/paddingStandard"
-                android:text="@string/save" />
-
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="10"
+                tools:listitem="@layout/list_item_main_product" />-->
 
         </LinearLayout>
 

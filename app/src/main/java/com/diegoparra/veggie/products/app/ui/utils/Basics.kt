@@ -10,13 +10,14 @@ import android.text.style.StyleSpan
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.android.getColorFromAttr
 import com.diegoparra.veggie.core.android.getColorWithAlphaFromAttrs
+import com.diegoparra.veggie.core.kotlin.getValueBeforePercentApplied
 import com.diegoparra.veggie.core.kotlin.roundToMultiple
 import java.text.NumberFormat
 import java.util.Locale
 
 
 fun Int.addPriceFormat(): String {
-    val roundedPrice = this.roundToMultiple(10)
+    val roundedPrice = this.roundToMultiple()
     return "$" + roundedPrice.addThousandSeparator()
 }
 
@@ -49,10 +50,7 @@ fun SpannableStringBuilder.appendMultipleSpans(
 }
 
 private fun getPriceBeforeDiscount(finalPrice: Int, discount: Float): Int {
-    if (discount <= 0f || discount >= 1.0f) {
-        throw IllegalArgumentException("Discount must be a value between 0 and 1")
-    }
-    return (finalPrice / (1 - discount)).toInt()
+    return finalPrice.getValueBeforePercentApplied(discount)
 }
 
 fun getFormattedPrice(

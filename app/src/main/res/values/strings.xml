@@ -30,7 +30,6 @@
                                                         crash if used here as \% or simply % because of the formats -->
 
 
-
     <!-- User -->
     <!--<string name="user_profile">Mi cuenta</string>  - In auth module-->
     <string name="user_orders">Pedidos</string>
@@ -45,7 +44,7 @@
     <string name="instructions">Indicaciones (opcional)</string>
     <string name="instructions_example">Ej: Al lado de, cerca de …</string>
     <string name="add_address">Agregar dirección</string>
-
+    <!-- address dialog -->
     <string name="address_actions_dialog_message">¿Qué deseas hacer con esta dirección?<br/> %s</string>
     <string name="address_actions_dialog_check_address">Marcar como principal</string>
     <string name="address_actions_dialog_delete_address">Eliminar</string>
@@ -53,10 +52,13 @@
 
 
 
+    <!-- Order flow in cart -->
+    <string name="shipping_info">Datos de envío</string>
+
+
 
 
     <!-- Failures strings -->
-
     <string name="failure_generic">Ha ocurrido un error.</string>
 
     <!-- Products -->
