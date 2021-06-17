@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.products.app.viewmodels.ClearCartViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -42,12 +43,12 @@ class ClearCartDialogFragment : DialogFragment() {
             text = getString(R.string.yes)
             setOnClickListener {
                 viewModel.clearCartList()
-                dismiss()
+                findNavController().popBackStack()
             }
         }
         with(negativeButton) {
             text = getString(R.string.no)
-            setOnClickListener { dismiss() }
+            setOnClickListener { findNavController().popBackStack() }
         }
     }
 

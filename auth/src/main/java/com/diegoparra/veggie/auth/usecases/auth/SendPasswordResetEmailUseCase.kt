@@ -16,15 +16,20 @@ class SendPasswordResetEmailUseCase @Inject constructor(
     private val emailCollisionValidation = EmailCollisionValidation(authRepository)
 
     suspend operator fun invoke(email: String): Either<AuthFailure, Unit> {
-        val result = TextInputValidation.forEmail(email)
-            .suspendFlatMap {
-                emailCollisionValidation.isValidForSignIn(email, SignInMethod.EMAIL)
-            }
-            .suspendFlatMap {
-                authRepository.sendPasswordResetEmail(email)
-            }
+        val result = validateEmail(email)
+            .suspendFlatMap { validateNotEmailCollision(email) }
+            .suspendFlatMap { sendPasswordResetEmail(email) }
         Timber.d("result = $result")
         return result
     }
+
+    private fun validateEmail(email: String): Either<AuthFailure.WrongInput, String> =
+        TextInputValidation.forEmail(email)
+
+    private suspend fun validateNotEmailCollision(email: String): Either<AuthFailure, Unit> =
+        emailCollisionValidation.isValidForSignIn(email, SignInMethod.EMAIL)
+
+    private suspend fun sendPasswordResetEmail(email: String): Either<AuthFailure, Unit> =
+        authRepository.sendPasswordResetEmail(email)
 
 }

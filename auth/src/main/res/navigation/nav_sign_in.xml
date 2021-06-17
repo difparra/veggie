@@ -11,26 +11,54 @@
         android:label="fragment_sign_in_options"
         tools:layout="@layout/fragment_sign_in_options">
         <action
-            android:id="@+id/action_signInOptionsFragment_to_emailViewPagerFragment"
-            app:destination="@id/emailViewPagerFragment" />
+            android:id="@+id/action_signInOptionsFragment_to_emailFragment"
+            app:destination="@id/emailFragment" />
     </fragment>
 
     <!-- Internally has a viewPager with email options: SignIn/SignUp -->
-    <fragment
-        android:id="@+id/emailViewPagerFragment"
-        android:name="com.diegoparra.veggie.auth.ui.EmailViewPagerFragment"
-        android:label="fragment_email_view_pager"
-        tools:layout="@layout/fragment_email_view_pager">
-        <action
-            android:id="@+id/action_emailViewPagerFragment_to_forgotPasswordFragment"
-            app:destination="@id/forgotPasswordFragment" />
-    </fragment>
 
     <fragment
-        android:id="@+id/forgotPasswordFragment"
-        android:name="com.diegoparra.veggie.auth.ui.ForgotPasswordFragment"
-        android:label="fragment_forgot_password"
-        tools:layout="@layout/fragment_forgot_password" />
+        android:id="@+id/emailFragment"
+        android:name="com.diegoparra.veggie.auth.ui.EmailFragment"
+        android:label="fragment_email"
+        tools:layout="@layout/fragment_email" >
+        <action
+            android:id="@+id/action_emailFragment_to_emailSignInFragment"
+            app:destination="@id/emailSignInFragment" />
+        <action
+            android:id="@+id/action_emailFragment_to_emailSignUpFragment"
+            app:destination="@id/emailSignUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailSignInFragment"
+        android:name="com.diegoparra.veggie.auth.ui.EmailSignInFragment"
+        android:label="fragment_email_sign_in"
+        tools:layout="@layout/fragment_email_sign_in" >
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_emailSignInFragment_to_forgotPasswordDialogFragment"
+            app:destination="@id/forgotPasswordDialogFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailSignUpFragment"
+        android:name="com.diegoparra.veggie.auth.ui.EmailSignUpFragment"
+        android:label="fragment_email_sign_up"
+        tools:layout="@layout/fragment_email_sign_up" >
+        <argument
+            android:name="email"
+            app:argType="string" />
+    </fragment>
+    <dialog
+        android:id="@+id/forgotPasswordDialogFragment"
+        android:name="com.diegoparra.veggie.auth.ui.ForgotPasswordDialogFragment"
+        android:label="ForgotPasswordDialogFragment"
+        tools:layout="@layout/dialog_generic" >
+        <argument
+            android:name="email"
+            app:argType="string" />
+    </dialog>
 
 
 </navigation>

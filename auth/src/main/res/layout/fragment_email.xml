@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.EmailSignInFragment">
+    tools:context=".ui.EmailFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 app:tint="?attr/colorPrimary" />
             <TextView
                 style="@style/Widget.Veggie.AppBarLayout.Title"
-                android:text="@string/sign_in"/>
+                android:text="@string/btn_email"/>
         </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -46,8 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
-                app:startIconDrawable="@drawable/ic_email_outline"
-                android:enabled="false">
+                app:startIconDrawable="@drawable/ic_email_outline">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
@@ -57,40 +56,12 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/password_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/password"
-                app:startIconDrawable="@drawable/ic_password_outline"
-                app:endIconMode="password_toggle"
-                android:layout_marginVertical="?attr/paddingSmall">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/forgot_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="textEnd"
-                android:text="@string/forgot_password"
-                android:textAppearance="?attr/textAppearanceBody2"
-                android:paddingVertical="?attr/paddingSmall"
-                android:layout_marginVertical="?attr/paddingSmall"
-                android:layout_gravity="end" />
-
             <Button
-                android:id="@+id/btn_sign_in"
+                android:id="@+id/btn_continue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="?attr/paddingStandard"
-                android:text="@string/sign_in" />
+                android:text="@string/continuee" />
 
             <ProgressBar
                 android:id="@+id/progress_bar"
@@ -103,3 +74,4 @@
     </ScrollView>
 
 </LinearLayout>
+

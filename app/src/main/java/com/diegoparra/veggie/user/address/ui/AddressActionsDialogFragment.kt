@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.android.getColorFromAttr
@@ -18,7 +19,7 @@ import java.lang.IllegalStateException
 @AndroidEntryPoint
 class AddressActionsDialogFragment : DialogFragment() {
 
-    val viewModel: AddressViewModel by hiltNavGraphViewModels(R.id.nav_user_address)
+    private val viewModel: AddressViewModel by hiltNavGraphViewModels(R.id.nav_user_address)
     private val args: AddressActionsDialogFragmentArgs by navArgs()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -45,7 +46,7 @@ class AddressActionsDialogFragment : DialogFragment() {
             text = getString(R.string.address_actions_dialog_check_address)
             setOnClickListener {
                 viewModel.selectAddress(addressId = args.addressId)
-                dismiss()
+                findNavController().popBackStack()
             }
         }
         with(deleteAddressBtn) {
@@ -53,7 +54,7 @@ class AddressActionsDialogFragment : DialogFragment() {
             setTextColor(rootView.context.getColorFromAttr(R.attr.colorError))
             setOnClickListener {
                 viewModel.deleteAddress(addressId = args.addressId)
-                dismiss()
+                findNavController().popBackStack()
             }
         }
     }

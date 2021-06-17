@@ -14,6 +14,18 @@ object Fields {
 
 object TextInputValidation {
 
+    private val possibleFields = listOf(Fields.EMAIL, Fields.PASSWORD, Fields.NAME, Fields.PASSWORD, Fields.ADDRESS)
+    fun validateNotEmpty(str: String, field: String): Either<AuthFailure.WrongInput, String> {
+        if(!possibleFields.contains(field)) {
+            Timber.w("$field is not in ${possibleFields.joinToString(", ")}")
+        }
+        return if(str.isEmpty()) {
+            Either.Left(AuthFailure.WrongInput.Empty(field = field, input = str))
+        } else {
+            Either.Right(str)
+        }
+    }
+
     fun forEmail(email: String): Either<AuthFailure.WrongInput, String> {
         val emailField = Fields.EMAIL
         return if (email.isEmpty()) {

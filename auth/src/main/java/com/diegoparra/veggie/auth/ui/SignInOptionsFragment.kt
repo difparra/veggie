@@ -11,9 +11,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.auth.databinding.FragmentSignInOptionsBinding
 import com.diegoparra.veggie.auth.utils.AuthFailure
-import com.diegoparra.veggie.auth.ui.utils.AuthResultNavigation
-import com.diegoparra.veggie.auth.ui.utils.getDefaultWrongInputErrorMessage
-import com.diegoparra.veggie.auth.ui.utils.getDefaultWrongSignInMethodErrorMessage
+import com.diegoparra.veggie.auth.ui_utils.AuthResultNavigation
+import com.diegoparra.veggie.auth.ui_utils.getDefaultErrorMessage
 import com.diegoparra.veggie.auth.viewmodels.SignInOptionsViewModel
 import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.core.kotlin.Either
@@ -74,7 +73,7 @@ class SignInOptionsFragment : Fragment() {
 
         binding.emailSignIn.setOnClickListener {
             val action =
-                SignInOptionsFragmentDirections.actionSignInOptionsFragmentToEmailViewPagerFragment()
+                SignInOptionsFragmentDirections.actionSignInOptionsFragmentToEmailFragment()
             findNavController().navigate(action)
         }
         binding.googleSignIn.setOnClickListener {
@@ -112,12 +111,8 @@ class SignInOptionsFragment : Fragment() {
 
         viewModel.failure.observe(viewLifecycleOwner) {
             val errorMessage = when (it) {
-                is AuthFailure.WrongSignInMethod ->
-                    getDefaultWrongSignInMethodErrorMessage(binding.root.context, it)
-                is AuthFailure.WrongInput ->
-                    getDefaultWrongInputErrorMessage(binding.root.context, it.field, it, false)
-                else ->
-                    it.toString()
+                is AuthFailure -> it.getDefaultErrorMessage(binding.root.context)
+                else -> it.toString()
             }
             Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_SHORT).show()
         }

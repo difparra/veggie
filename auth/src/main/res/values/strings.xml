@@ -15,7 +15,7 @@
     <string name="email">Email</string>
     <string name="password">Contraseña</string>
     <string name="forgot_password">¿Olvidaste tu contraseña?</string>
-    <string name="reset_password_instructions">Escribe tu correo y te enviaremos un link para que puedas restablecer tu contraseña</string>
+    <string name="forgot_password_dialog_message">Enviaremos un link a tu correo: %s con las instrucciones para restablecer tu contraseña</string>
     <string name="reset_password_email_sent">Se ha enviado un link a tu correo para restablecer tu contraseña.</string>
 
     <!-- phoneNumber strings -->
@@ -34,6 +34,11 @@
 
 
     <!-- Failures -->
+    <string name="failure_auth_generic">Ha ocurrido un error. Intenta de nuevo más tarde.</string>
+
+    <!-- SignInState -->
+    <string name="failure_not_signed_in">No has iniciado sesión.</string>
+
     <!-- WrongInput -->
     <string name="failure_empty_field">Campo vacío.</string>
     <string name="failure_short_field_m">El %1$s debe tener al menos %2$d caracteres.</string>

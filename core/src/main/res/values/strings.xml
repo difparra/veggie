@@ -4,6 +4,8 @@
     <string name="yes">Si</string>
     <string name="no">No</string>
     <string name="continuee">Continuar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="close">Cerrar</string>
     <string name="send">Enviar</string>
     <string name="save">Guardar</string>
 </resources>

@@ -5,7 +5,7 @@ import java.lang.Exception
 
 sealed class AuthFailure: Failure.FeatureFailure() {
 
-    class ServerError(exception: Exception, override val message: String? = exception.message): AuthFailure()
+    class ServerError(val exception: Exception, override val message: String? = exception.message): AuthFailure()
 
     sealed class SignInState : AuthFailure() {
         object NotSignedIn : SignInState()
@@ -35,7 +35,7 @@ sealed class AuthFailure: Failure.FeatureFailure() {
             WrongInput(field, input)
     }
 
-    class ValidationFailures(val failures: Set<Failure>) : AuthFailure()
+    class ValidationFailures(val failures: Set<AuthFailure>) : AuthFailure()
 
 
 

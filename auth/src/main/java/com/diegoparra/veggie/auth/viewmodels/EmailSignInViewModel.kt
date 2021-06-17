@@ -4,11 +4,11 @@ import androidx.lifecycle.*
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.auth.usecases.auth.SendPasswordResetEmailUseCase
 import com.diegoparra.veggie.auth.usecases.auth.EmailSignInUseCase
-import com.diegoparra.veggie.core.kotlin.Event
-import com.diegoparra.veggie.core.kotlin.Resource
-import com.diegoparra.veggie.core.kotlin.toResource
+import com.diegoparra.veggie.auth.utils.Fields
+import com.diegoparra.veggie.core.kotlin.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -16,30 +16,81 @@ import javax.inject.Inject
 @HiltViewModel
 class EmailSignInViewModel @Inject constructor(
     private val emailSignInUseCase: EmailSignInUseCase,
-    private val sendPasswordResetEmailUseCase: SendPasswordResetEmailUseCase
-) : EmailAuthViewModel<EmailSignInUseCase.Params>(emailSignInUseCase) {
+    private val sendPasswordResetEmailUseCase: SendPasswordResetEmailUseCase,
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel() {
 
-    override val btnContinueEnabled: LiveData<Boolean>
-        get() = combine(_email, _password) { it ->
-            it.any { it !is Resource.Success }
-        }.asLiveData()
+    companion object {
+        const val EMAIL_SAVED_STATE_KEY = "email"
+    }
 
+    private val _email = savedStateHandle.getLiveData<String>(EMAIL_SAVED_STATE_KEY)
+    fun setSavedStateHandle(email: String) {
+        savedStateHandle.set(EMAIL_SAVED_STATE_KEY, email)
+    }
+
+    private val _password = MutableStateFlow<Resource<String>>(Resource.Loading())
+    val password: LiveData<Resource<String>> = _password.asLiveData()
+
+    val btnContinueEnabled = _password.map { it is Resource.Success }.asLiveData()
+
+    private val _loading = MutableLiveData<Boolean>(false)
+    val loading: LiveData<Boolean> = _loading
+
+    private val _navigateSuccess = MutableLiveData<Event<Boolean>>()
+    val navigateSuccess: LiveData<Event<Boolean>> = _navigateSuccess
+
+    private val _toastFailure = MutableLiveData<Event<Failure>>()
+    val toastFailure: LiveData<Event<Failure>> = _toastFailure
 
     private val _passwordResetResult = MutableLiveData<Event<Resource<Unit>>>()
     val passwordResetResult: LiveData<Event<Resource<Unit>>> = _passwordResetResult
 
 
-    fun signIn(email: String, password: String) {
-        authenticate(EmailSignInUseCase.Params(email, password))
+    fun setPassword(password: String) {
+        Timber.d("setPassword called with password = $password")
+        _password.value = emailSignInUseCase.validatePasswordInput(password).toResource()
     }
 
-    override fun cleanErrorAdditionalFields(params: EmailSignInUseCase.Params) {
-        //  No additional fields to email and password. There is no need to clean.
+    fun signIn(password: String) {
+        viewModelScope.launch {
+            setLoadingState()
+            val params = EmailSignInUseCase.Params(
+                email = _email.value!!,
+                password = password
+            )
+            emailSignInUseCase(params).fold(::handleFailure) { handleSuccess(params) }
+        }
     }
 
-    override fun handleInputFailureOnAdditionalFields(field: String, failure: AuthFailure.WrongInput) {
-        //  No additional fields to email and password. There is no need to clean.
+    private fun setLoadingState() {
+        _loading.value = true
+        _password.value = Resource.Loading()
     }
+
+    private fun handleSuccess(params: EmailSignInUseCase.Params) {
+        _loading.value = false
+        _password.value = Resource.Success(params.password)
+        _navigateSuccess.value = Event(true)
+    }
+
+    private fun handleFailure(failure: Failure) {
+        _loading.value = false
+        when(failure) {
+            is AuthFailure.ValidationFailures -> failure.failures.forEach { handleFailure(it) }
+            is AuthFailure.WrongInput -> handleInputFailure(failure)
+            else -> _toastFailure.value = Event(failure)
+        }
+    }
+
+    private fun handleInputFailure(failure: AuthFailure.WrongInput) {
+        when (failure.field) {
+            Fields.PASSWORD -> _password.value = Resource.Error(failure)
+            else -> _toastFailure.value = Event(failure)
+        }
+    }
+
+
 
     fun sendPasswordResetEmail(email: String) {
         viewModelScope.launch {
