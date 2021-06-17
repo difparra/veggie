@@ -5,4 +5,8 @@ data class Address(
     val address: String,
     val details: String?,
     val instructions: String?
-)
+) {
+    fun fullAddress(): String {
+        return address + (details?.let { "\n" + it } ?: "")
+    }
+}

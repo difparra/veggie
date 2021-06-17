@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_order"
+    app:startDestination="@id/shippingInfoFragment">
+
+    <fragment
+        android:id="@+id/shippingInfoFragment"
+        android:name="com.diegoparra.veggie.order.ui.ShippingInfoFragment"
+        android:label="fragment_shipping_info"
+        tools:layout="@layout/fragment_shipping_info" />
+
+
+</navigation>

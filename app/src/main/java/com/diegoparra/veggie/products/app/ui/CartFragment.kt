@@ -22,12 +22,20 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
+class CartFragment : Fragment() {
 
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CartViewModel by viewModels()
-    private val adapter by lazy { CartAdapter(this) }
+    private val adapter by lazy { CartAdapter(object : CartAdapter.OnItemClickListener {
+        override fun onItemClick(productId: ProductId, position: Int, which: Int) {
+            when (which) {
+                CartAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(productId)
+                CartAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(productId)
+                CartAdapter.OnItemClickListener.VIEW_QUANTITY -> viewModel.setEditablePosition(position)
+            }
+        }
+    })}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,14 +101,6 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
         adapter.submitList(products)
     }
 
-    override fun onItemClick(productId: ProductId, position: Int, which: Int) {
-        when (which) {
-            CartAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(productId)
-            CartAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(productId)
-            CartAdapter.OnItemClickListener.VIEW_QUANTITY -> viewModel.setEditablePosition(position)
-        }
-    }
-
     private fun renderFailure(failure: Failure) {
         when (failure) {
             is Failure.CartFailure.EmptyCartList -> {
@@ -158,8 +158,8 @@ class CartFragment : Fragment(), CartAdapter.OnItemClickListener {
 
     private fun makeOrderListener() {
         binding.btnMakeOrder.setOnClickListener {
-            //  TODO: clickListener btnMakeOrder
-            Snackbar.make(it, "TODO: clickListener btnMakeOrder", Snackbar.LENGTH_SHORT).show()
+            val action = CartFragmentDirections.actionNavCartToNavOrder()
+            findNavController().navigate(action)
         }
     }
 

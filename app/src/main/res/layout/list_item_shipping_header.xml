@@ -23,6 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="phone"
+            android:clickable="true"
+            android:focusable="false"
             tools:text="+57 300 123 1234"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -44,8 +46,10 @@
             android:id="@+id/address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapSentences"
-            tools:text="Calle 80 # 72 – 94"/>
+            android:inputType="textMultiLine"
+            android:clickable="true"
+            android:focusable="false"
+            tools:text="Calle 80 # 72 – 94\nTorre 1 Apto 1101"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

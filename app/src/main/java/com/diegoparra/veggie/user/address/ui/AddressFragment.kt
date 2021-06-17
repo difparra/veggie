@@ -13,7 +13,6 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.core.android.getDimensionFromAttr
-import com.diegoparra.veggie.core.android.getFloatFromAttr
 import com.diegoparra.veggie.databinding.FragmentAddressBinding
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.domain.AddressConstants
@@ -132,7 +131,8 @@ class AddressFragment : Fragment() {
     }
 
     private fun getAddressString(address: Address): String {
-        return address.address + (address.details?.let { "\n" + it } ?: "")
+        //  return address.address + (address.details?.let { "\n" + it } ?: "")
+        return address.fullAddress()
     }
 
     private fun showActionsDialogForAddress(address: Address) {

@@ -21,7 +21,7 @@ import com.diegoparra.veggie.products.app.ui.utils.loadProductLabel
 import com.diegoparra.veggie.products.app.ui.utils.setQuantityState
 import timber.log.Timber
 
-class CartAdapter(private var listener: OnItemClickListener) :
+class CartAdapter(private val listener: OnItemClickListener) :
     ListAdapter<ProductCart, CartAdapter.ViewHolder>(DiffCallback) {
 
     interface OnItemClickListener {
