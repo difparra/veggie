@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".order.ui.ShippingInfoFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/btn_back"
+                style="@style/Widget.Veggie.AppBarLayout.ButtonImageView"
+                android:src="@drawable/ic_arrow_back"
+                android:importantForAccessibility="no"
+                app:tint="?attr/colorPrimary" />
+            <TextView
+                style="@style/Widget.Veggie.AppBarLayout.Title"
+                android:text="@string/shipping_info"
+                android:paddingStart="?attr/paddingSmall"
+                android:paddingEnd="?attr/paddingSmall"/>
+        </LinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="?attr/paddingStandard">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phone_number_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/phone"
+                app:startIconDrawable="@drawable/ic_phone_outline"
+                app:errorEnabled="false"
+                app:boxStrokeWidth="0dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:clickable="true"
+                    android:focusable="false"
+                    tools:text="+57 300 123 1234"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="?attr/paddingSmall" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/address_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/address"
+                app:startIconDrawable="@drawable/ic_pin_drop_outline"
+                app:errorEnabled="false"
+                app:boxStrokeWidth="0dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:clickable="true"
+                    android:focusable="false"
+                    tools:text="Calle 80 # 72 – 94\nTorre 1 Apto 1101"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                style="@style/Widget.Veggie.Divider"
+                android:layout_marginHorizontal="?attr/paddingStandard"
+                android:layout_marginVertical="?attr/paddingStandard" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Veggie.Subtitle1"
+                android:text="@string/schedule_your_delivery"
+                android:layout_marginHorizontal="?attr/paddingStandard"
+                android:layout_marginVertical="?attr/paddingSmall"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_shipping_date"
+                android:nestedScrollingEnabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="?attr/paddingStandard"
+                android:paddingVertical="?attr/paddingSmall"
+                android:clipToPadding="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="5"
+                tools:listitem="@layout/list_item_shipping_time" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

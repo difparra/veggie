@@ -31,11 +31,76 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="?attr/paddingStandard">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phone_number_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/phone"
+            app:startIconDrawable="@drawable/ic_phone_outline"
+            app:errorEnabled="false"
+            app:boxStrokeWidth="0dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:clickable="true"
+                android:focusable="false"
+                tools:text="+57 300 123 1234"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="?attr/paddingSmall" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/address_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/address"
+            app:startIconDrawable="@drawable/ic_pin_drop_outline"
+            app:errorEnabled="false"
+            app:boxStrokeWidth="0dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:clickable="true"
+                android:focusable="false"
+                tools:text="Calle 80 # 72 – 94\nTorre 1 Apto 1101"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <View
+        style="@style/Widget.Veggie.Divider"
+        android:layout_marginHorizontal="?attr/paddingStandard"
+        android:layout_marginVertical="0dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Veggie.Subtitle1"
+        android:text="@string/schedule_your_delivery"
+        android:layout_margin="?attr/paddingStandard"/>
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_shipping_info"
+        android:id="@+id/recycler_shipping_date"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="?attr/paddingStandard"
+        android:paddingHorizontal="?attr/paddingStandard"
+        android:paddingVertical="?attr/paddingSmall"
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="5"

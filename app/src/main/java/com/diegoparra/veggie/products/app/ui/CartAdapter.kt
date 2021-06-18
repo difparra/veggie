@@ -15,7 +15,7 @@ import com.diegoparra.veggie.core.android.setBackground
 import com.diegoparra.veggie.databinding.ListItemCartBinding
 import com.diegoparra.veggie.products.app.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
-import com.diegoparra.veggie.products.app.ui.utils.addPriceFormat
+import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.products.domain.Label
 import com.diegoparra.veggie.products.app.ui.utils.loadProductLabel
 import com.diegoparra.veggie.products.app.ui.utils.setQuantityState

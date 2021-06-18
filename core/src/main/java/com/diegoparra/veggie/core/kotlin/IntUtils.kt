@@ -1,12 +1,28 @@
 package com.diegoparra.veggie.core.kotlin
 
+import java.text.NumberFormat
+import java.util.*
+
+
+/**
+ * Round some number and add the currency symbols.
+ */
+fun Int.addPriceFormat(roundToMultiple: Int = 10): String {
+    val roundedPrice = this.roundToMultiple(roundToMultiple)
+    return "$" + roundedPrice.addThousandSeparator()
+}
+
+private fun Int.addThousandSeparator(): String {
+    return NumberFormat.getNumberInstance(Locale.US).format(this)
+}
+
 /**
  * Round number to the next multiple of ...
  * Example: 1548.roundToMultiple(10) is rounded to 1550 in default and ceil behaviour, or 1540 in floor behaviour
  * Default: 38 / 11 -> rounded to 33; 39 / 11 -> rounded to 44
  *          1545 / 10 -> rounded to 1550
  */
-fun Int.roundToMultiple(
+private fun Int.roundToMultiple(
     multiple: Int = 10,
     behaviour: RoundBehaviour = RoundBehaviour.DEFAULT
 ): Int {
@@ -26,20 +42,21 @@ fun Int.roundToMultiple(
     }
 }
 
-enum class RoundBehaviour {
+private enum class RoundBehaviour {
     DEFAULT, CEIL, FLOOR
 }
 
+
 /**
- * Get the original value before the percent was applied.
+ * Get the original value before the discount was applied.
  * Example Int = 90, Percent = 10, originalValue = 100 (100-10% = 90)
  */
-fun Int.getValueBeforePercentApplied(percent: Float): Int {
-    if (percent < 0f || percent > 1.0f) {
+fun Int.getValueBeforeDiscount(discount: Float): Int {
+    if (discount < 0f || discount > 1.0f) {
         throw IllegalArgumentException("Percent must be a value between 0 and 1")
     }
-    if (percent == 1.0f) {
+    if (discount == 1.0f) {
         return 0
     }
-    return (this / (1 - percent)).toInt()
+    return (this / (1 - discount)).toInt()
 }

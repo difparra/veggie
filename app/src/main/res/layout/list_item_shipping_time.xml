@@ -13,8 +13,8 @@
         tools:text="7pm - 8pm"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:checked="true"
-        android:layout_toStartOf="@id/delivery_cost"/>
+        android:layout_toStartOf="@id/delivery_cost"
+        android:clickable="false" />
 
     <TextView
         android:id="@+id/delivery_cost"

@@ -7,13 +7,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.diegoparra.veggie.R
 import com.diegoparra.veggie.databinding.ListItemVariationHeaderBinding
 import com.diegoparra.veggie.databinding.ListItemVariationItemBinding
 import com.diegoparra.veggie.products.app.ui.utils.getFormattedPrice
 import com.diegoparra.veggie.products.app.ui.utils.loadEnabledState
+import java.lang.IllegalArgumentException
 
-private const val HEADER = 0
-private const val ITEM = 1
+private const val HEADER = R.layout.list_item_variation_header
+private const val ITEM = R.layout.list_item_variation_item
 
 class VariationsAdapter(private val listener: OnItemClickListener) :
     ListAdapter<VariationUi, VariationsAdapter.ViewHolder>(DiffCallback) {
@@ -40,10 +42,11 @@ class VariationsAdapter(private val listener: OnItemClickListener) :
             HEADER -> ViewHolder.HeaderViewHolder(
                 ListItemVariationHeaderBinding.inflate(inflater, parent, false)
             )
-            else -> ViewHolder.ItemViewHolder(
+            ITEM -> ViewHolder.ItemViewHolder(
                 ListItemVariationItemBinding.inflate(inflater, parent, false),
                 listener
             )
+            else -> throw IllegalArgumentException("viewType is not recognized. Check how you are defining getItemViewType method.")
         }
     }
 

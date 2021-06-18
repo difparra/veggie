@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.order.domain
 
-import com.diegoparra.veggie.core.kotlin.getValueBeforePercentApplied
+import com.diegoparra.veggie.core.kotlin.getValueBeforeDiscount
 import com.diegoparra.veggie.products.cart.domain.ProductId
 
 @JvmInline
@@ -19,6 +19,6 @@ data class ProductOrder(
     val discount: Float,
     val quantity: Int
 ) {
-    val priceBeforeDiscount = price.getValueBeforePercentApplied(discount)
+    val priceBeforeDiscount = price.getValueBeforeDiscount(discount)
     val total = price * quantity
 }

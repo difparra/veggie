@@ -15,10 +15,9 @@ import com.diegoparra.veggie.core.android.getColorFromAttr
 import com.diegoparra.veggie.databinding.FragmentCartBinding
 import com.diegoparra.veggie.products.app.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
-import com.diegoparra.veggie.products.app.ui.utils.addPriceFormat
+import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.products.app.viewmodels.CartViewModel
 import com.diegoparra.veggie.products.app.viewmodels.Total
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

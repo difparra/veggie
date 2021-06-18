@@ -17,6 +17,9 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        //  Desugaring setUp: https://developer.android.com/studio/write/java8-support#groovy
+        //  Desugaring java.time / Required when setting minSdkVersion to 20 or lower
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -28,6 +31,9 @@ android {
         }
     }
     compileOptions {
+        // Desugaring java.time / Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -63,6 +69,8 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
+    // Desugaring java.time / Desugaring support for api<26 to work with java.time classes
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
 
     //  DATA DEPENDENCIES

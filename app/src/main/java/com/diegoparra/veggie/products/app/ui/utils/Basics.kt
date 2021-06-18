@@ -8,22 +8,12 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import com.diegoparra.veggie.R
+import com.diegoparra.veggie.core.android.appendMultipleSpans
 import com.diegoparra.veggie.core.android.getColorFromAttr
 import com.diegoparra.veggie.core.android.getColorWithAlphaFromAttrs
-import com.diegoparra.veggie.core.kotlin.getValueBeforePercentApplied
-import com.diegoparra.veggie.core.kotlin.roundToMultiple
-import java.text.NumberFormat
-import java.util.Locale
+import com.diegoparra.veggie.core.kotlin.addPriceFormat
+import com.diegoparra.veggie.core.kotlin.getValueBeforeDiscount
 
-
-fun Int.addPriceFormat(): String {
-    val roundedPrice = this.roundToMultiple()
-    return "$" + roundedPrice.addThousandSeparator()
-}
-
-private fun Int.addThousandSeparator(): String {
-    return NumberFormat.getNumberInstance(Locale.US).format(this)
-}
 
 fun abbreviatedUnit(unit: String) =
     when (unit.lowercase()) {
@@ -33,25 +23,6 @@ fun abbreviatedUnit(unit: String) =
         "bandeja" -> "bdj"
         else -> unit
     }
-
-
-fun SpannableStringBuilder.appendMultipleSpans(
-    text: CharSequence,
-    what: List<Any>,
-    flags: Int
-): SpannableStringBuilder {
-    if (what.isNullOrEmpty()) return this
-    val start = this.length
-    this.append(text)
-    what.forEach { style ->
-        setSpan(style, start, this.length, flags)
-    }
-    return this
-}
-
-private fun getPriceBeforeDiscount(finalPrice: Int, discount: Float): Int {
-    return finalPrice.getValueBeforePercentApplied(discount)
-}
 
 fun getFormattedPrice(
     finalPrice: Int, discount: Float, context: Context,
@@ -64,7 +35,7 @@ fun getFormattedPrice(
             alphaAttr = R.attr.alphaSecondaryText
         )
         text.appendMultipleSpans(
-            getPriceBeforeDiscount(finalPrice, discount).addPriceFormat() + " ",
+            finalPrice.getValueBeforeDiscount(discount).addPriceFormat() + " ",
             listOf(StrikethroughSpan(), ForegroundColorSpan(colorAlpha)),
             Spannable.SPAN_INCLUSIVE_EXCLUSIVE
         )

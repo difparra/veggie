@@ -1,34 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.diegoparra.veggie.core.CheckableRelativeLayout
+<TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:id="@+id/day"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="?attr/paddingStandard"
-    android:background="@drawable/rounded_corners"
-    android:backgroundTint="?attr/colorControlHighlight"
-    android:layout_marginVertical="?attr/paddingStandard"
-    tools:layout_marginStart="?attr/paddingStandard">
-    <!--android:clickable="true"-->
+    tools:text="Thursday, June 17"
+    android:textAppearance="@style/TextAppearance.Veggie.Subtitle2"
+    android:padding="?attr/paddingSmall"
+    android:layout_marginVertical="?attr/paddingSmall"
+    android:background="?attr/colorControlHighlight">
 
-    <TextView
-        android:id="@+id/day_week"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textAppearance="@style/TextAppearance.Veggie.Subtitle2"
-        android:textAlignment="center"
-        tools:text="Today" />
-
-    <TextView
-        android:id="@+id/day_month"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/day_week"
-        android:layout_centerHorizontal="true"
-        android:textAppearance="@style/TextAppearance.Veggie.Caption"
-        android:textAlignment="center"
-        tools:text="June 16" />
-
-</com.diegoparra.veggie.core.CheckableRelativeLayout>
+</TextView>
