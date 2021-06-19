@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.order.ui
 
+import com.diegoparra.veggie.order.domain.TimeRange
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.Month
@@ -12,8 +13,6 @@ object FakeDeliveryDates {
         LocalDate.of(2021, Month.JUNE, 19),
         LocalDate.of(2021, Month.JUNE, 20)
     )
-
-    private data class TimeRange(val from: LocalTime, val to: LocalTime)
 
     private val timeRanges = listOf(
         TimeRange(from = LocalTime.of(7, 0), to = LocalTime.of(9, 0)),
@@ -33,17 +32,17 @@ object FakeDeliveryDates {
 
     data class Delivery(val date: LocalDate, val from: LocalTime, val to: LocalTime, val cost: Int)
 
-    fun List<Delivery>.toSubmitList(): List<ShippingDateTimeAdapter.Item> {
-        val list = mutableListOf<ShippingDateTimeAdapter.Item>()
+    fun List<Delivery>.toSubmitList(): List<ShippingScheduleAdapter.Item> {
+        val list = mutableListOf<ShippingScheduleAdapter.Item>()
         var currentDay: LocalDate? = null
         this.forEach {
             if (it.date != currentDay) {
-                list.add(ShippingDateTimeAdapter.Item.Header(it.date))
+                list.add(ShippingScheduleAdapter.Item.Header(it.date))
                 currentDay = it.date
             }
             list.add(
-                ShippingDateTimeAdapter.Item.DateTime(
-                    date = it.date, from = it.from, to = it.to, cost = it.cost
+                ShippingScheduleAdapter.Item.ShippingItem(
+                    date = it.date, timeRange = TimeRange(it.from, it.to), cost = it.cost, isSelected = false
                 )
             )
         }

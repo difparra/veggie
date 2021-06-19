@@ -10,6 +10,7 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.databinding.ListItemShippingDayBinding
 import com.diegoparra.veggie.databinding.ListItemShippingTimeBinding
+import com.diegoparra.veggie.order.domain.TimeRange
 import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.time.LocalDate
@@ -20,14 +21,14 @@ import java.time.format.FormatStyle
 private const val HEADER = R.layout.list_item_shipping_day
 private const val ITEM = R.layout.list_item_shipping_time
 
-class ShippingDateTimeAdapter(private val onDateTimeSelected: (date: LocalDate, from: LocalTime, to: LocalTime) -> Unit) :
-    ListAdapter<ShippingDateTimeAdapter.Item, ShippingDateTimeAdapter.ViewHolder>(DiffCallback) {
+class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, timeRange: TimeRange) -> Unit) :
+    ListAdapter<ShippingScheduleAdapter.Item, ShippingScheduleAdapter.ViewHolder>(DiffCallback) {
 
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is Item.Header -> HEADER
-            is Item.DateTime -> ITEM
+            is Item.ShippingItem -> ITEM
         }
     }
 
@@ -58,11 +59,11 @@ class ShippingDateTimeAdapter(private val onDateTimeSelected: (date: LocalDate, 
 
     sealed class Item {
         data class Header(val date: LocalDate) : Item()
-        data class DateTime(
+        data class ShippingItem(
             val date: LocalDate,
-            val from: LocalTime,
-            val to: LocalTime,
-            val cost: Int
+            val timeRange: TimeRange,
+            val cost: Int,
+            val isSelected: Boolean
         ) : Item()
     }
 
@@ -75,31 +76,35 @@ class ShippingDateTimeAdapter(private val onDateTimeSelected: (date: LocalDate, 
             override fun bind(item: Item) {
                 this.item = item as Item.Header
                 this.item.let {
-                    binding.day.text = it.date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+                    binding.day.text =
+                        it.date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
                 }
             }
         }
 
         class ItemViewHolder(
             private val binding: ListItemShippingTimeBinding,
-            private val onDateTimeSelected: (date: LocalDate, from: LocalTime, to: LocalTime) -> Unit
+            private val onDateTimeSelected: (date: LocalDate, timeRange: TimeRange) -> Unit
         ) : ViewHolder(binding.root) {
 
-            private var item: Item.DateTime? = null
+            private var item: Item.ShippingItem? = null
 
             init {
                 binding.root.setOnClickListener {
                     item?.let {
-                        onDateTimeSelected(it.date, it.from, it.to)
+                        onDateTimeSelected(it.date, it.timeRange)
                     } ?: throw NullPointerException("item is null. You must set it in bind method.")
                 }
             }
 
             override fun bind(item: Item) {
-                this.item = item as Item.DateTime
+                this.item = item as Item.ShippingItem
                 this.item?.let {
-                    binding.deliveryTime.text = "${it.from.format()} - ${it.to.format()}"
+                    val timeRange = it.timeRange
+                    binding.deliveryTime.text =
+                        "${timeRange.from.format()} - ${timeRange.to.format()}"
                     binding.deliveryCost.text = it.cost.addPriceFormat()
+                    binding.deliveryTime.isChecked = it.isSelected
                 }
             }
 
@@ -111,7 +116,13 @@ class ShippingDateTimeAdapter(private val onDateTimeSelected: (date: LocalDate, 
 
     companion object DiffCallback : DiffUtil.ItemCallback<Item>() {
         override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-            return oldItem == newItem
+            return if (oldItem is Item.Header && newItem is Item.Header) {
+                oldItem.date == oldItem.date
+            } else if (oldItem is Item.ShippingItem && newItem is Item.ShippingItem) {
+                oldItem.date == newItem.date && oldItem.timeRange == newItem.timeRange
+            } else {
+                false
+            }
         }
 
         override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {

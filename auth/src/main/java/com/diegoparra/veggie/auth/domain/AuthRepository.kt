@@ -14,6 +14,7 @@ interface AuthRepository {
     suspend fun signOut()
 
     suspend fun getIdCurrentUser(): Either<AuthFailure, String>
+    fun getIdCurrentUserAsFlow(): Flow<Either<AuthFailure, String>>
     suspend fun getProfile(): Either<AuthFailure, Profile>
     fun getProfileAsFlow(): Flow<Either<AuthFailure, Profile>>
     suspend fun getSignInMethodsForEmail(email: String): Either<AuthFailure, List<SignInMethod>>

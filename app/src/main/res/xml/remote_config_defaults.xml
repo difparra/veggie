@@ -25,4 +25,34 @@
         <key>min_order</key>
         <value>50000</value>
     </entry>
+    <entry>
+        <key>delivery_cost_base</key>
+        <value>3000</value>
+    </entry>
+    <entry>
+        <key>delivery_cost_extra_same_day</key>
+        <value>2000</value>
+    </entry>
+    <entry>
+        <key>delivery_time_timetable</key>
+        <value>
+            {
+                "monday": ["9-13", "14-18"],
+                "tuesday": ["9-13", "14-18"],
+                "wednesday": ["9-13", "14-18"],
+                "thursday": ["9-13", "14-18"],
+                "friday": ["9-13", "14-18"],
+                "saturday": ["9-13", "14-18"],
+                "sunday": ["9-13", "14-18"]
+            }
+        </value>
+    </entry>
+    <entry>
+        <key>delivery_time_min_time_in_hours</key>
+        <value>5</value>
+    </entry>
+    <entry>
+        <key>delivery_time_max_days_ahead</key>
+        <value>3</value>
+    </entry>
 </defaultsMap>

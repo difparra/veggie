@@ -6,11 +6,9 @@ import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.products.app.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.app.usecases.GetCartProductsUseCase
-import com.diegoparra.veggie.products.app.usecases.GetMinOrderCartUseCase
+import com.diegoparra.veggie.order.usecases.GetMinOrderUseCase
 import com.diegoparra.veggie.products.app.usecases.UpdateQuantityUseCase
-import com.diegoparra.veggie.products.cart.domain.CartConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -22,7 +20,7 @@ import javax.inject.Inject
 class CartViewModel @Inject constructor(
     private val getCartProductsUseCase: GetCartProductsUseCase,
     private val updateQuantityUseCase: UpdateQuantityUseCase,
-    private val getMinOrderCartUseCase: GetMinOrderCartUseCase
+    private val getMinOrderUseCase: GetMinOrderUseCase
 ) : ViewModel() {
 
     private val _products = MutableStateFlow<Resource<List<ProductCart>>>(Resource.Loading())
@@ -103,14 +101,11 @@ class CartViewModel @Inject constructor(
 
     //      ----------------------------------------------------------------------------------------
 
-    private var minOrder: Int = CartConstants.DEFAULT_VALUE_MIN_ORDER
-    init {
-        viewModelScope.launch {
-            minOrder = getMinOrderCartUseCase()
-        }
-    }
-
     val total = _products.map {
+        val minOrder = getMinOrderUseCase()
+            //  This use case is already improved and will not call the repo every time. It will
+            //  cache the value, so it is safe to call this useCase repeatedly as in here.
+
         if (it is Resource.Success) {
             var total = 0
             it.data.forEach {

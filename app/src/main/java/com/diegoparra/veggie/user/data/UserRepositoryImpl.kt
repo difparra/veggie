@@ -3,6 +3,7 @@ package com.diegoparra.veggie.user.data
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.android.IoDispatcher
+import com.diegoparra.veggie.core.kotlin.flatMap
 import com.diegoparra.veggie.core.kotlin.map
 import com.diegoparra.veggie.user.data.DtosTransformations.toAddress
 import com.diegoparra.veggie.user.address.domain.Address
@@ -14,6 +15,9 @@ import com.diegoparra.veggie.user.UserRepository
 import com.diegoparra.veggie.user.data.DtosTransformations.toUser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -44,12 +48,40 @@ class UserRepositoryImpl @Inject constructor(
         userApi.getUser(userId).map { it.toUser() }
     }
 
+
     override suspend fun getAddressList(userId: String): Either<Failure, List<Address>> =
         withContext(dispatcher) {
             userApi.getUser(userId).map {
                 it.addressList?.map { it.toAddress() } ?: emptyList()
             }
         }
+
+    override suspend fun getAddress(userId: String, addressId: String): Either<Failure, Address> =
+        withContext(dispatcher) {
+            getAddressList(userId).flatMap {
+                val address = it.find { it.id == addressId }
+                if (address != null) {
+                    Either.Right(address)
+                } else {
+                    //  TODO: Manage address failures in a better way
+                    Timber.e("addressId = $addressId was not found for the user $userId")
+                    Either.Left(Failure.ServerError(message = "Address was not found"))
+                }
+            }
+        }
+
+    override fun getSelectedAddressAsFlow(userId: String): Flow<Either<Failure, Address?>> {
+        return userPrefs
+            .getSelectedAddressIdAsFlow(userId)
+            .map {
+                if (it == null) {
+                    Timber.w("No address has been saved as selected.")
+                    Either.Right(null)
+                } else {
+                    getAddress(userId, it)
+                }
+            }.flowOn(dispatcher)
+    }
 
     override suspend fun addAddress(userId: String, address: Address): Either<Failure, Unit> =
         withContext(dispatcher) {
@@ -67,14 +99,17 @@ class UserRepositoryImpl @Inject constructor(
             )
         }
 
-    override suspend fun setSelectedAddressId(userId: String, addressId: String) = withContext(dispatcher) {
-        userPrefs.setSelectedAddress(userId = userId, addressId = addressId)
-    }
+    override suspend fun setSelectedAddressId(userId: String, addressId: String) =
+        withContext(dispatcher) {
+            userPrefs.setSelectedAddress(userId = userId, addressId = addressId)
+        }
 
-    override suspend fun getSelectedAddressId(userId: String): Either<Failure, String> = withContext(dispatcher) {
-        userPrefs.getSelectedAddress(userId = userId)?.let {
-            Either.Right(it)
-        } ?: Either.Left(Failure.ServerError(message = "No address has been saved as selected."))
-    }
+    override suspend fun getSelectedAddressId(userId: String): Either<Failure, String> =
+        withContext(dispatcher) {
+            userPrefs.getSelectedAddress(userId = userId)?.let {
+                Either.Right(it)
+            }
+                ?: Either.Left(Failure.ServerError(message = "No address has been saved as selected."))
+        }
 
 }

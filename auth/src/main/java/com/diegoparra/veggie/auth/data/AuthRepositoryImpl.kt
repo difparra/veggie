@@ -64,6 +64,10 @@ class AuthRepositoryImpl @Inject constructor(
         getProfile().map { it.id }
     }
 
+    override fun getIdCurrentUserAsFlow(): Flow<Either<AuthFailure, String>> {
+        return getProfileAsFlow().map { it.map { it.id } }.flowOn(dispatcher)
+    }
+
     override suspend fun getProfile(): Either<AuthFailure, Profile> = withContext(dispatcher) {
         authApi.getCurrentUser().toProfile()
     }

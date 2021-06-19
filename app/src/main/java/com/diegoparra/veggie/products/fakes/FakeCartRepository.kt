@@ -197,6 +197,4 @@ class FakeCartRepository(
         updateCartItems(listOf())
     }
 
-
-    override suspend fun getMinOrder() = Either.Right(80000)
 }

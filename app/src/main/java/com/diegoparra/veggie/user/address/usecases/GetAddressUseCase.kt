@@ -1,12 +1,13 @@
 package com.diegoparra.veggie.user.address.usecases
 
 import com.diegoparra.veggie.auth.domain.AuthRepository
+import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.user.address.domain.Address
-import com.diegoparra.veggie.core.kotlin.Either
-import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.getOrElse
-import com.diegoparra.veggie.core.kotlin.suspendFlatMap
 import com.diegoparra.veggie.user.address.domain.AddressRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetAddressUseCase @Inject constructor(
@@ -15,7 +16,7 @@ class GetAddressUseCase @Inject constructor(
 ) {
 
     suspend fun getAddressList(): Either<Failure, List<Address>> {
-        return getIdCurrentUser().suspendFlatMap {
+        return authRepository.getIdCurrentUser().suspendFlatMap {
             addressRepository.getAddressList(it)
         }
     }
@@ -29,9 +30,14 @@ class GetAddressUseCase @Inject constructor(
         }
     }
 
-
-    private suspend fun getIdCurrentUser(): Either<Failure, String> {
-        return authRepository.getIdCurrentUser()
+    fun getSelectedAddressAsFlow(currentUserIdAsFlow: Flow<Either<AuthFailure, String>>? = null): Flow<Either<Failure, Address?>> {
+        val userIdAsFlow = currentUserIdAsFlow ?: authRepository.getIdCurrentUserAsFlow()
+        return userIdAsFlow.flatMapLatest {
+            when (it) {
+                is Either.Left -> flow { emit(it) }
+                is Either.Right -> addressRepository.getSelectedAddressAsFlow(it.b)
+            }
+        }
     }
 
 }

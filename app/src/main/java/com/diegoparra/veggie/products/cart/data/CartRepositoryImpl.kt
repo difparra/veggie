@@ -8,7 +8,6 @@ import com.diegoparra.veggie.products.cart.data.CartTransformations.toCartItem
 import com.diegoparra.veggie.products.cart.data.CartTransformations.toMapQuantitiesByDetail
 import com.diegoparra.veggie.products.cart.data.CartTransformations.toProdIdRoom
 import com.diegoparra.veggie.products.cart.data.CartTransformations.toProductId
-import com.diegoparra.veggie.products.cart.data.remoteConfig.CartApi
 import com.diegoparra.veggie.products.cart.data.room.CartDao
 import com.diegoparra.veggie.products.cart.domain.CartItem
 import com.diegoparra.veggie.products.cart.domain.ProductId
@@ -23,7 +22,6 @@ import javax.inject.Inject
 
 class CartRepositoryImpl @Inject constructor(
     private val cartDao: CartDao,
-    private val cartApi: CartApi,
     @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : CartRepository {
 
@@ -101,8 +99,4 @@ class CartRepositoryImpl @Inject constructor(
         cartDao.deleteAllItems()
     }
 
-
-    override suspend fun getMinOrder(): Either<Failure, Int> {
-        return cartApi.getMinOrder()
-    }
 }
