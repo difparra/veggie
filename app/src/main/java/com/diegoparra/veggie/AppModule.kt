@@ -18,6 +18,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -41,8 +42,7 @@ object AppModule {
         return Firebase.remoteConfig.apply {
             setConfigSettingsAsync(remoteConfigSettings {
                 //  TODO:   Change minimumFetchInterval for RemoteConfig when in production
-                //minimumFetchIntervalInSeconds = TimeUnit.HOURS.toSeconds(12)
-                minimumFetchIntervalInSeconds = 1
+                minimumFetchIntervalInSeconds = 20
             })
             setDefaultsAsync(R.xml.remote_config_defaults)
         }

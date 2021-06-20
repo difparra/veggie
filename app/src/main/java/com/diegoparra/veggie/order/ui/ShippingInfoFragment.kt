@@ -87,7 +87,6 @@ class ShippingInfoFragment : Fragment() {
         }
 
         viewModel.deliveryCosts.observe(viewLifecycleOwner) {
-            //  TODO: DeliveryCost does not trigger again on seleted item
             val listToSubmit = it.map {
                 ShippingScheduleAdapter.Item.ShippingItem(
                     date = it.schedule.date,

@@ -2,6 +2,7 @@ package com.diegoparra.veggie.order.usecases
 
 import com.diegoparra.veggie.ConfigDefaults
 import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.order.domain.DefaultConfigValues
 import com.diegoparra.veggie.order.domain.DeliverySchedule
 import com.diegoparra.veggie.order.domain.DeliveryScheduleConfig
 import com.diegoparra.veggie.order.domain.OrderRepository
@@ -16,24 +17,20 @@ class GetDeliveryScheduleOptionsUseCase @Inject constructor(
 
     private var deliveryScheduleConfig: DeliveryScheduleConfig? = null
     private val defaultDeliveryScheduleConfig = DeliveryScheduleConfig(
-        deliveryTimetable = ConfigDefaults.Order.deliveryTimeTimetable,
-        minTimeForDeliveryInHours = ConfigDefaults.Order.deliveryTimeMinTimeInHours,
-        maxDaysAhead = ConfigDefaults.Order.deliveryTimeMaxDaysAhead
-    )
+        deliveryTimetable = DefaultConfigValues.deliveryTimeTimetable,
+        minTimeForDeliveryInHours = DefaultConfigValues.deliveryTimeMinTimeInHours,
+        maxDaysAhead = DefaultConfigValues.deliveryTimeMaxDaysAhead
+    )   //  Used when getting an exception from remoteConfigApi, such as when there is no internet
 
-    /*  The principle of this function is the same as in GetMinOrderUseCase */
     private suspend fun getDeliveryScheduleConfig(): DeliveryScheduleConfig {
-        //  Return already loaded config value
-        deliveryScheduleConfig?.let { return@getDeliveryScheduleConfig it }
-
-        //  Load from repo if value has not been initialized
-        return when (val result = orderRepository.getDeliveryScheduleConfig()) {
-            is Either.Left -> defaultDeliveryScheduleConfig
-            is Either.Right -> {
-                deliveryScheduleConfig = result.b
-                result.b
+        return deliveryScheduleConfig
+            ?: when (val repoValue = orderRepository.getDeliveryScheduleConfig()) {
+                is Either.Left -> defaultDeliveryScheduleConfig
+                is Either.Right -> {
+                    deliveryScheduleConfig = repoValue.b
+                    repoValue.b
+                }
             }
-        }
     }
 
 
@@ -61,7 +58,11 @@ class GetDeliveryScheduleOptionsUseCase @Inject constructor(
         val timeRangeOptionsToday =
             deliveryTimetable
                 .filter { it.dayOfWeek == currentDate.dayOfWeek }
-                .filter { it.timeRange.to.minusHours(1) >= currentTime.plusHours(minTimeForDeliveryInHours.toLong()) }
+                .filter {
+                    it.timeRange.to.minusHours(1) >= currentTime.plusHours(
+                        minTimeForDeliveryInHours.toLong()
+                    )
+                }
         deliveryOptions.addAll(timeRangeOptionsToday.map {
             DeliverySchedule(
                 date = currentDate,

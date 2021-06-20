@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.order.data
 
+import android.annotation.SuppressLint
 import com.diegoparra.veggie.order.domain.DeliveryScheduleConfig
 import com.diegoparra.veggie.order.domain.TimeRange
 import com.google.gson.annotations.SerializedName
@@ -21,6 +22,7 @@ data class DeliveryTimetableDto(
 
 object DeliveryTimetableDtoTransformations {
 
+    @SuppressLint("BinaryOperationInTimber")
     fun DeliveryTimetableDto.toDeliveryTimetable(): List<DeliveryScheduleConfig.TimetableItem> {
         Timber.d("deliveryTimetableDto = " +
                 "monday = ${monday.joinToString(", ")}, \n " +

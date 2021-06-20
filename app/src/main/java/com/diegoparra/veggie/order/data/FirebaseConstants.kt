@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.order.data
 
-object OrderFirebaseConstants {
+object FirebaseConstants {
 
     object RemoteConfigKeys {
         const val minOrder = "min_order"

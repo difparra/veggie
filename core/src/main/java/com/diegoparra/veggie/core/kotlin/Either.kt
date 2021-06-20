@@ -10,6 +10,9 @@ package com.diegoparra.veggie.core.kotlin
  * @see Right
  */
 sealed class Either<out L, out R> {
+    //  In order to define static functions
+    companion object {}
+
     /** * Represents the left side of [Either] class which by convention is a "Failure". */
     data class Left<out L>(val a: L) : Either<L, Nothing>()
 
@@ -121,11 +124,11 @@ fun <L, R> Either<L, R>.onSuccess(fn: (success: R) -> Unit): Either<L, R> =
  *  - Failure:  If any of the elements in the list is Failure (Left)
  *  - Success:  If every item in the list is Success (Right)
  */
-fun <L,R> List<Either<L, R>>.mapList() : Either<List<L>, List<R>> {
+fun <L, R> List<Either<L, R>>.mapList(): Either<List<L>, List<R>> {
     val failures = this.filter { it is Either.Left }
-    return if(failures.isNotEmpty()){
+    return if (failures.isNotEmpty()) {
         Either.Left(failures.map { (it as Either.Left).a })
-    }else{
+    } else {
         Either.Right(this.map { (it as Either.Right).b })
     }
 }
@@ -138,8 +141,8 @@ fun <L,R> List<Either<L, R>>.mapList() : Either<List<L>, List<R>> {
  *  - Success:  If every item in the list is Success (Right).
  *              Returned Success will now represent the list<R> without failures.
  */
-fun <L,R> List<Either<L, R>>.mapListAndFlattenFailure(flattenFailure: (List<L>)->L = { it.first() }) : Either<L, List<R>> {
-    return when(val mappedList = this.mapList()){
+fun <L, R> List<Either<L, R>>.mapListAndFlattenFailure(flattenFailure: (List<L>) -> L = { it.first() }): Either<L, List<R>> {
+    return when (val mappedList = this.mapList()) {
         is Either.Left -> Either.Left(flattenFailure(mappedList.a))
         is Either.Right -> mappedList
     }
@@ -149,7 +152,7 @@ fun <L,R> List<Either<L, R>>.mapListAndFlattenFailure(flattenFailure: (List<L>)-
 /**
  * Return the failures contained in a list of Either
  */
-fun <L> List<Either<L, Any>>.getFailures() : List<L> {
+fun <L> List<Either<L, Any>>.getFailures(): List<L> {
     return this
         .filter { it is Either.Left }
         .map {
@@ -161,13 +164,12 @@ fun <L> List<Either<L, Any>>.getFailures() : List<L> {
 /**
  * Transform Either<Failure, T> into Resource.Success or Resource.Error
  */
-fun <T> Either<Failure, T>.toResource() : Resource<T> {
-    return when(this){
+fun <T> Either<Failure, T>.toResource(): Resource<T> {
+    return when (this) {
         is Either.Left -> Resource.Error(this.a)
         is Either.Right -> Resource.Success(this.b)
     }
 }
-
 
 
 /**
@@ -186,16 +188,61 @@ fun <T, L, R> Either<L, List<R>>.customMap(fn: (R) -> Either<L, T>): Either<L, L
 
 
 
-suspend fun <T,L,R> Either<L, R>.suspendMap(fn: suspend (R) -> T) : Either<L, T> {
-    return when(this){
+suspend fun <T, L, R> Either<L, R>.suspendMap(fn: suspend (R) -> T): Either<L, T> {
+    return when (this) {
         is Either.Left -> this
         is Either.Right -> Either.Right(fn(this.b))
     }
 }
 
-suspend fun <T,L,R> Either<L, R>.suspendFlatMap(fn: suspend (R) -> Either<L, T>) : Either<L, T> {
-    return when(this){
+suspend fun <T, L, R> Either<L, R>.suspendFlatMap(fn: suspend (R) -> Either<L, T>): Either<L, T> {
+    return when (this) {
         is Either.Left -> this
         is Either.Right -> fn(this.b)
+    }
+}
+
+
+fun <T1, T2, R> Either.Companion.combine(
+    either1: Either<Failure, T1>,
+    either2: Either<Failure, T2>,
+    transform: (T1, T2) -> R
+): Either<Failure, R> {
+    return when (either1) {
+        is Either.Left -> either1
+        is Either.Right -> {
+            when (either2) {
+                is Either.Left -> either2
+                is Either.Right -> Either.Right(transform(either1.b, either2.b))
+            }
+        }
+    }
+}
+
+fun <T1, T2, T3, R> Either.Companion.combine(
+    either1: Either<Failure, T1>,
+    either2: Either<Failure, T2>,
+    either3: Either<Failure, T3>,
+    transform: (T1, T2, T3) -> R
+): Either<Failure, R> {
+    return when (either1) {
+        is Either.Left -> return either1
+        is Either.Right -> {
+            when (either2) {
+                is Either.Left -> either2
+                is Either.Right -> {
+                    when (either3) {
+                        is Either.Left -> either3
+                        is Either.Right -> Either.Right(
+                            transform(
+                                either1.b,
+                                either2.b,
+                                either3.b
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 }

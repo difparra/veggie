@@ -2,6 +2,7 @@ package com.diegoparra.veggie.order.usecases
 
 import com.diegoparra.veggie.ConfigDefaults
 import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.order.domain.DefaultConfigValues
 import com.diegoparra.veggie.order.domain.DeliveryBaseCosts
 import com.diegoparra.veggie.order.domain.DeliverySchedule
 import com.diegoparra.veggie.order.domain.OrderRepository
@@ -17,27 +18,20 @@ class GetDeliveryCostUseCase @Inject constructor(
 
     private var deliveryBaseCosts: DeliveryBaseCosts? = null
     private val defaultDeliveryBaseCosts = DeliveryBaseCosts(
-        baseCost = ConfigDefaults.Order.deliveryCostBase,
-        extraCostOnSameDay = ConfigDefaults.Order.deliveryCostExtraSameDay
-    )
+        baseCost = DefaultConfigValues.deliveryCostBase,
+        extraCostOnSameDay = DefaultConfigValues.deliveryCostExtraSameDay
+    )   //  Used when getting an exception from remoteConfigApi, such as when there is no internet
 
-
-    /*  The principle of this function is the same as in GetMinOrderUseCase */
     private suspend fun getDeliveryBaseCosts(): DeliveryBaseCosts {
-        //  Return already loaded config value
-        deliveryBaseCosts?.let { return@getDeliveryBaseCosts it }
-
-        //  Load from repo if value has not been initialized
-        return when (val result = orderRepository.getDeliveryBaseCosts()) {
-            is Either.Left -> defaultDeliveryBaseCosts
-            is Either.Right -> {
-                deliveryBaseCosts = result.b
-                result.b
+        return deliveryBaseCosts
+            ?: when (val repoValue = orderRepository.getDeliveryBaseCosts()) {
+                is Either.Left -> defaultDeliveryBaseCosts
+                is Either.Right -> {
+                    deliveryBaseCosts = repoValue.b
+                    repoValue.b
+                }
             }
-        }
     }
-
-
 
     suspend operator fun invoke(deliverySchedule: DeliverySchedule?, address: Address?): Int {
         val baseCost = getBaseCost()
