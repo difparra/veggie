@@ -24,13 +24,6 @@ class AddressAddFragment : Fragment() {
     private var _binding: FragmentAddressAddBinding? = null
     private val binding get() = _binding!!
     private lateinit var prevSavedStateHandle: SavedStateHandle
-
-    /*  IMPORTANT: Can't use a hiltNavGraphViewModel, as this fragment by itself can be called,
-    *   without being included in the address_nav_graph (example: order flow in cart)
-    *   Be very careful when scoping to navMain, it will probably lead to errors, as viewModel
-    *   will not be destroyed, and if user sign out and sign in with another different account,
-    *   userViewModel and fragment will not know, as it is not observing data with flow, and
-    *   have previously collected the data without being destroyed. */
     private val viewModel: AddressAddViewModel by viewModels()
 
     override fun onCreateView(
@@ -67,12 +60,12 @@ class AddressAddFragment : Fragment() {
         //  prevBackStackEntry could return a wrong value. To avoid that, call when fragment is visible.
         val navController = findNavController()
         prevSavedStateHandle = navController.previousBackStackEntry?.savedStateHandle!!
-        prevSavedStateHandle.set(AddressConstants.ADDRESS_ADDED_SUCCESSFULLY, false)
+        prevSavedStateHandle.set(AddressConstants.ADDRESS_ADDED_SUCCESSFUL, false)
     }
 
     private fun subscribeUi() {
         viewModel.navigateSuccess.observe(viewLifecycleOwner, EventObserver {
-            prevSavedStateHandle.set(AddressConstants.ADDRESS_ADDED_SUCCESSFULLY, it)
+            prevSavedStateHandle.set(AddressConstants.ADDRESS_ADDED_SUCCESSFUL, it)
             findNavController().popBackStack()
         })
 

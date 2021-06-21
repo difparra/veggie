@@ -7,10 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.diegoparra.veggie.R
+import com.diegoparra.veggie.core.kotlin.runIfTrue
 import com.diegoparra.veggie.databinding.FragmentShippingInfoBinding
 import com.diegoparra.veggie.order.domain.DeliverySchedule
 import com.diegoparra.veggie.order.domain.TimeRange
 import com.diegoparra.veggie.order.viewmodels.ShippingInfoViewModel
+import com.diegoparra.veggie.user.address.domain.AddressConstants
+import com.diegoparra.veggie.user.address.ui.AddressResultNavigation
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -24,15 +28,25 @@ class ShippingInfoFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: ShippingInfoViewModel by viewModels()
     private val adapter by lazy {
-        ShippingScheduleAdapter { date: LocalDate, timeRange: TimeRange ->
-            Timber.d("Date selected: date=$date, from=${timeRange.from}, to=${timeRange.to}",)
+        ShippingScheduleAdapter { date: LocalDate, timeRange: TimeRange, cost: Int ->
+            Timber.d("Date selected: date=$date, from=${timeRange.from}, to=${timeRange.to}")
             viewModel.selectDeliverySchedule(
-                DeliverySchedule(
-                    date = date,
-                    timeRange = timeRange
-                )
+                deliverySchedule = DeliverySchedule(date = date, timeRange = timeRange),
+                cost = cost
             )
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val navController = findNavController()
+        val shippingInfoFragmentAsBackStackEntry = navController.getBackStackEntry(R.id.shippingInfoFragment)
+        val savedStateHandle = shippingInfoFragmentAsBackStackEntry.savedStateHandle
+        savedStateHandle.getLiveData<Boolean>(AddressConstants.ADDRESS_SELECTED_SUCCESSFUL)
+            .observe(shippingInfoFragmentAsBackStackEntry) {
+                Timber.d("${AddressConstants.ADDRESS_SELECTED_SUCCESSFUL} = it")
+                it.runIfTrue { viewModel.refreshAddress() }
+            }
     }
 
     override fun onCreateView(
@@ -51,14 +65,13 @@ class ShippingInfoFragment : Fragment() {
         }
 
         binding.phoneNumber.setOnClickListener {
-            //  TODO:   Redirect to addPhoneNumber flow
-            Snackbar.make(binding.root, "TODO: Open edit phone number", Snackbar.LENGTH_SHORT)
-                .show()
+            val action = ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavVerifyPhoneNumber()
+            findNavController().navigate(action)
         }
 
         binding.address.setOnClickListener {
-            //  TODO:   Redirect to address flow
-            Snackbar.make(binding.root, "TODO: Open edit address", Snackbar.LENGTH_SHORT).show()
+            val action = ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavUserAddress()
+            findNavController().navigate(action)
         }
 
         binding.recyclerShippingSchedule.setHasFixedSize(true)
@@ -70,9 +83,10 @@ class ShippingInfoFragment : Fragment() {
         viewModel.isAuthenticated.observe(viewLifecycleOwner) {
             //  TODO:   Redirect to signInFlow
             Timber.d("isAuthenticated = $it")
-            if(!it) {
+            if (!it) {
                 findNavController().popBackStack()
-                Snackbar.make(binding.root, "User is not authenticated.", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "User is not authenticated.", Snackbar.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -95,19 +109,23 @@ class ShippingInfoFragment : Fragment() {
                     isSelected = it.isSelected
                 )
             }.addHeaders()
-            Timber.d("listToSubmit = ${listToSubmit.map { 
-                when(it) {
-                    is ShippingScheduleAdapter.Item.ShippingItem ->
-                        "date = ${it.date}, from = ${it.timeRange.from}, to = ${it.timeRange.to}, cost = ${it.cost}, selected = ${it.isSelected}"
-                    is ShippingScheduleAdapter.Item.Header ->
-                        "date = ${it.date}"    
-                }
-            }.joinToString("\n")}")
+            Timber.d(
+                "listToSubmit = ${
+                    listToSubmit.map {
+                        when (it) {
+                            is ShippingScheduleAdapter.Item.ShippingItem ->
+                                "date = ${it.date}, from = ${it.timeRange.from}, to = ${it.timeRange.to}, cost = ${it.cost}, selected = ${it.isSelected}"
+                            is ShippingScheduleAdapter.Item.Header ->
+                                "date = ${it.date}"
+                        }
+                    }.joinToString("\n")
+                }"
+            )
             adapter.submitList(listToSubmit)
         }
     }
 
-    private fun List<ShippingScheduleAdapter.Item.ShippingItem>.addHeaders() : List<ShippingScheduleAdapter.Item> {
+    private fun List<ShippingScheduleAdapter.Item.ShippingItem>.addHeaders(): List<ShippingScheduleAdapter.Item> {
         val list = mutableListOf<ShippingScheduleAdapter.Item>()
         var currentDay: LocalDate? = null
         this.forEach {

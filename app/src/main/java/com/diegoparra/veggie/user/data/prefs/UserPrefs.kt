@@ -35,9 +35,16 @@ class UserPrefs @Inject constructor(
             }.first()
     }
 
-    fun getSelectedAddressIdAsFlow(userId: String): Flow<String?> {
-        return context.dataStore.data
-            .map { prefs -> prefs[getAddressKeyForUser(userId)] }
+    /**
+     * If the selectedAddress corresponds to the addressToDelete, address will be deleted as selected.
+     */
+    suspend fun deleteAddressAsSelectedIfApplicable(userId: String, addressId: String) {
+        context.dataStore.edit { prefs ->
+            val key = getAddressKeyForUser(userId)
+            if (prefs[key] == addressId) {
+                prefs.remove(key)
+            }
+        }
     }
 
 }

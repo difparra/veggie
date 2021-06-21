@@ -49,7 +49,7 @@ sealed class Either<out L, out R> {
      * @see Left
      * @see Right
      */
-    fun fold(fnL: (L) -> Any, fnR: (R) -> Any): Any =
+    fun <T> fold(fnL: (L) -> T, fnR: (R) -> T): T =
         when (this) {
             is Left -> fnL(a)
             is Right -> fnR(b)
@@ -203,7 +203,7 @@ suspend fun <T, L, R> Either<L, R>.suspendFlatMap(fn: suspend (R) -> Either<L, T
 }
 
 
-fun <T1, T2, R> Either.Companion.combine(
+fun <T1, T2, R> Either.Companion.combineMap(
     either1: Either<Failure, T1>,
     either2: Either<Failure, T2>,
     transform: (T1, T2) -> R
@@ -219,7 +219,23 @@ fun <T1, T2, R> Either.Companion.combine(
     }
 }
 
-fun <T1, T2, T3, R> Either.Companion.combine(
+suspend fun <T1, T2, R> Either.Companion.combineMapSuspend(
+    either1: Either<Failure, T1>,
+    either2: Either<Failure, T2>,
+    transform: suspend (T1, T2) -> R
+): Either<Failure, R> {
+    return when (either1) {
+        is Either.Left -> either1
+        is Either.Right -> {
+            when (either2) {
+                is Either.Left -> either2
+                is Either.Right -> Either.Right(transform(either1.b, either2.b))
+            }
+        }
+    }
+}
+
+fun <T1, T2, T3, R> Either.Companion.combineMap(
     either1: Either<Failure, T1>,
     either2: Either<Failure, T2>,
     either3: Either<Failure, T3>,

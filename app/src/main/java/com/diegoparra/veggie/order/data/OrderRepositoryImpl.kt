@@ -3,7 +3,7 @@ package com.diegoparra.veggie.order.data
 import com.diegoparra.veggie.core.android.IoDispatcher
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.combine
+import com.diegoparra.veggie.core.kotlin.combineMap
 import com.diegoparra.veggie.order.domain.DeliveryBaseCosts
 import com.diegoparra.veggie.order.domain.DeliveryScheduleConfig
 import com.diegoparra.veggie.order.domain.OrderRepository
@@ -25,7 +25,7 @@ class OrderRepositoryImpl @Inject constructor(
         withContext(dispatcher) {
             val baseDeliveryCost = orderConfigApi.getDeliveryBaseCost()
             val extraCostOnSameDay = orderConfigApi.getDeliveryExtraCostSameDay()
-            Either.combine(baseDeliveryCost, extraCostOnSameDay) { baseCost, extraCost ->
+            Either.combineMap(baseDeliveryCost, extraCostOnSameDay) { baseCost, extraCost ->
                 DeliveryBaseCosts(baseCost, extraCost)
             }
         }
@@ -35,7 +35,7 @@ class OrderRepositoryImpl @Inject constructor(
             val deliveryTimetable = orderConfigApi.getDeliveryTimetable()
             val minTimeForDeliveryInHours = orderConfigApi.getMinTimeForDeliveryInHours()
             val maxDaysAhead = orderConfigApi.getMaxDaysForDelivery()
-            Either.combine(
+            Either.combineMap(
                 deliveryTimetable,
                 minTimeForDeliveryInHours,
                 maxDaysAhead

@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.android.getColorFromAttr
-import com.diegoparra.veggie.user.address.viewmodels.AddressViewModel
+import com.diegoparra.veggie.user.address.viewmodels.AddressListViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.IllegalStateException
@@ -19,7 +19,7 @@ import java.lang.IllegalStateException
 @AndroidEntryPoint
 class AddressActionsDialogFragment : DialogFragment() {
 
-    private val viewModel: AddressViewModel by hiltNavGraphViewModels(R.id.nav_user_address)
+    private val viewModel: AddressListViewModel by hiltNavGraphViewModels(R.id.nav_user_address)
     private val args: AddressActionsDialogFragmentArgs by navArgs()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

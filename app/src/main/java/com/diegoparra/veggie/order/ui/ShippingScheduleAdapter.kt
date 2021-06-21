@@ -21,7 +21,7 @@ import java.time.format.FormatStyle
 private const val HEADER = R.layout.list_item_shipping_day
 private const val ITEM = R.layout.list_item_shipping_time
 
-class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, timeRange: TimeRange) -> Unit) :
+class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, timeRange: TimeRange, cost: Int) -> Unit) :
     ListAdapter<ShippingScheduleAdapter.Item, ShippingScheduleAdapter.ViewHolder>(DiffCallback) {
 
 
@@ -84,7 +84,7 @@ class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, 
 
         class ItemViewHolder(
             private val binding: ListItemShippingTimeBinding,
-            private val onDateTimeSelected: (date: LocalDate, timeRange: TimeRange) -> Unit
+            private val onDateTimeSelected: (date: LocalDate, timeRange: TimeRange, cost: Int) -> Unit
         ) : ViewHolder(binding.root) {
 
             private var item: Item.ShippingItem? = null
@@ -92,7 +92,7 @@ class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, 
             init {
                 binding.root.setOnClickListener {
                     item?.let {
-                        onDateTimeSelected(it.date, it.timeRange)
+                        onDateTimeSelected(it.date, it.timeRange, it.cost)
                     } ?: throw NullPointerException("item is null. You must set it in bind method.")
                 }
             }

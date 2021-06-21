@@ -3,9 +3,7 @@ package com.diegoparra.veggie.user.address.usecases
 import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.auth.utils.TextInputValidation
-import com.diegoparra.veggie.core.kotlin.Either
-import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.suspendFlatMap
+import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.domain.AddressRepository
 import java.util.*
@@ -13,13 +11,12 @@ import javax.inject.Inject
 
 class SaveAddressUseCase @Inject constructor(
     private val authRepository: AuthRepository,
-    private val addressRepository: AddressRepository
+    private val addressRepository: AddressRepository,
+    private val selectMainAddressUseCase: SelectMainAddressUseCase
 ) {
 
     suspend operator fun invoke(
-        address: String,
-        details: String,
-        instructions: String
+        address: String, details: String, instructions: String
     ): Either<Failure, Unit> {
         //  Validate fields
         validateAddress(address).let {
@@ -28,6 +25,7 @@ class SaveAddressUseCase @Inject constructor(
             }
         }
         return saveInDatabase(address, details, instructions)
+            .suspendMap { selectNewAddressAsMain(it.id) }
     }
 
     private fun validateAddress(address: String): Either<AuthFailure.WrongInput, String> {
@@ -35,11 +33,9 @@ class SaveAddressUseCase @Inject constructor(
     }
 
     private suspend fun saveInDatabase(
-        address: String,
-        details: String,
-        instructions: String
-    ): Either<Failure, Unit> {
-        return getIdCurrentUser()
+        address: String, details: String, instructions: String
+    ): Either<Failure, Address> {
+        return authRepository.getIdCurrentUser()
             .suspendFlatMap {
                 val addressObj = Address(
                     id = UUID.randomUUID().toString(),
@@ -51,9 +47,9 @@ class SaveAddressUseCase @Inject constructor(
             }
     }
 
-
-    private suspend fun getIdCurrentUser(): Either<Failure, String> {
-        return authRepository.getIdCurrentUser()
+    private suspend fun selectNewAddressAsMain(addressId: String) {
+        selectMainAddressUseCase(addressId)
     }
+
 
 }

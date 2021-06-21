@@ -5,7 +5,7 @@ import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.user.address.domain.AddressRepository
 
-interface UserRepository : AddressRepository {
+interface UserRepository {
 
     suspend fun updateUserData(
         userId: String,

@@ -60,7 +60,7 @@ class UserApi @Inject constructor(
         }
     }
 
-    suspend fun addAddress(userId: String, addressDto: AddressDto): Either<Failure, Unit> {
+    suspend fun addAddress(userId: String, addressDto: AddressDto): Either<Failure, AddressDto> {
         return try {
             //  Send instruction to Firebase to update the user
             database.collection(UserFirebaseConstants.Collections.user)
@@ -68,7 +68,7 @@ class UserApi @Inject constructor(
                 .update(Keys.addressList, FieldValue.arrayUnion(addressDto))
                 .await()
             //  Return Right if exceptions have not be thrown
-            Either.Right(Unit)
+            Either.Right(addressDto)
         } catch (e: Exception) {
             Either.Left(Failure.ServerError(e))
         }

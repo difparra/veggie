@@ -38,4 +38,8 @@ open class NavWithResultHelper<T>(
         navController.popBackStack(startDestination, true)
     }
 
+    fun navigateWithoutSettingResult(navController: NavController, result: T) {
+        navController.popBackStack(startDestination, true)
+    }
+
 }

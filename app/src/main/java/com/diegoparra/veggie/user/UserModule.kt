@@ -1,5 +1,6 @@
 package com.diegoparra.veggie.user
 
+import com.diegoparra.veggie.user.data.AddressRepositoryImpl
 import com.diegoparra.veggie.user.data.UserRepositoryImpl
 import com.diegoparra.veggie.user.address.domain.AddressRepository
 import dagger.Binds
@@ -18,7 +19,7 @@ abstract class UserModule {
 
     @Binds
     abstract fun bindsAddressRepository(
-        userRepositoryImpl: UserRepositoryImpl
+        addressRepositoryImpl: AddressRepositoryImpl
     ): AddressRepository
 
 }

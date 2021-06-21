@@ -9,7 +9,16 @@
         android:id="@+id/shippingInfoFragment"
         android:name="com.diegoparra.veggie.order.ui.ShippingInfoFragment"
         android:label="fragment_shipping_info"
-        tools:layout="@layout/fragment_shipping_info" />
+        tools:layout="@layout/fragment_shipping_info" >
+        <action
+            android:id="@+id/action_shippingInfoFragment_to_nav_user_address"
+            app:destination="@id/nav_user_address" />
+        <action
+            android:id="@+id/action_shippingInfoFragment_to_nav_verify_phone_number"
+            app:destination="@id/nav_verify_phone_number" />
+    </fragment>
+    <include app:graph="@navigation/nav_user_address" />
+    <include app:graph="@navigation/nav_verify_phone_number" />
 
 
 </navigation>

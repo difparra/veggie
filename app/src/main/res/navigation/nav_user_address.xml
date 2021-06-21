@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_user_address"
-    app:startDestination="@id/addressFragment_navAddress">
+    app:startDestination="@id/addressListFragment">
 
     <fragment
-        android:id="@+id/addressFragment_navAddress"
-        android:name="com.diegoparra.veggie.user.address.ui.AddressFragment"
+        android:id="@+id/addressListFragment"
+        android:name="com.diegoparra.veggie.user.address.ui.AddressListFragment"
         android:label="fragment_address"
-        tools:layout="@layout/fragment_address" >
+        tools:layout="@layout/fragment_address_list" >
         <action
             android:id="@+id/action_addressFragment_navAddress_to_addressActionsDialogFragment_navAddress"
-            app:destination="@id/addressActionsDialogFragment_navAddress" />
+            app:destination="@id/addressActionsDialogFragment" />
         <action
             android:id="@+id/action_addressFragment_navAddress_to_addressAddFragment_navAddress"
-            app:destination="@id/addressAddFragment_navAddress" />
+            app:destination="@id/addressAddFragment" />
     </fragment>
     <dialog
-        android:id="@+id/addressActionsDialogFragment_navAddress"
+        android:id="@+id/addressActionsDialogFragment"
         android:name="com.diegoparra.veggie.user.address.ui.AddressActionsDialogFragment"
         android:label="AddressActionsDialogFragment"
         tools:layout="@layout/dialog_generic" >
@@ -30,7 +30,7 @@
             app:argType="string" />
     </dialog>
     <fragment
-        android:id="@+id/addressAddFragment_navAddress"
+        android:id="@+id/addressAddFragment"
         android:name="com.diegoparra.veggie.user.address.ui.AddressAddFragment"
         android:label="fragment_address_add"
         tools:layout="@layout/fragment_address_add" />
