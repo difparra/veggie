@@ -46,6 +46,10 @@ class ShippingInfoViewModel @Inject constructor(
 
     fun refreshAddress() {
         viewModelScope.launch {
+            //  Should check that this method being called from addressResult stateHandleListener is
+            //  not being called more than once, when user keep selecting different addresses while
+            //  in nav_address flow/graph.
+            Timber.d("refreshAddress() called")
             _address.value = getSelectedAddressUseCase().fold<Address?>({ null }, { it })
         }
     }

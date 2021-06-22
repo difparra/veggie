@@ -7,6 +7,7 @@ import com.diegoparra.veggie.user.address.usecases.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,6 +50,7 @@ class AddressListViewModel @Inject constructor(
 
     private val _selectedAddress = MutableStateFlow<Address?>(null)
     val selectedAddress = _selectedAddress.asLiveData()
+
     init {
         /*
          *  I tried defining _selectedAddress by mapping the _addressList.
@@ -59,8 +61,13 @@ class AddressListViewModel @Inject constructor(
          */
         viewModelScope.launch {
             _addressList.collect {
+                /*
+                    TODO: When removing address and another is selected, on reload list,
+                     none of the items will be selected.
+                 */
                 if (it is Resource.Success) {
-                    val selectedAddress = getSelectedAddressUseCase(addressList = it.data).getOrElse(null)
+                    val selectedAddress =
+                        getSelectedAddressUseCase(addressList = it.data).getOrElse(null)
                     //  Check the first one if none is selected.
                     _selectedAddress.value = selectedAddress ?: selectFirstAddress(it.data)
                 } else {

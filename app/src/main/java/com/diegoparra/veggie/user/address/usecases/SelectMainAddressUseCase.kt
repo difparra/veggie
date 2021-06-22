@@ -12,7 +12,7 @@ class SelectMainAddressUseCase @Inject constructor(
 
     suspend operator fun invoke(addressId: String) {
         val currentUserId = authRepository.getIdCurrentUser().getOrElse("")
-        addressRepository.setSelectedAddressId(userId = currentUserId, addressId = addressId)
+        addressRepository.setSelectedAddress(userId = currentUserId, addressId = addressId)
     }
 
 }

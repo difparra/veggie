@@ -29,7 +29,7 @@ class AddressListFragment : Fragment() {
     private var _binding: FragmentAddressListBinding? = null
     private val binding get() = _binding!!
     private val viewModel: AddressListViewModel by hiltNavGraphViewModels(R.id.nav_user_address)
-    private val mapAddressToRadioButtonId: MutableMap<String, Int> = mutableMapOf()
+    private val mapAddressIdToRadioButtonId: MutableMap<String, Int> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,8 +79,6 @@ class AddressListFragment : Fragment() {
 
     private fun subscribeUi() {
         viewModel.addressList.observe(viewLifecycleOwner) {
-            binding.addressRadioGroup.removeAllViews()
-            mapAddressToRadioButtonId.clear()
             when (it) {
                 is Resource.Loading -> renderLoadingState()
                 is Resource.Success -> renderSuccessState(it.data)
@@ -88,11 +86,11 @@ class AddressListFragment : Fragment() {
             }
         }
         viewModel.selectedAddress.observe(viewLifecycleOwner) {
-            val radioButtonId = mapAddressToRadioButtonId[it?.id]
+            val radioButtonId = mapAddressIdToRadioButtonId[it?.id]
             radioButtonId?.let { binding.addressRadioGroup.check(it) }
-            //  TODO:   Check how many times this is calling the live data result in
-            //      ShippingInfoFragment, and if more than one, try to fix it, as every call will
-            //      also call the repository and database.
+            //  It is setting address multiple times, on every selection, but it is ok as fragment
+            //  listening to the addressResult is not getting data multiple times, as it is liveData
+            //  it will just trigger when view is visible. Therefore, it is not calling repository more than once.
             AddressResultNavigation.setResult(navController = findNavController(), result = true)
         }
         viewModel.failure.observe(viewLifecycleOwner, EventObserver {
@@ -127,19 +125,36 @@ class AddressListFragment : Fragment() {
     }
 
     private fun renderAddressList(addressList: List<Address>) {
+        //  Cleaning before creating the views.
+        //  Important: removeAllViews will not call clearCheck, but to have a consistent value in
+        //  checkedRadioButton, I should also call clearCheck when calling removeAllViews. Otherwise,
+        //  previous selected id will be kept in radioGroup, and when removing all views, checkedId
+        //  will not be neither -1 (none) nor an actual child view of the radioGroup.
+        binding.addressRadioGroup.removeAllViews()
+        binding.addressRadioGroup.clearCheck()
+        mapAddressIdToRadioButtonId.clear()
+        //  Create radioButtons
         addressList.forEach { address ->
             val radioButton = createRadioButton()
-            mapAddressToRadioButtonId[address.id] = radioButton.id
+            mapAddressIdToRadioButtonId[address.id] = radioButton.id
+            Timber.d("created radio button with id: ${radioButton.id}")
             radioButton.text = getAddressString(address)
             radioButton.setOnClickListener { viewModel.selectAddress(address.id) }
             radioButton.setOnLongClickListener { showActionsDialogForAddress(address); true }
-            /*
-            //  Could be needed if selectedAddressId observer was already called, before
-            //  radioButtons being created, but it is currently working without it.
-            viewModel.selectedAddressId.value?.let {
-                if(it == address.id) { radioButton.isChecked = true }
-            }*/
             binding.addressRadioGroup.addView(radioButton)
+        }
+        //  In some cases, selectedAddress observer could trigger before radioButtons being created.
+        //  For example:
+        //  -   When coming back from addFragment, as value had been already loaded it will trigger before
+        //      radioButtons are created. And repo will be loaded again, but as there are stateflows in
+        //      they will not emit same values, so live data will not listen again.
+        //  -   If repo is also too efficient, it could also be possible that the selectedValue is collected
+        //      before creating the radioButtons.
+        //  In such cases, I would have to set the selectedAddress manually, with the already loaded
+        //  viewModel.selectedAddress.value
+        viewModel.selectedAddress.value?.let {
+            val radioButtonId = mapAddressIdToRadioButtonId[it.id]
+            radioButtonId?.let { binding.addressRadioGroup.check(it) }
         }
     }
 

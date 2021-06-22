@@ -10,7 +10,7 @@ interface AddressRepository {
     suspend fun addAddress(userId: String, address: Address): Either<Failure, Address>
     suspend fun deleteAddress(userId: String, address: Address): Either<Failure, Unit>
 
-    suspend fun setSelectedAddressId(userId: String, addressId: String)
-    suspend fun getSelectedAddressId(userId: String): Either<Failure, String?>
+    suspend fun setSelectedAddress(userId: String, addressId: String)
+    suspend fun getSelectedAddress(userId: String, addressList: List<Address>? = null): Either<Failure, Address?>
 
 }
