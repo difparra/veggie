@@ -24,6 +24,8 @@ private const val ITEM = R.layout.list_item_shipping_time
 class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, timeRange: TimeRange, cost: Int) -> Unit) :
     ListAdapter<ShippingScheduleAdapter.Item, ShippingScheduleAdapter.ViewHolder>(DiffCallback) {
 
+    //  Supporting function to add sticky headers
+    fun isHeader(position: Int) = getItemViewType(position) == HEADER
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {

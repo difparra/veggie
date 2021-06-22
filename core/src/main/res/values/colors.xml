@@ -4,6 +4,9 @@
     <!-- Color palette -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray_light_theme">#ECECEC</color>
+    <color name="gray_dark_theme">#B8B8B8</color>
+
 
     <color name="green_500">#5BBE10</color>     <!-- Color Primary -->
     <color name="green_700">#329A00</color>     <!-- Color Primary Variant -->

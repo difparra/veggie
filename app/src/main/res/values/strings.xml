@@ -55,6 +55,8 @@
     <!-- Order flow in cart -->
     <string name="shipping_info">Datos de envío</string>
     <string name="schedule_your_delivery">Fecha y hora de entrega</string>
+    <!-- Show to add address or phoneNumber in order flow -->
+    <string name="add">Agregar...</string>
 
 
 
@@ -69,5 +71,10 @@
     <string name="failure_empty_search_query">Ingresa un valor en la barra de búsqueda.</string>
     <string name="failure_no_search_result">No hay productos que coincidan con tu búsqueda.</string>
     <string name="failure_empty_cart_list">El carrito está vacío.</string>
+
+    <!-- OrderFlow -->
+    <string name="failure_no_selected_phone_number">Debes agregar un teléfono para continuar.</string>
+    <string name="failure_no_selected_address">Debes agregar una dirección para continuar.</string>
+    <string name="failure_no_selected_date">Debes agregar una fecha de entrega para continuar.</string>
 
 </resources>

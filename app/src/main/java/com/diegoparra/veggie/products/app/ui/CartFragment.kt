@@ -18,6 +18,7 @@ import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.products.app.viewmodels.CartViewModel
 import com.diegoparra.veggie.products.app.viewmodels.Total
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,6 +37,15 @@ class CartFragment : Fragment() {
         }
     })}
 
+    private fun changeBottomNavVisibility(isVisible: Boolean) {
+        val bottomNavView = activity?.findViewById<BottomNavigationView>(R.id.nav_view_main)
+        bottomNavView?.let {
+            if(it.isVisible != isVisible){
+                it.isVisible = isVisible
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,6 +55,7 @@ class CartFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        changeBottomNavVisibility(isVisible = true)
         clearCartFunctionality()
         cartProductsFunctionality()
         totalFunctionality()
@@ -157,6 +168,7 @@ class CartFragment : Fragment() {
 
     private fun makeOrderListener() {
         binding.btnMakeOrder.setOnClickListener {
+            changeBottomNavVisibility(isVisible = false)
             val action = CartFragmentDirections.actionNavCartToNavOrder()
             findNavController().navigate(action)
         }

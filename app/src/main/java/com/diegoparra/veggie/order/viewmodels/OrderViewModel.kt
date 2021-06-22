@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.diegoparra.veggie.auth.usecases.GetProfileAsFlowUseCase
-import com.diegoparra.veggie.core.kotlin.Either
-import com.diegoparra.veggie.core.kotlin.Event
-import com.diegoparra.veggie.core.kotlin.getOrElse
-import com.diegoparra.veggie.core.kotlin.map
+import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.auth.utils.Fields
+import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.order.domain.DeliverySchedule
+import com.diegoparra.veggie.order.domain.ShippingInfo
 import com.diegoparra.veggie.order.usecases.GetDeliveryCostUseCase
 import com.diegoparra.veggie.order.usecases.GetDeliveryScheduleOptionsUseCase
 import com.diegoparra.veggie.user.address.domain.Address
@@ -20,20 +20,32 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class ShippingInfoViewModel @Inject constructor(
+class OrderViewModel @Inject constructor(
     private val getProfileAsFlowUseCase: GetProfileAsFlowUseCase,
     private val getSelectedAddressUseCase: GetSelectedAddressUseCase,
     private val getDeliveryScheduleOptionsUseCase: GetDeliveryScheduleOptionsUseCase,
     private val getDeliveryCostUseCase: GetDeliveryCostUseCase
 ) : ViewModel() {
 
+    companion object Fields {
+        const val ADDRESS = com.diegoparra.veggie.auth.utils.Fields.ADDRESS
+        const val PHONE_NUMBER = com.diegoparra.veggie.auth.utils.Fields.PHONE_NUMBER
+        const val DELIVERY_DATE_TIME = "deliveryDateTime"
+    }
+
+
     private val _userProfile = getProfileAsFlowUseCase()
     val isSignedIn = _userProfile.map { Event(it is Either.Right) }.asLiveData()
 
-    private val _userId = _userProfile.map { it.map { it.id } }
-    val userId = _userId.map { it.getOrElse(null) }.asLiveData()
-    private val _phoneNumber = _userProfile.map { it.map { it.phoneNumber } }
-    val phoneNumber = _phoneNumber.map { it.getOrElse(null) }.asLiveData()
+
+    /*
+     *      SHIPPING INFO       --------------------------------------------------------------------
+     */
+
+    private val _userId = _userProfile.map { it.getOrElse(null)?.id }
+    val userId = _userId.asLiveData()
+    private val _phoneNumber = _userProfile.map { it.getOrElse(null)?.phoneNumber }
+    val phoneNumber = _phoneNumber.asLiveData()
 
     //  phoneNumber can change while viewModel is alive, but as it is a flow, I don't need to
     //  implement a function refreshPhoneNumber
@@ -66,8 +78,13 @@ class ShippingInfoViewModel @Inject constructor(
         }
     }
 
+    data class DeliveryScheduleAndCost(
+        val schedule: DeliverySchedule,
+        val cost: Int,
+        val isSelected: Boolean
+    )
 
-    private val _deliveryCosts =
+    private val _deliveryScheduleAndCosts =
         combine(
             _address,
             _deliveryScheduleOptions,
@@ -75,14 +92,14 @@ class ShippingInfoViewModel @Inject constructor(
         ) { address, deliveryScheduleOptions, selDeliverySchedule ->
             Timber.d("_deliveryCost combine flow called with address = ${address?.fullAddress()}, deliveryScheduleOptions = $deliveryScheduleOptions")
             deliveryScheduleOptions.map {
-                DeliveryCost(
+                DeliveryScheduleAndCost(
                     schedule = it,
                     cost = getDeliveryCostUseCase(it, address),
                     isSelected = it == selDeliverySchedule
                 )
             }
         }
-    val deliveryCosts = _deliveryCosts.asLiveData()
+    val deliveryCosts = _deliveryScheduleAndCosts.asLiveData()
 
 
     fun selectDeliverySchedule(deliverySchedule: DeliverySchedule, cost: Int) {
@@ -90,22 +107,40 @@ class ShippingInfoViewModel @Inject constructor(
         _deliveryCost.value = cost
     }
 
-    /*  //  Could have been used, but for simplicity, performance and due to the fact that the ui
-        //  design allows it, I could ask for the cost in the function as well, avoiding the search
-        //  into the flow.
-    fun selectDeliverySchedule(deliverySchedule: DeliverySchedule) {
-        _deliverySchedule.value = deliverySchedule
-        viewModelScope.launch {
-            _deliveryCost.value = _deliveryCosts.first()
-                .find{ it.schedule == _deliverySchedule.value }!!
-                .cost
+    private val _shippingInfo = combine(
+        _userId, _phoneNumber, _address, _deliverySchedule, _deliveryCost
+    ) { userId, phoneNumber, address, deliverySchedule, deliveryCost ->
+
+        //  Validation
+        if (userId == null) {
+            return@combine Either.Left(listOf(AuthFailure.SignInState.NotSignedIn))
         }
-    }*/
+        val failures: MutableList<Failure> = mutableListOf()
+        if (phoneNumber == null) {
+            failures.add(AuthFailure.WrongInput.Empty(field = PHONE_NUMBER, ""))
+        }
+        if (address == null) {
+            failures.add(AuthFailure.WrongInput.Empty(field = ADDRESS, ""))
+        }
+        if (deliverySchedule == null || deliveryCost == null) {
+            failures.add(AuthFailure.WrongInput.Empty(field = DELIVERY_DATE_TIME, ""))
+        }
 
+        //  Returning value
+        if (failures.isNotEmpty()) {
+            return@combine Either.Left(failures)
+        } else {
+            return@combine Either.Right(
+                ShippingInfo(
+                    userId = userId,
+                    phoneNumber = phoneNumber!!,
+                    address = address!!,
+                    deliverySchedule = deliverySchedule!!,
+                    deliveryCost = deliveryCost!!
+                )
+            )
+        }
+    }
+    val shippingInfo = _shippingInfo.asLiveData()
 
-    data class DeliveryCost(
-        val schedule: DeliverySchedule,
-        val cost: Int,
-        val isSelected: Boolean
-    )
 }

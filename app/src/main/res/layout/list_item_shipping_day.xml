@@ -8,7 +8,6 @@
     tools:text="Thursday, June 17"
     android:textAppearance="@style/TextAppearance.Veggie.Subtitle2"
     android:padding="?attr/paddingSmall"
-    android:layout_marginVertical="?attr/paddingSmall"
-    android:background="?attr/colorControlHighlight">
+    android:background="?attr/colorGrayDefault">
 
 </TextView>

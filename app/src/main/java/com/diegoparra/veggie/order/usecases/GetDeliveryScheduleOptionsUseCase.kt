@@ -58,11 +58,7 @@ class GetDeliveryScheduleOptionsUseCase @Inject constructor(
         val timeRangeOptionsToday =
             deliveryTimetable
                 .filter { it.dayOfWeek == currentDate.dayOfWeek }
-                .filter {
-                    it.timeRange.to.minusHours(1) >= currentTime.plusHours(
-                        minTimeForDeliveryInHours.toLong()
-                    )
-                }
+                .filter { it.timeRange.to >= currentTime.plusHours(minTimeForDeliveryInHours.toLong()) }
         deliveryOptions.addAll(timeRangeOptionsToday.map {
             DeliverySchedule(
                 date = currentDate,

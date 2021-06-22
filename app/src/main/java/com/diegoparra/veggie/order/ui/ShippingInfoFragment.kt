@@ -4,19 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
+import com.diegoparra.veggie.auth.ui_utils.getDefaultErrorMessage
 import com.diegoparra.veggie.auth.utils.AuthConstants
+import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.auth.utils.Fields
 import com.diegoparra.veggie.core.android.EventObserver
+import com.diegoparra.veggie.core.android.getColorFromAttr
+import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.runIfTrue
 import com.diegoparra.veggie.databinding.FragmentShippingInfoBinding
 import com.diegoparra.veggie.order.domain.DeliverySchedule
 import com.diegoparra.veggie.order.domain.TimeRange
-import com.diegoparra.veggie.order.viewmodels.ShippingInfoViewModel
+import com.diegoparra.veggie.order.viewmodels.OrderViewModel
 import com.diegoparra.veggie.user.address.domain.AddressConstants
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.time.LocalDate
@@ -26,16 +34,18 @@ class ShippingInfoFragment : Fragment() {
 
     private var _binding: FragmentShippingInfoBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ShippingInfoViewModel by viewModels()
+    private val viewModel: OrderViewModel by hiltNavGraphViewModels(R.id.nav_order)
     private val adapter by lazy {
         ShippingScheduleAdapter { date: LocalDate, timeRange: TimeRange, cost: Int ->
             Timber.d("Date selected: date=$date, from=${timeRange.from}, to=${timeRange.to}")
+            setErrorDeliverySchedule(null)
             viewModel.selectDeliverySchedule(
                 deliverySchedule = DeliverySchedule(date = date, timeRange = timeRange),
                 cost = cost
             )
         }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,19 +85,41 @@ class ShippingInfoFragment : Fragment() {
         }
 
         binding.phoneNumber.setOnClickListener {
+            binding.phoneNumberLayout.setAndExpandError(null)
             val action =
                 ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavVerifyPhoneNumber()
             findNavController().navigate(action)
         }
 
         binding.address.setOnClickListener {
+            binding.addressLayout.setAndExpandError(null)
             val action = ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavUserAddress()
             findNavController().navigate(action)
         }
 
+        //  To init view, so that it does not matter visibility values in xml.
+        setErrorDeliverySchedule(null)
+
         binding.recyclerShippingSchedule.setHasFixedSize(true)
         binding.recyclerShippingSchedule.adapter = adapter
+        binding.recyclerShippingSchedule.addItemDecoration(
+            HeaderItemDecoration(
+                parent = binding.recyclerShippingSchedule,
+                isHeader = adapter::isHeader
+            )
+        )
 
+        //  Must observe shippingInfo. Otherwise, value in buttonContinue clickListener will always be null
+        viewModel.shippingInfo.observe(viewLifecycleOwner) {}
+        binding.buttonContinue.setOnClickListener {
+            Timber.d("clickListener. viewModelShippingInfo.value = ${viewModel.shippingInfo.value}")
+            viewModel.shippingInfo.value?.let {
+                when (it) {
+                    is Either.Right -> navigateSuccess()
+                    is Either.Left -> handleBtnContinueFailures(it.a)
+                }
+            }
+        }
     }
 
     private fun subscribeUi() {
@@ -116,18 +148,6 @@ class ShippingInfoFragment : Fragment() {
                     isSelected = it.isSelected
                 )
             }.addHeaders()
-            Timber.d(
-                "listToSubmit = ${
-                    listToSubmit.map {
-                        when (it) {
-                            is ShippingScheduleAdapter.Item.ShippingItem ->
-                                "date = ${it.date}, from = ${it.timeRange.from}, to = ${it.timeRange.to}, cost = ${it.cost}, selected = ${it.isSelected}"
-                            is ShippingScheduleAdapter.Item.Header ->
-                                "date = ${it.date}"
-                        }
-                    }.joinToString("\n")
-                }"
-            )
             adapter.submitList(listToSubmit)
         }
     }
@@ -144,6 +164,78 @@ class ShippingInfoFragment : Fragment() {
         }
         return list
     }
+
+
+    /*
+            ----------------------------------------------------------------------------------------
+     */
+
+
+    private fun navigateSuccess() {
+        Snackbar.make(
+            binding.root,
+            "navigateSuccess...",
+            Snackbar.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun handleBtnContinueFailures(failures: List<Failure>) {
+        binding.nestedScrollView?.scrollTo(0, 0)
+        binding.phoneNumberLayout.isEndIconVisible = false
+        failures.forEach {
+            if (it is AuthFailure.WrongInput.Empty) {
+                when (it.field) {
+                    OrderViewModel.PHONE_NUMBER -> binding.phoneNumberLayout.setAndExpandError(
+                        getString(R.string.failure_no_selected_phone_number)
+                    )
+                    OrderViewModel.ADDRESS -> binding.addressLayout.setAndExpandError(getString(R.string.failure_no_selected_address))
+                    OrderViewModel.DELIVERY_DATE_TIME -> setErrorDeliverySchedule(getString(R.string.failure_no_selected_address))
+                }
+            } else {
+                Snackbar.make(
+                    binding.root,
+                    if (it is AuthFailure) it.getDefaultErrorMessage(binding.root.context) else it.toString(),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+
+    //  Error helpers
+
+    private fun TextInputLayout.setAndExpandError(error: String?) {
+        this.error = error
+        this.isErrorEnabled = error != null
+    }
+
+    private fun setErrorDeliverySchedule(error: String?) {
+        if (error != null) {
+            binding.titleDeliveryDateTime.setTextColor(
+                binding.titleDeliveryDateTime.context.getColorFromAttr(
+                    R.attr.colorError
+                )
+            )
+            binding.errorDeliveryDateTime.text = error
+            binding.errorDeliveryDateTime.isVisible = true
+        } else {
+            //  Check if there is already an error set, so that it will not load next views if not needed.
+            if (binding.errorDeliveryDateTime.isVisible) {
+                binding.titleDeliveryDateTime.setTextColor(
+                    binding.titleDeliveryDateTime.context.getColorFromAttr(
+                        R.attr.colorOnSurface
+                    )
+                )
+                binding.errorDeliveryDateTime.text = null
+                binding.errorDeliveryDateTime.isVisible = false
+            }
+        }
+    }
+
+
+    /*
+            ----------------------------------------------------------------------------------------
+     */
 
     override fun onDestroyView() {
         super.onDestroyView()

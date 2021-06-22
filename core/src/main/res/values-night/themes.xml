@@ -9,10 +9,11 @@
         <item name="colorSecondary">@color/red_200</item>
         <item name="colorSecondaryVariant">@color/red_200</item>
         <item name="colorOnSecondary">@color/black</item>
-        <item name="colorsRandom">@array/light_colors</item>
         <!-- Custom defined colors -->
         <item name="colorWarning">@color/orange_light</item>
         <item name="colorOnWarning">@color/black</item>
+        <item name="colorGrayDefault">@color/gray_dark_theme</item>
+        <item name="colorsRandom">@array/dark_colors</item>
 
         <!-- Additional colors -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>

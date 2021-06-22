@@ -8,5 +8,5 @@ data class ShippingInfo(
     val address: Address,
     val deliverySchedule: DeliverySchedule,
     val deliveryCost: Int,
-    val state: String                       //  Preparing, on the way, delivered
+    val state: String? = null                       //  Preparing, on the way, delivered
 )
