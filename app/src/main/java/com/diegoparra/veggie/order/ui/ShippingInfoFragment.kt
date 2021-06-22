@@ -8,18 +8,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
+import com.diegoparra.veggie.auth.utils.AuthConstants
+import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.core.kotlin.runIfTrue
 import com.diegoparra.veggie.databinding.FragmentShippingInfoBinding
 import com.diegoparra.veggie.order.domain.DeliverySchedule
 import com.diegoparra.veggie.order.domain.TimeRange
 import com.diegoparra.veggie.order.viewmodels.ShippingInfoViewModel
 import com.diegoparra.veggie.user.address.domain.AddressConstants
-import com.diegoparra.veggie.user.address.ui.AddressResultNavigation
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.time.LocalDate
-import java.time.LocalTime
 
 @AndroidEntryPoint
 class ShippingInfoFragment : Fragment() {
@@ -40,11 +40,21 @@ class ShippingInfoFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val navController = findNavController()
-        val shippingInfoFragmentAsBackStackEntry = navController.getBackStackEntry(R.id.shippingInfoFragment)
+        val shippingInfoFragmentAsBackStackEntry =
+            navController.getBackStackEntry(R.id.shippingInfoFragment)
         val savedStateHandle = shippingInfoFragmentAsBackStackEntry.savedStateHandle
+        savedStateHandle.getLiveData<Boolean>(AuthConstants.LOGIN_SUCCESSFUL)
+            .observe(shippingInfoFragmentAsBackStackEntry) {
+                //  It is just being called when view is visible,
+                //  not while in another fragment or when rotating device.
+                Timber.d("${AuthConstants.LOGIN_SUCCESSFUL} = $it")
+                if (!it) {
+                    navController.popBackStack()
+                }
+            }
         savedStateHandle.getLiveData<Boolean>(AddressConstants.ADDRESS_SELECTED_SUCCESSFUL)
             .observe(shippingInfoFragmentAsBackStackEntry) {
-                Timber.d("${AddressConstants.ADDRESS_SELECTED_SUCCESSFUL} = it")
+                Timber.d("${AddressConstants.ADDRESS_SELECTED_SUCCESSFUL} = $it")
                 it.runIfTrue { viewModel.refreshAddress() }
             }
     }
@@ -65,7 +75,8 @@ class ShippingInfoFragment : Fragment() {
         }
 
         binding.phoneNumber.setOnClickListener {
-            val action = ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavVerifyPhoneNumber()
+            val action =
+                ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavVerifyPhoneNumber()
             findNavController().navigate(action)
         }
 
@@ -80,15 +91,11 @@ class ShippingInfoFragment : Fragment() {
     }
 
     private fun subscribeUi() {
-        viewModel.isAuthenticated.observe(viewLifecycleOwner) {
-            //  TODO:   Redirect to signInFlow
-            Timber.d("isAuthenticated = $it")
+        viewModel.isSignedIn.observe(viewLifecycleOwner, EventObserver {
             if (!it) {
-                findNavController().popBackStack()
-                Snackbar.make(binding.root, "User is not authenticated.", Snackbar.LENGTH_SHORT)
-                    .show()
+                findNavController().navigate(ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavSignIn())
             }
-        }
+        })
 
         viewModel.phoneNumber.observe(viewLifecycleOwner) {
             Timber.d("phoneNumber = $it")

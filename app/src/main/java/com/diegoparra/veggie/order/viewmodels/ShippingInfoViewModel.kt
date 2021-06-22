@@ -5,6 +5,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.diegoparra.veggie.auth.usecases.GetProfileAsFlowUseCase
 import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Event
 import com.diegoparra.veggie.core.kotlin.getOrElse
 import com.diegoparra.veggie.core.kotlin.map
 import com.diegoparra.veggie.order.domain.DeliverySchedule
@@ -27,7 +28,7 @@ class ShippingInfoViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _userProfile = getProfileAsFlowUseCase()
-    val isAuthenticated = _userProfile.map { it is Either.Right }.asLiveData()
+    val isSignedIn = _userProfile.map { Event(it is Either.Right) }.asLiveData()
 
     private val _userId = _userProfile.map { it.map { it.id } }
     val userId = _userId.map { it.getOrElse(null) }.asLiveData()
