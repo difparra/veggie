@@ -55,16 +55,19 @@ class GetDeliveryScheduleOptionsUseCase @Inject constructor(
         val currentTime = LocalTime.now()
         val deliveryOptions = mutableListOf<DeliverySchedule>()
 
-        val timeRangeOptionsToday =
-            deliveryTimetable
-                .filter { it.dayOfWeek == currentDate.dayOfWeek }
-                .filter { it.timeRange.to >= currentTime.plusHours(minTimeForDeliveryInHours.toLong()) }
-        deliveryOptions.addAll(timeRangeOptionsToday.map {
-            DeliverySchedule(
-                date = currentDate,
-                timeRange = it.timeRange
-            )
-        })
+        //  Check that time left to finish the day is enough to meet the minTimeForDelivery on the sameDay.
+        if((24 - currentTime.hour) >= minTimeForDeliveryInHours) {
+            val timeRangeOptionsToday =
+                deliveryTimetable
+                    .filter { it.dayOfWeek == currentDate.dayOfWeek }
+                    .filter { it.timeRange.to >= currentTime.plusHours(minTimeForDeliveryInHours.toLong()) }
+            deliveryOptions.addAll(timeRangeOptionsToday.map {
+                DeliverySchedule(
+                    date = currentDate,
+                    timeRange = it.timeRange
+                )
+            })
+        }
 
         if (maxDaysAhead > 0) {
             for (day in 1..maxDaysAhead) {

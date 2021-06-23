@@ -20,6 +20,7 @@ import com.diegoparra.veggie.products.app.viewmodels.CartViewModel
 import com.diegoparra.veggie.products.app.viewmodels.Total
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class CartFragment : Fragment() {
@@ -27,23 +28,20 @@ class CartFragment : Fragment() {
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CartViewModel by viewModels()
-    private val adapter by lazy { CartAdapter(object : CartAdapter.OnItemClickListener {
-        override fun onItemClick(productId: ProductId, position: Int, which: Int) {
-            when (which) {
-                CartAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(productId)
-                CartAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(productId)
-                CartAdapter.OnItemClickListener.VIEW_QUANTITY -> viewModel.setEditablePosition(position)
+    private val adapter by lazy {
+        CartAdapter(object : CartAdapter.OnItemClickListener {
+            override fun onItemClick(productId: ProductId, position: Int, which: Int) {
+                when (which) {
+                    CartAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(productId)
+                    CartAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(
+                        productId
+                    )
+                    CartAdapter.OnItemClickListener.VIEW_QUANTITY -> viewModel.setEditablePosition(
+                        position
+                    )
+                }
             }
-        }
-    })}
-
-    private fun changeBottomNavVisibility(isVisible: Boolean) {
-        val bottomNavView = activity?.findViewById<BottomNavigationView>(R.id.nav_view_main)
-        bottomNavView?.let {
-            if(it.isVisible != isVisible){
-                it.isVisible = isVisible
-            }
-        }
+        })
     }
 
     override fun onCreateView(
@@ -55,7 +53,7 @@ class CartFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        changeBottomNavVisibility(isVisible = true)
+        binding.btnBack.setOnClickListener { findNavController().popBackStack() }
         clearCartFunctionality()
         cartProductsFunctionality()
         totalFunctionality()
@@ -125,21 +123,33 @@ class CartFragment : Fragment() {
     //      ----------------------------------------------------------------------------------------
 
     private fun totalFunctionality() {
+        //  Initial state - while values haven't loaded yet
+        binding.cartTotalWarning.isVisible = false
+        binding.cartTotalProgressBar.isVisible = false
+        binding.btnMakeOrder.isVisible = true
+
         viewModel.total.observe(viewLifecycleOwner) {
+            binding.cartTotal.text = it.totalValue.addPriceFormat()
             when (it) {
                 is Total.EmptyCart -> {
-                    binding.cartTotal.isVisible = true
-                    binding.btnMakeOrder.isVisible = false
-                    with(binding.cartTotal) {
+                    binding.cartTotalWarning.isVisible = true
+                    binding.cartTotalProgressBar.isVisible = true
+                    binding.cartTotalProgressBar.progress = 0
+                    binding.btnMakeOrder.isVisible = true
+                    binding.btnMakeOrder.isEnabled = false
+                    with(binding.cartTotalWarning) {
                         setBackgroundColor(context.getColorFromAttr(R.attr.colorError))
                         setTextColor(context.getColorFromAttr(R.attr.colorOnError))
                         text = getString(R.string.total_empty_cart)
                     }
                 }
                 is Total.MinNotReached -> {
-                    binding.cartTotal.isVisible = true
-                    binding.btnMakeOrder.isVisible = false
-                    with(binding.cartTotal) {
+                    binding.cartTotalWarning.isVisible = true
+                    binding.cartTotalProgressBar.isVisible = true
+                    binding.cartTotalProgressBar.progress = (100 * it.totalValue) / it.minOrder
+                    binding.btnMakeOrder.isVisible = true
+                    binding.btnMakeOrder.isEnabled = false
+                    with(binding.cartTotalWarning) {
                         setBackgroundColor(context.getColorFromAttr(R.attr.colorWarning))
                         setTextColor(context.getColorFromAttr(R.attr.colorOnWarning))
                         val toMinOrder = (it.minOrder - it.totalValue).addPriceFormat()
@@ -147,17 +157,15 @@ class CartFragment : Fragment() {
                     }
                 }
                 is Total.OK -> {
-                    binding.cartTotal.isVisible = true
+                    binding.cartTotalWarning.isVisible = false
+                    binding.cartTotalProgressBar.isVisible = false
+                    binding.cartTotalProgressBar.progress = 100
                     binding.btnMakeOrder.isVisible = true
                     binding.btnMakeOrder.isEnabled = true
-                    with(binding.cartTotal) {
-                        setBackgroundColor(context.getColorFromAttr(R.attr.colorPrimaryVariant))
-                        setTextColor(context.getColorFromAttr(R.attr.colorOnPrimary))
-                        text = getString(R.string.total_order, it.totalValue.addPriceFormat())
-                    }
                 }
                 else -> {
-                    binding.cartTotal.isVisible = false
+                    binding.cartTotalWarning.isVisible = false
+                    binding.cartTotalProgressBar.isVisible = false
                     binding.btnMakeOrder.isVisible = false
                 }
             }
@@ -168,9 +176,12 @@ class CartFragment : Fragment() {
 
     private fun makeOrderListener() {
         binding.btnMakeOrder.setOnClickListener {
-            changeBottomNavVisibility(isVisible = false)
-            val action = CartFragmentDirections.actionNavCartToNavOrder()
-            findNavController().navigate(action)
+            if(viewModel.total.value is Total.OK) {
+                val action = CartFragmentDirections.actionNavCartToNavOrder()
+                findNavController().navigate(action)
+            }else {
+                Timber.wtf("Error while getting total from viewModel. Check, it should be Total.OK")
+            }
         }
     }
 
