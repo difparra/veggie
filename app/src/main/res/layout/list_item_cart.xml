@@ -49,6 +49,8 @@
         app:layout_constraintStart_toEndOf="@id/image"
         app:layout_constraintEnd_toStartOf="@id/btn_reduce"
         app:layout_constraintTop_toTopOf="parent"
+        android:maxLines="1"
+        android:ellipsize="end"
         tools:text="Name" />
 
     <TextView
@@ -60,6 +62,8 @@
         app:layout_constraintStart_toStartOf="@id/name"
         app:layout_constraintEnd_toEndOf="@id/name"
         app:layout_constraintTop_toBottomOf="@+id/name"
+        android:maxLines="1"
+        android:ellipsize="end"
         tools:text="Description" />
 
     <TextView

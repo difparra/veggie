@@ -28,6 +28,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/price"
         android:alpha="?attr/alphaSecondaryText"
+        android:maxLines="1"
+        android:ellipsize="end"
         tools:text="Description" />
 
     <com.diegoparra.veggie.core.QtyButton

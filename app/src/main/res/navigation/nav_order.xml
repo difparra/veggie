@@ -19,10 +19,18 @@
         <action
             android:id="@+id/action_shippingInfoFragment_to_nav_sign_in"
             app:destination="@id/nav_sign_in" />
+        <action
+            android:id="@+id/action_shippingInfoFragment_to_orderSummaryFragment"
+            app:destination="@id/orderSummaryFragment" />
     </fragment>
     <include app:graph="@navigation/nav_user_address" />
     <include app:graph="@navigation/nav_verify_phone_number" />
     <include app:graph="@navigation/nav_sign_in" />
+    <fragment
+        android:id="@+id/orderSummaryFragment"
+        android:name="com.diegoparra.veggie.order.ui.OrderSummaryFragment"
+        android:label="fragment_order_summary"
+        tools:layout="@layout/fragment_order_summary" />
 
 
 </navigation>

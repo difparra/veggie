@@ -16,7 +16,9 @@
         android:textAppearance="?attr/textAppearanceSubtitle1"
         tools:text="Product"
         android:layout_marginHorizontal="?attr/paddingBig"
-        android:layout_marginVertical="?attr/paddingSmall"/>
+        android:layout_marginVertical="?attr/paddingSmall"
+        android:maxLines="1"
+        android:ellipsize="end" />
 
     <View
         style="@style/Widget.Veggie.Divider" />

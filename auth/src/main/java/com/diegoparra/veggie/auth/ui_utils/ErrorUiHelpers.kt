@@ -14,7 +14,7 @@ fun TextInputLayout.handleAuthError(
         { failure -> failure.getDefaultErrorMessage(context, fieldName, femaleGenderString) },
     failureMessage: (failure: AuthFailure) -> String = { it.getDefaultErrorMessage(context) }
 ) {
-    this.findViewById<TextView>(R.id.textinput_error).apply { maxLines = 4 }
+    //this.findViewById<TextView>(R.id.textinput_error).apply { maxLines = 4 }
     error = when (resource) {
         is Resource.Success -> null
         is Resource.Error -> {

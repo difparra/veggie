@@ -24,6 +24,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/photo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:maxLines="1"
+                android:ellipsize="end"
                 tools:text="Name" />
 
             <TextView
@@ -35,6 +37,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/photo"
                 app:layout_constraintStart_toStartOf="@+id/name"
                 app:layout_constraintTop_toBottomOf="@+id/name"
+                android:maxLines="1"
+                android:ellipsize="end"
                 tools:text="Email" />
 
             <ImageView

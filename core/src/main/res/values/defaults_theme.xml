@@ -42,8 +42,8 @@
     <style name="Widget.Veggie.TextView" parent="Widget.MaterialComponents.TextView">
         <item name="android:textAppearance">?attr/textAppearanceBody2</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">1</item>
+        <!--<item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>-->
     </style>
 
     <style name="Widget.Veggie.EditText" parent="Widget.AppCompat.EditText">
@@ -103,6 +103,8 @@
         <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
         <item name="android:paddingStart">@dimen/padding_standard</item>
         <item name="android:paddingEnd">@dimen/padding_standard</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="Widget.Veggie.AppBarLayout.ButtonImageView" parent="">

@@ -56,8 +56,9 @@
     <string name="shipping_info">Datos de envío</string>
     <string name="schedule_your_delivery">Fecha y hora de entrega</string>
     <!-- Show to add address or phoneNumber in order flow -->
-    <string name="add">Agregar...</string>
+    <string name="add">Agregar…</string>
 
+    <string name="order_summary">Resumen de orden</string>
 
 
 

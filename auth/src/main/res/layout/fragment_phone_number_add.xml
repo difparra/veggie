@@ -45,8 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/add_phone_number_description"
-                android:layout_marginVertical="?attr/paddingStandard"
-                android:maxLines="10" />
+                android:layout_marginVertical="?attr/paddingStandard" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/phone_number_layout"

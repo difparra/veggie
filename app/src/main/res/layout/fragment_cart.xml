@@ -62,7 +62,6 @@
         android:layout_height="wrap_content"
         tools:text="@string/total_x_to_complete_min_order"
         android:paddingBottom="?attr/paddingSmall"
-        android:maxLines="2"
         android:minHeight="25dp"
         android:gravity="center"
         android:background="?attr/colorWarning"
@@ -130,7 +129,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="ErrorText"
-        android:textAlignment="center"
-        android:maxLines="10"/>
+        android:textAlignment="center" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

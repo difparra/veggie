@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".additional_features.phone_number.ui.PhoneNumberVerifySmsCodeFragment">
+    tools:context=".order.ui.OrderSummaryFragment">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
             <ImageView
-                style="@style/Widget.Veggie.AppBarLayout.ButtonImageView"
                 android:id="@+id/btn_back"
+                style="@style/Widget.Veggie.AppBarLayout.ButtonImageView"
                 android:src="@drawable/ic_arrow_back"
                 android:importantForAccessibility="no"
                 app:tint="?attr/colorPrimary" />
-
             <TextView
                 style="@style/Widget.Veggie.AppBarLayout.Title"
-                android:text="@string/verify_phone_number" />
+                android:text="@string/order_summary"
+                android:paddingStart="?attr/paddingSmall"
+                android:paddingEnd="?attr/paddingSmall"/>
         </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,46 +42,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="?attr/paddingBig">
+            android:padding="?attr/paddingStandard">
 
             <TextView
-                android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/verify_phone_number_description"
-                android:layout_marginVertical="?attr/paddingStandard" />
-
-            <EditText
-                android:id="@+id/sms_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Veggie.Body1"
-                android:textAlignment="center"
-                android:hint="@string/sms_code"
-                android:inputType="number" />
+                android:text="userData: Name, phoneNumber, address" />
 
             <TextView
-                android:id="@+id/resend_code"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/resend_code"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:layout_marginTop="?attr/paddingStandard"
-                android:layout_marginBottom="?attr/paddingSmall" />
-
-            <Button
-                android:id="@+id/btn_verify"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="?attr/paddingStandard"
-                android:text="@string/verify" />
+                android:text="Programado: Fecha, hora" />
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:text="Productos: Cantidad. Ver resumen" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Método de pago: Efectivo" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Totales" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Finalizar pedido" />
 
         </LinearLayout>
 

@@ -174,11 +174,8 @@ class ShippingInfoFragment : Fragment() {
 
 
     private fun navigateSuccess() {
-        Snackbar.make(
-            binding.root,
-            "navigateSuccess...",
-            Snackbar.LENGTH_SHORT
-        ).show()
+        val action = ShippingInfoFragmentDirections.actionShippingInfoFragmentToOrderSummaryFragment()
+        findNavController().navigate(action)
     }
 
     private fun handleBtnContinueFailures(failures: List<Failure>) {
