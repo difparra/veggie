@@ -132,6 +132,7 @@
         android:id="@+id/recycler_shipping_schedule"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="?attr/paddingSmall"
         android:layout_marginHorizontal="?attr/paddingStandard"
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

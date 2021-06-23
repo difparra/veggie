@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
@@ -12,7 +13,6 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.auth.ui_utils.getDefaultErrorMessage
 import com.diegoparra.veggie.auth.utils.AuthConstants
 import com.diegoparra.veggie.auth.utils.AuthFailure
-import com.diegoparra.veggie.auth.utils.Fields
 import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.core.android.getColorFromAttr
 import com.diegoparra.veggie.core.kotlin.Either
@@ -34,11 +34,12 @@ class ShippingInfoFragment : Fragment() {
 
     private var _binding: FragmentShippingInfoBinding? = null
     private val binding get() = _binding!!
+    private lateinit var titleDeliveryDateTime: DeliveryScheduleTitle
     private val viewModel: OrderViewModel by hiltNavGraphViewModels(R.id.nav_order)
     private val adapter by lazy {
         ShippingScheduleAdapter { date: LocalDate, timeRange: TimeRange, cost: Int ->
             Timber.d("Date selected: date=$date, from=${timeRange.from}, to=${timeRange.to}")
-            setErrorDeliverySchedule(null)
+            titleDeliveryDateTime.setAndExpandError(null)
             viewModel.selectDeliverySchedule(
                 deliverySchedule = DeliverySchedule(date = date, timeRange = timeRange),
                 cost = cost
@@ -74,6 +75,7 @@ class ShippingInfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentShippingInfoBinding.inflate(inflater, container, false)
+        titleDeliveryDateTime = DeliveryScheduleTitle(title = binding.titleDeliveryDateTime, errorView = binding.errorDeliveryDateTime)
         return binding.root
     }
 
@@ -98,7 +100,7 @@ class ShippingInfoFragment : Fragment() {
         }
 
         //  To init view, so that it does not matter visibility values in xml.
-        setErrorDeliverySchedule(null)
+        titleDeliveryDateTime.setAndExpandError(null)
 
         binding.recyclerShippingSchedule.setHasFixedSize(true)
         binding.recyclerShippingSchedule.adapter = adapter
@@ -189,7 +191,7 @@ class ShippingInfoFragment : Fragment() {
                         getString(R.string.failure_no_selected_phone_number)
                     )
                     OrderViewModel.ADDRESS -> binding.addressLayout.setAndExpandError(getString(R.string.failure_no_selected_address))
-                    OrderViewModel.DELIVERY_DATE_TIME -> setErrorDeliverySchedule(getString(R.string.failure_no_selected_address))
+                    OrderViewModel.DELIVERY_DATE_TIME -> titleDeliveryDateTime.setAndExpandError(getString(R.string.failure_no_selected_address))
                 }
             } else {
                 Snackbar.make(
@@ -197,37 +199,6 @@ class ShippingInfoFragment : Fragment() {
                     if (it is AuthFailure) it.getDefaultErrorMessage(binding.root.context) else it.toString(),
                     Snackbar.LENGTH_SHORT
                 ).show()
-            }
-        }
-    }
-
-
-    //  Error helpers
-
-    private fun TextInputLayout.setAndExpandError(error: String?) {
-        this.error = error
-        this.isErrorEnabled = error != null
-    }
-
-    private fun setErrorDeliverySchedule(error: String?) {
-        if (error != null) {
-            binding.titleDeliveryDateTime.setTextColor(
-                binding.titleDeliveryDateTime.context.getColorFromAttr(
-                    R.attr.colorError
-                )
-            )
-            binding.errorDeliveryDateTime.text = error
-            binding.errorDeliveryDateTime.isVisible = true
-        } else {
-            //  Check if there is already an error set, so that it will not load next views if not needed.
-            if (binding.errorDeliveryDateTime.isVisible) {
-                binding.titleDeliveryDateTime.setTextColor(
-                    binding.titleDeliveryDateTime.context.getColorFromAttr(
-                        R.attr.colorOnSurface
-                    )
-                )
-                binding.errorDeliveryDateTime.text = null
-                binding.errorDeliveryDateTime.isVisible = false
             }
         }
     }
@@ -242,4 +213,37 @@ class ShippingInfoFragment : Fragment() {
         _binding = null
     }
 
+}
+
+
+//      HELPERS
+
+private fun TextInputLayout.setAndExpandError(error: String?) {
+    this.error = error
+    this.isErrorEnabled = error != null
+}
+
+private class DeliveryScheduleTitle(private val title: TextView, private val errorView: TextView) {
+    private val errorUiState: Boolean? = null
+    private val context get() = title.context
+    private val originalColor = title.currentTextColor
+    private val errorColor = context.getColorFromAttr(R.attr.colorError)
+    init { errorView.setTextColor(errorColor) }
+
+    fun setAndExpandError(error: String?) {
+        errorView.text = error
+        setErrorUi(error != null)
+    }
+    private fun setErrorUi(error: Boolean) {
+        if(errorUiState == error){
+            return
+        }
+        if(error) {
+            errorView.isVisible = true
+            title.setTextColor(errorColor)
+        }else {
+            errorView.isVisible = false
+            title.setTextColor(originalColor)
+        }
+    }
 }

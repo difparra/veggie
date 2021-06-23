@@ -7,6 +7,7 @@
         <attr name="colorWarning" format="reference" />
         <attr name="colorOnWarning" format="reference" />
         <attr name="colorGrayDefault" format="reference" />
+        <attr name="colorOnGrayDefault" format="reference" />
     </declare-styleable>
     <declare-styleable name="alpha_list">
         <attr name="alphaSecondaryText" format="float"/>

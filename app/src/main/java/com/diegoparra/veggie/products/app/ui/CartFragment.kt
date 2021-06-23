@@ -1,10 +1,21 @@
 package com.diegoparra.veggie.products.app.ui
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Layout
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.AlignmentSpan
+import android.text.style.StyleSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -12,6 +23,7 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.android.getColorFromAttr
+import com.diegoparra.veggie.core.android.getColorWithAlphaFromAttrs
 import com.diegoparra.veggie.databinding.FragmentCartBinding
 import com.diegoparra.veggie.products.app.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
@@ -126,60 +138,25 @@ class CartFragment : Fragment() {
         //  Initial state - while values haven't loaded yet
         binding.cartTotalWarning.isVisible = false
         binding.cartTotalProgressBar.isVisible = false
-        binding.btnMakeOrder.isVisible = true
+        binding.btnMakeOrder.isVisible = false
 
+        val warningLabel = WarningLabel(textView = binding.cartTotalWarning, progressBar = binding.cartTotalProgressBar)
+        val btnMakeOrder = BtnMakeOrder(layout = binding.btnMakeOrder, text = binding.btnMakeOrderText, total = binding.cartTotal)
         viewModel.total.observe(viewLifecycleOwner) {
-            binding.cartTotal.text = it.totalValue.addPriceFormat()
-            when (it) {
-                is Total.EmptyCart -> {
-                    binding.cartTotalWarning.isVisible = true
-                    binding.cartTotalProgressBar.isVisible = true
-                    binding.cartTotalProgressBar.progress = 0
-                    binding.btnMakeOrder.isVisible = true
-                    binding.btnMakeOrder.isEnabled = false
-                    with(binding.cartTotalWarning) {
-                        setBackgroundColor(context.getColorFromAttr(R.attr.colorError))
-                        setTextColor(context.getColorFromAttr(R.attr.colorOnError))
-                        text = getString(R.string.total_empty_cart)
-                    }
-                }
-                is Total.MinNotReached -> {
-                    binding.cartTotalWarning.isVisible = true
-                    binding.cartTotalProgressBar.isVisible = true
-                    binding.cartTotalProgressBar.progress = (100 * it.totalValue) / it.minOrder
-                    binding.btnMakeOrder.isVisible = true
-                    binding.btnMakeOrder.isEnabled = false
-                    with(binding.cartTotalWarning) {
-                        setBackgroundColor(context.getColorFromAttr(R.attr.colorWarning))
-                        setTextColor(context.getColorFromAttr(R.attr.colorOnWarning))
-                        val toMinOrder = (it.minOrder - it.totalValue).addPriceFormat()
-                        text = getString(R.string.total_x_to_complete_min_order, toMinOrder)
-                    }
-                }
-                is Total.OK -> {
-                    binding.cartTotalWarning.isVisible = false
-                    binding.cartTotalProgressBar.isVisible = false
-                    binding.cartTotalProgressBar.progress = 100
-                    binding.btnMakeOrder.isVisible = true
-                    binding.btnMakeOrder.isEnabled = true
-                }
-                else -> {
-                    binding.cartTotalWarning.isVisible = false
-                    binding.cartTotalProgressBar.isVisible = false
-                    binding.btnMakeOrder.isVisible = false
-                }
-            }
+            warningLabel.setState(it)
+            btnMakeOrder.setState(it)
         }
     }
+
 
     //      ----------------------------------------------------------------------------------------
 
     private fun makeOrderListener() {
         binding.btnMakeOrder.setOnClickListener {
-            if(viewModel.total.value is Total.OK) {
+            if (viewModel.total.value is Total.OK) {
                 val action = CartFragmentDirections.actionNavCartToNavOrder()
                 findNavController().navigate(action)
-            }else {
+            } else {
                 Timber.wtf("Error while getting total from viewModel. Check, it should be Total.OK")
             }
         }
@@ -193,4 +170,144 @@ class CartFragment : Fragment() {
         _binding = null
     }
 
+}
+
+
+
+
+//      ------      HELPER CLASSES TO CHANGE STATE IN BUTTONS ACCORDING TO TOTAL STATE
+
+private class WarningLabel(
+    private val textView: TextView,
+    private val progressBar: ProgressBar
+) {
+    private var currentState: Total? = null
+    private var isVisible: Boolean? = null
+
+    private val context get() = textView.context
+    private val stringEmpty = context.getString(R.string.total_empty_cart)
+    private val colorError = context.getColorFromAttr(R.attr.colorError)
+    private val colorOnError = context.getColorFromAttr(R.attr.colorOnError)
+    private val colorWarning = context.getColorFromAttr(R.attr.colorWarning)
+    private val colorOnWarning = context.getColorFromAttr(R.attr.colorOnWarning)
+
+    fun setState(totalState: Total) {
+        if (currentState == totalState) {
+            return
+        }
+        currentState = totalState
+        when (totalState) {
+            is Total.EmptyCart -> setEmptyCartState()
+            is Total.MinNotReached -> setMinNotReachedState(totalState)
+            is Total.OK -> setTotalOkState()
+            is Total.Error -> setTotalErrorState()
+        }
+    }
+
+    private fun setVisibility(isVisible: Boolean) {
+        if(this.isVisible == isVisible) {
+            return
+        }
+        this.isVisible = isVisible
+        textView.isVisible = isVisible
+        progressBar.isVisible = isVisible
+    }
+
+    private fun setEmptyCartState() {
+        setVisibility(true)
+        textView.text = stringEmpty
+        textView.setBackgroundColor(colorError)
+        textView.setTextColor(colorOnError)
+        progressBar.progress = 0
+    }
+
+    private fun setMinNotReachedState(total: Total.MinNotReached) {
+        setVisibility(true)
+        val valueToMinOrder = (total.minOrder - total.totalValue).addPriceFormat()
+        textView.text =
+            context.getString(R.string.total_x_to_complete_min_order, valueToMinOrder)
+        textView.setBackgroundColor(colorWarning)
+        textView.setTextColor(colorOnWarning)
+        progressBar.progress = (100 * total.totalValue) / total.minOrder
+    }
+
+    private fun setTotalOkState() {
+        setVisibility(false)
+        progressBar.progress = 100
+    }
+
+    private fun setTotalErrorState() {
+        setVisibility(false)
+    }
+}
+
+private class BtnMakeOrder(
+    private val layout: RelativeLayout,
+    val text: TextView,
+    val total: TextView
+) {
+    private var currentState: Total? = null
+    private var isVisible: Boolean? = null
+    private var isEnabled: Boolean? = null
+
+    private val context get() = layout.context
+
+    init {
+        text.text = context.getString(R.string.btn_make_order)
+    }
+
+    val colorEnabled = context.getColorFromAttr(R.attr.colorPrimary)
+    val colorOnEnabled = context.getColorFromAttr(R.attr.colorOnPrimary)
+    val colorDisabled = context.getColorFromAttr(R.attr.colorGrayDefault)
+    val colorOnDisabled =
+        context.getColorWithAlphaFromAttrs(R.attr.colorOnGrayDefault, R.attr.alphaDisabled)
+    val children = listOf(text, total)
+
+    fun setState(totalState: Total) {
+        total.text = totalState.totalValue.addPriceFormat()
+        if (currentState == totalState) {
+            return
+        }
+        when (totalState) {
+            is Total.EmptyCart -> {
+                setVisibility(true)
+                setEnabled(false)
+            }
+            is Total.MinNotReached -> {
+                setVisibility(true)
+                setEnabled(false)
+            }
+            is Total.OK -> {
+                setVisibility(true)
+                setEnabled(true)
+            }
+            is Total.Error -> {
+                setVisibility(false)
+            }
+        }
+    }
+
+    private fun setVisibility(isVisible: Boolean) {
+        if(this.isVisible == isVisible) {
+            return
+        }
+        this.isVisible = isVisible
+        layout.isVisible = isVisible
+    }
+
+    private fun setEnabled(isEnabled: Boolean) {
+        if (this.isEnabled == isEnabled) {
+            return
+        } else {
+            this.isEnabled = isEnabled
+            layout.isEnabled = isEnabled
+            if (isEnabled) {
+                layout.setBackgroundColor(colorEnabled)
+                children.forEach { it.setTextColor(colorOnEnabled) }
+            } else {
+                layout.setBackgroundColor(colorDisabled)
+                children.forEach { it.setTextColor(colorOnDisabled) }
+            }
+        }
+    }
 }

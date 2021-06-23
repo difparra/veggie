@@ -17,6 +17,7 @@
         <item name="colorWarning">@color/orange</item>
         <item name="colorOnWarning">@color/white</item>
         <item name="colorGrayDefault">@color/gray_light_theme</item>
+        <item name="colorOnGrayDefault">@color/black</item>
         <item name="colorsRandom">@array/dark_colors</item> <!-- onRandomDark will be onSecondary -->
         <item name="alphaSecondaryText">0.5</item>
         <item name="alphaDisabled">0.38</item>
