@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.diegoparra.veggie.R
+import com.diegoparra.veggie.core.appFormat
 import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.databinding.ListItemShippingDayBinding
 import com.diegoparra.veggie.databinding.ListItemShippingTimeBinding
@@ -14,9 +15,6 @@ import com.diegoparra.veggie.order.domain.TimeRange
 import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 private const val HEADER = R.layout.list_item_shipping_day
 private const val ITEM = R.layout.list_item_shipping_time
@@ -78,8 +76,7 @@ class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, 
             override fun bind(item: Item) {
                 this.item = item as Item.Header
                 this.item.let {
-                    binding.day.text =
-                        it.date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+                    binding.day.text = it.date.appFormat()
                 }
             }
         }
@@ -103,15 +100,10 @@ class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, 
                 this.item = item as Item.ShippingItem
                 this.item?.let {
                     val timeRange = it.timeRange
-                    binding.deliveryTime.text =
-                        "${timeRange.from.format()} - ${timeRange.to.format()}"
+                    binding.deliveryTime.text = Pair(timeRange.from, timeRange.to).appFormat()
                     binding.deliveryCost.text = it.cost.addPriceFormat()
                     binding.deliveryTime.isChecked = it.isSelected
                 }
-            }
-
-            private fun LocalTime.format(): String {
-                return this.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
             }
         }
     }

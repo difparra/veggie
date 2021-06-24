@@ -44,6 +44,8 @@ class OrderViewModel @Inject constructor(
 
     private val _userId = _userProfile.map { it.getOrElse(null)?.id }
     val userId = _userId.asLiveData()
+    private val _name = _userProfile.map { it.getOrElse(null)?.name }
+    val name = _name.asLiveData()
     private val _phoneNumber = _userProfile.map { it.getOrElse(null)?.phoneNumber }
     val phoneNumber = _phoneNumber.asLiveData()
 
@@ -68,7 +70,9 @@ class OrderViewModel @Inject constructor(
     }
 
     private val _deliverySchedule = MutableStateFlow<DeliverySchedule?>(null)
+    val deliverySchedule = _deliverySchedule.asLiveData()
     private val _deliveryCost = MutableStateFlow<Int?>(null)
+    val deliveryCost = _deliveryCost.asLiveData()
     private val _deliveryScheduleOptions = MutableStateFlow<List<DeliverySchedule>>(emptyList())
 
     init {

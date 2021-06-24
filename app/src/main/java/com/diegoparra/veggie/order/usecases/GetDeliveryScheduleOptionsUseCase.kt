@@ -55,8 +55,9 @@ class GetDeliveryScheduleOptionsUseCase @Inject constructor(
         val currentTime = LocalTime.now()
         val deliveryOptions = mutableListOf<DeliverySchedule>()
 
+        //  Corrected and verified, be careful when changing/refactoring this method.
         //  Check that time left to finish the day is enough to meet the minTimeForDelivery on the sameDay.
-        if((24 - currentTime.hour) >= minTimeForDeliveryInHours) {
+        if((24 - currentTime.hour) > minTimeForDeliveryInHours) {
             val timeRangeOptionsToday =
                 deliveryTimetable
                     .filter { it.dayOfWeek == currentDate.dayOfWeek }
