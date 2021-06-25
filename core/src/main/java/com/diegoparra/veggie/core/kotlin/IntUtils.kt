@@ -55,6 +55,9 @@ fun Int.getValueBeforeDiscount(discount: Float): Int {
     if (discount < 0f || discount > 1.0f) {
         throw IllegalArgumentException("Percent must be a value between 0 and 1")
     }
+    if(discount == 0f) {
+        return this
+    }
     if (discount == 1.0f) {
         return 0
     }

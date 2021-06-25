@@ -1,12 +1,10 @@
 package com.diegoparra.veggie.order.usecases
 
-import com.diegoparra.veggie.ConfigDefaults
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.order.domain.DefaultConfigValues
 import com.diegoparra.veggie.order.domain.DeliverySchedule
 import com.diegoparra.veggie.order.domain.DeliveryScheduleConfig
 import com.diegoparra.veggie.order.domain.OrderRepository
-import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.inject.Inject

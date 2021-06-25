@@ -2,7 +2,7 @@ package com.diegoparra.veggie.products.app.usecases
 
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.mapListAndFlattenFailure
+import com.diegoparra.veggie.core.kotlin.reduceFailuresOrRight
 import com.diegoparra.veggie.core.kotlin.map
 import com.diegoparra.veggie.products.app.entities.ProductMain
 import com.diegoparra.veggie.products.cart.domain.CartRepository
@@ -62,7 +62,7 @@ class GetMainProductsUseCase @Inject constructor(
                     }
                     val mainProdsQtyFlows = deferredList.awaitAll()
                     combine(mainProdsQtyFlows) {
-                        it.toList().mapListAndFlattenFailure()
+                        it.toList().reduceFailuresOrRight()
                     }
                 }
             }.flowOn(Dispatchers.IO)

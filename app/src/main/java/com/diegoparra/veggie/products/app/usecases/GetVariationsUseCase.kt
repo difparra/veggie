@@ -2,7 +2,7 @@ package com.diegoparra.veggie.products.app.usecases
 
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.mapListAndFlattenFailure
+import com.diegoparra.veggie.core.kotlin.reduceFailuresOrRight
 import com.diegoparra.veggie.core.kotlin.map
 import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.app.entities.ProductVariation
@@ -29,7 +29,7 @@ class GetVariationsUseCase @Inject constructor(
                 }
                 combine(varsQtyFlows) {
                     Timber.d("invoke - combine called. ${it.toList()}")
-                    it.toList().mapListAndFlattenFailure()
+                    it.toList().reduceFailuresOrRight()
                 }
             }
         }.flowOn(Dispatchers.IO)

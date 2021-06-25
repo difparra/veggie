@@ -10,6 +10,7 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.appFormat
+import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.databinding.FragmentOrderSummaryBinding
 import com.diegoparra.veggie.order.viewmodels.OrderViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -56,7 +57,13 @@ class OrderSummaryFragment: Fragment() {
                     it.date.appFormat(short = true) + "; " + Pair(it.timeRange.from, it.timeRange.to).appFormat()
             }
         }
-        //  TODO:   Get totals from cart
+        viewModel.total.observe(viewLifecycleOwner) {
+            it?.let {
+                binding.totalSubtotalValue.text = it.subtotal.addPriceFormat()
+                binding.totalDeliveryValue.text = it.deliveryCost.addPriceFormat()
+                binding.totalTotalValue.text = it.total.addPriceFormat()
+            }
+        }
     }
 
 

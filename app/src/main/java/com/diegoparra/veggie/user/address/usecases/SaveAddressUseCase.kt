@@ -6,7 +6,6 @@ import com.diegoparra.veggie.auth.utils.TextInputValidation
 import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.domain.AddressRepository
-import java.util.*
 import javax.inject.Inject
 
 class SaveAddressUseCase @Inject constructor(
@@ -38,7 +37,7 @@ class SaveAddressUseCase @Inject constructor(
         return authRepository.getIdCurrentUser()
             .suspendFlatMap {
                 val addressObj = Address(
-                    id = UUID.randomUUID().toString(),
+                    id = generateUniqueId(),
                     address = address,
                     details = details,
                     instructions = instructions

@@ -1,16 +1,21 @@
 package com.diegoparra.veggie.order.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.auth.usecases.GetProfileAsFlowUseCase
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.auth.utils.Fields
 import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.order.domain.DeliverySchedule
+import com.diegoparra.veggie.order.domain.ProductsList
 import com.diegoparra.veggie.order.domain.ShippingInfo
+import com.diegoparra.veggie.order.domain.Total
 import com.diegoparra.veggie.order.usecases.GetDeliveryCostUseCase
 import com.diegoparra.veggie.order.usecases.GetDeliveryScheduleOptionsUseCase
+import com.diegoparra.veggie.order.usecases.GetProductsListOrder
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.usecases.GetSelectedAddressUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +29,8 @@ class OrderViewModel @Inject constructor(
     private val getProfileAsFlowUseCase: GetProfileAsFlowUseCase,
     private val getSelectedAddressUseCase: GetSelectedAddressUseCase,
     private val getDeliveryScheduleOptionsUseCase: GetDeliveryScheduleOptionsUseCase,
-    private val getDeliveryCostUseCase: GetDeliveryCostUseCase
+    private val getDeliveryCostUseCase: GetDeliveryCostUseCase,
+    private val getProductsListOrder: GetProductsListOrder
 ) : ViewModel() {
 
     companion object Fields {
@@ -33,9 +39,25 @@ class OrderViewModel @Inject constructor(
         const val DELIVERY_DATE_TIME = "deliveryDateTime"
     }
 
+    private val _failure = MutableStateFlow<Event<Failure?>>(Event(null))
+    val failure = _failure.asLiveData()
+
+    fun refreshData() {
+        refreshAddress()
+    }
+
 
     private val _userProfile = getProfileAsFlowUseCase()
-    val isSignedIn = _userProfile.map { Event(it is Either.Right) }.asLiveData()
+
+    init {
+        viewModelScope.launch {
+            _userProfile.collect {
+                if (it is Either.Left) {
+                    _failure.value = Event(it.a)
+                }
+            }
+        }
+    }
 
 
     /*
@@ -61,11 +83,13 @@ class OrderViewModel @Inject constructor(
 
     fun refreshAddress() {
         viewModelScope.launch {
-            //  Should check that this method being called from addressResult stateHandleListener is
-            //  not being called more than once, when user keep selecting different addresses while
-            //  in nav_address flow/graph.
+            //  Should check that this method being called from addressResult stateHandleListener is not being called
+            //  more than once, when user keep selecting different addresses while in nav_address flow/graph.
             Timber.d("refreshAddress() called")
-            _address.value = getSelectedAddressUseCase().fold<Address?>({ null }, { it })
+            getSelectedAddressUseCase().fold(
+                { _failure.value = Event(it) },
+                { _address.value = it }
+            )
         }
     }
 
@@ -77,8 +101,7 @@ class OrderViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val scheduleOptions = getDeliveryScheduleOptionsUseCase()
-            _deliveryScheduleOptions.value = scheduleOptions
+            _deliveryScheduleOptions.value = getDeliveryScheduleOptionsUseCase()
         }
     }
 
@@ -146,5 +169,39 @@ class OrderViewModel @Inject constructor(
         }
     }
     val shippingInfo = _shippingInfo.asLiveData()
+
+
+    /*
+     *      PRODUCTS LIST       --------------------------------------------------------------------
+     */
+
+    private val _productsList = MutableStateFlow<ProductsList?>(null)
+    val productsList = _productsList.asLiveData()
+
+    init {
+        viewModelScope.launch {
+            getProductsListOrder().fold(
+                { _failure.value = Event(it) },
+                { _productsList.value = it }
+            )
+        }
+    }
+
+    val total = combine(
+        _productsList,
+        _deliveryCost
+    ) { prodsList, deliveryCost ->
+        if (prodsList == null || deliveryCost == null) {
+            return@combine null
+        }
+        Total(
+            productsBeforeDiscount = prodsList.totalBeforeDiscounts(),
+            productsDiscount = prodsList.totalDiscounts(),
+            subtotal = prodsList.subtotal(),
+            additionalDiscounts = 0,
+            deliveryCost = deliveryCost,
+            tip = 0
+        )
+    }.asLiveData()
 
 }

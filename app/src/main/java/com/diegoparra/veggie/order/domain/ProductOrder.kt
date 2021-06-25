@@ -22,3 +22,12 @@ data class ProductOrder(
     val priceBeforeDiscount = price.getValueBeforeDiscount(discount)
     val total = price * quantity
 }
+
+/*
+Name
+Unit (± weight) - detail            Qty         Price
+
+Name
+Unit - Detail
+total
+ */

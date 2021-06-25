@@ -124,10 +124,10 @@ fun <L, R> Either<L, R>.onSuccess(fn: (success: R) -> Unit): Either<L, R> =
  *  - Failure:  If any of the elements in the list is Failure (Left)
  *  - Success:  If every item in the list is Success (Right)
  */
-fun <L, R> List<Either<L, R>>.mapList(): Either<List<L>, List<R>> {
-    val failures = this.filter { it is Either.Left }
+fun <L, R> List<Either<L, R>>.getFailuresOrRight(): Either<List<L>, List<R>> {
+    val failures = this.filterIsInstance<Either.Left<L>>().map { it.a }
     return if (failures.isNotEmpty()) {
-        Either.Left(failures.map { (it as Either.Left).a })
+        Either.Left(failures)
     } else {
         Either.Right(this.map { (it as Either.Right).b })
     }
@@ -141,9 +141,9 @@ fun <L, R> List<Either<L, R>>.mapList(): Either<List<L>, List<R>> {
  *  - Success:  If every item in the list is Success (Right).
  *              Returned Success will now represent the list<R> without failures.
  */
-fun <L, R> List<Either<L, R>>.mapListAndFlattenFailure(flattenFailure: (List<L>) -> L = { it.first() }): Either<L, List<R>> {
-    return when (val mappedList = this.mapList()) {
-        is Either.Left -> Either.Left(flattenFailure(mappedList.a))
+fun <L, R> List<Either<L, R>>.reduceFailuresOrRight(reduceFailure: (List<L>) -> L = { it.first() }): Either<L, List<R>> {
+    return when (val mappedList = this.getFailuresOrRight()) {
+        is Either.Left -> Either.Left(reduceFailure(mappedList.a))
         is Either.Right -> mappedList
     }
 }

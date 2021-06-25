@@ -15,11 +15,14 @@ data class DeliverySchedule(
 )
 
 
+
+//  Config - data that will not be shown directly to the user but will be needed in the use cases
+//  to perform some kind of calculation
+
 data class DeliveryBaseCosts(
     val baseCost: Int,
     val extraCostOnSameDay: Int
 )
-
 
 data class DeliveryScheduleConfig(
     val deliveryTimetable: List<TimetableItem>,

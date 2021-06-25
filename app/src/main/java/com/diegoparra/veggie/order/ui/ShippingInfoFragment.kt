@@ -125,9 +125,15 @@ class ShippingInfoFragment : Fragment() {
     }
 
     private fun subscribeUi() {
-        viewModel.isSignedIn.observe(viewLifecycleOwner, EventObserver {
-            if (!it) {
-                findNavController().navigate(ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavSignIn())
+        viewModel.failure.observe(viewLifecycleOwner, EventObserver {
+            when(it) {
+                is AuthFailure.SignInState ->
+                    findNavController().navigate(ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavSignIn())
+                is Failure.NetworkConnection -> { /*  */ }
+                else -> {
+                    //  TODO:   Hide view and display error, possibly set a try again button
+                    Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_SHORT).show()
+                }
             }
         })
 
