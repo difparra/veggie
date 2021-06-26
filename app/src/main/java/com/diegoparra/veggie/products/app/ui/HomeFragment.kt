@@ -38,30 +38,30 @@ class HomeFragment : Fragment() {
         viewModel.tags.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Loading ->
-                    setViewsVisibility(loadingViews = true, successViews = false, errorViews = false)
+                    setViewsVisibility(loadingViews = true, mainViews = false, errorViews = false)
                 is Resource.Success -> {
-                    setViewsVisibility(loadingViews = false, successViews = true, errorViews = false)
+                    setViewsVisibility(loadingViews = false, mainViews = true, errorViews = false)
                     renderTags(it.data)
                 }
                 is Resource.Error -> {
-                    setViewsVisibility(loadingViews = false, successViews = false, errorViews = true)
+                    setViewsVisibility(loadingViews = false, mainViews = false, errorViews = true)
                     renderFailure(it.failure)
                 }
             }
         }
     }
 
-    private fun setViewsVisibility(loadingViews: Boolean, successViews: Boolean, errorViews: Boolean) {
+    private fun setViewsVisibility(loadingViews: Boolean, mainViews: Boolean, errorViews: Boolean) {
         binding.progressBar.isVisible = loadingViews
-        binding.tabLayout.isVisible = successViews
-        binding.viewPager.isVisible = successViews
+        binding.tabLayout.isVisible = mainViews
+        binding.viewPager.isVisible = mainViews
         binding.errorText.isVisible = errorViews
     }
 
 
     private fun renderTags(tags: List<Tag>) {
         //  Dealing with empty list
-        if(tags.isEmpty()) {
+        if (tags.isEmpty()) {
             binding.errorText.text = getString(R.string.failure_no_tags)
             binding.errorText.isVisible = true
         }

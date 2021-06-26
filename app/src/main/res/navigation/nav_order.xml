@@ -30,7 +30,16 @@
         android:id="@+id/orderSummaryFragment"
         android:name="com.diegoparra.veggie.order.ui.OrderSummaryFragment"
         android:label="fragment_order_summary"
-        tools:layout="@layout/fragment_order_summary" />
+        tools:layout="@layout/fragment_order_summary" >
+        <action
+            android:id="@+id/action_orderSummaryFragment_to_productsOrderSummaryFragment"
+            app:destination="@id/productsOrderSummaryFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/productsOrderSummaryFragment"
+        android:name="com.diegoparra.veggie.order.ui.ProductsOrderSummaryFragment"
+        android:label="fragment_products_order_summary"
+        tools:layout="@layout/fragment_products_order_summary" />
 
 
 </navigation>

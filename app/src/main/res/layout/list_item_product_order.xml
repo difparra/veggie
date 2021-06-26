@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="?attr/paddingSmall">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Veggie.Caption"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/quantity"
+        app:layout_constraintBottom_toTopOf="@id/description"
+        app:layout_constraintWidth_percent="0.5"
+        tools:text="Name" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Veggie.Caption"
+        app:layout_constraintTop_toBottomOf="@id/name"
+        app:layout_constraintStart_toStartOf="@id/name"
+        app:layout_constraintEnd_toEndOf="@id/name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Description" />
+
+    <TextView
+        android:id="@+id/quantity"
+        android:gravity="bottom|end"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textAppearance="@style/TextAppearance.Veggie.Caption"
+        app:layout_constraintTop_toTopOf="@id/name"
+        app:layout_constraintBottom_toBottomOf="@id/description"
+        app:layout_constraintStart_toEndOf="@id/name"
+        app:layout_constraintEnd_toStartOf="@id/total_prod"
+        app:layout_constraintWidth_percent="0.2"
+        tools:text="1" />
+
+    <TextView
+        android:id="@+id/total_prod"
+        android:gravity="bottom|end"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textAppearance="@style/TextAppearance.Veggie.Caption"
+        app:layout_constraintTop_toTopOf="@id/name"
+        app:layout_constraintBottom_toBottomOf="@id/description"
+        app:layout_constraintStart_toEndOf="@id/quantity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.3"
+        tools:text="2,000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

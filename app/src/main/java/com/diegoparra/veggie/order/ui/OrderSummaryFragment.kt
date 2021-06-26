@@ -35,8 +35,8 @@ class OrderSummaryFragment: Fragment() {
         subscribeUi()
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
         binding.totalProducts.setOnClickListener {
-            //  TODO:   Show products in cart
-            Snackbar.make(binding.totalProducts, "TODO", Snackbar.LENGTH_SHORT).show()
+            val action = OrderSummaryFragmentDirections.actionOrderSummaryFragmentToProductsOrderSummaryFragment()
+            findNavController().navigate(action)
         }
     }
 

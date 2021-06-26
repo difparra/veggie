@@ -70,6 +70,10 @@
     <string name="total">Total</string>
     <string name="send_order">Finalizar pedido</string>
 
+    <!-- Product order -->
+    <string name="name">Nombre</string>
+    <string name="quantity">Cantidad</string>
+    <string name="total_prod">Total</string>
 
 
     <!-- Failures strings -->

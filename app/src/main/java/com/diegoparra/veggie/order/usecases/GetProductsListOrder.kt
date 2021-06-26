@@ -62,8 +62,9 @@ class GetProductsListOrder @Inject constructor(
         return ProductOrder(
             productId = productId,
             name = product.mainData.name,
-            unit = product.variationData.unit,
+            packet = product.variationData.packet,
             weight = product.variationData.weight,
+            unit = product.variationData.unit,
             price = product.variationData.price,
             discount = product.variationData.discount,
             quantity = cartItem.quantity

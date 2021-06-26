@@ -132,8 +132,8 @@ class CartAdapter(private val listener: OnItemClickListener) :
         }
 
         @SuppressLint("SetTextI18n")
-        private fun loadDescription(unit: String, detail: String?) {
-            binding.description.text = unit + (detail?.let { " • $it" } ?: "")
+        private fun loadDescription(packet: String, detail: String?) {
+            binding.description.text = packet + (detail?.let { " • $it" } ?: "")
         }
 
         @SuppressLint("SetTextI18n")

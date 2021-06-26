@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.databinding.ListItemVariationHeaderBinding
 import com.diegoparra.veggie.databinding.ListItemVariationItemBinding
+import com.diegoparra.veggie.products.app.entities.ProductVariation
 import com.diegoparra.veggie.products.app.ui.utils.getFormattedPrice
 import com.diegoparra.veggie.products.app.ui.utils.loadEnabledState
 import java.lang.IllegalArgumentException
@@ -27,6 +28,11 @@ class VariationsAdapter(private val listener: OnItemClickListener) :
         }
 
         fun onItemClick(variationId: String, detail: String?, which: Int)
+    }
+
+    fun submitVariationsList(list: List<ProductVariation>) {
+        val listToSubmit = VariationUi.getListToSubmit(list)
+        submitList(listToSubmit)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -69,7 +75,8 @@ class VariationsAdapter(private val listener: OnItemClickListener) :
         abstract fun bind(item: VariationUi)
 
         protected fun getBasicDescription(packet: String, weight: Int, unit: String): String {
-            return "$packet (± $weight$unit)"
+            val weightString = if (weight < 0) "" else "(± $weight$unit)"
+            return "$packet $weightString"
         }
 
         class HeaderViewHolder(private var binding: ListItemVariationHeaderBinding) :

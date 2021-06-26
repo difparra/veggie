@@ -59,22 +59,22 @@ class ProductDetailsFragment : BottomSheetDialogFragment() {
         viewModel.variationsList.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Loading ->
-                    setViewsVisibility(loadingViews = true, successViews = false, errorViews = false)
+                    setViewsVisibility(loadingViews = true, mainViews = false, errorViews = false)
                 is Resource.Success -> {
-                    setViewsVisibility(loadingViews = false, successViews = true, errorViews = false)
+                    setViewsVisibility(loadingViews = false, mainViews = true, errorViews = false)
                     renderVariationsList(it.data)
                 }
                 is Resource.Error -> {
-                    setViewsVisibility(loadingViews = false, successViews = false, errorViews = true)
+                    setViewsVisibility(loadingViews = false, mainViews = false, errorViews = true)
                     renderFailureVariations(it.failure)
                 }
             }
         }
     }
 
-    private fun setViewsVisibility(loadingViews: Boolean, successViews: Boolean, errorViews: Boolean) {
+    private fun setViewsVisibility(loadingViews: Boolean, mainViews: Boolean, errorViews: Boolean) {
         binding.progressBar.isVisible = loadingViews
-        binding.variationsList.isVisible = successViews
+        binding.variationsList.isVisible = mainViews
         binding.errorText.isVisible = errorViews
     }
 
@@ -85,9 +85,7 @@ class ProductDetailsFragment : BottomSheetDialogFragment() {
             binding.errorText.text = getString(R.string.failure_no_variations_found)
             binding.errorText.isVisible = true
         }
-
-        val listToSubmit = VariationUi.getListToSubmit(variationsList)
-        adapter.submitList(listToSubmit)
+        adapter.submitVariationsList(variationsList)
     }
 
     private fun renderFailureVariations(failure: Failure) {

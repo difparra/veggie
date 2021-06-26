@@ -8,7 +8,6 @@ import com.diegoparra.veggie.products.app.entities.ProductMain
 import com.diegoparra.veggie.products.cart.domain.CartRepository
 import com.diegoparra.veggie.products.domain.Product
 import com.diegoparra.veggie.products.domain.ProductsRepository
-import com.diegoparra.veggie.products.utils.ProductsFailure
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
@@ -54,13 +53,12 @@ class GetMainProductsUseCase @Inject constructor(
     }
 
     private suspend fun getProducts(params: Params): Either<Failure, List<Product>> {
-        Timber.d("getProducts called")
         return when (params) {
             is Params.ForTag -> productsRepository.getMainProductsByTagId(params.tagId)
             is Params.ForSearch -> {
                 if (params.nameQuery.isEmpty()) {
                     Timber.d("nameQuery is empty")
-                    Either.Left(ProductsFailure.EmptySearchQuery)
+                    Either.Right(listOf())
                 } else {
                     Timber.d("nameQuery = ${params.nameQuery}")
                     productsRepository.searchMainProductsByName(params.nameQuery)
@@ -70,7 +68,6 @@ class GetMainProductsUseCase @Inject constructor(
     }
 
     private fun getProductMain(product: Product): Flow<Either<Failure, ProductMain>> {
-        Timber.d("getProductMain called")
         val quantity = cartRepository.getQuantityByMainId(product.mainData.mainId)
         return quantity.map { qtyEither ->
             qtyEither.map {

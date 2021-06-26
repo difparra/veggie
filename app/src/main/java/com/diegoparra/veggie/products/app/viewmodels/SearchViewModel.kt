@@ -5,7 +5,6 @@ import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.products.app.entities.ProductMain
 import com.diegoparra.veggie.products.app.usecases.GetMainProductsUseCase
-import com.diegoparra.veggie.products.utils.ProductsFailure
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -23,7 +22,7 @@ class SearchViewModel @Inject constructor(
     private var currentJobSearch: Job? = null
 
     private val _productsList =
-        MutableLiveData<Resource<List<ProductMain>>>(Resource.Error(ProductsFailure.EmptySearchQuery))
+        MutableLiveData<Resource<List<ProductMain>>>(Resource.Success(listOf()))
     val productsList: LiveData<Resource<List<ProductMain>>> = _productsList
 
     init {
@@ -32,10 +31,8 @@ class SearchViewModel @Inject constructor(
                 savedStateHandle.set(QUERY_SAVED_STATE_KEY, it)
                 currentJobSearch?.cancel()
 
-                Timber.d("query collected: $it, calling loading")
                 _productsList.value = Resource.Loading()
                 val prods = getMainProductsUseCase(GetMainProductsUseCase.Params.ForSearch(it))
-                Timber.d("useCase called!")
                 //  This new job should be launched in a different viewModelScope,
                 //  otherwise, values will not be collected.
                 currentJobSearch = prods

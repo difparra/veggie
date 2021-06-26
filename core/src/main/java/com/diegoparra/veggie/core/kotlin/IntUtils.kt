@@ -7,9 +7,10 @@ import java.util.*
 /**
  * Round some number and add the currency symbols.
  */
-fun Int.addPriceFormat(roundToMultiple: Int = 10): String {
+fun Int.addPriceFormat(roundToMultiple: Int = 10, showCurrencySign: Boolean = true): String {
     val roundedPrice = this.roundToMultiple(roundToMultiple)
-    return "$" + roundedPrice.addThousandSeparator()
+    val currencySign = if(showCurrencySign) "$" else ""
+    return currencySign + roundedPrice.addThousandSeparator()
 }
 
 private fun Int.addThousandSeparator(): String {

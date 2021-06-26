@@ -17,7 +17,6 @@ import com.diegoparra.veggie.core.android.hideKeyboard
 import com.diegoparra.veggie.databinding.FragmentSearchBinding
 import com.diegoparra.veggie.products.app.entities.ProductMain
 import com.diegoparra.veggie.products.app.viewmodels.SearchViewModel
-import com.diegoparra.veggie.products.utils.ProductsFailure
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -79,59 +78,24 @@ class SearchFragment : Fragment() {
 
     private fun subscribeUiResults() {
         viewModel.productsList.observe(viewLifecycleOwner) {
-            Timber.d("productsListResult observed = $it -> ${when(it){
-                is Resource.Loading -> "Loading"
-                is Resource.Success -> "Success: ${it.data}"
-                is Resource.Error -> "Error: ${it.failure}"
-            }}")
             when (it) {
                 is Resource.Loading ->
-                    setViewsVisibility(
-                        loadingViews = true,
-                        successViews = false,
-                        errorViews = false
-                    )
+                    setViewsVisibility(loadingViews = true, mainViews = false, errorViews = false)
                 is Resource.Success -> {
-                    setViewsVisibility(
-                        loadingViews = false,
-                        successViews = true,
-                        errorViews = false
-                    )
+                    setViewsVisibility(loadingViews = false, mainViews = true, errorViews = false)
                     renderProductsList(it.data)
                 }
                 is Resource.Error -> {
-                    //  EmptySearchQuery is more similar to a success state where no results were thrown.
-                    //  But, in order to distinct from when user already set query and get no result,
-                    //  empty search query is treated as a failure.
-                    if (it.failure is ProductsFailure.EmptySearchQuery) {
-                        setViewsVisibility(
-                            loadingViews = false,
-                            successViews = true,
-                            errorViews = false
-                        )
-                        renderProductsList(listOf())
-                        binding.textNoSearchResults.text =
-                            getString(R.string.failure_empty_search_query)
-                    } else {
-                        setViewsVisibility(
-                            loadingViews = false,
-                            successViews = false,
-                            errorViews = true
-                        )
-                        renderFailure(it.failure)
-                    }
+                    setViewsVisibility(loadingViews = false, mainViews = false, errorViews = true)
+                    renderFailure(it.failure)
                 }
             }
         }
     }
 
-    private fun setViewsVisibility(
-        loadingViews: Boolean,
-        successViews: Boolean,
-        errorViews: Boolean
-    ) {
+    private fun setViewsVisibility(loadingViews: Boolean, mainViews: Boolean, errorViews: Boolean) {
         binding.progressBar.isVisible = loadingViews
-        binding.searchResults.isVisible = successViews
+        binding.searchResults.isVisible = mainViews
         binding.layoutNoSearchResults.isVisible = false
         binding.errorText.isVisible = errorViews
     }
@@ -142,7 +106,11 @@ class SearchFragment : Fragment() {
 
         if (productsList.isEmpty()) {
             Timber.d("Products list search results is empty")
-            binding.textNoSearchResults.text = getString(R.string.failure_no_search_result)
+            binding.textNoSearchResults.text = if (binding.searchQuery.text.isNullOrEmpty()) {
+                getString(R.string.failure_empty_search_query)
+            } else {
+                getString(R.string.failure_no_search_result)
+            }
             binding.layoutNoSearchResults.isVisible = true
         }
     }
