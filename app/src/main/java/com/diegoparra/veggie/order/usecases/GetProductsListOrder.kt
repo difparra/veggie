@@ -22,7 +22,7 @@ class GetProductsListOrder @Inject constructor(
      */
     suspend operator fun invoke(): Either<Failure, ProductsList> {
         return getCartList()
-            .suspendFlatMap { cartList ->
+            .flatMap { cartList ->
                 cartList
                     .map { cartItem ->
                         getProductInfo(cartItem.productId).map { product ->
@@ -44,13 +44,13 @@ class GetProductsListOrder @Inject constructor(
 
     private suspend fun getProductInfo(productId: ProductId): Either<Failure, Product> {
         /*
-         *  forceUpdate need to be set to false. This is really important, do not update the local
-         *  list, because order must show the same info that was shown in cart.
+         *  In this step, data should be fetch from cache. Products can't be updated, they should
+         *  be the same shown to the user in cart.
          */
         return productsRepository.getProduct(
             mainId = productId.mainId,
             varId = productId.varId,
-            forceUpdate = false
+            source = Source.CACHE
         )
     }
 
@@ -63,7 +63,7 @@ class GetProductsListOrder @Inject constructor(
             productId = productId,
             name = product.mainData.name,
             unit = product.variationData.unit,
-            weight = product.variationData.weightGr,
+            weight = product.variationData.weight,
             price = product.variationData.price,
             discount = product.variationData.discount,
             quantity = cartItem.quantity

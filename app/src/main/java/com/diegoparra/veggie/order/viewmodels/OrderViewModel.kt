@@ -1,13 +1,10 @@
 package com.diegoparra.veggie.order.viewmodels
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.auth.usecases.GetProfileAsFlowUseCase
 import com.diegoparra.veggie.auth.utils.AuthFailure
-import com.diegoparra.veggie.auth.utils.Fields
 import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.order.domain.DeliverySchedule
 import com.diegoparra.veggie.order.domain.ProductsList
@@ -64,11 +61,11 @@ class OrderViewModel @Inject constructor(
      *      SHIPPING INFO       --------------------------------------------------------------------
      */
 
-    private val _userId = _userProfile.map { it.getOrElse(null)?.id }
+    private val _userId = _userProfile.map { it.getOrNull()?.id }
     val userId = _userId.asLiveData()
-    private val _name = _userProfile.map { it.getOrElse(null)?.name }
+    private val _name = _userProfile.map { it.getOrNull()?.name }
     val name = _name.asLiveData()
-    private val _phoneNumber = _userProfile.map { it.getOrElse(null)?.phoneNumber }
+    private val _phoneNumber = _userProfile.map { it.getOrNull()?.phoneNumber }
     val phoneNumber = _phoneNumber.asLiveData()
 
     //  phoneNumber can change while viewModel is alive, but as it is a flow, I don't need to

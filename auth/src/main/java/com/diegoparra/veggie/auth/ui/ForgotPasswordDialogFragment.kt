@@ -44,12 +44,12 @@ class ForgotPasswordDialogFragment: DialogFragment() {
         positiveBtn.text = getString(R.string.continuee)
         positiveBtn.setOnClickListener {
             viewModel.sendPasswordResetEmail(email = args.email)
-            findNavController().popBackStack()
+            this@ForgotPasswordDialogFragment.findNavController().popBackStack()
         }
 
         negativeBtn.text = getString(R.string.cancel)
         negativeBtn.setOnClickListener {
-            findNavController().popBackStack()
+            this@ForgotPasswordDialogFragment.findNavController().popBackStack()
         }
     }
 

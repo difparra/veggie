@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
             bottomNavView.isVisible =
                 !isNavGraphIdParentOf(navGraph = R.id.nav_order, destination = destination)
                         && destination.id != R.id.nav_cart
+                        && destination.id != R.id.clearCartDialogFragment
         }
     }
 

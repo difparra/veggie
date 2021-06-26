@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import javax.inject.Inject
 
 class UserApi @Inject constructor(
@@ -52,9 +53,12 @@ class UserApi @Inject constructor(
                 .get()
                 .await()
                 .toObject<UserDto>()
-            user?.let {
-                Either.Right(it)
-            } ?: Either.Left(Failure.UserFailure.UserNotFound)
+            if(user != null) {
+                Either.Right(user)
+            } else {
+                Timber.wtf("User with id = $id was not found.")
+                Either.Left(Failure.NotFound)
+            }
         } catch (e: Exception) {
             Either.Left(Failure.ServerError(e))
         }

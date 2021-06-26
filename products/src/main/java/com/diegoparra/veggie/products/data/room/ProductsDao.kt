@@ -68,6 +68,24 @@ abstract class ProductsDao {
     protected abstract suspend fun getVariationIdsInMainId(relatedMainId: String): List<String>
 
 
+
+    /*
+        IMPORTANT:
+            Updates must run in a transaction, so that if for some reason the operation was cancelled,
+            revert the products updated at that time, so that the lastUpdatedTime is also not
+            modified and is consistent.
+            This is important because the following scenario: remote products updated after certain
+            time are fetched in a list, but not a sorted list by date. That means first product in the
+            list could have been updated on Monday, second on Friday, and third on Tuesday.
+            If updating local database fail as soon as second product is updated, and there is no
+            transaction support, now the lastUpdatedTime will be Friday, and therefore, the third
+            product will not be updated neither in this process (because of the failure) nor in
+            subsequent process (as it is before the lastUpdatedTime).
+            With transaction support, if failed occur in second product, transaction will revert
+            the changes made with the first product, so the lastUpdatedTime will be kept as initial,
+            before Monday.
+     */
+
     @Transaction
     open suspend fun updateProducts(
         mainProdsIdToDelete: List<String>,

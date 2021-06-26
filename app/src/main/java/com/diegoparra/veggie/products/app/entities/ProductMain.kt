@@ -13,8 +13,9 @@ data class ProductMain(
     val mainId = product.mainData.mainId
     val name = product.mainData.name
     val imageUrl = product.mainData.imageUrl
+    val packet = product.variationData.packet
+    val weight = product.variationData.weight
     val unit = product.variationData.unit
-    val weightGr = product.variationData.weightGr
     val price = product.variationData.price
     val discount = product.variationData.discount
     val stock = product.variationData.stock

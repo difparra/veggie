@@ -100,7 +100,7 @@ class CartAdapter(private val listener: OnItemClickListener) :
             loadImage(product.imageUrl)
             loadLabel(product.label)
             loadName(product.name)
-            loadDescription(product.unit, product.detail)
+            loadDescription(product.packet, product.detail)
             loadTotal(product.price, product.quantity)
             loadQuantityState(product.quantity, product.maxOrder)
             loadEditableState(product.isEditable)

@@ -43,22 +43,19 @@ fun Context.getColorFromAttr(
 @ColorInt
 fun Context.getColorWithAlphaFromAttrs(
         @AttrRes colorAttr : Int,
-        @AttrRes alphaAttr : Int? = null,
-        @FloatRange(from = 0.0, to = 1.0) alphaVal: Float? = null,
+        @AttrRes alphaAttr : Int? = null
 ) : Int {
+    if(alphaAttr == null) {
+        return getColorFromAttr(colorAttr)
+    }
     val color = getColorFromAttr(colorAttr)
-    val alpha = alphaVal
-            ?: if(alphaAttr != null){
-                getFloatFromAttr(alphaAttr)
-            }else{
-                0f
-            }
+    val alpha = getFloatFromAttr(alphaAttr)
     return colorWithAlpha(color, alpha)
 }
 
 @ColorInt
 private fun colorWithAlpha(@ColorInt color: Int, alphaFactor: Float) : Int {
-    if(alphaFactor == 0f){
+    if(alphaFactor == 1f){
         return color
     }
     return ColorUtils.setAlphaComponent(color, (Color.alpha(color) * alphaFactor).roundToInt())

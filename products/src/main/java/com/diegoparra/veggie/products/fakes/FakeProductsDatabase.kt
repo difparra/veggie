@@ -141,11 +141,11 @@ sealed class FakeDetail(val detail: String) {
     object Verde: FakeDetail("Verde")
 }
 
-sealed class FakeUnit(val unit: String, val weightGr: Int) {
-    object Libra : FakeUnit("Libra", 500)
-    class Bandeja(weightGr: Int) : FakeUnit("Bandeja", weightGr)
-    class Canastilla(weightGr: Int) : FakeUnit("Canastilla", weightGr)
-    class Unidad(weightGr: Int) : FakeUnit("Unidad", weightGr)
+sealed class FakeUnit(val packet: String, val weight: Int, val unit: String) {
+    object Libra : FakeUnit("Libra", 500, "g")
+    class Bandeja(weight: Int, unit: String = "g") : FakeUnit("Bandeja", weight, unit)
+    class Canastilla(weightGr: Int) : FakeUnit("Canastilla", weightGr, "g")
+    class Unidad(weightGr: Int) : FakeUnit("Unidad", weightGr, "g")
     //object Atado : FakeUnit("Atado", ProductConstants.NoWeightGr)
 }
 
@@ -165,7 +165,7 @@ private class ProductBuilder {
     private val variations = mutableListOf<VariationData>()
 
     private fun String.normalise() =
-            toLowerCase(Locale.ROOT)
+            lowercase()
                     .replace('á','a').replace('à', 'a')
                     .replace('é','e').replace('à', 'a')
                     .replace('í','i').replace('à', 'a')
@@ -189,8 +189,9 @@ private class ProductBuilder {
         variations.add(VariationData(
                 varId = this.mainVarId,
                 relatedMainId = this.mainId,
+                packet = unit.packet,
+                weight = unit.weight,
                 unit = unit.unit,
-                weightGr = unit.weightGr,
                 price = price,
                 discount = discount,
                 stock = stock,
@@ -221,8 +222,9 @@ private class ProductBuilder {
         variations.add(VariationData(
                 varId = finalVarId,
                 relatedMainId = this.mainId,
+                packet = unit.packet,
+                weight = unit.weight,
                 unit = unit.unit,
-                weightGr = unit.weightGr,
                 price = price,
                 discount = discount,
                 stock = stock,

@@ -3,8 +3,8 @@ package com.diegoparra.veggie.products.data.firebase
 import com.google.firebase.Timestamp
 
 data class ProductDto (
-    val mainId: String,
     val tagId: String,
+    val mainId: String,
     val mainVarId: String,
     val name: String,
     val imageUrl: String,
@@ -14,8 +14,8 @@ data class ProductDto (
 ){
     //  Required empty constructor for firebase
     constructor() : this(
-            mainId = "",
             tagId = "",
+            mainId = "",
             mainVarId = "",
             name = "",
             imageUrl = "",
@@ -27,8 +27,9 @@ data class ProductDto (
 
 data class VariationDto (
     val varId: String,
+    val packet: String,
+    val weight: Int,
     val unit: String,
-    val weightGr: Int,
     val price: Int,
     val discount: Float,
     val stock: Boolean,
@@ -39,8 +40,9 @@ data class VariationDto (
     //  Required empty constructor for firebase
     constructor() : this(
             varId = "",
+            packet = "",
+            weight = -1,
             unit = "",
-            weightGr = -1,
             price = -1,
             discount = 0f,
             stock = false,

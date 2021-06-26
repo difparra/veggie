@@ -4,9 +4,9 @@ import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.domain.AuthResults
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.suspendFlatMap
 import com.diegoparra.veggie.auth.utils.AuthCallbacks
 import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.core.kotlin.flatMap
 
 abstract class AuthUseCase<Params> constructor(
     protected val authRepository: AuthRepository,
@@ -15,8 +15,8 @@ abstract class AuthUseCase<Params> constructor(
 
     suspend operator fun invoke(params: Params): Either<Failure, Unit> {
         return validate(params)
-            .suspendFlatMap { authenticate(params) }
-            .suspendFlatMap { triggerCallbacks(it) }
+            .flatMap { authenticate(params) }
+            .flatMap { triggerCallbacks(it) }
     }
 
     abstract suspend fun validate(params: Params): Either<AuthFailure.ValidationFailures, Unit>

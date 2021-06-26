@@ -1,13 +1,6 @@
 package com.diegoparra.veggie.products.app.ui
 
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Layout
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.AlignmentSpan
-import android.text.style.StyleSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -30,7 +22,6 @@ import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.products.app.viewmodels.CartViewModel
 import com.diegoparra.veggie.products.app.viewmodels.Total
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -96,39 +87,42 @@ class CartFragment : Fragment() {
     private fun subscribeProductsList() {
         viewModel.products.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Loading -> {
-                    binding.progressBar.isVisible = true
-                    binding.cartList.isVisible = false
-                    binding.errorText.isVisible = false
-                }
+                is Resource.Loading ->
+                    setViewsVisibility(loadingViews = true, cartList = false, errorViews = false)
                 is Resource.Success -> {
-                    binding.progressBar.isVisible = false
-                    binding.cartList.isVisible = true
-                    binding.errorText.isVisible = false
+                    setViewsVisibility(loadingViews = false, cartList =  true, errorViews = false)
                     renderProducts(it.data)
                 }
                 is Resource.Error -> {
-                    binding.progressBar.isVisible = false
-                    binding.cartList.isVisible = false
-                    binding.errorText.isVisible = true
+                    setViewsVisibility(loadingViews = false, cartList = false, errorViews = true)
                     renderFailure(it.failure)
                 }
             }
         }
     }
 
+    private fun setViewsVisibility(loadingViews: Boolean, cartList: Boolean, errorViews: Boolean) {
+        binding.progressBar.isVisible = loadingViews
+        binding.cartList.isVisible = cartList
+        binding.layoutEmptyCart.isVisible = false
+        binding.errorText.isVisible = errorViews
+            //  It is important to set to false on every state and just set visible when necessary.
+            //  Otherwise it could be set true in renderProducts, and then a failure occur but it was
+            //  still visible and now overlapped with a failure text.
+            //  Could be modified at the same time with cartList, but the use case should be more common
+            //  to be set to false, so it makes no sense making this layout true onSuccess, and then
+            //  in renderProducts realize that the layout should be false
+    }
+
     private fun renderProducts(products: List<ProductCart>) {
         adapter.submitList(products)
+        if(products.isEmpty()) {
+            binding.layoutEmptyCart.isVisible = true
+        }
     }
 
     private fun renderFailure(failure: Failure) {
-        when (failure) {
-            is Failure.CartFailure.EmptyCartList -> {
-                binding.errorText.text = getString(R.string.failure_empty_cart_list)
-            }
-            else ->
-                binding.errorText.text = failure.toString()
-        }
+        binding.errorText.text = failure.toString()
     }
 
 

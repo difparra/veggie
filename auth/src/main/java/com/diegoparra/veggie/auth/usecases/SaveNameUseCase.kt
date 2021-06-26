@@ -6,7 +6,7 @@ import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.auth.utils.TextInputValidation
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.suspendFlatMap
+import com.diegoparra.veggie.core.kotlin.flatMap
 import javax.inject.Inject
 
 class SaveNameUseCase @Inject constructor(
@@ -29,12 +29,12 @@ class SaveNameUseCase @Inject constructor(
 
         //  Update in authRepo and userRepo
         return authRepository.updateProfile(name = name)
-            .suspendFlatMap { triggerCallbacks(name = name) }
+            .flatMap { triggerCallbacks(name = name) }
     }
 
     private suspend fun triggerCallbacks(name: String): Either<Failure, Unit> {
         return authRepository.getIdCurrentUser()
-            .suspendFlatMap {
+            .flatMap {
                 authCallbacks.onUpdateProfile(
                     userId = it,
                     name = name

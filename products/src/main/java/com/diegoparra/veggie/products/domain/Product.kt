@@ -12,6 +12,7 @@ data class Product(
 
 //  Will be mainly needed when inserting the products to the database.
 //  In other words, will be required by the admin.
+//  As for now, it is being used by the fakes.
 data class ProductWithAllVariations(
     val tagId: String,
     val mainData: MainData,
@@ -30,8 +31,9 @@ data class MainData(
 data class VariationData(
     val varId: String,
     val relatedMainId: String,
-    val unit: String,
-    val weightGr: Int = -1,
+    val packet: String,         //  Unidad, Bandeja, Libra
+    val weight: Int = -1,       //  -1 = Do not show
+    val unit: String,           //  g, kg, ml, und
     val price: Int,
     val discount: Float,
     val stock: Boolean,

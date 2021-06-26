@@ -20,8 +20,9 @@ import androidx.room.Index
 data class VariationEntity (
         val varId: String,
         val relatedMainId: String,
+        val packet: String,
+        val weight: Int,
         val unit: String,
-        val weightGr: Int,
         val price: Int,
         val discount: Float,
         val stock: Boolean,

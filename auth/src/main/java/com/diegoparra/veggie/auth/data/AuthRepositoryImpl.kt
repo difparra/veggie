@@ -10,8 +10,8 @@ import com.diegoparra.veggie.auth.domain.*
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.android.IoDispatcher
+import com.diegoparra.veggie.core.kotlin.flatMap
 import com.diegoparra.veggie.core.kotlin.map
-import com.diegoparra.veggie.core.kotlin.suspendFlatMap
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -103,10 +103,10 @@ class AuthRepositoryImpl @Inject constructor(
         authApi
             .createUserWithEmailAndPassword(profile.email, password)
             .saveLastSignedInWith(SignInMethod.EMAIL)
-            .suspendFlatMap { authResult ->
+            .flatMap { authResult ->
                 updateProfile(name = profile.name, photoUrl = profile.photoUrl).map { authResult }
             }
-            .suspendFlatMap {
+            .flatMap {
                 it.user.toProfile().map {
                     AuthResults(profile = it, isNewUser = true, signInMethod = SignInMethod.EMAIL)
                 }
@@ -119,7 +119,7 @@ class AuthRepositoryImpl @Inject constructor(
         authApi
             .signInWithEmailAndPassword(email, password)
             .saveLastSignedInWith(SignInMethod.EMAIL)
-            .suspendFlatMap {
+            .flatMap {
                 it.user.toProfile().map {
                     AuthResults(profile = it, isNewUser = false, signInMethod = SignInMethod.EMAIL)
                 }
@@ -140,7 +140,7 @@ class AuthRepositoryImpl @Inject constructor(
             authApi
                 .signInWithCredential(credential)
                 .saveLastSignedInWith(SignInMethod.GOOGLE)
-                .suspendFlatMap { authResult ->
+                .flatMap { authResult ->
                     authResult.user.toProfile().map {
                         AuthResults(
                             profile = it,
@@ -157,7 +157,7 @@ class AuthRepositoryImpl @Inject constructor(
             authApi
                 .signInWithCredential(credential)
                 .saveLastSignedInWith(SignInMethod.FACEBOOK)
-                .suspendFlatMap { authResult ->
+                .flatMap { authResult ->
                     //  Uri is appending access_token every time, so in order to fix this I am replacing
                     //  the access_token part of the string rather than just adding
                     val currentPhotoUrl = authResult.user?.photoUrl
@@ -174,7 +174,7 @@ class AuthRepositoryImpl @Inject constructor(
                         Either.Right(authResult)
                     }
                 }
-                .suspendFlatMap { authResult ->
+                .flatMap { authResult ->
                     authResult.user.toProfile().map {
                         AuthResults(
                             profile = it,

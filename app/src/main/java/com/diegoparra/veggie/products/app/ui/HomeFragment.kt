@@ -37,32 +37,36 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.tags.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Loading -> {
-                    binding.progressBar.isVisible = true
-                    binding.tabLayout.isVisible = false
-                    binding.viewPager.isVisible = false
-                    binding.errorText.isVisible = false
-                }
+                is Resource.Loading ->
+                    setViewsVisibility(loadingViews = true, successViews = false, errorViews = false)
                 is Resource.Success -> {
-                    binding.progressBar.isVisible = false
-                    binding.tabLayout.isVisible = true
-                    binding.viewPager.isVisible = true
-                    binding.errorText.isVisible = false
+                    setViewsVisibility(loadingViews = false, successViews = true, errorViews = false)
                     renderTags(it.data)
                 }
                 is Resource.Error -> {
-                    binding.progressBar.isVisible = false
-                    binding.tabLayout.isVisible = false
-                    binding.viewPager.isVisible = false
-                    binding.errorText.isVisible = true
+                    setViewsVisibility(loadingViews = false, successViews = false, errorViews = true)
                     renderFailure(it.failure)
                 }
             }
         }
     }
 
+    private fun setViewsVisibility(loadingViews: Boolean, successViews: Boolean, errorViews: Boolean) {
+        binding.progressBar.isVisible = loadingViews
+        binding.tabLayout.isVisible = successViews
+        binding.viewPager.isVisible = successViews
+        binding.errorText.isVisible = errorViews
+    }
+
 
     private fun renderTags(tags: List<Tag>) {
+        //  Dealing with empty list
+        if(tags.isEmpty()) {
+            binding.errorText.text = getString(R.string.failure_no_tags)
+            binding.errorText.isVisible = true
+        }
+
+        //  Dealing normal case
         val adapter = TabsAdapter(this, tags.map { it.id })
         binding.viewPager.adapter = adapter
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
@@ -70,13 +74,9 @@ class HomeFragment : Fragment() {
         }.attach()
     }
 
+
     private fun renderFailure(failure: Failure) {
-        when (failure) {
-            is Failure.ProductsFailure.TagsNotFound ->
-                binding.errorText.text = getString(R.string.failure_no_tags)
-            else ->
-                binding.errorText.text = failure.toString()
-        }
+        binding.errorText.text = failure.toString()
     }
 
 

@@ -6,7 +6,7 @@ import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.auth.utils.TextInputValidation
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.suspendFlatMap
+import com.diegoparra.veggie.core.kotlin.flatMap
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import javax.inject.Inject
@@ -26,7 +26,7 @@ class SavePhoneNumberUseCase @Inject constructor(
         phoneAuthCredential: PhoneAuthCredential
     ): Either<Failure, Unit> {
         return updateAuthRepo(credential = phoneAuthCredential)
-            .suspendFlatMap { onPhoneVerified(phoneNumber) }
+            .flatMap { onPhoneVerified(phoneNumber) }
     }
 
     private suspend fun updateAuthRepo(credential: PhoneAuthCredential): Either<AuthFailure, Unit> {
@@ -34,7 +34,7 @@ class SavePhoneNumberUseCase @Inject constructor(
     }
 
     private suspend fun onPhoneVerified(phoneNumber: String): Either<Failure, Unit> {
-        return authRepository.getIdCurrentUser().suspendFlatMap {
+        return authRepository.getIdCurrentUser().flatMap {
             authCallbacks.onPhoneVerified(userId = it, phoneNumber = phoneNumber)
         }
     }

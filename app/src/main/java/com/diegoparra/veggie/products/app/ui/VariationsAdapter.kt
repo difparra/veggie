@@ -68,8 +68,8 @@ class VariationsAdapter(private val listener: OnItemClickListener) :
 
         abstract fun bind(item: VariationUi)
 
-        protected fun getBasicDescription(unit: String, weightGr: Int): String {
-            return "$unit (± ${weightGr}g)"
+        protected fun getBasicDescription(packet: String, weight: Int, unit: String): String {
+            return "$packet (± $weight$unit)"
         }
 
         class HeaderViewHolder(private var binding: ListItemVariationHeaderBinding) :
@@ -78,7 +78,7 @@ class VariationsAdapter(private val listener: OnItemClickListener) :
             override fun bind(item: VariationUi) {
                 this.item = item as VariationUi.Header
                 this.item?.let {
-                    binding.title.text = getBasicDescription(it.unit, it.weightGr)
+                    binding.title.text = getBasicDescription(it.packet, it.weight, it.unit)
                 }
             }
         }
@@ -115,7 +115,7 @@ class VariationsAdapter(private val listener: OnItemClickListener) :
                 this.item?.let {
                     loadEnabledState(it.stock)
                     loadPrice(it.price, it.discount)
-                    loadDescription(it.headerIsVisible, it.unit, it.weightGr, it.detail)
+                    loadDescription(it.headerIsVisible, it.packet, it.weight, it.unit, it.detail)
                     loadQuantityState(it.quantity, it.maxOrder)
                 }
             }
@@ -141,12 +141,13 @@ class VariationsAdapter(private val listener: OnItemClickListener) :
 
             private fun loadDescription(
                 headerIsVisible: Boolean,
+                packet: String,
+                weight: Int,
                 unit: String,
-                weightGr: Int,
                 detail: String?
             ) {
                 if (!headerIsVisible) {
-                    binding.description.text = getBasicDescription(unit, weightGr)
+                    binding.description.text = getBasicDescription(packet, weight, unit)
                 } else {
                     binding.description.text = detail
                 }
@@ -174,7 +175,7 @@ class VariationsAdapter(private val listener: OnItemClickListener) :
     companion object DiffCallback : DiffUtil.ItemCallback<VariationUi>() {
         override fun areItemsTheSame(oldItem: VariationUi, newItem: VariationUi): Boolean {
             return if (oldItem is VariationUi.Header && newItem is VariationUi.Header) {
-                oldItem.unit == newItem.unit
+                oldItem.packet == newItem.packet
             } else if (oldItem is VariationUi.Item && newItem is VariationUi.Item) {
                 oldItem.varId == newItem.varId && oldItem.detail == newItem.detail
             } else {

@@ -75,7 +75,7 @@ class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHold
             loadDescription(
                 finalPrice = product.price,
                 discount = product.discount,
-                unit = product.unit
+                packet = product.packet
             )
             loadQtyButton(product.quantity)
             loadLabel(product.label)
@@ -109,12 +109,12 @@ class ProductsAdapter : ListAdapter<ProductMain, ProductsAdapter.ProductViewHold
             binding.name.text = name
         }
 
-        private fun loadDescription(finalPrice: Int, discount: Float, unit: String) {
+        private fun loadDescription(finalPrice: Int, discount: Float, packet: String) {
             val context = binding.description.context
             val text =
                 getFormattedPrice(finalPrice = finalPrice, discount = discount, context = context)
             text.append(
-                " /${abbreviatedUnit(unit)}",
+                " /${abbreviatedPacket(packet)}",
                 ForegroundColorSpan(
                     context.getColorWithAlphaFromAttrs(
                         colorAttr = R.attr.colorOnSurface,

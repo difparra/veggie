@@ -20,15 +20,18 @@ class GetVariationsUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(mainId: String): Flow<Either<Failure, List<ProductVariation>>> {
-        Timber.d("invoke() called with: mainId = $mainId")
         return when (val variations = getVariations(mainId)) {
             is Either.Left -> flow { emit(variations) }
             is Either.Right -> {
-                val varsQtyFlows = variations.b.map {
-                    addQuantityToVariation(mainId = mainId, variation = it)
+                //  Check if variationsList is empty before returning combine.
+                if(variations.b.isEmpty()) {
+                    return flow { emit(Either.Right(listOf())) }
                 }
-                combine(varsQtyFlows) {
-                    Timber.d("invoke - combine called. ${it.toList()}")
+
+                val variationsFlows = variations.b.map {
+                    getProductVariation(mainId = mainId, variation = it)
+                }
+                combine(variationsFlows) {
                     it.toList().reduceFailuresOrRight()
                 }
             }
@@ -36,16 +39,13 @@ class GetVariationsUseCase @Inject constructor(
     }
 
     private suspend fun getVariations(mainId: String): Either<Failure, List<VariationData>> {
-        Timber.d("getVariations() called with: mainId = $mainId")
         return productsRepository.getVariationsByMainId(mainId = mainId)
     }
 
-
-    private fun addQuantityToVariation(
+    private fun getProductVariation(
         mainId: String,
         variation: VariationData
     ): Flow<Either<Failure, ProductVariation>> {
-        Timber.d("addQuantityToVariation() called with: mainId = $mainId, variation = $variation")
         return if (variation.hasDetails()) {
             val qtyMap =
                 cartRepository.getQuantityMapByVariation(mainId = mainId, varId = variation.varId)

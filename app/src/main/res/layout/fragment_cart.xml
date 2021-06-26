@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,33 +10,36 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/btn_back"
                 style="@style/Widget.Veggie.AppBarLayout.ButtonImageView"
-                android:src="@drawable/ic_arrow_back"
+                android:layout_alignParentStart="true"
                 android:importantForAccessibility="no"
-                app:tint="?attr/colorPrimary"
-                android:layout_alignParentStart="true" />
+                android:src="@drawable/ic_arrow_back"
+                app:tint="?attr/colorPrimary" />
+
             <TextView
                 style="@style/Widget.Veggie.AppBarLayout.Title"
-                android:text="@string/menu_cart"
+                android:layout_toStartOf="@id/clear_cart"
+                android:layout_toEndOf="@id/btn_back"
                 android:paddingStart="?attr/paddingSmall"
                 android:paddingEnd="?attr/paddingSmall"
-                android:layout_toEndOf="@id/btn_back"
-                android:layout_toStartOf="@id/clear_cart" />
+                android:text="@string/menu_cart" />
+
             <ImageView
                 android:id="@+id/clear_cart"
                 style="@style/Widget.Veggie.AppBarLayout.ButtonImageView"
-                android:src="@drawable/ic_remove_shopping_cart"
                 android:layout_alignParentEnd="true"
-                android:importantForAccessibility="no"/>
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_remove_shopping_cart" />
         </RelativeLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -46,13 +48,13 @@
         android:id="@+id/cart_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:paddingHorizontal="?attr/paddingStandard"
         android:paddingTop="?attr/paddingSmall"
         android:paddingBottom="25dp"
-        android:clipToPadding="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/btn_make_order"
         app:layout_constraintTop_toBottomOf="@id/app_bar"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="10"
         tools:listitem="@layout/list_item_cart" />
 
@@ -60,23 +62,24 @@
         android:id="@+id/cart_total_warning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="@string/total_x_to_complete_min_order"
-        android:paddingBottom="?attr/paddingSmall"
-        android:minHeight="25dp"
-        android:gravity="center"
         android:background="?attr/colorWarning"
+        android:gravity="center"
+        android:minHeight="25dp"
+        android:paddingBottom="?attr/paddingSmall"
         android:textColor="?attr/colorOnPrimary"
-        app:layout_constraintBottom_toTopOf="@id/btn_make_order"/>
+        app:layout_constraintBottom_toTopOf="@id/btn_make_order"
+        tools:text="@string/total_x_to_complete_min_order" />
+
     <ProgressBar
         android:id="@+id/cart_total_progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        tools:progress="40"
-        android:progressTint="?attr/colorOnWarning"
-        android:minHeight="0dp"
         android:alpha="0.7"
-        app:layout_constraintBottom_toBottomOf="@id/cart_total_warning" />
+        android:minHeight="0dp"
+        android:progressTint="?attr/colorOnWarning"
+        app:layout_constraintBottom_toBottomOf="@id/cart_total_warning"
+        tools:progress="40" />
 
     <RelativeLayout
         android:id="@+id/btn_make_order"
@@ -84,31 +87,31 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="45dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:paddingHorizontal="?attr/paddingStandard"
-        android:paddingVertical="?attr/paddingSmall">
+        android:paddingVertical="?attr/paddingSmall"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
             android:id="@+id/btn_make_order_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/cart_total"
             android:gravity="center_vertical|start"
             android:text="@string/btn_make_order"
             android:textAppearance="?attr/textAppearanceSubtitle1"
-            android:textColor="?attr/colorOnPrimary"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/cart_total"/>
+            android:textColor="?attr/colorOnPrimary" />
 
         <TextView
             android:id="@+id/cart_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="$15,000"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:textColor="?attr/colorOnPrimary"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
+            tools:text="$15,000" />
 
     </RelativeLayout>
 
@@ -116,19 +119,50 @@
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/error_text"
         style="@style/Widget.Veggie.ErrorText"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="ErrorText"
-        android:textAlignment="center" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="ErrorText" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_empty_cart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/btn_make_order"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/img_empty_cart" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="?attr/paddingBig"
+            android:alpha="?attr/alphaSecondaryText"
+            android:gravity="center"
+            android:text="@string/failure_empty_cart_list"
+            android:textAppearance="?attr/textAppearanceSubtitle1" />
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

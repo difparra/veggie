@@ -7,6 +7,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
+import androidx.annotation.AttrRes
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.android.appendMultipleSpans
 import com.diegoparra.veggie.core.android.getColorFromAttr
@@ -15,44 +16,74 @@ import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.core.kotlin.getValueBeforeDiscount
 
 
-fun abbreviatedUnit(unit: String) =
-    when (unit.lowercase()) {
+fun abbreviatedPacket(packet: String) =
+    when (packet.lowercase()) {
         "libra" -> "lb"
         "unidad" -> "und"
         "canastilla" -> "cta"
         "bandeja" -> "bdj"
-        else -> unit
+        else -> packet
     }
 
 fun getFormattedPrice(
-    finalPrice: Int, discount: Float, context: Context,
-    hideDiscount: Boolean = false
+    finalPrice: Int, discount: Float,
+    context: Context, ssb: SpannableStringBuilder = SpannableStringBuilder(),
+    @AttrRes colorStrike: Int = R.attr.colorOnSurface,
+    @AttrRes alphaStrike: Int? = R.attr.alphaSecondaryText,
+    @AttrRes colorPriceFinal: Int = R.attr.colorSecondary
 ): SpannableStringBuilder {
-    val text = SpannableStringBuilder()
-    if (discount > 0 && !hideDiscount) {
-        val colorAlpha = context.getColorWithAlphaFromAttrs(
-            colorAttr = R.attr.colorOnSurface,
-            alphaAttr = R.attr.alphaSecondaryText
-        )
-        text.appendMultipleSpans(
-            finalPrice.getValueBeforeDiscount(discount).addPriceFormat() + " ",
-            listOf(StrikethroughSpan(), ForegroundColorSpan(colorAlpha)),
-            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-        )
-        text.appendMultipleSpans(
-            finalPrice.addPriceFormat(),
-            listOf(
-                StyleSpan(Typeface.BOLD),
-                ForegroundColorSpan(context.getColorFromAttr(R.attr.colorSecondary))
-            ),
-            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+    return if (discount > 0) {
+        getFormattedPrice(
+            finalPrice = finalPrice,
+            priceBeforeDiscount = finalPrice.getValueBeforeDiscount(discount),
+            context = context, ssb = ssb,
+            colorStrike = colorStrike, alphaStrike = alphaStrike,
+            colorPriceFinal = colorPriceFinal
         )
     } else {
-        text.append(
+        ssb.append(
             finalPrice.addPriceFormat(),
             StyleSpan(Typeface.BOLD),
             Spannable.SPAN_INCLUSIVE_EXCLUSIVE
         )
     }
-    return text
+}
+
+fun getFormattedPrice(
+    finalPrice: Int, priceBeforeDiscount: Int,
+    context: Context, ssb: SpannableStringBuilder = SpannableStringBuilder(),
+    @AttrRes colorStrike: Int = R.attr.colorOnSurface,
+    @AttrRes alphaStrike: Int? = R.attr.alphaSecondaryText,
+    @AttrRes colorPriceFinal: Int = R.attr.colorSecondary
+): SpannableStringBuilder {
+    if (finalPrice > priceBeforeDiscount) {
+        ssb.appendMultipleSpans(
+            priceBeforeDiscount.addPriceFormat() + " ",
+            listOf(
+                StrikethroughSpan(),
+                ForegroundColorSpan(
+                    context.getColorWithAlphaFromAttrs(
+                        colorAttr = colorStrike,
+                        alphaAttr = alphaStrike
+                    )
+                )
+            ),
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+        ssb.appendMultipleSpans(
+            finalPrice.addPriceFormat(),
+            listOf(
+                StyleSpan(Typeface.BOLD),
+                ForegroundColorSpan(context.getColorWithAlphaFromAttrs(colorAttr = colorPriceFinal))
+            ),
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+    } else {
+        ssb.append(
+            finalPrice.addPriceFormat(),
+            StyleSpan(Typeface.BOLD),
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+    }
+    return ssb
 }

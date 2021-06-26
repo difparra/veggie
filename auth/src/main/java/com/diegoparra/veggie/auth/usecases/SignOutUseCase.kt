@@ -3,7 +3,6 @@ package com.diegoparra.veggie.auth.usecases
 import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.utils.AuthCallbacks
 import com.diegoparra.veggie.core.kotlin.Either
-import com.diegoparra.veggie.core.kotlin.suspendFlatMap
 import javax.inject.Inject
 
 class SignOutUseCase @Inject constructor(

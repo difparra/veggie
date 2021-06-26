@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
+import com.diegoparra.veggie.core.kotlin.toResource
 import com.diegoparra.veggie.products.domain.Tag
 import com.diegoparra.veggie.products.app.usecases.GetTagsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,20 +24,8 @@ class TagsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _tags.value = Resource.Loading()
-            getTagsUseCase().fold(::handleFailureTags, ::handleTags)
+            _tags.value = getTagsUseCase().toResource()
         }
-    }
-
-    private fun handleTags(tags: List<Tag>) {
-        if (tags.isNullOrEmpty()) {
-            _tags.value = Resource.Error(Failure.ProductsFailure.TagsNotFound)
-        } else {
-            _tags.value = Resource.Success(tags)
-        }
-    }
-
-    private fun handleFailureTags(failure: Failure) {
-        _tags.value = Resource.Error(failure)
     }
 
 }

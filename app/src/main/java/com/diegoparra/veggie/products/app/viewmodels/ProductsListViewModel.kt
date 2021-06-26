@@ -3,6 +3,7 @@ package com.diegoparra.veggie.products.app.viewmodels
 import androidx.lifecycle.*
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
+import com.diegoparra.veggie.core.kotlin.toResource
 import com.diegoparra.veggie.products.app.entities.ProductMain
 import com.diegoparra.veggie.products.app.usecases.GetMainProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,21 +30,9 @@ class ProductsListViewModel @Inject constructor(
                 .collect { prodsEither ->
                     //  Do not set loading here, as it would hide the list on every change like
                     //  quantity. Normally, this changes will be fast.
-                    prodsEither.fold(::handleFailure, ::handleProductsList)
+                    _productsList.value = prodsEither.toResource()
                 }
         }
-    }
-
-    private fun handleProductsList(productsList: List<ProductMain>) {
-        if (productsList.isNullOrEmpty()) {
-            _productsList.value = Resource.Error(Failure.ProductsFailure.ProductsNotFound)
-        } else {
-            _productsList.value = Resource.Success(productsList)
-        }
-    }
-
-    private fun handleFailure(failure: Failure) {
-        _productsList.value = Resource.Error(failure)
     }
 
     companion object {

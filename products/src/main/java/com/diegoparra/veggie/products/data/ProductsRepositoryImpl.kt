@@ -1,8 +1,7 @@
 package com.diegoparra.veggie.products.data
 
-import com.diegoparra.veggie.core.kotlin.Either
-import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.android.IoDispatcher
+import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.products.data.DtoToEntityTransformations.toTimestamp
 import com.diegoparra.veggie.products.data.firebase.ProductsApi
 import com.diegoparra.veggie.products.data.prefs.ProductPrefs
@@ -14,9 +13,11 @@ import com.diegoparra.veggie.products.data.DtoToEntityTransformations.getListPro
 import com.diegoparra.veggie.products.data.DtoToEntityTransformations.getMainProdIdsToDelete
 import com.diegoparra.veggie.products.data.DtoToEntityTransformations.toTagEntity
 import com.diegoparra.veggie.products.domain.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigClientException
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigServerException
+import kotlinx.coroutines.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -27,52 +28,28 @@ class ProductsRepositoryImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ProductsRepository {
 
-    private fun getCurrentTimeInMillis() = System.currentTimeMillis()
-    private fun isDataExpired(lastUpdatedAtInMillis: Long, expirationTimeInMillis: Long) =
-        (getCurrentTimeInMillis() - lastUpdatedAtInMillis) > expirationTimeInMillis
-
 
     /*
                 TAGS RELATED        ----------------------------------------------------------------
      */
 
-    override suspend fun getTags(
-        forceUpdate: Boolean,
-        expirationTimeMillis: Long
-    ): Either<Failure, List<Tag>> = withContext(dispatcher) {
-        updateLocalTagsFromApiIfNecessary(forceUpdate, expirationTimeMillis)?.let {
-            return@withContext Either.Left(it)
-        }
-
-        val tagsLocal = productsDao.getAllTags()
-        return@withContext if (tagsLocal.isNullOrEmpty()) {
-            Either.Left(Failure.ProductsFailure.TagsNotFound)
-        } else {
-            Either.Right(tagsLocal.map { it.toTag() })
-        }
-    }
-
-    private suspend fun updateLocalTagsFromApiIfNecessary(
-        forceUpdate: Boolean,
-        expirationTimeMillis: Long
-    ): Failure? {
-        val localLastUpdatedAtInMillis = prefs.getTagsUpdatedAt()
-        if (forceUpdate || isDataExpired(
-                lastUpdatedAtInMillis = localLastUpdatedAtInMillis,
-                expirationTimeInMillis = expirationTimeMillis
-            )
-        ) {
-            when (val tagsNetwork = productsApi.getTags()) {
-                is Either.Left -> return tagsNetwork.a
-                is Either.Right -> {
-                    productsDao.updateAllTags(tags = tagsNetwork.b.map { it.toTagEntity() })
-                    prefs.saveTagsUpdatedAt(getCurrentTimeInMillis())
-                }
+    override suspend fun getTags(source: Source): Either<Failure, List<Tag>> =
+        withContext(dispatcher) {
+            if (source.isDataExpired(prefs.getTagsUpdatedAt() ?: 0)) {
+                productsApi.getTags()
+                    .map {
+                        productsDao.updateAllTags(tags = it.map { it.toTagEntity() })
+                        prefs.saveTagsUpdatedAt(System.currentTimeMillis())
+                    }
+                    .onFailure {
+                        Timber.e("Error while fetching tags from server (remoteConfig). Failure=${it}")
+                        return@withContext Either.Left(it)
+                    }
             }
-        }
-        return null
-    }
 
+            val tagsLocal = productsDao.getAllTags()
+            return@withContext Either.Right(tagsLocal.map { it.toTag() })
+        }
 
     /*
                 PRODUCTS RELATED        ------------------------------------------------------------
@@ -80,109 +57,86 @@ class ProductsRepositoryImpl @Inject constructor(
 
     override suspend fun getMainProductsByTagId(
         tagId: String,
-        forceUpdate: Boolean,
-        expirationTimeMillis: Long
+        source: Source
     ): Either<Failure, List<Product>> = withContext(dispatcher) {
-        updateLocalProductsFromApiIfNecessary(forceUpdate, expirationTimeMillis)?.let {
+        updateLocalProductsIfExpired(source).onFailure {
             return@withContext Either.Left(it)
         }
-
         val productsLocal = productsDao.getMainProductsByTagId(tagId)
-        return@withContext productsLocal.let {
-            if (it.isNullOrEmpty()) {
-                Either.Left(Failure.ProductsFailure.ProductsNotFound)
-            } else {
-                Either.Right(it.map { it.toProduct() })
-            }
-        }
+        return@withContext Either.Right(productsLocal.map { it.toProduct() })
     }
 
     override suspend fun searchMainProductsByName(
         query: String,
-        forceUpdate: Boolean,
-        expirationTimeMillis: Long
+        source: Source
     ): Either<Failure, List<Product>> = withContext(dispatcher) {
-        updateLocalProductsFromApiIfNecessary(forceUpdate, expirationTimeMillis)?.let {
+        updateLocalProductsIfExpired(source).onFailure {
             return@withContext Either.Left(it)
         }
 
         val localSearchResults = productsDao.searchMainProdByName(query)
-        return@withContext localSearchResults.let {
-            if (it.isNullOrEmpty()) {
-                Either.Left(Failure.SearchFailure.NoSearchResults)
-            } else {
-                Either.Right(it.map { it.toProduct() })
-            }
-        }
+        return@withContext Either.Right(localSearchResults.map { it.toProduct() })
     }
 
     override suspend fun getVariationsByMainId(
         mainId: String,
-        forceUpdate: Boolean,
-        expirationTimeMillis: Long
+        source: Source
     ): Either<Failure, List<VariationData>> = withContext(dispatcher) {
-        updateLocalProductsFromApiIfNecessary(forceUpdate, expirationTimeMillis)?.let {
+        updateLocalProductsIfExpired(source).onFailure {
             return@withContext Either.Left(it)
         }
 
         val variationsLocal = productsDao.getProductVariationsByMainId(mainId)
-        return@withContext variationsLocal.let {
-            if (it.isNullOrEmpty()) {
-                Either.Left(Failure.ProductsFailure.ProductsNotFound)
-            } else {
-                Either.Right(it.map { it.toVariationData() })
-            }
+        return@withContext if (variationsLocal.isNullOrEmpty()) {
+            Timber.wtf("No variations were found for product with mainId=$mainId")
+            Either.Left(Failure.NotFound)
+        } else {
+            Either.Right(variationsLocal.map { it.toVariationData() })
         }
     }
 
     override suspend fun getProduct(
         mainId: String, varId: String,
-        forceUpdate: Boolean,
-        expirationTimeMillis: Long
+        source: Source
     ): Either<Failure, Product> = withContext(dispatcher) {
-        updateLocalProductsFromApiIfNecessary(forceUpdate, expirationTimeMillis)?.let {
+        updateLocalProductsIfExpired(source).onFailure {
             return@withContext Either.Left(it)
         }
 
         val productLocal = productsDao.getProduct(mainId, varId)
-        return@withContext productLocal?.let {
-            Either.Right(it.toProduct())
-        } ?: Either.Left(Failure.ProductsFailure.ProductsNotFound)
+        return@withContext if (productLocal == null) {
+            Timber.wtf("No product was found with mainId=$mainId, varId=$varId")
+            Either.Left(Failure.NotFound)
+        } else {
+            Either.Right(productLocal.toProduct())
+        }
     }
 
 
-    private suspend fun updateLocalProductsFromApiIfNecessary(
-        forceUpdate: Boolean,
-        expirationTimeMillis: Long
-    ): Failure? {
-        //  TODO:   WorkManager to update local database, as it is an operation that must be completed
-        //          If for example 10 products were needed to update: 7 updated on Monday and 3 on Tuesday,
-        //          and the user opens the app on Wednesday and close before updating all the 10 products,
-        //          resulting that 5 Monday products and 2 Tuesday products were updated, when the user
-        //          opens the app again the lastProdUpdatedAt will be on Tuesday, so the remaining 2
-        //          Monday products will now never been updated.
-        //          It is therefore mandatory that the updates complete even if the user close the app, or
-        //          sorting the products by lastUpdatedTime, so that the most recent update will always update
-        //          the last.
+    /*
+            ----------------------------------------------------------------------------------------
+                    HELPERS
+            ----------------------------------------------------------------------------------------
+     */
+
+    private suspend fun updateLocalProductsIfExpired(source: Source): Either<Failure, Unit> {
         val localLastUpdatedAtInMillis = productsDao.getLastProdUpdatedAtInMillis() ?: 0
-        if (forceUpdate || isDataExpired(
-                lastUpdatedAtInMillis = localLastUpdatedAtInMillis,
-                expirationTimeInMillis = expirationTimeMillis
-            )
-        ) {
-            when (val productsNetwork =
-                productsApi.getSortedProductsUpdatedAfter(localLastUpdatedAtInMillis.toTimestamp())) {
-                is Either.Left -> return productsNetwork.a
-                is Either.Right -> {
-                    val prods = productsNetwork.b
-                    productsDao.updateProducts(
-                        mainProdsIdToDelete = prods.getMainProdIdsToDelete(),
-                        prodsToUpdate = prods.getListProdUpdateRoom()
-                    )
-                }
-            }
+        return if (source.isDataExpired(localLastUpdatedAtInMillis)) {
+            updateLocalProducts(localLastUpdatedAtInMillis)
+        } else {
+            Either.Right(Unit)
         }
-        return null
+    }
+
+    private suspend fun updateLocalProducts(localLastUpdatedAtInMillis: Long): Either<Failure, Unit> {
+        //  TODO:   Complete operation using workManager, as it is an operation that must be completed
+        return productsApi.getProductsUpdatedAfter(localLastUpdatedAtInMillis.toTimestamp())
+            .map {
+                productsDao.updateProducts(
+                    mainProdsIdToDelete = it.getMainProdIdsToDelete(),
+                    prodsToUpdate = it.getListProdUpdateRoom()
+                )
+            }
     }
 
 }

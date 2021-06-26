@@ -31,7 +31,7 @@ class UpdateQuantityUseCase @Inject constructor(
             // Here can be optionally added a new variable to toast a message indicating the user
             // that he can't order more items on this product
         } else {
-            Timber.e("Couldn't find current quantity for product $productId")
+            Timber.wtf("Couldn't find current quantity for product $productId")
         }
     }
 

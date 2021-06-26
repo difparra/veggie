@@ -17,8 +17,9 @@ data class ProductCart(
     val imageUrl = mainData.imageUrl
 
     private val variationData = product.variationData
+    val packet = variationData.packet
+    val weight = variationData.weight
     val unit = variationData.unit
-    val weightGr = variationData.weightGr
     val price = variationData.price
     val discount = variationData.discount
     val stock = variationData.stock

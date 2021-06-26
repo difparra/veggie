@@ -12,23 +12,11 @@ sealed class Failure(open val message: String? = null) {
     object NetworkConnection : Failure()
     class ServerError(val exception: Exception? = null, message: String? = null) :
         Failure(message = message ?: exception?.localizedMessage)
-
-    sealed class ProductsFailure : Failure() {
-        object TagsNotFound : ProductsFailure()
-        object ProductsNotFound : ProductsFailure()
-    }
-
-    sealed class SearchFailure : Failure() {
-        object EmptyQuery : SearchFailure()
-        object NoSearchResults : SearchFailure()
-    }
-
-    sealed class CartFailure : Failure() {
-        object EmptyCartList : CartFailure()
-    }
-
-    sealed class UserFailure : Failure() {
-        object UserNotFound : UserFailure()
-    }
+    object NotFound: Failure()
+        //  Use just as 404 page not found.
+        //  Only when some specific resource that is very likely to exists in database is not found.
+        //  For example: User(id), variation(prodId), ...
+        //  Not on emptyLists or some variables that is almost same probability they exists as they
+        //  don't. As in cartFailure.
 
 }

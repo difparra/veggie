@@ -7,6 +7,7 @@ import com.diegoparra.veggie.products.fakes.UtilsFakes.toProduct
 import timber.log.Timber
 import java.lang.IllegalStateException
 
+/*
 class FakeProductsRepository(
     private val tags: List<Tag> = FakeProductsDatabase.tags,
     private val products: List<ProductWithAllVariations> = FakeProductsDatabase.products
@@ -116,4 +117,4 @@ class FakeProductsRepository(
         Timber.e("getProduct - Product with mainId: $mainId not found")
         return Either.Left(Failure.ProductsFailure.ProductsNotFound)
     }
-}
+}*/

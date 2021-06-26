@@ -6,7 +6,7 @@ import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.utils.TextInputValidation
 import com.diegoparra.veggie.auth.usecases.utils.EmailCollisionValidation
 import com.diegoparra.veggie.core.kotlin.Either
-import com.diegoparra.veggie.core.kotlin.suspendFlatMap
+import com.diegoparra.veggie.core.kotlin.flatMap
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -17,8 +17,8 @@ class SendPasswordResetEmailUseCase @Inject constructor(
 
     suspend operator fun invoke(email: String): Either<AuthFailure, Unit> {
         val result = validateEmail(email)
-            .suspendFlatMap { validateNotEmailCollision(email) }
-            .suspendFlatMap { sendPasswordResetEmail(email) }
+            .flatMap { validateNotEmailCollision(email) }
+            .flatMap { sendPasswordResetEmail(email) }
         Timber.d("result = $result")
         return result
     }

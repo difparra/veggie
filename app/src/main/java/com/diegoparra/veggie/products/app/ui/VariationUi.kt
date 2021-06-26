@@ -4,16 +4,18 @@ import com.diegoparra.veggie.products.app.entities.ProductVariation
 
 sealed class VariationUi {
     data class Header(
-        val unit: String,
-        val weightGr: Int
+        val packet: String,
+        val weight: Int,
+        val unit: String
     ) : VariationUi()
 
     data class Item(
         val headerIsVisible: Boolean,
         val varId: String,
         val detail: String?,
+        val packet: String,
+        val weight: Int,
         val unit: String,
-        val weightGr: Int,
         val price: Int,
         val discount: Float,
         val stock: Boolean,
@@ -40,7 +42,7 @@ sealed class VariationUi {
         private fun getListWithHeadersAndDetails(variationsList: List<ProductVariation>): List<VariationUi> {
             val listToSubmit = mutableListOf<VariationUi>()
             variationsList.forEach { variation ->
-                listToSubmit.add(Header(variation.unit, variation.weightGr))
+                listToSubmit.add(Header(variation.packet, variation.weight, variation.unit))
                 if (variation.details.isNullOrEmpty()) {
                     listToSubmit.add(
                         getItem(
@@ -73,8 +75,9 @@ sealed class VariationUi {
                 headerIsVisible = headerIsVisible,
                 varId = variation.varId,
                 detail = detail,
+                packet = variation.packet,
+                weight = variation.weight,
                 unit = variation.unit,
-                weightGr = variation.weightGr,
                 price = variation.price,
                 discount = variation.discount,
                 stock = variation.stock,

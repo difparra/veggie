@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class CartRepositoryImpl @Inject constructor(
@@ -33,11 +34,7 @@ class CartRepositoryImpl @Inject constructor(
 
     override fun getProdIdsList(): Flow<Either<Failure, List<ProductId>>> {
         return cartDao.getProductIds().map {
-            if (it.isNullOrEmpty()) {
-                Either.Left(Failure.CartFailure.EmptyCartList)
-            } else {
-                Either.Right(it.map { it.toProductId() })
-            }
+            Either.Right(it.map { it.toProductId() })
         }.flowOn(dispatcher)
     }
 
@@ -84,9 +81,12 @@ class CartRepositoryImpl @Inject constructor(
     override suspend fun getItem(productId: ProductId): Either<Failure, CartItem> =
         withContext(dispatcher) {
             val cartEntity = cartDao.getItem(productId.toProdIdRoom())
-            return@withContext cartEntity?.let {
-                Either.Right(it.toCartItem())
-            } ?: Either.Left(Failure.ProductsFailure.ProductsNotFound)
+            return@withContext if (cartEntity == null) {
+                Timber.wtf("Product with id: $productId was not found in cart")
+                Either.Left(Failure.NotFound)
+            } else {
+                Either.Right(cartEntity.toCartItem())
+            }
         }
 
     override suspend fun getCurrentQuantityItem(productId: ProductId): Either<Failure, Int> =

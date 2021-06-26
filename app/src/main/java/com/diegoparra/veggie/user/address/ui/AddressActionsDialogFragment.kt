@@ -46,7 +46,7 @@ class AddressActionsDialogFragment : DialogFragment() {
             text = getString(R.string.address_actions_dialog_check_address)
             setOnClickListener {
                 viewModel.selectAddress(addressId = args.addressId)
-                findNavController().popBackStack()
+                this@AddressActionsDialogFragment.findNavController().popBackStack()
             }
         }
         with(deleteAddressBtn) {
@@ -54,7 +54,7 @@ class AddressActionsDialogFragment : DialogFragment() {
             setTextColor(rootView.context.getColorFromAttr(R.attr.colorError))
             setOnClickListener {
                 viewModel.deleteAddress(addressId = args.addressId)
-                findNavController().popBackStack()
+                this@AddressActionsDialogFragment.findNavController().popBackStack()
             }
         }
     }

@@ -17,12 +17,27 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.OnItemClickListener {
+class ProductDetailsFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentProductDetailsBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ProductDetailsViewModel by viewModels()
-    private val adapter by lazy { VariationsAdapter(this) }
+    private val adapter by lazy {
+        VariationsAdapter(object : VariationsAdapter.OnItemClickListener {
+            override fun onItemClick(variationId: String, detail: String?, which: Int) {
+                when (which) {
+                    VariationsAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(
+                        varId = variationId,
+                        detail = detail
+                    )
+                    VariationsAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(
+                        varId = variationId,
+                        detail = detail
+                    )
+                }
+            }
+        })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,53 +58,40 @@ class ProductDetailsFragment : BottomSheetDialogFragment(), VariationsAdapter.On
     private fun subscribeUi() {
         viewModel.variationsList.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Loading -> {
-                    binding.progressBar.isVisible = true
-                    binding.variationsList.isVisible = false
-                    binding.errorText.isVisible = false
-                }
+                is Resource.Loading ->
+                    setViewsVisibility(loadingViews = true, successViews = false, errorViews = false)
                 is Resource.Success -> {
-                    binding.progressBar.isVisible = false
-                    binding.variationsList.isVisible = true
-                    binding.errorText.isVisible = false
+                    setViewsVisibility(loadingViews = false, successViews = true, errorViews = false)
                     renderVariationsList(it.data)
                 }
                 is Resource.Error -> {
-                    binding.progressBar.isVisible = false
-                    binding.variationsList.isVisible = false
-                    binding.errorText.isVisible = true
+                    setViewsVisibility(loadingViews = false, successViews = false, errorViews = true)
                     renderFailureVariations(it.failure)
                 }
             }
         }
     }
 
+    private fun setViewsVisibility(loadingViews: Boolean, successViews: Boolean, errorViews: Boolean) {
+        binding.progressBar.isVisible = loadingViews
+        binding.variationsList.isVisible = successViews
+        binding.errorText.isVisible = errorViews
+    }
+
     private fun renderVariationsList(variationsList: List<ProductVariation>) {
+        //  Dealing with empty list
+        if (variationsList.isEmpty()) {
+            Timber.wtf("Got empty list in variations after selecting a main product.")
+            binding.errorText.text = getString(R.string.failure_no_variations_found)
+            binding.errorText.isVisible = true
+        }
+
         val listToSubmit = VariationUi.getListToSubmit(variationsList)
-        Timber.d(listToSubmit.toString())
         adapter.submitList(listToSubmit)
     }
 
-    override fun onItemClick(variationId: String, detail: String?, which: Int) {
-        when (which) {
-            VariationsAdapter.OnItemClickListener.BUTTON_ADD -> viewModel.addQuantity(
-                varId = variationId,
-                detail = detail
-            )
-            VariationsAdapter.OnItemClickListener.BUTTON_REDUCE -> viewModel.reduceQuantity(
-                varId = variationId,
-                detail = detail
-            )
-        }
-    }
-
     private fun renderFailureVariations(failure: Failure) {
-        when (failure) {
-            is Failure.ProductsFailure.ProductsNotFound ->
-                binding.errorText.text = getString(R.string.failure_no_variations_found)
-            else ->
-                binding.errorText.text = failure.toString()
-        }
+        binding.errorText.text = failure.toString()
     }
 
 

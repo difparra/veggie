@@ -14,6 +14,7 @@ import com.diegoparra.veggie.databinding.FragmentProductsListBinding
 import com.diegoparra.veggie.products.app.entities.ProductMain
 import com.diegoparra.veggie.products.app.viewmodels.ProductsListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ProductsListFragment : Fragment() {
@@ -42,38 +43,55 @@ class ProductsListFragment : Fragment() {
     private fun subscribeUi() {
         viewModel.productsList.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Loading -> {
-                    binding.progressBar.isVisible = true
-                    binding.productsList.isVisible = false
-                    binding.errorText.isVisible = false
-                }
+                is Resource.Loading ->
+                    setViewsVisibility(
+                        loadingViews = true,
+                        successViews = false,
+                        errorViews = false
+                    )
                 is Resource.Success -> {
-                    binding.progressBar.isVisible = false
-                    binding.productsList.isVisible = true
-                    binding.errorText.isVisible = false
+                    setViewsVisibility(
+                        loadingViews = false,
+                        successViews = true,
+                        errorViews = false
+                    )
                     renderProductsList(it.data)
                 }
                 is Resource.Error -> {
-                    binding.progressBar.isVisible = false
-                    binding.productsList.isVisible = false
-                    binding.errorText.isVisible = true
+                    setViewsVisibility(
+                        loadingViews = false,
+                        successViews = false,
+                        errorViews = true
+                    )
                     renderFailure(it.failure)
                 }
             }
         }
     }
 
+    private fun setViewsVisibility(
+        loadingViews: Boolean,
+        successViews: Boolean,
+        errorViews: Boolean
+    ) {
+        binding.progressBar.isVisible = loadingViews
+        binding.productsList.isVisible = successViews
+        binding.errorText.isVisible = errorViews
+    }
+
     private fun renderProductsList(productsList: List<ProductMain>) {
+        //  Dealing with empty list
+        if (productsList.isEmpty()) {
+            Timber.w("Should not be empty list for a tag. It could be an admin problem by setting either the id of the tag, or the products in the tag")
+            binding.errorText.text = getString(R.string.failure_no_products_for_tag)
+            binding.errorText.isVisible = true
+        }
+
         adapter.submitList(productsList)
     }
 
     private fun renderFailure(failure: Failure) {
-        when (failure) {
-            is Failure.ProductsFailure.ProductsNotFound ->
-                binding.errorText.text = getString(R.string.failure_no_products_for_tag)
-            else ->
-                binding.errorText.text = failure.toString()
-        }
+        binding.errorText.text = failure.toString()
     }
 
     override fun onDestroyView() {

@@ -31,13 +31,13 @@ class ProductPrefsImpl @Inject constructor(
     override suspend fun saveTagsUpdatedAt(value: Long) = saveUpdatedAt(TAGS_UPDATED_AT, value)
 
 
-    private suspend fun getUpdatedAt(key: Preferences.Key<Long>) : Long {
+    private suspend fun getUpdatedAt(key: Preferences.Key<Long>) : Long? {
         return context.dataStore.data
                 .map { preferences ->
-                    preferences[key] ?: 0
+                    preferences[key]
                 }
                 .first()
     }
 
-    override suspend fun getTagsUpdatedAt(): Long = getUpdatedAt(TAGS_UPDATED_AT)
+    override suspend fun getTagsUpdatedAt(): Long? = getUpdatedAt(TAGS_UPDATED_AT)
 }

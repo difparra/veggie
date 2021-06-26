@@ -32,8 +32,9 @@ object ProductEntitiesTransformations {
     fun VariationEntity.toVariationData() = VariationData(
             varId = varId,
             relatedMainId = relatedMainId,
+            packet = packet,
+            weight = weight,
             unit = unit,
-            weightGr = weightGr,
             price = price,
             discount = discount,
             stock = stock,

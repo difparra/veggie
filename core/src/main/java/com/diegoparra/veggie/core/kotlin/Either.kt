@@ -20,62 +20,55 @@ sealed class Either<out L, out R> {
     data class Right<out R>(val b: R) : Either<Nothing, R>()
 
     /**
-     * Returns true if this is a Right, false otherwise.
-     * @see Right
-     */
-    val isRight get() = this is Right<R>
-
-    /**
-     * Returns true if this is a Left, false otherwise.
-     * @see Left
-     */
-    val isLeft get() = this is Left<L>
-
-    /**
-     * Creates a Left type.
-     * @see Left
-     */
-    fun <L> left(a: L) = Left(a)
-
-
-    /**
-     * Creates a Right type.
-     * @see Right
-     */
-    fun <R> right(b: R) = Right(b)
-
-    /**
      * Applies fnL if this is a Left or fnR if this is a Right.
      * @see Left
      * @see Right
      */
-    fun <T> fold(fnL: (L) -> T, fnR: (R) -> T): T =
+    inline fun <T> fold(fnL: (L) -> T, fnR: (R) -> T): T =
         when (this) {
             is Left -> fnL(a)
             is Right -> fnR(b)
         }
 }
 
-/**
- * Composes 2 functions
- * See <a href="https://proandroiddev.com/kotlins-nothing-type-946de7d464fb">Credits to Alex Hart.</a>
- */
-fun <A, B, C> ((A) -> B).c(f: (B) -> C): (A) -> C = {
-    f(this(it))
-}
-/*
-    A -> B      =>      b = a2                      b = f(a)            T = fn(R)
-    B -> C      =>      c = b3                      c = f(b)            Either = Right(T)
-    A -> C      =>      c = b3 = (a2)3 = a6     =>  c = f(f(a))         Either = Right(fn(R))
- */
+fun <L, R> Either<L, R>.getOrNull(): R? =
+    when (this) {
+        is Either.Left -> null
+        is Either.Right -> b
+    }
 
+fun <L, R> Either<L, R>.leftOrNull(): L? =
+    when (this) {
+        is Either.Left -> a
+        is Either.Right -> null
+    }
+
+
+inline fun <L, R> Either<L, R>.getOrElse(onFailure: (failure: L) -> R): R =
+    when (this) {
+        is Either.Left -> onFailure(a)
+        is Either.Right -> b
+    }
+
+inline fun <L, R> Either<L, R>.onFailure(fn: (failure: L) -> Unit): Either<L, R> =
+    this.apply { if (this is Either.Left) fn(a) }
+
+inline fun <L, R> Either<L, R>.onSuccess(fn: (success: R) -> Unit): Either<L, R> =
+    this.apply { if (this is Either.Right) fn(b) }
+
+
+/*
+    ------------------------------------------------------------------------------------------------
+        TRANSFORMATIONS
+    ------------------------------------------------------------------------------------------------
+ */
 /**
  * Right-biased flatMap() FP convention which means that Right is assumed to be the default case
  * to operate on. If it is Left, operations like map, flatMap, ... return the Left value unchanged.
  */
-fun <T, L, R> Either<L, R>.flatMap(fn: (R) -> Either<L, T>): Either<L, T> =
+inline fun <T, L, R> Either<L, R>.flatMap(fn: (R) -> Either<L, T>): Either<L, T> =
     when (this) {
-        is Either.Left -> Either.Left(a)
+        is Either.Left -> this
         is Either.Right -> fn(b)
     }
 
@@ -83,40 +76,19 @@ fun <T, L, R> Either<L, R>.flatMap(fn: (R) -> Either<L, T>): Either<L, T> =
  * Right-biased map() FP convention which means that Right is assumed to be the default case
  * to operate on. If it is Left, operations like map, flatMap, ... return the Left value unchanged.
  */
-fun <T, L, R> Either<L, R>.map(fn: (R) -> (T)): Either<L, T> = this.flatMap(fn.c(::right))
-//  fn.c(::right)       =>      R->T , T->Either.Right(T)  =>  R -> Either.Right(T)
-
-/** Returns the value from this `Right` or the given argument if this is a `Left`.
- *  Right(12).getOrElse(17) RETURNS 12 and Left(12).getOrElse(17) RETURNS 17
- */
-fun <L, R> Either<L, R>.getOrElse(value: R): R =
+inline fun <T, L, R> Either<L, R>.map(fn: (R) -> (T)): Either<L, T> =
     when (this) {
-        is Either.Left -> value
-        is Either.Right -> b
+        is Either.Left -> this
+        is Either.Right -> Either.Right(fn(b))
     }
-
-/**
- * Left-biased onFailure() FP convention dictates that when this class is Left, it'll perform
- * the onFailure functionality passed as a parameter, but, overall will still return an either
- * object so you chain calls.
- */
-fun <L, R> Either<L, R>.onFailure(fn: (failure: L) -> Unit): Either<L, R> =
-    this.apply { if (this is Either.Left) fn(a) }
-
-/**
- * Right-biased onSuccess() FP convention dictates that when this class is Right, it'll perform
- * the onSuccess functionality passed as a parameter, but, overall will still return an either
- * object so you chain calls.
- */
-fun <L, R> Either<L, R>.onSuccess(fn: (success: R) -> Unit): Either<L, R> =
-    this.apply { if (this is Either.Right) fn(b) }
 
 
 /*
     ------------------------------------------------------------------------------------------------
-        CUSTOM FUNCTIONS WITH EITHER
+        CUSTOM FUNCTIONS WITH LIST OF EITHER
     ------------------------------------------------------------------------------------------------
  */
+
 
 /**
  * Transform a List of Either<> into a Either<_,List>. (Left-Biased)
@@ -141,7 +113,7 @@ fun <L, R> List<Either<L, R>>.getFailuresOrRight(): Either<List<L>, List<R>> {
  *  - Success:  If every item in the list is Success (Right).
  *              Returned Success will now represent the list<R> without failures.
  */
-fun <L, R> List<Either<L, R>>.reduceFailuresOrRight(reduceFailure: (List<L>) -> L = { it.first() }): Either<L, List<R>> {
+inline fun <L, R> List<Either<L, R>>.reduceFailuresOrRight(reduceFailure: (List<L>) -> L = { it.first() }): Either<L, List<R>> {
     return when (val mappedList = this.getFailuresOrRight()) {
         is Either.Left -> Either.Left(reduceFailure(mappedList.a))
         is Either.Right -> mappedList
@@ -154,16 +126,17 @@ fun <L, R> List<Either<L, R>>.reduceFailuresOrRight(reduceFailure: (List<L>) -> 
  */
 fun <L> List<Either<L, Any>>.getFailures(): List<L> {
     return this
-        .filter { it is Either.Left }
-        .map {
-            (it as Either.Left).a
-        }
+        .filterIsInstance<Either.Left<L>>()
+        .map { it.a }
 }
 
 
-/**
- * Transform Either<Failure, T> into Resource.Success or Resource.Error
+/*
+    ------------------------------------------------------------------------------------------------
+        TRANSFORM TO RESOURCE
+    ------------------------------------------------------------------------------------------------
  */
+
 fun <T> Either<Failure, T>.toResource(): Resource<T> {
     return when (this) {
         is Either.Left -> Resource.Error(this.a)
@@ -172,38 +145,14 @@ fun <T> Either<Failure, T>.toResource(): Resource<T> {
 }
 
 
-/**
- * Right-biased customMap()
- * Convert an Either when the Right parameter is a List.
- * The returned value will be:
- *  - Failure: If the either was initially a failure
- *  - Failure: If for any of the elements in the list the transformation (parameter) results in failure.
- *  - Success: When list transformed does not contain any failure.
- *//*
 
-fun <T, L, R> Either<L, List<R>>.customMap(fn: (R) -> Either<L, T>): Either<L, List<T>> =
-    this.flatMap { it.map(fn).mapListAndFlattenFailure() }
+/*
+    ------------------------------------------------------------------------------------------------
+        CHAIN AND COMBINE MAPS
+    ------------------------------------------------------------------------------------------------
+ */
 
-*/
-
-
-
-suspend fun <T, L, R> Either<L, R>.suspendMap(fn: suspend (R) -> T): Either<L, T> {
-    return when (this) {
-        is Either.Left -> this
-        is Either.Right -> Either.Right(fn(this.b))
-    }
-}
-
-suspend fun <T, L, R> Either<L, R>.suspendFlatMap(fn: suspend (R) -> Either<L, T>): Either<L, T> {
-    return when (this) {
-        is Either.Left -> this
-        is Either.Right -> fn(this.b)
-    }
-}
-
-
-fun <T1, T2, R> Either.Companion.combineMap(
+inline fun <T1, T2, R> Either.Companion.combineMap(
     either1: Either<Failure, T1>,
     either2: Either<Failure, T2>,
     transform: (T1, T2) -> R
@@ -219,23 +168,7 @@ fun <T1, T2, R> Either.Companion.combineMap(
     }
 }
 
-suspend fun <T1, T2, R> Either.Companion.combineMapSuspend(
-    either1: Either<Failure, T1>,
-    either2: Either<Failure, T2>,
-    transform: suspend (T1, T2) -> R
-): Either<Failure, R> {
-    return when (either1) {
-        is Either.Left -> either1
-        is Either.Right -> {
-            when (either2) {
-                is Either.Left -> either2
-                is Either.Right -> Either.Right(transform(either1.b, either2.b))
-            }
-        }
-    }
-}
-
-fun <T1, T2, T3, R> Either.Companion.combineMap(
+inline fun <T1, T2, T3, R> Either.Companion.combineMap(
     either1: Either<Failure, T1>,
     either2: Either<Failure, T2>,
     either3: Either<Failure, T3>,

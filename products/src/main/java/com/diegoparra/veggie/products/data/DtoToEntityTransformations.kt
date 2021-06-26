@@ -47,8 +47,9 @@ object DtoToEntityTransformations {
     private fun VariationDto.toVariationEntity(mainId: String) = VariationEntity(
             varId = varId,
             relatedMainId = mainId,
+            packet = packet,
+            weight = weight,
             unit = unit,
-            weightGr = weightGr,
             price = price,
             discount = discount/100,
             stock = stock,

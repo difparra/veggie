@@ -1,9 +1,6 @@
 package com.diegoparra.veggie.products.app.usecases
 
-import com.diegoparra.veggie.core.kotlin.Either
-import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.map
-import com.diegoparra.veggie.core.kotlin.reduceFailuresOrRight
+import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.products.app.entities.*
 import com.diegoparra.veggie.products.cart.domain.CartRepository
 import com.diegoparra.veggie.products.domain.ProductsRepository
@@ -19,40 +16,29 @@ class GetCartProductsUseCase @Inject constructor(
     private val cartRepository: CartRepository
 ) {
 
-    /*  Option 2:       ** Already verified with the logs on productsRepository
-            Get ids in the cartList.
-            Possible changes in cartPage:
-            -> updateQuantity without removing products from the cart:
-                productsRepo will not be requested, product info will be kept the same and just the quantity changes.
-            -> remove some product from the cart:
-                as the size changes, the cart list itself changes, and will request all the information from the
-                products database again.
-
-            The advantage of using this way is also that there are less probabilities that the product
-            info such as prices change while the client is modifying quantities in the cart.
-            -> There is still some edge case when info is requested again in products database:
-                When a product was removed from cart. But the request to the products database can also be managed as
-                collect fresh info from online just if ___ minutes has been passed, so the info is outdated.
-                (Setting my custom expirationTime)
-    */
+    /**
+     * This use case must:
+     *      Update all product info at the first time user see it.
+     *      On the first collect, products that are no longer in stock should be deleted and correct
+     *      prices should be fetched.
+     *      Product info should not change while user is in the cart.
+     */
 
     operator fun invoke(): Flow<Either<Failure, List<ProductCart>>> {
         return getProdsIdsCart().flatMapLatest { prodIdEither ->
             when (prodIdEither) {
                 is Either.Left -> flow { emit(prodIdEither) }
-                is Either.Right -> coroutineScope {
-                    val deferredList = mutableListOf<Deferred<Flow<Either<Failure, ProductCart>>>>()
-                    for (prodId in prodIdEither.b) {
-                        deferredList.add(
-                            async {
-                                when (val prodInfo = getProductInfo(prodId)) {
-                                    is Either.Left -> flow { emit(prodInfo) }
-                                    is Either.Right -> addQuantityInfo(prodId, prodInfo.b)
-                                }
-                            }
-                        )
+                is Either.Right -> {
+                    //  Check, otherwise, flatMap will return combine, and in there, an empty list
+                    //  of flow will not emit anything, without letting the ui know that cart has
+                    //  no products
+                    if(prodIdEither.b.isEmpty()) {
+                        return@flatMapLatest flow { emit(Either.Right(listOf<ProductCart>())) }
                     }
-                    val prodsCartFlows = deferredList.awaitAll()
+
+                    val prodsCartAsyncList =
+                        prodIdEither.b.map { getProductCartAsync(it) }
+                    val prodsCartFlows = prodsCartAsyncList.awaitAll()
                     combine(prodsCartFlows) {
                         it.toList().reduceFailuresOrRight()
                     }
@@ -61,53 +47,44 @@ class GetCartProductsUseCase @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    /*
-    operator fun invoke() : Flow<Either<Failure, List<ProductCart>>> {
-        return getProdsIdsCart().flatMapLatest { prodIdEither ->
-            when(prodIdEither){
-                is Either.Left -> flow { emit(prodIdEither) }
-                is Either.Right -> {
-                    val flows = prodIdEither.b.map {
-                        when(val prodInfo = getProductInfo(it)) {
-                            is Either.Left -> flow { emit(prodInfo) }
-                            is Either.Right -> addQuantityInfo(it, prodInfo.b)
-                        }
-                    }
-                    combine(flows) {
-                        it.toList().customTransformListToEither()
-                    }
+    private suspend fun getProductCartAsync(id: ProductId) = coroutineScope {
+        async {
+            getProductInfo(id).fold(
+                { flow { emit(Either.Left(it)) } },
+                {
+                    deleteFromCartIfNoStock(id, it)
+                    getProductCart(id, it)
                 }
-            }
-        }.flowOn(Dispatchers.IO)
+            )
+        }
     }
-     */
+
+
 
     private fun getProdsIdsCart(): Flow<Either<Failure, List<ProductId>>> {
         return cartRepository.getProdIdsList()
     }
 
     private suspend fun getProductInfo(productId: ProductId): Either<Failure, Product> {
-        //  TODO:   Define custom expiration time for updating product info in cart.
-        val prod = productsRepository.getProduct(mainId = productId.mainId, varId = productId.varId)
-        //  TODO:   This has not still been tested if is working
-        //          Check if product has no longer stock, and if so, delete from cart. For example,
-        //          there were left products in cart the previous day and next day some has no stock.
-        if (prod is Either.Right && !prod.b.variationData.stock) {
-            cartRepository.deleteItem(productId = productId)
-        }
-        return prod
+        return productsRepository.getProduct(mainId = productId.mainId, varId = productId.varId)
     }
 
-    private fun addQuantityInfo(
-        productId: ProductId,
-        product: Product
+    private suspend fun deleteFromCartIfNoStock(id: ProductId, productInfo: Product) {
+        if (!productInfo.variationData.stock) {
+            cartRepository.deleteItem(id)
+        }
+    }
+
+    private fun getProductCart(
+        id: ProductId,
+        productInfo: Product
     ): Flow<Either<Failure, ProductCart>> {
-        val quantity = cartRepository.getQuantityItem(productId)
+        val quantity = cartRepository.getQuantityItem(id)
         return quantity.map {
             it.map {
                 ProductCart(
-                    cartItem = CartItem(productId = productId, quantity = it),
-                    product = product
+                    cartItem = CartItem(productId = id, quantity = it),
+                    product = productInfo
                 )
             }
         }

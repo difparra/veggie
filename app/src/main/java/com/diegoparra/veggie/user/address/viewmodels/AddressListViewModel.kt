@@ -7,7 +7,6 @@ import com.diegoparra.veggie.user.address.usecases.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,7 +66,7 @@ class AddressListViewModel @Inject constructor(
                  */
                 if (it is Resource.Success) {
                     val selectedAddress =
-                        getSelectedAddressUseCase(addressList = it.data).getOrElse(null)
+                        getSelectedAddressUseCase(addressList = it.data).getOrNull()
                     //  Check the first one if none is selected.
                     _selectedAddress.value = selectedAddress ?: selectFirstAddress(it.data)
                 } else {

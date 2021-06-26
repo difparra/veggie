@@ -77,4 +77,32 @@
         android:layout_centerInParent="true"
         tools:text="Error text" />
 
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/layout_no_search_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_below="@id/app_bar"
+        android:layout_alignParentBottom="true" >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/img_no_search_results" />
+
+        <TextView
+            android:id="@+id/text_no_search_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:alpha="?attr/alphaSecondaryText"
+            android:text="@string/failure_no_search_result"
+            android:layout_marginHorizontal="?attr/paddingBig"/>
+
+    </LinearLayout>
+
 </RelativeLayout>

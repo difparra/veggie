@@ -10,8 +10,9 @@ data class ProductVariation(
             this(variation, mapOf(null to quantity))
 
     val varId = variation.varId
+    val packet = variation.packet
+    val weight = variation.weight
     val unit = variation.unit
-    val weightGr = variation.weightGr
     val details = variation.detailOptions
     val price = variation.price
     val discount = variation.discount

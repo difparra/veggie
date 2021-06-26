@@ -24,7 +24,7 @@ class SaveAddressUseCase @Inject constructor(
             }
         }
         return saveInDatabase(address, details, instructions)
-            .suspendMap { selectNewAddressAsMain(it.id) }
+            .map { selectNewAddressAsMain(it.id) }
     }
 
     private fun validateAddress(address: String): Either<AuthFailure.WrongInput, String> {
@@ -35,7 +35,7 @@ class SaveAddressUseCase @Inject constructor(
         address: String, details: String, instructions: String
     ): Either<Failure, Address> {
         return authRepository.getIdCurrentUser()
-            .suspendFlatMap {
+            .flatMap {
                 val addressObj = Address(
                     id = generateUniqueId(),
                     address = address,

@@ -29,18 +29,14 @@ class CartViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getCartProductsUseCase().collect {
+                Timber.d("cartProductsList collected: $it")
                 it.fold(::handleFailure, ::handleCartProducts)
             }
         }
     }
 
     private fun handleCartProducts(products: List<ProductCart>) {
-        if (products.isNullOrEmpty()) {
-            _products.value = Resource.Error(Failure.CartFailure.EmptyCartList)
-        } else {
-            //  Must addEditablePositionProperty in here, so that there will always be an item opened to edition
-            _products.value = Resource.Success(products.addEditablePositionProperty())
-        }
+        _products.value = Resource.Success(products.addEditablePositionProperty())
     }
 
     private fun handleFailure(failure: Failure) {
@@ -95,22 +91,17 @@ class CartViewModel @Inject constructor(
 
 
     val clearCartEnabledState: LiveData<Boolean> = _products.map {
-        return@map it is Resource.Success && !it.data.isNullOrEmpty()
+        (it is Resource.Success && !it.data.isNullOrEmpty())
     }.asLiveData()
 
 
     //      ----------------------------------------------------------------------------------------
 
     val total = _products.map {
-        val minOrder = getMinOrderUseCase()
-            //  This use case is already improved and will not call the repo every time. It will
-            //  cache the value, so it is safe to call this useCase repeatedly as in here.
-
         if (it is Resource.Success) {
-            var total = 0
-            it.data.forEach {
-                total += (it.quantity * it.price)
-            }
+            val total = it.data.sumOf { it.quantity * it.price }
+            val minOrder = getMinOrderUseCase()     //  This use case already cache the data,
+                                                        // and will not call repo every time.
             if (total < 0) {
                 return@map Total.Error
             } else if (total == 0) {
@@ -120,8 +111,6 @@ class CartViewModel @Inject constructor(
             } else {
                 return@map Total.OK(totalValue = total)
             }
-        } else if (it is Resource.Error && it.failure is Failure.CartFailure.EmptyCartList) {
-            return@map Total.EmptyCart
         } else {
             return@map Total.Error
         }
