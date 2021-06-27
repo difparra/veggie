@@ -68,6 +68,11 @@ class OrderSummaryFragment: Fragment() {
                     it.date.appFormat(short = true) + "; " + Pair(it.timeRange.from, it.timeRange.to).appFormat()
             }
         }
+        //  Must observe this, in order to have some value for the liveData and make the makeOrder
+        //  button valid (it needs this products)
+        //  When not observing this, button will not work until user has opened
+        //  ProductsOrderSummaryFragment which attach an observer to viewModel
+        viewModel.productsList.observe(viewLifecycleOwner) {}
         viewModel.total.observe(viewLifecycleOwner) {
             it?.let {
                 binding.totalSubtotalValue.text = it.subtotal.addPriceFormat()
@@ -97,13 +102,23 @@ class OrderSummaryFragment: Fragment() {
     }
 
     private fun navigateOnOrderSentSuccessfully(orderId: String) {
-        //  TODO:   Display a dialog with result and options to navigate
-        Snackbar.make(binding.root, "TODO: Order was sent successfully. OrderId = $orderId", Snackbar.LENGTH_SHORT).show()
+        OrderResultNavigation.setResult(navController = findNavController(), result = true)
+        val action = OrderSummaryFragmentDirections.actionOrderSummaryFragmentToOrderSendResultDialog(
+            success = true,
+            successString = orderId,
+            failureString = null
+        )
+        findNavController().navigate(action)
     }
 
     private fun renderFailureSendingOrder(failure: Failure) {
-        //  TODO:   Display a dialog with result and options to perform
-        Snackbar.make(binding.root, failure.toString(), Snackbar.LENGTH_SHORT).show()
+        OrderResultNavigation.setResult(navController = findNavController(), result = false)
+        val action = OrderSummaryFragmentDirections.actionOrderSummaryFragmentToOrderSendResultDialog(
+            success = true,
+            successString = null,
+            failureString = failure.toString()
+        )
+        findNavController().navigate(action)
     }
 
 

@@ -20,6 +20,8 @@ import com.diegoparra.veggie.databinding.FragmentCartBinding
 import com.diegoparra.veggie.products.app.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.core.kotlin.addPriceFormat
+import com.diegoparra.veggie.core.kotlin.runIfTrue
+import com.diegoparra.veggie.order.domain.OrderConstants
 import com.diegoparra.veggie.products.app.viewmodels.CartViewModel
 import com.diegoparra.veggie.products.app.viewmodels.Total
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,6 +47,20 @@ class CartFragment : Fragment() {
                 }
             }
         })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val navController = findNavController()
+        val cartFragmentAsBackStackEntry = navController.getBackStackEntry(R.id.nav_cart)
+        val savedStateHandle = cartFragmentAsBackStackEntry.savedStateHandle
+        savedStateHandle.getLiveData<Boolean>(OrderConstants.ORDER_SENT_SUCCESSFUL)
+            .observe(cartFragmentAsBackStackEntry) {
+                Timber.d("${OrderConstants.ORDER_SENT_SUCCESSFUL} = $it")
+                it.runIfTrue {
+                    findNavController().navigate(CartFragmentDirections.actionGlobalNavUser())
+                }
+            }
     }
 
     override fun onCreateView(
@@ -90,7 +106,7 @@ class CartFragment : Fragment() {
                 is Resource.Loading ->
                     setViewsVisibility(loadingViews = true, cartList = false, errorViews = false)
                 is Resource.Success -> {
-                    setViewsVisibility(loadingViews = false, cartList =  true, errorViews = false)
+                    setViewsVisibility(loadingViews = false, cartList = true, errorViews = false)
                     renderProducts(it.data)
                 }
                 is Resource.Error -> {
@@ -106,17 +122,17 @@ class CartFragment : Fragment() {
         binding.cartList.isVisible = cartList
         binding.layoutEmptyCart.isVisible = false
         binding.errorText.isVisible = errorViews
-            //  It is important to set to false on every state and just set visible when necessary.
-            //  Otherwise it could be set true in renderProducts, and then a failure occur but it was
-            //  still visible and now overlapped with a failure text.
-            //  Could be modified at the same time with cartList, but the use case should be more common
-            //  to be set to false, so it makes no sense making this layout true onSuccess, and then
-            //  in renderProducts realize that the layout should be false
+        //  It is important to set to false on every state and just set visible when necessary.
+        //  Otherwise it could be set true in renderProducts, and then a failure occur but it was
+        //  still visible and now overlapped with a failure text.
+        //  Could be modified at the same time with cartList, but the use case should be more common
+        //  to be set to false, so it makes no sense making this layout true onSuccess, and then
+        //  in renderProducts realize that the layout should be false
     }
 
     private fun renderProducts(products: List<ProductCart>) {
         adapter.submitList(products)
-        if(products.isEmpty()) {
+        if (products.isEmpty()) {
             binding.layoutEmptyCart.isVisible = true
         }
     }
@@ -134,8 +150,15 @@ class CartFragment : Fragment() {
         binding.cartTotalProgressBar.isVisible = false
         binding.btnMakeOrder.isVisible = false
 
-        val warningLabel = WarningLabel(textView = binding.cartTotalWarning, progressBar = binding.cartTotalProgressBar)
-        val btnMakeOrder = BtnMakeOrder(layout = binding.btnMakeOrder, text = binding.btnMakeOrderText, total = binding.cartTotal)
+        val warningLabel = WarningLabel(
+            textView = binding.cartTotalWarning,
+            progressBar = binding.cartTotalProgressBar
+        )
+        val btnMakeOrder = BtnMakeOrder(
+            layout = binding.btnMakeOrder,
+            text = binding.btnMakeOrderText,
+            total = binding.cartTotal
+        )
         viewModel.total.observe(viewLifecycleOwner) {
             warningLabel.setState(it)
             btnMakeOrder.setState(it)
@@ -165,8 +188,6 @@ class CartFragment : Fragment() {
     }
 
 }
-
-
 
 
 //      ------      HELPER CLASSES TO CHANGE STATE IN BUTTONS ACCORDING TO TOTAL STATE
@@ -199,7 +220,7 @@ private class WarningLabel(
     }
 
     private fun setVisibility(isVisible: Boolean) {
-        if(this.isVisible == isVisible) {
+        if (this.isVisible == isVisible) {
             return
         }
         this.isVisible = isVisible
@@ -282,7 +303,7 @@ private class BtnMakeOrder(
     }
 
     private fun setVisibility(isVisible: Boolean) {
-        if(this.isVisible == isVisible) {
+        if (this.isVisible == isVisible) {
             return
         }
         this.isVisible = isVisible

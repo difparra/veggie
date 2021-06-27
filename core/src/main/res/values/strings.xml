@@ -8,4 +8,7 @@
     <string name="close">Cerrar</string>
     <string name="send">Enviar</string>
     <string name="save">Guardar</string>
+    <string name="understood">Entendido</string>
+    <string name="try_again">Reintentar</string>
+    <string name="returnn">Volver</string>
 </resources>

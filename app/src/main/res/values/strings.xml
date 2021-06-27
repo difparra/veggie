@@ -76,6 +76,8 @@
     <string name="name">Nombre</string>
     <string name="quantity">Cantidad</string>
     <string name="total_prod">Total</string>
+    <string name="success_message_dialog_order_send">Hemos recibido tu pedido.\n\nTu número de orden es:\n%s</string>
+    <string name="failure_message_dialog_order_send">Ha ocurrido un error:\n\n%s</string>
 
 
     <!-- Failures strings -->

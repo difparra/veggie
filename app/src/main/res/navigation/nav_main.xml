@@ -85,5 +85,8 @@
     <include app:graph="@navigation/nav_edit_profile" />
     <include app:graph="@navigation/nav_user_address" />
     <include app:graph="@navigation/nav_order" />
+    <action
+        android:id="@+id/action_global_nav_user"
+        app:destination="@id/nav_user" />
 
 </navigation>

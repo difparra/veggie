@@ -40,10 +40,6 @@ class OrderViewModel @Inject constructor(
     private val _failure = MutableStateFlow<Event<Failure?>>(Event(null))
     val failure = _failure.asLiveData()
 
-    fun refreshData() {
-        refreshAddress()
-    }
-
 
     private val _userProfile = getProfileAsFlowUseCase()
 

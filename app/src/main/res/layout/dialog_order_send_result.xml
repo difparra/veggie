@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="?attr/paddingSmall"
+    tools:context=".order.ui.OrderSendResultDialog">
+
+    <ImageView
+        android:id="@+id/order_result_dialog_image"
+        android:importantForAccessibility="no"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_success_outline"
+        android:minHeight="120dp"
+        android:layout_marginTop="?attr/paddingSmall" />
+
+    <TextView
+        android:id="@+id/order_result_dialog_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="?attr/paddingStandard"
+        tools:text="Dialog message" />
+
+    <Button
+        android:id="@+id/order_result_dialog_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Entendido" />
+
+
+</LinearLayout>

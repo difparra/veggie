@@ -79,7 +79,14 @@ class ShippingInfoFragment : Fragment() {
         return binding.root
     }
 
+    private fun setUpToSendBackOrderSendResult() {
+        val navController = findNavController()
+        OrderResultNavigation.setPreviousDestinationAsOriginal(navController)
+        OrderResultNavigation.setResult(navController, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setUpToSendBackOrderSendResult()
         subscribeUi()
 
         binding.btnBack.setOnClickListener {

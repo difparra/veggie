@@ -40,12 +40,32 @@
         <action
             android:id="@+id/action_orderSummaryFragment_to_productsOrderSummaryFragment"
             app:destination="@id/productsOrderSummaryFragment" />
+        <action
+            android:id="@+id/action_orderSummaryFragment_to_orderSendResultDialog"
+            app:destination="@id/orderSendResultDialog" />
     </fragment>
     <dialog
         android:id="@+id/productsOrderSummaryFragment"
         android:name="com.diegoparra.veggie.order.ui.ProductsOrderSummaryFragment"
         android:label="fragment_products_order_summary"
         tools:layout="@layout/fragment_products_order_summary" />
+    <dialog
+        android:id="@+id/orderSendResultDialog"
+        android:name="com.diegoparra.veggie.order.ui.OrderSendResultDialog"
+        android:label="dialog_order_send_result"
+        tools:layout="@layout/dialog_order_send_result" >
+        <argument
+            android:name="success"
+            app:argType="boolean" />
+        <argument
+            android:name="success_string"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="failure_string"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
 
 
 </navigation>
