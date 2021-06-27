@@ -47,6 +47,13 @@ class OrderViewModel @Inject constructor(
 
     private val _userProfile = getProfileAsFlowUseCase()
 
+    //  It is better to handle it from here as unique, as some other parts in here like fetching the
+    //  address could emit also this failure, and it could be thrown more than once in _failure,
+    //  even when the fragment has already listen and get out to signInFlow. That will cause a
+    //  crash in navigation. So, the best thing could be handle this failure apart.
+    private val _isSignedIn = _userProfile.map { Event(it is Either.Right) }
+    val isSignedIn = _isSignedIn.asLiveData()
+
     init {
         viewModelScope.launch {
             _userProfile.collect {
@@ -87,6 +94,9 @@ class OrderViewModel @Inject constructor(
             getSelectedAddressUseCase().fold(
                 { _failure.value = Event(it) },
                 { _address.value = it }
+            //  Could throw a singInState failure, but is ok as it will not be repeated because the only
+            //  one generating this failure is signInState.
+            //  When handling the failure in fragment, do not handle it with navigation.
             )
         }
     }

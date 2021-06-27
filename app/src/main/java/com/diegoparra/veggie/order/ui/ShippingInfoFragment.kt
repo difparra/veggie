@@ -125,11 +125,20 @@ class ShippingInfoFragment : Fragment() {
     }
 
     private fun subscribeUi() {
+        viewModel.isSignedIn.observe(viewLifecycleOwner, EventObserver {
+            if(!it){
+                findNavController().navigate(ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavSignIn())
+            }
+        })
         viewModel.failure.observe(viewLifecycleOwner, EventObserver {
             when(it) {
-                is AuthFailure.SignInState ->
-                    findNavController().navigate(ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavSignIn())
-                is Failure.NetworkConnection -> { /*  */ }
+                is AuthFailure.SignInState -> {
+                    // Do nothing it has already be handled in isSignedIn observer
+                    //  It is important to don't try to navigate from here, as it could be triggered
+                    //  more than once (i.e. when fetching address) and cause a failure with navigation
+                    //   component as current destination is not correct.
+                }
+                is Failure.NetworkConnection -> { /* TODO: Handle no network connection */ }
                 else -> {
                     //  TODO:   Hide view and display error, possibly set a try again button
                     Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_SHORT).show()
@@ -148,7 +157,7 @@ class ShippingInfoFragment : Fragment() {
         }
 
         viewModel.deliveryCosts.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            adapter.submitCustomList(it)
         }
     }
 
