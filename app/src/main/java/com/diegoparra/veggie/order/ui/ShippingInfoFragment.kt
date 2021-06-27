@@ -148,31 +148,9 @@ class ShippingInfoFragment : Fragment() {
         }
 
         viewModel.deliveryCosts.observe(viewLifecycleOwner) {
-            val listToSubmit = it.map {
-                ShippingScheduleAdapter.Item.ShippingItem(
-                    date = it.schedule.date,
-                    timeRange = it.schedule.timeRange,
-                    cost = it.cost,
-                    isSelected = it.isSelected
-                )
-            }.addHeaders()
-            adapter.submitList(listToSubmit)
+            adapter.submitList(it)
         }
     }
-
-    private fun List<ShippingScheduleAdapter.Item.ShippingItem>.addHeaders(): List<ShippingScheduleAdapter.Item> {
-        val list = mutableListOf<ShippingScheduleAdapter.Item>()
-        var currentDay: LocalDate? = null
-        this.forEach {
-            if (it.date != currentDay) {
-                list.add(ShippingScheduleAdapter.Item.Header(it.date))
-                currentDay = it.date
-            }
-            list.add(it)
-        }
-        return list
-    }
-
 
     /*
             ----------------------------------------------------------------------------------------

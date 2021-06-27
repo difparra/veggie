@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -34,9 +34,12 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
+        android:id="@+id/scroll_view_data"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -195,7 +198,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/total_title_text"
                 app:layout_constraintEnd_toEndOf="@id/user_title"
                 app:layout_constraintStart_toEndOf="@id/total_title_text"
-                android:text="@string/products_summary" />
+                android:text="@string/products_summary_btn" />
 
             <TextView
                 android:id="@+id/total_subtotal_text"
@@ -273,283 +276,25 @@
 
     </ScrollView>
 
-</LinearLayout>
-
-
-
-<!--
-
-
-<ScrollView
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:fillViewport="true">
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/user_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="?attr/paddingStandard"
-        android:layout_marginTop="?attr/paddingStandard"
-        android:layout_marginBottom="?attr/paddingSmall"
-        android:textAppearance="@style/TextAppearance.Veggie.Subtitle1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/user_name"
-        android:text="@string/contact_data" />
-
-    <ImageView
-        android:id="@+id/user_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:importantForAccessibility="no"
-        android:src="@drawable/ic_person_outline"
-        app:layout_constraintTop_toTopOf="@id/user_name"
-        app:layout_constraintBottom_toBottomOf="@id/user_phone_number"
-        app:layout_constraintStart_toStartOf="@id/user_title"
-        app:layout_constraintEnd_toStartOf="@id/user_name" />
-
-    <TextView
-        android:id="@+id/user_name"
+    <FrameLayout
+        android:id="@+id/loading_layout"
+        android:visibility="gone"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:drawableStartCompat="@drawable/ic_person_outline"
-        android:drawablePadding="?attr/paddingStandard"
-        android:layout_marginTop="?attr/paddingSmall"
-        android:layout_marginStart="?attr/paddingStandard"
-        app:layout_constraintTop_toBottomOf="@id/user_title"
-        app:layout_constraintStart_toEndOf="@id/user_icon"
-        app:layout_constraintEnd_toEndOf="@id/user_title"
-        app:layout_constraintBottom_toTopOf="@id/user_phone_number"
-        tools:text="Pepito Pérez" />
-
-    <TextView
-        android:id="@+id/user_phone_number"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:drawableStartCompat="@drawable/ic_phone_outline"
-        android:drawablePadding="?attr/paddingStandard"
-        app:layout_constraintTop_toBottomOf="@id/user_name"
-        app:layout_constraintStart_toStartOf="@id/user_name"
-        app:layout_constraintEnd_toEndOf="@id/user_name"
-        app:layout_constraintBottom_toTopOf="@id/divider_1"
-        tools:text="+57 317 487 7055" />
-
-    <View
-        android:id="@+id/divider_1"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/paddingSmall"
-        android:background="?attr/colorOnSurface"
-        android:alpha="0.2"
-        android:layout_marginVertical="?attr/paddingStandard"
-        app:layout_constraintTop_toBottomOf="@id/user_phone_number"
-        app:layout_constraintBottom_toTopOf="@id/delivery_title"/>
-
-    <ImageView
-        android:id="@+id/delivery_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:importantForAccessibility="no"
-        android:src="@drawable/ic_shipping_outline"
-        app:layout_constraintStart_toStartOf="@id/user_icon"
-        app:layout_constraintEnd_toEndOf="@id/user_icon"
-        app:layout_constraintTop_toTopOf="@id/delivery_address"
-        app:layout_constraintBottom_toBottomOf="@id/delivery_date_time" />
-
-    <TextView
-        android:id="@+id/delivery_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Veggie.Subtitle1"
-        android:layout_marginBottom="?attr/paddingSmall"
-        app:layout_constraintStart_toStartOf="@id/user_title"
-        app:layout_constraintEnd_toEndOf="@id/user_title"
-        app:layout_constraintTop_toTopOf="@id/divider_1"
-        app:layout_constraintBottom_toTopOf="@id/delivery_address"
-        android:text="@string/shipping_data" />
-
-    <TextView
-        android:id="@+id/delivery_address"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:drawableStartCompat="@drawable/ic_pin_drop_outline"
-        android:drawablePadding="?attr/paddingStandard"
-        android:layout_marginTop="?attr/paddingSmall"
-        app:layout_constraintStart_toStartOf="@id/user_name"
-        app:layout_constraintEnd_toEndOf="@id/user_name"
-        app:layout_constraintTop_toBottomOf="@id/delivery_title"
-        app:layout_constraintBottom_toTopOf="@id/delivery_date_time"
-        tools:text="Calle 130 C 59 D 75" />
-
-    <TextView
-        android:id="@+id/delivery_date_time"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:drawableStartCompat="@drawable/ic_schedule"
-        android:drawablePadding="?attr/paddingStandard"
-        app:layout_constraintStart_toStartOf="@id/delivery_address"
-        app:layout_constraintEnd_toEndOf="@id/delivery_address"
-        app:layout_constraintTop_toBottomOf="@id/delivery_address"
-        app:layout_constraintBottom_toTopOf="@id/divider_2"
-        tools:text="Hoy, 5:00pm - 6:00pm" />
-
-    <View
-        android:id="@+id/divider_2"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/paddingSmall"
-        android:background="?attr/colorOnSurface"
-        android:alpha="0.2"
-        android:layout_marginVertical="?attr/paddingStandard"
-        app:layout_constraintTop_toBottomOf="@id/delivery_date_time"
-        app:layout_constraintBottom_toTopOf="@id/payment_title"/>
-
-    <ImageView
-        android:id="@+id/payment_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:importantForAccessibility="no"
-        android:src="@drawable/ic_money_outline"
-        app:layout_constraintStart_toStartOf="@id/user_icon"
-        app:layout_constraintEnd_toEndOf="@id/user_icon"
-        app:layout_constraintTop_toTopOf="@id/payment_description"
-        app:layout_constraintBottom_toBottomOf="@id/payment_description" />
-
-    <TextView
-        android:id="@+id/payment_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Veggie.Subtitle1"
-        android:layout_marginBottom="?attr/paddingSmall"
-        app:layout_constraintTop_toBottomOf="@id/divider_2"
-        app:layout_constraintStart_toStartOf="@id/user_title"
-        app:layout_constraintEnd_toEndOf="@id/user_title"
-        app:layout_constraintBottom_toTopOf="@id/payment_description"
-        android:text="@string/payment_data" />
-
-    <TextView
-        android:id="@+id/payment_description"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:drawableStartCompat="@drawable/ic_money_outline"
-        android:drawablePadding="?attr/paddingStandard"
-        android:layout_marginTop="?attr/paddingSmall"
-        app:layout_constraintStart_toStartOf="@id/user_name"
-        app:layout_constraintEnd_toEndOf="@id/user_name"
-        app:layout_constraintTop_toBottomOf="@id/payment_title"
-        app:layout_constraintBottom_toTopOf="@id/divider_3"
-        android:text="@string/payment_cash" />
-
-    <View
-        android:id="@+id/divider_3"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/paddingSmall"
-        android:background="?attr/colorOnSurface"
-        android:alpha="0.2"
-        android:layout_marginVertical="?attr/paddingStandard"
-        app:layout_constraintTop_toBottomOf="@id/payment_description"
-        app:layout_constraintBottom_toTopOf="@id/total_title_text" />
-
-    <TextView
-        android:id="@+id/total_title_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Veggie.Subtitle2"
-        android:layout_marginBottom="?attr/paddingSmall"
-        app:layout_constraintTop_toBottomOf="@id/divider_3"
-        app:layout_constraintStart_toStartOf="@id/user_title"
-        app:layout_constraintEnd_toStartOf="@id/total_products"
-        app:layout_constraintBottom_toTopOf="@id/total_subtotal_text"
-        android:text="@string/summary" />
-
-    <TextView
-        android:id="@+id/total_products"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Veggie.Subtitle2"
-        android:textColor="?attr/colorPrimary"
-        app:layout_constraintTop_toTopOf="@id/total_title_text"
-        app:layout_constraintBottom_toBottomOf="@id/total_title_text"
-        app:layout_constraintEnd_toEndOf="@id/user_title"
-        app:layout_constraintStart_toEndOf="@id/total_title_text"
-        android:text="@string/products_summary" />
-
-    <TextView
-        android:id="@+id/total_subtotal_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="?attr/paddingSmall"
-        app:layout_constraintStart_toStartOf="@id/total_title_text"
-        app:layout_constraintEnd_toStartOf="@id/total_subtotal_value"
-        app:layout_constraintTop_toBottomOf="@id/total_title_text"
-        app:layout_constraintBottom_toTopOf="@id/total_delivery_text"
-        android:text="@string/subtotal" />
-
-    <TextView
-        android:id="@+id/total_subtotal_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/total_subtotal_text"
-        app:layout_constraintEnd_toEndOf="@id/total_products"
-        app:layout_constraintTop_toTopOf="@id/total_subtotal_text"
-        app:layout_constraintBottom_toBottomOf="@id/total_subtotal_text"
-        tools:text="$85,000" />
-
-    <TextView
-        android:id="@+id/total_delivery_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/total_subtotal_text"
-        app:layout_constraintEnd_toStartOf="@id/total_delivery_value"
-        app:layout_constraintTop_toBottomOf="@id/total_subtotal_text"
-        app:layout_constraintBottom_toTopOf="@id/total_total_text"
-        android:text="@string/delivery_fee" />
-
-    <TextView
-        android:id="@+id/total_delivery_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/total_delivery_text"
-        app:layout_constraintEnd_toEndOf="@id/total_subtotal_value"
-        app:layout_constraintTop_toTopOf="@id/total_delivery_text"
-        app:layout_constraintBottom_toBottomOf="@id/total_delivery_text"
-        tools:text="$3,000" />
-
-    <TextView
-        android:id="@+id/total_total_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/total_subtotal_text"
-        app:layout_constraintEnd_toStartOf="@id/total_total_value"
-        app:layout_constraintTop_toBottomOf="@id/total_delivery_text"
-        app:layout_constraintBottom_toTopOf="@id/btn_order"
-        android:text="@string/total" />
-
-    <TextView
-        android:id="@+id/total_total_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/total_total_text"
-        app:layout_constraintEnd_toEndOf="@id/total_subtotal_value"
-        app:layout_constraintTop_toTopOf="@id/total_total_text"
-        app:layout_constraintBottom_toBottomOf="@id/total_total_text"
-        tools:text="$88,000" />
-
-    <Button
-        android:id="@+id/btn_order"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="?attr/paddingStandard"
-        app:layout_constraintTop_toBottomOf="@id/total_total_text"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/send_order" />
+        android:clickable="true">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorGrayDefault"
+            android:alpha="?attr/alphaDisabled"/>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>-->

@@ -1,13 +1,10 @@
 package com.diegoparra.veggie.order.domain
 
-import java.time.LocalDateTime
-
 data class PaymentInfo(
     val status: PaymentStatus,
-    val paymentMethod: String,      //  Bank, cardNumber, ...
+    val paymentMethod: PaymentMethod,      //  Bank, cardNumber, ...
     val total: Double,              //  Total effectively paid
-    val paidAt: LocalDateTime,
-    val updatedAt: LocalDateTime
+    val paidAt: Long
 )
 
 enum class PaymentStatus {
@@ -18,7 +15,7 @@ enum class PaymentStatus {
 sealed class PaymentMethod {
     class Cash(val payWith: String?): PaymentMethod()
     class Pos(val ticket: String): PaymentMethod()      //  Point of sale / datáfono
-    class Card()
+    class Card: PaymentMethod()
 }
 
 

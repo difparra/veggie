@@ -4,8 +4,10 @@ import com.diegoparra.veggie.core.android.IoDispatcher
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.combineMap
+import com.diegoparra.veggie.order.data.order_dto.OrderDtoTransformations.toOrderDto
 import com.diegoparra.veggie.order.domain.DeliveryBaseCosts
 import com.diegoparra.veggie.order.domain.DeliveryScheduleConfig
+import com.diegoparra.veggie.order.domain.Order
 import com.diegoparra.veggie.order.domain.OrderRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +16,7 @@ import javax.inject.Inject
 
 class OrderRepositoryImpl @Inject constructor(
     private val orderConfigApi: OrderConfigApi,
+    private val orderApi: OrderApi,
     @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : OrderRepository {
 
@@ -43,4 +46,9 @@ class OrderRepositoryImpl @Inject constructor(
                 DeliveryScheduleConfig(timetable, minTime, maxDays)
             }
         }
+
+    override suspend fun sendOrder(order: Order): Either<Failure, String> = withContext(dispatcher) {
+        orderApi.sendOrder(order.toOrderDto())
+    }
+
 }

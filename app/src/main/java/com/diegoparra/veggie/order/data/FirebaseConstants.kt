@@ -11,4 +11,10 @@ object FirebaseConstants {
         const val deliveryTimeMaxDaysAhead = "delivery_time_max_days_ahead"
     }
 
+    object Firestore {
+        object Collections {
+            const val orders = "orders"
+        }
+    }
+
 }

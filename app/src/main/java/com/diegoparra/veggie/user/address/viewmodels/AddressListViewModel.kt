@@ -60,10 +60,6 @@ class AddressListViewModel @Inject constructor(
          */
         viewModelScope.launch {
             _addressList.collect {
-                /*
-                    TODO: When removing address and another is selected, on reload list,
-                     none of the items will be selected.
-                 */
                 if (it is Resource.Success) {
                     val selectedAddress =
                         getSelectedAddressUseCase(addressList = it.data).getOrNull()

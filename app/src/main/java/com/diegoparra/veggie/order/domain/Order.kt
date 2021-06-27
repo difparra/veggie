@@ -7,7 +7,8 @@ data class Order(
     val total: Total,
     val paymentInfo: PaymentInfo,
     val additionalNotes: String? = null,
-    val state: Status,
+    val status: Status,
+    val updatedAtMillis: Long
 ) {
     enum class Status {
         CREATED,

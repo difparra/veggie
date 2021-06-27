@@ -64,13 +64,15 @@
     <string name="payment_data">Método de pago</string>
     <string name="payment_cash">Efectivo, contraentrega</string>
     <string name="summary">Resumen</string>
-    <string name="products_summary">Ver productos</string>
+    <string name="products_summary_btn">Ver productos >></string>
     <string name="subtotal">Subtotal</string>
     <string name="delivery_fee">Domicilio</string>
     <string name="total">Total</string>
     <string name="send_order">Finalizar pedido</string>
 
-    <!-- Product order -->
+    <!-- Product order layout -->
+    <string name="products_order_list_title">Lista de productos</string>
+    <string name="return_to_cart_button">Volver al carrito</string>
     <string name="name">Nombre</string>
     <string name="quantity">Cantidad</string>
     <string name="total_prod">Total</string>

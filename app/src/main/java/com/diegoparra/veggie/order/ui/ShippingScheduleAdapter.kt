@@ -12,6 +12,7 @@ import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.databinding.ListItemShippingDayBinding
 import com.diegoparra.veggie.databinding.ListItemShippingTimeBinding
 import com.diegoparra.veggie.order.domain.TimeRange
+import com.diegoparra.veggie.order.viewmodels.OrderViewModel
 import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.time.LocalDate
@@ -24,6 +25,36 @@ class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, 
 
     //  Supporting function to add sticky headers
     fun isHeader(position: Int) = getItemViewType(position) == HEADER
+
+
+    //  Submit list with class coming from ViewModel, so that the ScheduleAdapterItems classes keep encapsulated.
+    fun submitCustomList(list: List<OrderViewModel.DeliveryScheduleAndCost>) {
+        val listToSubmit = list.map {
+            Item.ShippingItem(
+                date = it.schedule.date,
+                timeRange = it.schedule.timeRange,
+                cost = it.cost,
+                isSelected = it.isSelected
+            )
+        }.addHeaders()
+        submitList(listToSubmit)
+    }
+
+    private fun List<Item.ShippingItem>.addHeaders(): List<ShippingScheduleAdapter.Item> {
+        val list = mutableListOf<ShippingScheduleAdapter.Item>()
+        var currentDay: LocalDate? = null
+        this.forEach {
+            if (it.date != currentDay) {
+                list.add(ShippingScheduleAdapter.Item.Header(it.date))
+                currentDay = it.date
+            }
+            list.add(it)
+        }
+        return list
+    }
+
+
+
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {

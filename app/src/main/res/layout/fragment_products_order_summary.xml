@@ -7,7 +7,52 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".order.ui.ProductsOrderSummaryFragment"
-    android:paddingVertical="?attr/paddingBig">
+    android:paddingBottom="?attr/paddingBig">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="?attr/paddingBig">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btn_close"
+                style="@style/Widget.Veggie.AppBarLayout.ButtonImageView"
+                android:layout_alignParentStart="true"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_close" />
+
+            <TextView
+                style="@style/Widget.Veggie.AppBarLayout.Title"
+                android:layout_toStartOf="@id/go_to_cart"
+                android:layout_toEndOf="@id/btn_close"
+                android:paddingStart="?attr/paddingSmall"
+                android:paddingEnd="?attr/paddingSmall"
+                android:text="@string/products_order_list_title" />
+
+            <TextView
+                android:id="@+id/go_to_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="100dp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textAppearance="@style/TextAppearance.Veggie.Caption"
+                android:text="@string/return_to_cart_button"
+                app:drawableTint="?attr/colorPrimary"
+                app:drawableEndCompat="@drawable/ic_arrow_forward_ios"
+                android:padding="?attr/paddingSmall"
+                android:layout_marginHorizontal="?attr/paddingSmall"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
         android:id="@+id/error_text"

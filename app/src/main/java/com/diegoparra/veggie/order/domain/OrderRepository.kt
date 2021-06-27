@@ -11,4 +11,6 @@ interface OrderRepository {
     suspend fun getDeliveryBaseCosts(): Either<Failure, DeliveryBaseCosts>
     suspend fun getDeliveryScheduleConfig(): Either<Failure, DeliveryScheduleConfig>
 
+    suspend fun sendOrder(order: Order): Either<Failure, String>
+
 }

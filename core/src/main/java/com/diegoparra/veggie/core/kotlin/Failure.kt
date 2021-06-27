@@ -12,6 +12,8 @@ sealed class Failure(open val message: String? = null) {
     object NetworkConnection : Failure()
     class ServerError(val exception: Exception? = null, message: String? = null) :
         Failure(message = message ?: exception?.localizedMessage)
+    class ClientError(val exception: Exception? = null, message: String? = null) :
+        Failure(message = message ?: exception?.localizedMessage)
     object NotFound: Failure()
         //  Use just as 404 page not found.
         //  Only when some specific resource that is very likely to exists in database is not found.

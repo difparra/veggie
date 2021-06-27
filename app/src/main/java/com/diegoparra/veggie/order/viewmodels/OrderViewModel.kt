@@ -6,19 +6,19 @@ import androidx.lifecycle.viewModelScope
 import com.diegoparra.veggie.auth.usecases.GetProfileAsFlowUseCase
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.core.kotlin.*
-import com.diegoparra.veggie.order.domain.DeliverySchedule
-import com.diegoparra.veggie.order.domain.ProductsList
-import com.diegoparra.veggie.order.domain.ShippingInfo
-import com.diegoparra.veggie.order.domain.Total
+import com.diegoparra.veggie.order.domain.*
 import com.diegoparra.veggie.order.usecases.GetDeliveryCostUseCase
 import com.diegoparra.veggie.order.usecases.GetDeliveryScheduleOptionsUseCase
 import com.diegoparra.veggie.order.usecases.GetProductsListOrder
+import com.diegoparra.veggie.order.usecases.SendOrderUseCase
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.usecases.GetSelectedAddressUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDateTime
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,7 +27,8 @@ class OrderViewModel @Inject constructor(
     private val getSelectedAddressUseCase: GetSelectedAddressUseCase,
     private val getDeliveryScheduleOptionsUseCase: GetDeliveryScheduleOptionsUseCase,
     private val getDeliveryCostUseCase: GetDeliveryCostUseCase,
-    private val getProductsListOrder: GetProductsListOrder
+    private val getProductsListOrder: GetProductsListOrder,
+    private val sendOrderUseCase: SendOrderUseCase
 ) : ViewModel() {
 
     companion object Fields {
@@ -200,5 +201,53 @@ class OrderViewModel @Inject constructor(
             tip = 0
         )
     }.asLiveData()
+
+
+    /*
+     *      SEND ORDER       -----------------------------------------------------------------------
+     */
+
+    private val _sendOrderResult = MutableStateFlow<Event<Resource<String>?>>(Event(null))
+    val sendOrderResult = _sendOrderResult.asLiveData()
+
+    fun sendOrder() {
+        viewModelScope.launch {
+            when (val prevalidation = prevalidateFieldsSendOrder()) {
+                is Either.Left -> {
+                    _failure.value = Event(prevalidation.a)
+                    return@launch
+                }
+                is Either.Right -> {
+                    _sendOrderResult.value = Event(Resource.Loading())
+                    val result = sendOrderUseCase(
+                        shippingInfo = shippingInfo.value!!.getOrNull()!!,
+                        products = _productsList.value!!,
+                        total = total.value!!,
+                        paymentInfo = sendOrderUseCase.createPaymentInfo(
+                            paymentStatus = PaymentStatus.PENDING,
+                            paymentMethod = PaymentMethod.Cash(null),
+                            total = total.value!!.total.toDouble(),
+                            paidAt = null
+                        ),
+                        additionalNotes = null
+                    )
+                    _sendOrderResult.value = Event(result.toResource())
+                }
+            }
+        }
+    }
+
+    private fun prevalidateFieldsSendOrder(): Either<Failure, Unit> {
+        if (shippingInfo.value == null || shippingInfo.value is Failure) {
+            return Either.Left(Failure.ClientError(message = "Shipping info is not complete"))
+        } else if (productsList.value == null || productsList.value?.products.isNullOrEmpty()) {
+            return Either.Left(Failure.ClientError(message = "Products list is null or empty"))
+        } else if (total.value == null || total.value?.total == 0) {
+            return Either.Left(Failure.ClientError(message = "Total is null or 0."))
+        } else {
+            return Either.Right(Unit)
+        }
+    }
+
 
 }

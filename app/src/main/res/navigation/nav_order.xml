@@ -5,6 +5,12 @@
     android:id="@+id/nav_order"
     app:startDestination="@id/shippingInfoFragment">
 
+    <!-- Global action to get out of nav_order -->
+    <action
+        android:id="@+id/action_nav_order_pop"
+        app:popUpTo="@id/nav_order"
+        app:popUpToInclusive="true" />
+
     <fragment
         android:id="@+id/shippingInfoFragment"
         android:name="com.diegoparra.veggie.order.ui.ShippingInfoFragment"

@@ -37,7 +37,7 @@ class SaveAddressUseCase @Inject constructor(
         return authRepository.getIdCurrentUser()
             .flatMap {
                 val addressObj = Address(
-                    id = generateUniqueId(),
+                    id = getUniqueId(),
                     address = address,
                     details = details,
                     instructions = instructions
