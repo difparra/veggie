@@ -23,6 +23,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        /*
+            Splash screen:
+                https://stackoverflow.com/questions/5486789/how-do-i-make-a-splash-screen/15832037#15832037
+                https://www.youtube.com/watch?v=E5Xu2iNHRkk&t=160s
+            Splash screen is actually intended just to hide loading while app/activity is being created.
+            Do not use this as an additional activity with fixed times, as it will not reduce loading
+            times at all, just add extra time making it disgusting to the final user.
+            The loading time is due to objects instantiation and processes in the application class.
+            In this case/app, processes are small, but object instantiation do take some time,
+            as I have to init firebase remoteconfig, firestore, room (and the ones defined as
+            singletons in hilt modules)
+         */
+        //  Make sure this is before calling super.onCreate
+        setTheme(R.style.Theme_Veggie)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

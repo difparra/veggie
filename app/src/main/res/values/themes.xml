@@ -3,4 +3,10 @@
     <!-- Base application theme. -->
     <style name="Theme.Veggie" parent="Base.Theme.Veggie" />
 
+    <!-- Splash screen theme -->
+    <style name="Theme.Veggie.SplashScreen" parent="Theme.Veggie">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?android:attr/colorBackground</item>
+    </style>
+
 </resources>
