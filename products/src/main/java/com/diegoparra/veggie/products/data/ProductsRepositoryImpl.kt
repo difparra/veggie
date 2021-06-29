@@ -69,7 +69,6 @@ class ProductsRepositoryImpl @Inject constructor(
         updateLocalProductsIfExpired(source).onFailure {
             return@withContext Either.Left(it)
         }
-
         val localSearchResults = productsDao.searchMainProdByName(query)
         return@withContext Either.Right(localSearchResults.map { it.toProduct() })
     }
@@ -81,10 +80,9 @@ class ProductsRepositoryImpl @Inject constructor(
         updateLocalProductsIfExpired(source).onFailure {
             return@withContext Either.Left(it)
         }
-
         val variationsLocal = productsDao.getProductVariationsByMainId(mainId)
         return@withContext if (variationsLocal.isNullOrEmpty()) {
-            Timber.wtf("No variations were found for product with mainId=$mainId")
+            Timber.wtf("getVariationsByMainId - No variations were found for product with mainId=$mainId")
             Either.Left(Failure.NotFound)
         } else {
             Either.Right(variationsLocal.map { it.toVariationData() })
@@ -98,7 +96,6 @@ class ProductsRepositoryImpl @Inject constructor(
         updateLocalProductsIfExpired(source).onFailure {
             return@withContext Either.Left(it)
         }
-
         val productLocal = productsDao.getProduct(mainId, varId)
         return@withContext if (productLocal == null) {
             Timber.wtf("No product was found with mainId=$mainId, varId=$varId")
@@ -115,18 +112,42 @@ class ProductsRepositoryImpl @Inject constructor(
             ----------------------------------------------------------------------------------------
      */
 
+    /*  //  Some idea but still not sure how to get this working.
+
+    private fun isInternetAvailable(): Boolean {
+        return true
+    }
+
+    private suspend fun updateLocalProductsIfExpired2(source: Source): Either<Failure, Unit> {
+        return if (isInternetAvailable()) {
+            val productsUpdatedAt = prefs.getProductsUpdatedAt() ?: BasicTime(0)
+            if (source.isDataExpired(productsUpdatedAt)) {
+                updateLocalProducts().onSuccess { prefs.saveProductsUpdatedAt(BasicTime.now()) }
+            } else {
+                Either.Right(Unit)
+            }
+        } else {
+            Either.Right(Unit)
+        }
+    }*/
+
     private suspend fun updateLocalProductsIfExpired(source: Source): Either<Failure, Unit> {
-        val localLastUpdate = BasicTime(productsDao.getLastProdUpdatedAtInMillis() ?: 0)
-        return if (source.isDataExpired(localLastUpdate)) {
-            updateLocalProducts(localLastUpdate)
+        val productsUpdatedAt = prefs.getProductsUpdatedAt() ?: BasicTime(0)
+        return if (source.isDataExpired(productsUpdatedAt)) {
+            updateLocalProducts()
+                    .onSuccess { prefs.saveProductsUpdatedAt(BasicTime.now()) }
         } else {
             Either.Right(Unit)
         }
     }
 
-    private suspend fun updateLocalProducts(localLastUpdate: BasicTime): Either<Failure, Unit> {
+    //  Update taking into consideration the lastUpdateTime stored in the local database, not the last query
+    //  as if last query happens to be wrong, localLastUpdate in database will not.
+    private suspend fun updateLocalProducts(): Either<Failure, Unit> {
         //  TODO:   Complete operation using workManager, as it is an operation that must be completed
-        return productsApi.getProductsUpdatedAfter(localLastUpdate.toTimestamp())
+        //  Will get the last time a product was actually updated rather than the last time firebase was successfully called.
+        val actualProductsUpdatedAt = BasicTime(productsDao.getLastProdUpdatedAtInMillis() ?: 0)
+        return productsApi.getProductsUpdatedAfter(actualProductsUpdatedAt.toTimestamp())
             .map {
                 productsDao.updateProducts(
                     mainProdsIdToDelete = it.getMainProdIdsToDelete(),

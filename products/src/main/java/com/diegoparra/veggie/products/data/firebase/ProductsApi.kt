@@ -4,6 +4,7 @@ import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -45,6 +46,10 @@ class ProductsApi @Inject constructor(
 
 
 
+    //  It should always fetch from server, otherwise it would cheat the local successful fetch
+    //  that I am saving in prefs.
+    //  In addition, firestore could be configured to not work offline, as I am implementing
+    //  his behaviour manually with room.
     suspend fun getProductsUpdatedAfter(timestamp: Timestamp): Either<Failure, List<ProductDto>> {
         //  It is not really important to get products sorted in here, as long as local database
         //  run its update in a transaction, so that if update was not completed, revert the products
@@ -53,7 +58,7 @@ class ProductsApi @Inject constructor(
             val prods = database
                 .collection(ProdsFirebaseConstants.Collections.products)
                 .whereGreaterThan(ProdsFirebaseConstants.Keys.updatedAt, timestamp)
-                .get()
+                .get(Source.SERVER)
                 .await()
                 .toObjects<ProductDto>()
             Either.Right(prods)
