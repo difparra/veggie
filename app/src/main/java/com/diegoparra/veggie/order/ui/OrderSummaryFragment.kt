@@ -11,13 +11,12 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.android.EventObserver
-import com.diegoparra.veggie.core.appFormat
+import com.diegoparra.veggie.core.formatApp
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.databinding.FragmentOrderSummaryBinding
 import com.diegoparra.veggie.order.viewmodels.OrderViewModel
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -65,7 +64,7 @@ class OrderSummaryFragment: Fragment() {
         viewModel.deliverySchedule.observe(viewLifecycleOwner) {
             it?.let {
                 binding.deliveryDateTime.text =
-                    it.date.appFormat(short = true) + "; " + Pair(it.timeRange.from, it.timeRange.to).appFormat()
+                    it.date.formatApp(short = true) + "; " + Pair(it.timeRange.from, it.timeRange.to).formatApp()
             }
         }
         //  Must observe this, in order to have some value for the liveData and make the makeOrder

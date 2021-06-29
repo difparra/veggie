@@ -8,7 +8,6 @@ import com.diegoparra.veggie.products.data.room.MainEntity
 import com.diegoparra.veggie.products.data.room.ProductUpdateRoom
 import com.diegoparra.veggie.products.data.room.TagEntity
 import com.diegoparra.veggie.products.data.room.VariationEntity
-import com.google.firebase.Timestamp
 
 object DtoToEntityTransformations {
 
@@ -16,10 +15,6 @@ object DtoToEntityTransformations {
             tagId = id,
             tagName = name
     )
-
-
-    fun Timestamp.toMillis() : Long = seconds * 1000
-    fun Long.toTimestamp() = Timestamp(this/1000, 0)
 
     fun List<ProductDto>.getMainProdIdsToDelete() : List<String> {
         return this.filter { it.deleted }.map { it.mainId }
@@ -41,7 +36,7 @@ object DtoToEntityTransformations {
             name = name,
             normalised_name = name.removeCaseAndAccents(),
             imageUrl = imageUrl,
-            updatedAtInMillis = updatedAt.toMillis()
+            updatedAtInMillis = updatedAt.toBasicTime().millisEpochUTC
     )
 
     private fun VariationDto.toVariationEntity(mainId: String) = VariationEntity(

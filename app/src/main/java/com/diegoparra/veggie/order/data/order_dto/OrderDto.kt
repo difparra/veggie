@@ -10,4 +10,15 @@ data class OrderDto(
     val additionalNotes: String? = null,
     val status: String,
     val updatedAt: Timestamp
-)
+) {
+    //  Required empty constructor for firebase
+    constructor(): this(
+        shippingInfo = ShippingInfoDto(),
+        products = listOf(),
+        total = TotalDto(),
+        paymentInfo = PaymentInfoDto(),
+        additionalNotes = null,
+        status = "",
+        updatedAt = Timestamp(0,0)
+    )
+}

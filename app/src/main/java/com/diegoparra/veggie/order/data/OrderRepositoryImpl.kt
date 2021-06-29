@@ -4,6 +4,8 @@ import com.diegoparra.veggie.core.android.IoDispatcher
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.combineMap
+import com.diegoparra.veggie.core.kotlin.map
+import com.diegoparra.veggie.order.data.order_dto.OrderDtoTransformations.toOrder
 import com.diegoparra.veggie.order.data.order_dto.OrderDtoTransformations.toOrderDto
 import com.diegoparra.veggie.order.domain.DeliveryBaseCosts
 import com.diegoparra.veggie.order.domain.DeliveryScheduleConfig
@@ -47,8 +49,15 @@ class OrderRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun sendOrder(order: Order): Either<Failure, String> = withContext(dispatcher) {
-        orderApi.sendOrder(order.toOrderDto())
-    }
+    override suspend fun sendOrder(order: Order): Either<Failure, String> =
+        withContext(dispatcher) {
+            orderApi.sendOrder(order.toOrderDto())
+        }
+
+    override suspend fun getOrdersForUser(userId: String): Either<Failure, List<Order>> =
+        withContext(dispatcher) {
+            orderApi.getOrdersUser(userId)
+                .map { it.map { it.second.toOrder(it.first) } }
+        }
 
 }

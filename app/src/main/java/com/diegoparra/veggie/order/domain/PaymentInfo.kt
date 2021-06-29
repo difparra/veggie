@@ -1,10 +1,12 @@
 package com.diegoparra.veggie.order.domain
 
+import com.diegoparra.veggie.core.kotlin.BasicTime
+
 data class PaymentInfo(
     val status: PaymentStatus,
     val paymentMethod: PaymentMethod,      //  Bank, cardNumber, ...
     val total: Double,              //  Total effectively paid
-    val paidAt: Long
+    val paidAt: BasicTime?
 )
 
 enum class PaymentStatus {

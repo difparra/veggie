@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.diegoparra.veggie.core.kotlin.BasicTime
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -18,7 +19,7 @@ class ProductPrefsImpl @Inject constructor(
 ) : ProductPrefs {
 
     companion object {
-        val TAGS_UPDATED_AT = longPreferencesKey("tags_updated_at")
+        val TAGS_UPDATED_AT_MILLIS = longPreferencesKey("tags_updated_at_millis")
     }
 
 
@@ -28,7 +29,7 @@ class ProductPrefsImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveTagsUpdatedAt(value: Long) = saveUpdatedAt(TAGS_UPDATED_AT, value)
+    override suspend fun saveTagsUpdatedAt(value: BasicTime) = saveUpdatedAt(TAGS_UPDATED_AT_MILLIS, value.millisEpochUTC)
 
 
     private suspend fun getUpdatedAt(key: Preferences.Key<Long>) : Long? {
@@ -39,5 +40,6 @@ class ProductPrefsImpl @Inject constructor(
                 .first()
     }
 
-    override suspend fun getTagsUpdatedAt(): Long? = getUpdatedAt(TAGS_UPDATED_AT)
+    override suspend fun getTagsUpdatedAt(): BasicTime? =
+        getUpdatedAt(TAGS_UPDATED_AT_MILLIS)?.let { BasicTime(it) }
 }

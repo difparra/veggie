@@ -1,6 +1,6 @@
 package com.diegoparra.veggie.order.data
 
-object FirebaseConstants {
+object OrderFirebaseConstants {
 
     object RemoteConfigKeys {
         const val minOrder = "min_order"
@@ -14,6 +14,14 @@ object FirebaseConstants {
     object Firestore {
         object Collections {
             const val orders = "orders"
+        }
+        object Fields {
+            private const val shippingInfo = "shippingInfo"
+            private const val userId = "userId"
+            const val userIdComplete = "$shippingInfo.$userId"
+            private const val deliverySchedule = "deliverySchedule"
+            private const val from = "from"
+            const val deliveryDateFrom = "$shippingInfo.$deliverySchedule.$from"
         }
     }
 

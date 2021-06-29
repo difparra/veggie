@@ -12,5 +12,6 @@ interface OrderRepository {
     suspend fun getDeliveryScheduleConfig(): Either<Failure, DeliveryScheduleConfig>
 
     suspend fun sendOrder(order: Order): Either<Failure, String>
+    suspend fun getOrdersForUser(userId: String): Either<Failure, List<Order>>
 
 }

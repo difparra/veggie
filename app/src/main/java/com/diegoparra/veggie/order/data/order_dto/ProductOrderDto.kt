@@ -1,9 +1,7 @@
 package com.diegoparra.veggie.order.data.order_dto
 
-import com.diegoparra.veggie.products.cart.domain.ProductId
-
 data class ProductOrderDto(
-    val productId: ProductId,
+    val productId: ProductOrderIdDto,
     val name: String,
     val packet: String,
     val weight: Int,
@@ -11,10 +9,29 @@ data class ProductOrderDto(
     val price: Int,
     val discount: Float,
     val quantity: Int
-)
+) {
+    //  Required empty constructor for firebase
+    constructor(): this(
+        productId = ProductOrderIdDto(),
+        name = "",
+        packet = "",
+        weight = -1,
+        unit = "",
+        price = -1,
+        discount = 0.0f,
+        quantity = 0
+    )
+}
 
 data class ProductOrderIdDto(
     val mainId: String,
     val varId: String,
-    val detail: String
-)
+    val detail: String?
+) {
+    //  Required empty constructor for firebase
+    constructor(): this(
+        mainId = "",
+        varId = "",
+        detail = null
+    )
+}

@@ -17,7 +17,7 @@ private fun TemporalAccessor.format(pattern: String, localeTag: String): String 
     return formatter.format(this)
 }
 
-fun LocalDate.appFormat(short: Boolean = false): String {
+fun LocalDate.formatApp(short: Boolean = false): String {
     val str = if (short) {
         this.format("eee, MMM d", SPANISH_TAG)
     } else {
@@ -31,11 +31,11 @@ fun LocalDate.appFormat(short: Boolean = false): String {
             str.substring(indexMonth + 1).lowercase()
 }
 
-fun LocalTime.appFormat(): String {
+fun LocalTime.formatApp(): String {
     return this.format("h:mm a", SPANISH_TAG)
 }
 
-fun Pair<LocalTime, LocalTime>.appFormat(): String {
+fun Pair<LocalTime, LocalTime>.formatApp(): String {
     return if (first.isBefore(LocalTime.NOON) && second.isAfter(LocalTime.NOON)) {
         first.format("h:mm a", SPANISH_TAG) + " - " + second.format("h:mm a", SPANISH_TAG)
     } else {

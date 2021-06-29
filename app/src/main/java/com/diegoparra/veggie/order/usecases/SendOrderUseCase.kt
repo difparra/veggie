@@ -1,10 +1,10 @@
 package com.diegoparra.veggie.order.usecases
 
+import com.diegoparra.veggie.core.kotlin.BasicTime
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.order.domain.*
 import com.diegoparra.veggie.products.cart.domain.CartRepository
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 class SendOrderUseCase @Inject constructor(
@@ -24,7 +24,7 @@ class SendOrderUseCase @Inject constructor(
             paymentInfo = paymentInfo,
             additionalNotes = additionalNotes,
             status = Order.Status.CREATED,
-            updatedAtMillis = System.currentTimeMillis()
+            updatedAt = BasicTime.now()
         )
         val result = orderRepository.sendOrder(order)
         if (result is Either.Right) {
@@ -35,12 +35,12 @@ class SendOrderUseCase @Inject constructor(
 
     fun createPaymentInfo(
         paymentStatus: PaymentStatus, paymentMethod: PaymentMethod,
-        total: Double, paidAt: Long?
+        total: Double, paidAt: BasicTime?
     ): PaymentInfo = PaymentInfo(
         status = paymentStatus,
         paymentMethod = paymentMethod,
         total = total,
-        paidAt = paidAt ?: 0L
+        paidAt = paidAt
     )
 
 

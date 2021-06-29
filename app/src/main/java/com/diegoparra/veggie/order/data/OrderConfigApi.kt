@@ -3,7 +3,7 @@ package com.diegoparra.veggie.order.data
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.order.data.DeliveryTimetableDtoTransformations.toDeliveryTimetable
-import com.diegoparra.veggie.order.data.FirebaseConstants.RemoteConfigKeys
+import com.diegoparra.veggie.order.data.OrderFirebaseConstants.RemoteConfigKeys
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue
 import com.google.firebase.remoteconfig.ktx.get

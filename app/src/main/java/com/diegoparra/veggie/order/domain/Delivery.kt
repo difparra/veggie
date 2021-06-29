@@ -4,14 +4,14 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
-class TimeRange(
-    val from: LocalTime,
-    val to: LocalTime
-)
-
 data class DeliverySchedule(
     val date: LocalDate,
     val timeRange: TimeRange
+)
+
+class TimeRange(
+    val from: LocalTime,
+    val to: LocalTime
 )
 
 

@@ -8,4 +8,15 @@ data class TotalDto(
     val deliveryCost: Int,
     val tip: Int,
     val total: Int
-)
+){
+    //  Required empty constructor for firebase
+    constructor(): this(
+        productsBeforeDiscount = -1,
+        productsDiscount = -1,
+        subtotal = -1,
+        additionalDiscounts = -1,
+        deliveryCost = -1,
+        tip = -1,
+        total = -1
+    )
+}

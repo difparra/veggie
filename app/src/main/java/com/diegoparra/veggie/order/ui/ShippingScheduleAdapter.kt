@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.appFormat
+import com.diegoparra.veggie.core.formatApp
 import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.databinding.ListItemShippingDayBinding
 import com.diegoparra.veggie.databinding.ListItemShippingTimeBinding
@@ -107,7 +107,7 @@ class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, 
             override fun bind(item: Item) {
                 this.item = item as Item.Header
                 this.item.let {
-                    binding.day.text = it.date.appFormat()
+                    binding.day.text = it.date.formatApp()
                 }
             }
         }
@@ -131,7 +131,7 @@ class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, 
                 this.item = item as Item.ShippingItem
                 this.item?.let {
                     val timeRange = it.timeRange
-                    binding.deliveryTime.text = Pair(timeRange.from, timeRange.to).appFormat()
+                    binding.deliveryTime.text = Pair(timeRange.from, timeRange.to).formatApp()
                     binding.deliveryCost.text = it.cost.addPriceFormat()
                     binding.deliveryTime.isChecked = it.isSelected
                 }

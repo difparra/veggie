@@ -9,17 +9,17 @@ import java.util.concurrent.TimeUnit
  */
 sealed class Source(val fetchIntervalInMillis: Long) {
     object REMOTE : Source(0)
-    class REMOTE_IF_EXPIRED(fetchIntervalInMillis: Long) : Source(fetchIntervalInMillis)
+    class RemoteIfExpired(fetchIntervalInMillis: Long) : Source(fetchIntervalInMillis)
     object CACHE : Source(TimeUnit.DAYS.toMillis(30))
 
 
 
-    fun isDataExpired(lastUpdatedAtMillis: Long): Boolean {
+    fun isDataExpired(lastUpdatedAt: BasicTime): Boolean {
         return when (this) {
             REMOTE -> true
             CACHE -> false
-            is REMOTE_IF_EXPIRED ->
-                System.currentTimeMillis() - lastUpdatedAtMillis > fetchIntervalInMillis
+            is RemoteIfExpired ->
+                BasicTime.now().millisEpochUTC - lastUpdatedAt.millisEpochUTC > fetchIntervalInMillis
         }
     }
 }

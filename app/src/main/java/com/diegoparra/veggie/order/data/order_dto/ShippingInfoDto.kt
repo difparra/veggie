@@ -9,9 +9,24 @@ data class ShippingInfoDto(
     val address: AddressDto,
     val deliverySchedule: DeliveryScheduleDto,
     val deliveryCost: Int
-)
+) {
+    //  Required empty constructor for firebase
+    constructor() : this(
+        userId = "",
+        phoneNumber = "",
+        address = AddressDto(),
+        deliverySchedule = DeliveryScheduleDto(),
+        deliveryCost = -1
+    )
+}
 
 data class DeliveryScheduleDto(
     val from: Timestamp,
     val to: Timestamp
-)
+) {
+    //  Required empty constructor for firebase
+    constructor(): this(
+        from = Timestamp(0,0),
+        to = Timestamp(0,0)
+    )
+}

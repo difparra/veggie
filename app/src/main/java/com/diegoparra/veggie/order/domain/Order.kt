@@ -1,5 +1,7 @@
 package com.diegoparra.veggie.order.domain
 
+import com.diegoparra.veggie.core.kotlin.BasicTime
+
 data class Order(
     val id: String,
     val shippingInfo: ShippingInfo,
@@ -8,7 +10,7 @@ data class Order(
     val paymentInfo: PaymentInfo,
     val additionalNotes: String? = null,
     val status: Status,
-    val updatedAtMillis: Long
+    val updatedAt: BasicTime
 ) {
     enum class Status {
         CREATED,

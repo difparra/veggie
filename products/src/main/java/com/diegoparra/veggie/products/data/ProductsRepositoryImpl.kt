@@ -2,7 +2,6 @@ package com.diegoparra.veggie.products.data
 
 import com.diegoparra.veggie.core.android.IoDispatcher
 import com.diegoparra.veggie.core.kotlin.*
-import com.diegoparra.veggie.products.data.DtoToEntityTransformations.toTimestamp
 import com.diegoparra.veggie.products.data.firebase.ProductsApi
 import com.diegoparra.veggie.products.data.prefs.ProductPrefs
 import com.diegoparra.veggie.products.data.room.ProductEntitiesTransformations.toProduct
@@ -13,9 +12,6 @@ import com.diegoparra.veggie.products.data.DtoToEntityTransformations.getListPro
 import com.diegoparra.veggie.products.data.DtoToEntityTransformations.getMainProdIdsToDelete
 import com.diegoparra.veggie.products.data.DtoToEntityTransformations.toTagEntity
 import com.diegoparra.veggie.products.domain.*
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigClientException
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigServerException
 import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,11 +31,11 @@ class ProductsRepositoryImpl @Inject constructor(
 
     override suspend fun getTags(source: Source): Either<Failure, List<Tag>> =
         withContext(dispatcher) {
-            if (source.isDataExpired(prefs.getTagsUpdatedAt() ?: 0)) {
+            if (source.isDataExpired(prefs.getTagsUpdatedAt() ?: BasicTime(0))) {
                 productsApi.getTags()
                     .map {
                         productsDao.updateAllTags(tags = it.map { it.toTagEntity() })
-                        prefs.saveTagsUpdatedAt(System.currentTimeMillis())
+                        prefs.saveTagsUpdatedAt(BasicTime.now())
                     }
                     .onFailure {
                         Timber.e("Error while fetching tags from server (remoteConfig). Failure=${it}")
@@ -120,17 +116,17 @@ class ProductsRepositoryImpl @Inject constructor(
      */
 
     private suspend fun updateLocalProductsIfExpired(source: Source): Either<Failure, Unit> {
-        val localLastUpdatedAtInMillis = productsDao.getLastProdUpdatedAtInMillis() ?: 0
-        return if (source.isDataExpired(localLastUpdatedAtInMillis)) {
-            updateLocalProducts(localLastUpdatedAtInMillis)
+        val localLastUpdate = BasicTime(productsDao.getLastProdUpdatedAtInMillis() ?: 0)
+        return if (source.isDataExpired(localLastUpdate)) {
+            updateLocalProducts(localLastUpdate)
         } else {
             Either.Right(Unit)
         }
     }
 
-    private suspend fun updateLocalProducts(localLastUpdatedAtInMillis: Long): Either<Failure, Unit> {
+    private suspend fun updateLocalProducts(localLastUpdate: BasicTime): Either<Failure, Unit> {
         //  TODO:   Complete operation using workManager, as it is an operation that must be completed
-        return productsApi.getProductsUpdatedAfter(localLastUpdatedAtInMillis.toTimestamp())
+        return productsApi.getProductsUpdatedAfter(localLastUpdate.toTimestamp())
             .map {
                 productsDao.updateProducts(
                     mainProdsIdToDelete = it.getMainProdIdsToDelete(),

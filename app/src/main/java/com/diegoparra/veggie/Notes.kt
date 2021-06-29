@@ -80,3 +80,22 @@ package com.diegoparra.veggie
     the views will not have a specific NavController associated. Use instead the findNavController
     from the fragment, so pay attention carefully to the imports.
  */
+
+/*
+    ROOM:
+        inline (value) classes does not work with @typeConverters room.
+        This is because inline classes are almost the value they wrap, they have not setters nor getters,
+        and because of that, when needed in room entities, an error like
+            Entities and POJOs must have a usable public constructor.
+            You can have an empty constructor or a constructor whose parameters
+            match the fields (by name and type). - com.diegoparra.veggie.products.data.room.MainEntity
+            error: Cannot find getter for field. - updatedAtInMillis in com.diegoparra.veggie.products.data.room.MainEntity
+        could be thrown.
+        I have tested with updatedAt (mainEntity products) and it worked when I used a typeConverter
+        for date and when I used a typeConverter for BasicTime BUT basic time being a data class, not
+        a value class.
+        When having a value class it is therefore better to put the wrapped value directly in room.
+
+        - A class can have as many @typeConverter as I wanted.
+        - Implementations with typeConverters have worked using nullables in typeConverters class and in entities room.
+ */
