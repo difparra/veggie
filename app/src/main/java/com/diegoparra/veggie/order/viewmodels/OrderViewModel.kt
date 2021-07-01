@@ -30,6 +30,19 @@ class OrderViewModel @Inject constructor(
     private val sendOrderUseCase: SendOrderUseCase
 ) : ViewModel() {
 
+    /*
+        TODO:
+            Clean the code by using state / hot flows observed in viewModel which are
+            not actually needed to be observed in fragments.
+            Check:
+                https://stackoverflow.com/questions/66883453/sharing-a-cold-flow-of-mutablestateflow-in-viewmodel-between-two-fragments
+
+        TODO General:
+            Improved viewModels by removing some unnecessary init methods.
+            I used init when a resource was involved in order to set loading state, but loading
+            state can be set using onStart or onEach property in flows.
+     */
+
     companion object Fields {
         const val ADDRESS = com.diegoparra.veggie.auth.utils.Fields.ADDRESS
         const val PHONE_NUMBER = com.diegoparra.veggie.auth.utils.Fields.PHONE_NUMBER

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -57,8 +58,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_results"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         style="@style/Widget.Veggie.RecyclerView.Base"
-        android:layout_below="@id/app_bar"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         tools:itemCount="10"
@@ -69,23 +70,23 @@
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_gravity="center" />
 
     <TextView
         android:id="@+id/error_text"
         style="@style/Widget.Veggie.ErrorText"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         tools:text="Error text" />
 
     <LinearLayout
         android:visibility="gone"
         android:id="@+id/layout_no_search_results"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
-        android:layout_below="@id/app_bar"
-        android:layout_alignParentBottom="true" >
+        android:gravity="center">
 
         <ImageView
             android:layout_width="match_parent"
@@ -105,4 +106,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

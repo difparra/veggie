@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.order.usecases
 
-import com.diegoparra.veggie.ConfigDefaults
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.order.domain.DefaultConfigValues
 import com.diegoparra.veggie.order.domain.DeliveryBaseCosts

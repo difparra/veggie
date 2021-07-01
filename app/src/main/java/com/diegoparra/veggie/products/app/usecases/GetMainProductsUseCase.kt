@@ -1,9 +1,6 @@
 package com.diegoparra.veggie.products.app.usecases
 
-import com.diegoparra.veggie.core.kotlin.Either
-import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.reduceFailuresOrRight
-import com.diegoparra.veggie.core.kotlin.map
+import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.products.app.entities.ProductMain
 import com.diegoparra.veggie.products.cart.domain.CartRepository
 import com.diegoparra.veggie.products.domain.Product
@@ -18,50 +15,49 @@ class GetMainProductsUseCase @Inject constructor(
     private val cartRepository: CartRepository
 ) {
 
-    suspend operator fun invoke(params: Params): Flow<Either<Failure, List<ProductMain>>> {
-        return when (val products = getProducts(params)) {
-            is Either.Left -> {
-                flow { emit(products) }
-            }
-            is Either.Right -> {
-                //  TODO:   Still check if dealing with empty list here is the best way, or if it is
-                //          better to return a failure from the repository if the list is empty.
-                //          A failure such as 404 not found when the list is empty.
-                //  If list is empty, send a flow that EMIT an empty list, sth so that ui can work with it
-                if(products.b.isEmpty()) {
-                    return flow { emit(Either.Right(listOf())) }
+    suspend operator fun invoke(
+        params: Params,
+        isInternetAvailable: Boolean
+    ): Flow<Either<Failure, List<ProductMain>>> {
+        return getProducts(params, isInternetAvailable).fold(
+            {
+                Timber.d("productsList returned failure: $it")
+                createSingleFlowEither(failure = it)
+            },
+            {
+                if (it.isEmpty()) {
+                    Timber.d("productsList is empty")
+                    return createSingleFlowEither(success = listOf())
                 }
 
-                val deferredList = products.b.map {
-                    getProductMainAsync(it)
-                }
+                //  Be careful when calling combine(List<flows>) because if the list is empty,
+                //  combine will return a flow that does nothing, that will never emit,
+                //  will not even emit an empty list, and if it is like app crashes or freezes.
+                val deferredList = it.map { getProductMainAsync(it) }
                 val mainProdsFlows = deferredList.awaitAll()
-                /*
-                    Be careful when calling combine(List<flows>) because if the list is empty,
-                    combine will return a flow that does nothing, that will never emit,
-                    will not even emit an empty list, and if it is like app crashes or freezes.
-                 */
+                Timber.d("Collected products as flow mainProdsFlows=$mainProdsFlows")
                 combine(mainProdsFlows) {
+                    Timber.d("Calling combine")
                     it.toList().reduceFailuresOrRight()
                 }
             }
-        }.flowOn(Dispatchers.IO)
+        ).flowOn(Dispatchers.IO)
     }
 
-    private suspend fun getProductMainAsync(product: Product) = coroutineScope {
-        async { getProductMain(product) }
-    }
-
-    private suspend fun getProducts(params: Params): Either<Failure, List<Product>> {
+    private suspend fun getProducts(
+        params: Params,
+        isInternetAvailable: Boolean
+    ): Either<Failure, List<Product>> {
+        val source = ProductsRepository.getDefaultSourceForInternetAccessState(isInternetAvailable)
         return when (params) {
-            is Params.ForTag -> productsRepository.getMainProductsByTagId(params.tagId)
+            is Params.ForTag -> productsRepository.getMainProductsByTagId(params.tagId, source)
             is Params.ForSearch -> {
                 if (params.nameQuery.isEmpty()) {
                     Timber.d("nameQuery is empty")
                     Either.Right(listOf())
                 } else {
                     Timber.d("nameQuery = ${params.nameQuery}")
-                    productsRepository.searchMainProductsByName(params.nameQuery)
+                    productsRepository.searchMainProductsByName(params.nameQuery, source)
                 }
             }
         }
@@ -74,6 +70,10 @@ class GetMainProductsUseCase @Inject constructor(
                 ProductMain(product, it)
             }
         }
+    }
+
+    private suspend fun getProductMainAsync(product: Product) = coroutineScope {
+        async { getProductMain(product) }
     }
 
 

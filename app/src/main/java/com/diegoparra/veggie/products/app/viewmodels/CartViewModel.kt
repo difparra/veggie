@@ -1,81 +1,70 @@
 package com.diegoparra.veggie.products.app.viewmodels
 
 import androidx.lifecycle.*
+import com.diegoparra.veggie.core.internet_check.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
+import com.diegoparra.veggie.core.kotlin.map
+import com.diegoparra.veggie.core.kotlin.toResource
 import com.diegoparra.veggie.products.app.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.app.usecases.GetCartProductsUseCase
 import com.diegoparra.veggie.order.usecases.GetMinOrderUseCase
 import com.diegoparra.veggie.products.app.usecases.UpdateQuantityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
+    private val isInternetAvailableUseCase: IsInternetAvailableUseCase,
     private val getCartProductsUseCase: GetCartProductsUseCase,
     private val updateQuantityUseCase: UpdateQuantityUseCase,
     private val getMinOrderUseCase: GetMinOrderUseCase
 ) : ViewModel() {
 
-    private val _products = MutableStateFlow<Resource<List<ProductCart>>>(Resource.Loading())
-    val products: LiveData<Resource<List<ProductCart>>> = _products.asLiveData()
-
-    init {
-        viewModelScope.launch {
-            getCartProductsUseCase().collect {
-                Timber.d("cartProductsList collected: $it")
-                it.fold(::handleFailure, ::handleCartProducts)
-            }
-        }
-    }
-
-    private fun handleCartProducts(products: List<ProductCart>) {
-        _products.value = Resource.Success(products.addEditablePositionProperty())
-    }
-
-    private fun handleFailure(failure: Failure) {
-        _products.value = Resource.Error(failure)
-    }
-
-
-    //      ----------------------------------------------------------------------------------------
+    private val _isInternetAvailable = isInternetAvailableUseCase()
+    val isInternetAvailable = _isInternetAvailable.asLiveData()
 
     private val _editablePosition = MutableStateFlow(0)
     fun setEditablePosition(position: Int) {
-        if (position == _editablePosition.value) {
-            return
-        }
         _editablePosition.value = position
     }
 
-    init {
-        viewModelScope.launch {
-            _editablePosition.collect { newEditablePosition ->
-                val currentProdsList = products.value
-                if (currentProdsList is Resource.Success) {
-                    handleCartProducts(currentProdsList.data)
-                    if (!currentProdsList.data.isNullOrEmpty()) {
-                        val prodListWithEditables =
-                            currentProdsList.data.addEditablePositionProperty(newEditablePosition)
-                        _products.value = Resource.Success(prodListWithEditables)
-                    }
-                }
+    /*
+     * By using isInternetAvailable to load products and then using the same variable to enable/disable
+     * btnOrder, I can say that products are updated when user try to make the order.
+     * The only way btnMakeOrder is enabled is when isInternetAvailable is true, and if it is true,
+     * it means products has been recently collected (products will be reloaded on every change
+     * of isInternetAvailable).
+     */
+    private val _products = _isInternetAvailable
+        .flatMapLatest {
+            getCartProductsUseCase(isInternetAvailable = it)
+                .map { it.toResource() }
+                .onStart { emit(Resource.Loading()) }
+        }
+        .combine(_editablePosition) { prodsList, position ->
+            //  Map the Resource to add the editable position to the list
+            when (prodsList) {
+                is Resource.Success ->
+                    Resource.Success(addEditablePositionProperty(prodsList.data, position))
+                else -> prodsList
             }
         }
-    }
+    val products = _products.asLiveData()
 
-    private fun List<ProductCart>.addEditablePositionProperty(editablePosition: Int = _editablePosition.value): List<ProductCart> {
-        if (this.isNullOrEmpty()) {
+    private fun addEditablePositionProperty(
+        prodsList: List<ProductCart>,
+        editablePosition: Int
+    ): List<ProductCart> {
+        if (prodsList.isNullOrEmpty()) {
             return emptyList()
         }
-        val validEditablePosition = editablePosition.coerceIn(this.indices)
-        return this.mapIndexed { index, product ->
+        val validEditablePosition = editablePosition.coerceIn(prodsList.indices)
+        return prodsList.mapIndexed { index, product ->
             val editable = index == validEditablePosition
             if (product.isEditable != editable) {
                 product.copy(isEditable = editable)
@@ -87,21 +76,23 @@ class CartViewModel @Inject constructor(
 
 
     //      ----------------------------------------------------------------------------------------
-    //      ----------------------------------------------------------------------------------------
 
+    sealed class Total(val totalValue: Int) {
+        class OK(totalValue: Int) : Total(totalValue)
+        class MinNotReached(totalValue: Int, val minOrder: Int) : Total(totalValue)
+        object EmptyCart : Total(0)
 
-    val clearCartEnabledState: LiveData<Boolean> = _products.map {
-        (it is Resource.Success && !it.data.isNullOrEmpty())
-    }.asLiveData()
+        /** When some error has occurred either because list was not correctly loaded or total is <0,
+         *  or when products are still being loaded
+         */
+        object Error : Total(0)
+    }
 
-
-    //      ----------------------------------------------------------------------------------------
-
-    val total = _products.map {
+    private val _total = _products.map {
         if (it is Resource.Success) {
             val total = it.data.sumOf { it.quantity * it.price }
             val minOrder = getMinOrderUseCase()     //  This use case already cache the data,
-                                                        // and will not call repo every time.
+            // and will not call repo every time.
             if (total < 0) {
                 return@map Total.Error
             } else if (total == 0) {
@@ -114,9 +105,26 @@ class CartViewModel @Inject constructor(
         } else {
             return@map Total.Error
         }
+    }
+    val total = _total.asLiveData()
+
+
+    val clearCartEnabledState: LiveData<Boolean> = _products.map {
+        (it is Resource.Success && !it.data.isNullOrEmpty())
     }.asLiveData()
 
+    /*
+     *  It is really important to disable btnOrder if there is no internet access.
+     *  Otherwise, productData could be not updated.
+     */
+    val btnMakeOrderEnabled: LiveData<Boolean> =
+        combine(_isInternetAvailable, _total) { internetAvailable, total ->
+            (internetAvailable && (total is Total.OK))
+        }.asLiveData()
 
+
+    //      ----------------------------------------------------------------------------------------
+    //              UI ACTIONS
     //      ----------------------------------------------------------------------------------------
 
     fun addQuantity(productId: ProductId) {
@@ -153,12 +161,4 @@ class CartViewModel @Inject constructor(
         }
     }
 
-}
-
-
-sealed class Total(val totalValue: Int) {
-    class OK(totalValue: Int) : Total(totalValue)
-    class MinNotReached(totalValue: Int, val minOrder: Int) : Total(totalValue)
-    object EmptyCart : Total(0)
-    object Error : Total(0)
 }

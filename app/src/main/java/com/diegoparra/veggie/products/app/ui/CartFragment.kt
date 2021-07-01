@@ -16,14 +16,14 @@ import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.android.getColorFromAttr
 import com.diegoparra.veggie.core.android.getColorWithAlphaFromAttrs
+import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.databinding.FragmentCartBinding
 import com.diegoparra.veggie.products.app.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
-import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.core.kotlin.runIfTrue
 import com.diegoparra.veggie.order.domain.OrderConstants
 import com.diegoparra.veggie.products.app.viewmodels.CartViewModel
-import com.diegoparra.veggie.products.app.viewmodels.Total
+import com.diegoparra.veggie.products.app.viewmodels.CartViewModel.Total
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -122,9 +122,9 @@ class CartFragment : Fragment() {
         binding.cartList.isVisible = cartList
         binding.layoutEmptyCart.isVisible = false
         binding.errorText.isVisible = errorViews
-        //  It is important to set to false on every state and just set visible when necessary.
-        //  Otherwise it could be set true in renderProducts, and then a failure occur but it was
-        //  still visible and now overlapped with a failure text.
+        //  It is important to set layoutEmptyCart to false on every state and just set visible when
+        //  necessary. Otherwise it could be set true in renderProducts, and then a failure occur
+        //  but it was still visible and now overlapped with a failure text.
         //  Could be modified at the same time with cartList, but the use case should be more common
         //  to be set to false, so it makes no sense making this layout true onSuccess, and then
         //  in renderProducts realize that the layout should be false
@@ -145,11 +145,6 @@ class CartFragment : Fragment() {
     //      ----------------------------------------------------------------------------------------
 
     private fun totalFunctionality() {
-        //  Initial state - while values haven't loaded yet
-        binding.cartTotalWarning.isVisible = false
-        binding.cartTotalProgressBar.isVisible = false
-        binding.btnMakeOrder.isVisible = false
-
         val warningLabel = WarningLabel(
             textView = binding.cartTotalWarning,
             progressBar = binding.cartTotalProgressBar
@@ -159,9 +154,16 @@ class CartFragment : Fragment() {
             text = binding.btnMakeOrderText,
             total = binding.cartTotal
         )
+
         viewModel.total.observe(viewLifecycleOwner) {
             warningLabel.setState(it)
-            btnMakeOrder.setState(it)
+            btnMakeOrder.setTotalState(it)
+        }
+        viewModel.isInternetAvailable.observe(viewLifecycleOwner) {
+            warningLabel.setIsInternetAvailable(it)
+        }
+        viewModel.btnMakeOrderEnabled.observe(viewLifecycleOwner) {
+            btnMakeOrder.setEnabled(it)
         }
     }
 
@@ -196,8 +198,9 @@ private class WarningLabel(
     private val textView: TextView,
     private val progressBar: ProgressBar
 ) {
-    private var currentState: Total? = null
+    private var totalState: Total? = null
     private var isVisible: Boolean? = null
+    private var isInternetAvailable: Boolean? = null
 
     private val context get() = textView.context
     private val stringEmpty = context.getString(R.string.total_empty_cart)
@@ -205,18 +208,28 @@ private class WarningLabel(
     private val colorOnError = context.getColorFromAttr(R.attr.colorOnError)
     private val colorWarning = context.getColorFromAttr(R.attr.colorWarning)
     private val colorOnWarning = context.getColorFromAttr(R.attr.colorOnWarning)
+    private val colorDisabled = context.getColorFromAttr(R.attr.colorGrayDefault)
+    val colorOnDisabled =
+        context.getColorWithAlphaFromAttrs(R.attr.colorOnGrayDefault, R.attr.alphaDisabled)
+    private val stringNoInternet = context.getString(R.string.no_internet_connection)
+
+    fun setIsInternetAvailable(value: Boolean) {
+        isInternetAvailable = value
+        onTotalOrInternetAccessChanged()
+    }
 
     fun setState(totalState: Total) {
-        if (currentState == totalState) {
+        if (this.totalState == totalState) {
             return
         }
-        currentState = totalState
+        this.totalState = totalState
         when (totalState) {
             is Total.EmptyCart -> setEmptyCartState()
             is Total.MinNotReached -> setMinNotReachedState(totalState)
             is Total.OK -> setTotalOkState()
             is Total.Error -> setTotalErrorState()
         }
+        onTotalOrInternetAccessChanged()
     }
 
     private fun setVisibility(isVisible: Boolean) {
@@ -254,6 +267,29 @@ private class WarningLabel(
     private fun setTotalErrorState() {
         setVisibility(false)
     }
+
+
+    //  When totalState either totalState or internetAccess has changed
+    private fun onTotalOrInternetAccessChanged() {
+        if (totalState is Total.OK) {
+            isInternetAvailable?.let {
+                if (it) {
+                    setVisibility(false)
+                } else {
+                    setInternetAccessWarningInTotalState()
+                }
+            }
+        }
+    }
+
+    private fun setInternetAccessWarningInTotalState() {
+        setVisibility(true)
+        textView.text = stringNoInternet
+        textView.setBackgroundColor(colorDisabled)
+        textView.setTextColor(colorOnDisabled)
+        progressBar.progress = 100
+    }
+
 }
 
 private class BtnMakeOrder(
@@ -278,27 +314,15 @@ private class BtnMakeOrder(
         context.getColorWithAlphaFromAttrs(R.attr.colorOnGrayDefault, R.attr.alphaDisabled)
     val children = listOf(text, total)
 
-    fun setState(totalState: Total) {
+    fun setTotalState(totalState: Total) {
         total.text = totalState.totalValue.addPriceFormat()
         if (currentState == totalState) {
             return
         }
-        when (totalState) {
-            is Total.EmptyCart -> {
-                setVisibility(true)
-                setEnabled(false)
-            }
-            is Total.MinNotReached -> {
-                setVisibility(true)
-                setEnabled(false)
-            }
-            is Total.OK -> {
-                setVisibility(true)
-                setEnabled(true)
-            }
-            is Total.Error -> {
-                setVisibility(false)
-            }
+        if (totalState is Total.Error) {
+            setVisibility(false)
+        } else {
+            setVisibility(true)
         }
     }
 
@@ -310,7 +334,12 @@ private class BtnMakeOrder(
         layout.isVisible = isVisible
     }
 
-    private fun setEnabled(isEnabled: Boolean) {
+    /*
+        It has now its custom observer in the viewModel, as it also depends on internetAccessState
+        Because of that, I have to remove the control over enabled state from setState, and let open
+        to implement with the respective observer in viewModel.
+     */
+    fun setEnabled(isEnabled: Boolean) {
         if (this.isEnabled == isEnabled) {
             return
         } else {

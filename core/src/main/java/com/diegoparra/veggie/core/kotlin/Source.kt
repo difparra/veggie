@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
  *  data was fetched from repo.
  */
 sealed class Source(val fetchIntervalInMillis: Long) {
-    object REMOTE : Source(0)
+    object SERVER : Source(0)
     class RemoteIfExpired(fetchIntervalInMillis: Long) : Source(fetchIntervalInMillis)
     object CACHE : Source(TimeUnit.DAYS.toMillis(30))
 
@@ -16,7 +16,7 @@ sealed class Source(val fetchIntervalInMillis: Long) {
 
     fun isDataExpired(lastUpdatedAt: BasicTime): Boolean {
         return when (this) {
-            REMOTE -> true
+            SERVER -> true
             CACHE -> false
             is RemoteIfExpired ->
                 BasicTime.now().millisEpochUTC - lastUpdatedAt.millisEpochUTC > fetchIntervalInMillis

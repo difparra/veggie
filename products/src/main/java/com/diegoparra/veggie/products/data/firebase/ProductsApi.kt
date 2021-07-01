@@ -46,10 +46,16 @@ class ProductsApi @Inject constructor(
 
 
 
-    //  It should always fetch from server, otherwise it would cheat the local successful fetch
-    //  that I am saving in prefs.
-    //  In addition, firestore could be configured to not work offline, as I am implementing
-    //  his behaviour manually with room.
+    /*
+        It is really important to only fetch from server here, as depending on the result
+        productsUpdatedAt (in prefs) will be updated or not.
+        If this method get also from cache, it will not return a failure, and productsUpdatedAt
+        will be updated but with an incorrect value, the prefs will not keep a consistent
+        value.
+        Firebase cache can be configured not to work, but that would also mean I would have to
+        implement cache also for userData, and losing some advantages as pending tasks to
+        update database when app is offline.
+     */
     suspend fun getProductsUpdatedAfter(timestamp: Timestamp): Either<Failure, List<ProductDto>> {
         //  It is not really important to get products sorted in here, as long as local database
         //  run its update in a transaction, so that if update was not completed, revert the products

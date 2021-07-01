@@ -55,10 +55,14 @@ class ProductsRepositoryImpl @Inject constructor(
         tagId: String,
         source: Source
     ): Either<Failure, List<Product>> = withContext(dispatcher) {
+        Timber.d("getMainProductsByTagId called with tagId=$tagId, source=$source")
         updateLocalProductsIfExpired(source).onFailure {
+            Timber.d("getMainProductsByTagId - Failure while updatingProducts")
             return@withContext Either.Left(it)
         }
+        Timber.d("getMainProductsByTagId - productsUpdated. Now getting local products...")
         val productsLocal = productsDao.getMainProductsByTagId(tagId)
+        Timber.d("getMainProductsByTagId - productsLocal = $productsLocal")
         return@withContext Either.Right(productsLocal.map { it.toProduct() })
     }
 
@@ -112,47 +116,41 @@ class ProductsRepositoryImpl @Inject constructor(
             ----------------------------------------------------------------------------------------
      */
 
-    /*  //  Some idea but still not sure how to get this working.
-
-    private fun isInternetAvailable(): Boolean {
-        return true
-    }
-
-    private suspend fun updateLocalProductsIfExpired2(source: Source): Either<Failure, Unit> {
-        return if (isInternetAvailable()) {
-            val productsUpdatedAt = prefs.getProductsUpdatedAt() ?: BasicTime(0)
-            if (source.isDataExpired(productsUpdatedAt)) {
-                updateLocalProducts().onSuccess { prefs.saveProductsUpdatedAt(BasicTime.now()) }
-            } else {
-                Either.Right(Unit)
-            }
-        } else {
-            Either.Right(Unit)
-        }
-    }*/
-
     private suspend fun updateLocalProductsIfExpired(source: Source): Either<Failure, Unit> {
+        Timber.d("updateLocalProductsIfExpired called with source = $source")
         val productsUpdatedAt = prefs.getProductsUpdatedAt() ?: BasicTime(0)
+        Timber.d("updateLocalProductsIfExpired - productsUpdatedAt = $productsUpdatedAt")
         return if (source.isDataExpired(productsUpdatedAt)) {
+            Timber.d("updateLocalProductsIfExpired - Data is expired. Calling to update...")
             updateLocalProducts()
                     .onSuccess { prefs.saveProductsUpdatedAt(BasicTime.now()) }
         } else {
+            Timber.d("updateLocalProductsIfExpired - Data is updated. Returning...")
             Either.Right(Unit)
         }
     }
 
-    //  Update taking into consideration the lastUpdateTime stored in the local database, not the last query
-    //  as if last query happens to be wrong, localLastUpdate in database will not.
+    //  Still not sure if update with workManager is the best idea, it could avoid some reads to
+    //  database in case user closed the app while updating local database, but the most time is
+    //  taken to fetch products from remote, and if they haven't been fetched reads will not count
+    //  (more than one). As local database is fast, it is not likely that the user close the app
+    //  just while updating, so it is not a big worry, and workManager may be not necessary.
+    //  On the other hand, to implement workManager, it must be considered that workManager does not
+    //  always work immediately, so it may not be the most proper useCase as I need to know the
+    //  products immediately to display in app.
     private suspend fun updateLocalProducts(): Either<Failure, Unit> {
-        //  TODO:   Complete operation using workManager, as it is an operation that must be completed
         //  Will get the last time a product was actually updated rather than the last time firebase was successfully called.
+        Timber.d("updateLocalProducts called!")
         val actualProductsUpdatedAt = BasicTime(productsDao.getLastProdUpdatedAtInMillis() ?: 0)
+        Timber.d("updateLocalProducts - actualProductsUpdatedAt = $actualProductsUpdatedAt")
         return productsApi.getProductsUpdatedAfter(actualProductsUpdatedAt.toTimestamp())
             .map {
+                Timber.d("updateLocalProducts - Fetch from firebase was successfult. Products = $it")
                 productsDao.updateProducts(
                     mainProdsIdToDelete = it.getMainProdIdsToDelete(),
                     prodsToUpdate = it.getListProdUpdateRoom()
                 )
+                Timber.d("updateLocalProducts - ProductsUpdated!")
             }
     }
 

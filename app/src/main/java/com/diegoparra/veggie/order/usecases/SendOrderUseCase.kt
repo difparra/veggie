@@ -12,6 +12,11 @@ class SendOrderUseCase @Inject constructor(
     private val cartRepository: CartRepository
 ) {
 
+    /*
+        TODO:
+            Check if it is better to use workManager to send the order to database.
+     */
+
     suspend operator fun invoke(
         shippingInfo: ShippingInfo, products: ProductsList, total: Total,
         paymentInfo: PaymentInfo, additionalNotes: String? = null

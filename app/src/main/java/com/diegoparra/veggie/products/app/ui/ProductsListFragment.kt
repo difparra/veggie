@@ -33,15 +33,16 @@ class ProductsListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //  Test setHasFixedSize when banner is added.
+        //  App could crash or products list could be not visible as it happened in productVariations.
         binding.productsList.setHasFixedSize(true)
-        //  TODO:   Check app do not crash and products list is still visible when a banner is
-        //          added. setHasFixedSize didn't work in productVariations.
         binding.productsList.adapter = adapter
         subscribeUi()
     }
 
     private fun subscribeUi() {
         viewModel.productsList.observe(viewLifecycleOwner) {
+            Timber.d("productsList collected = $it")
             when (it) {
                 is Resource.Loading ->
                     setViewsVisibility(loadingViews = true, mainViews = false, errorViews = false)

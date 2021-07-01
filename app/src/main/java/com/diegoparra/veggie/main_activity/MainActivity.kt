@@ -2,7 +2,7 @@ package com.diegoparra.veggie.main_activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.core.view.isVisible
@@ -10,6 +10,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.diegoparra.veggie.R
+import com.diegoparra.veggie.core.internet_check.ConnectionLiveData
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -21,6 +22,9 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var bottomNavView: BottomNavigationView
+
+    private lateinit var connectionWarningView: TextView
+    private lateinit var connectionLiveData: ConnectionLiveData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         /*
@@ -40,10 +44,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //  Views
+        connectionWarningView = findViewById(R.id.connection_state_warning)
         bottomNavView = findViewById<BottomNavigationView>(R.id.nav_view_main)
+
+        //  Setups
+        isInternetAvailableSetUp()
         bottomNavSetUp()
         addBadgeToMenuCart()
     }
+
+    private fun isInternetAvailableSetUp() {
+        connectionLiveData = ConnectionLiveData(this)
+        connectionLiveData.observe(this) {
+            viewModel.setInternetAvailable(it)
+        }
+        viewModel.isInternetAvailable.observe(this) {
+            connectionWarningView.isVisible = !it
+        }
+    }
+
 
     private fun bottomNavSetUp() {
         /*
@@ -62,9 +82,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun isNavGraphIdParentOf(@IdRes navGraph: Int, destination: NavDestination): Boolean {
-        Timber.tag(TAG).d("---------- destination = ${destination.label}, navGraph(R.id.nav_order) = $navGraph")
+        Timber.tag(TAG)
+            .d("---------- destination = ${destination.label}, navGraph(R.id.nav_order) = $navGraph")
         var parentNavGraph = destination.parent
         while (parentNavGraph != null) {
             Timber.tag(TAG).d("iteration: parentNavGraphId=${parentNavGraph.id}")
@@ -97,4 +117,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 }

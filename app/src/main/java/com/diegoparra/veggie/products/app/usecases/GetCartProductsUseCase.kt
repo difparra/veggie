@@ -24,49 +24,44 @@ class GetCartProductsUseCase @Inject constructor(
      *      Product info should not change while user is in the cart.
      */
 
-    operator fun invoke(): Flow<Either<Failure, List<ProductCart>>> {
-        return getProdsIdsCart().flatMapLatest { prodIdEither ->
-            when (prodIdEither) {
-                is Either.Left -> flow { emit(prodIdEither) }
-                is Either.Right -> {
+    operator fun invoke(isInternetAvailable: Boolean): Flow<Either<Failure, List<ProductCart>>> {
+        return getProdsIdsCart().flatMapLatest {
+            it.fold(
+                { createSingleFlowEither(failure = it) },
+                {
                     //  Check, otherwise, flatMap will return combine, and in there, an empty list
                     //  of flow will not emit anything, without letting the ui know that cart has
                     //  no products
-                    if(prodIdEither.b.isEmpty()) {
-                        return@flatMapLatest flow { emit(Either.Right(listOf<ProductCart>())) }
+                    if (it.isEmpty()) {
+                        return@flatMapLatest createSingleFlowEither(success = listOf())
                     }
 
                     val prodsCartAsyncList =
-                        prodIdEither.b.map { getProductCartAsync(it) }
+                        it.map { getProductCartAsync(it, isInternetAvailable) }
                     val prodsCartFlows = prodsCartAsyncList.awaitAll()
                     combine(prodsCartFlows) {
                         it.toList().reduceFailuresOrRight()
                     }
                 }
-            }
+            )
         }.flowOn(Dispatchers.IO)
     }
-
-    private suspend fun getProductCartAsync(id: ProductId) = coroutineScope {
-        async {
-            getProductInfo(id).fold(
-                { flow { emit(Either.Left(it)) } },
-                {
-                    deleteFromCartIfNoStock(id, it)
-                    getProductCart(id, it)
-                }
-            )
-        }
-    }
-
 
 
     private fun getProdsIdsCart(): Flow<Either<Failure, List<ProductId>>> {
         return cartRepository.getProdIdsList()
     }
 
-    private suspend fun getProductInfo(productId: ProductId): Either<Failure, Product> {
-        return productsRepository.getProduct(mainId = productId.mainId, varId = productId.varId)
+    private suspend fun getProductInfo(
+        productId: ProductId,
+        isInternetAvailable: Boolean
+    ): Either<Failure, Product> {
+        val source = ProductsRepository.getDefaultSourceForInternetAccessState(isInternetAvailable)
+        return productsRepository.getProduct(
+            mainId = productId.mainId,
+            varId = productId.varId,
+            source = source
+        )
     }
 
     private suspend fun deleteFromCartIfNoStock(id: ProductId, productInfo: Product) {
@@ -74,6 +69,19 @@ class GetCartProductsUseCase @Inject constructor(
             cartRepository.deleteItem(id)
         }
     }
+
+    private suspend fun getProductCartAsync(id: ProductId, isInternetAvailable: Boolean) =
+        coroutineScope {
+            async {
+                getProductInfo(id, isInternetAvailable).fold(
+                    { createSingleFlowEither(failure = it) },
+                    {
+                        deleteFromCartIfNoStock(id, it)
+                        getProductCart(id, it)
+                    }
+                )
+            }
+        }
 
     private fun getProductCart(
         id: ProductId,

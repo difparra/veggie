@@ -1,68 +1,55 @@
 package com.diegoparra.veggie.products.app.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.internet_check.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.Resource
-import com.diegoparra.veggie.products.app.entities.ProductMain
+import com.diegoparra.veggie.core.kotlin.toResource
 import com.diegoparra.veggie.products.app.usecases.GetMainProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
+    private val isInternetAvailableUseCase: IsInternetAvailableUseCase,
     private val getMainProductsUseCase: GetMainProductsUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _query = MutableStateFlow(savedStateHandle.get(QUERY_SAVED_STATE_KEY) ?: "")
-    private var currentJobSearch: Job? = null
-
-    private val _productsList =
-        MutableLiveData<Resource<List<ProductMain>>>(Resource.Success(listOf()))
-    val productsList: LiveData<Resource<List<ProductMain>>> = _productsList
-
-    init {
-        viewModelScope.launch {
-            _query.collect {
-                savedStateHandle.set(QUERY_SAVED_STATE_KEY, it)
-                currentJobSearch?.cancel()
-
-                _productsList.value = Resource.Loading()
-                val prods = getMainProductsUseCase(GetMainProductsUseCase.Params.ForSearch(it))
-                //  This new job should be launched in a different viewModelScope,
-                //  otherwise, values will not be collected.
-                currentJobSearch = prods
-                    .onEach {
-                        it.fold(::handleFailure, ::handleProducts)
-                    }
-                    .launchIn(viewModelScope)
-            }
-        }
-    }
+    private val _query = savedStateHandle.getLiveData(QUERY_SAVED_STATE_KEY, "").asFlow()
 
     fun setQuery(query: String) {
         Timber.d("setQuery() called with: query = $query")
-        _query.value = query
+        savedStateHandle.set(QUERY_SAVED_STATE_KEY, query)
     }
 
     fun clearQuery() {
-        _query.value = ""
+        savedStateHandle.set(QUERY_SAVED_STATE_KEY, "")
     }
 
+    //      ---------------------------------------------------------------
 
-    private fun handleProducts(products: List<ProductMain>) {
-        Timber.d("handleProducts called with products = $products")
-        _productsList.value = Resource.Success(products)
-    }
+    private val _isInternetAvailable = isInternetAvailableUseCase()
 
-    private fun handleFailure(failure: Failure) {
-        Timber.d("handleFailure called with failure = $failure")
-        _productsList.value = Resource.Error(failure)
-    }
+    private val _paramsPair =
+        combine(_query, _isInternetAvailable) { query, internetAvailable ->
+            Pair(first = query, second = internetAvailable)
+        }
+
+
+    //      ---------------------------------------------------------------
+
+    val productsList = _paramsPair
+        .flatMapLatest { (query, netAvailable) ->
+            getMainProductsUseCase(GetMainProductsUseCase.Params.ForSearch(query), netAvailable)
+                .map { it.toResource() }
+                .onStart { emit(Resource.Loading()) }
+        }
+        .asLiveData()
+
+
+    //      ---------------------------------------------------------------
 
     companion object {
         private const val QUERY_SAVED_STATE_KEY = "query"

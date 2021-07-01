@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Veggie</string>
 
+    <string name="no_internet_connection">-- Sin conexión a internet --</string>
+
+
     <!-- Auth -->
     <!-- Facebook -->
     <string name="facebook_app_id">315214526875872</string>

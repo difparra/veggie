@@ -1,9 +1,6 @@
 package com.diegoparra.veggie.products.app.usecases
 
-import com.diegoparra.veggie.core.kotlin.Either
-import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.reduceFailuresOrRight
-import com.diegoparra.veggie.core.kotlin.map
+import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.products.cart.domain.ProductId
 import com.diegoparra.veggie.products.app.entities.ProductVariation
 import com.diegoparra.veggie.products.cart.domain.CartRepository
@@ -11,7 +8,6 @@ import com.diegoparra.veggie.products.domain.ProductsRepository
 import com.diegoparra.veggie.products.domain.VariationData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import timber.log.Timber
 import javax.inject.Inject
 
 class GetVariationsUseCase @Inject constructor(
@@ -19,12 +15,15 @@ class GetVariationsUseCase @Inject constructor(
     private val cartRepository: CartRepository
 ) {
 
-    suspend operator fun invoke(mainId: String): Flow<Either<Failure, List<ProductVariation>>> {
-        return when (val variations = getVariations(mainId)) {
+    suspend operator fun invoke(
+        mainId: String,
+        isInternetAvailable: Boolean
+    ): Flow<Either<Failure, List<ProductVariation>>> {
+        return when (val variations = getVariations(mainId, isInternetAvailable)) {
             is Either.Left -> flow { emit(variations) }
             is Either.Right -> {
                 //  Check if variationsList is empty before returning combine.
-                if(variations.b.isEmpty()) {
+                if (variations.b.isEmpty()) {
                     return flow { emit(Either.Right(listOf())) }
                 }
 
@@ -38,8 +37,12 @@ class GetVariationsUseCase @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    private suspend fun getVariations(mainId: String): Either<Failure, List<VariationData>> {
-        return productsRepository.getVariationsByMainId(mainId = mainId)
+    private suspend fun getVariations(
+        mainId: String,
+        isInternetAvailable: Boolean
+    ): Either<Failure, List<VariationData>> {
+        val source = ProductsRepository.getDefaultSourceForInternetAccessState(isInternetAvailable)
+        return productsRepository.getVariationsByMainId(mainId = mainId, source = source)
     }
 
     private fun getProductVariation(

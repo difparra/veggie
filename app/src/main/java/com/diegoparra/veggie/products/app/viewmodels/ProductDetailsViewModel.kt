@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.app.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.internet_check.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.kotlin.toResource
 import com.diegoparra.veggie.products.cart.domain.ProductId
@@ -9,13 +9,16 @@ import com.diegoparra.veggie.products.app.entities.ProductVariation
 import com.diegoparra.veggie.products.app.usecases.GetVariationsUseCase
 import com.diegoparra.veggie.products.app.usecases.UpdateQuantityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
+    private val isInternetAvailableUseCase: IsInternetAvailableUseCase,
     private val getVariationsUseCase: GetVariationsUseCase,
     private val updateQuantityUseCase: UpdateQuantityUseCase,
     savedStateHandle: SavedStateHandle
@@ -24,18 +27,16 @@ class ProductDetailsViewModel @Inject constructor(
     private val mainId = savedStateHandle.get<String>(PROD_MAIN_ID_SAVED_STATE_KEY)!!
     val name = savedStateHandle.get<String>(PROD_MAIN_NAME_SAVED_STATE_KEY)!!
 
-    private val _variationsList = MutableLiveData<Resource<List<ProductVariation>>>()
-    val variationsList: LiveData<Resource<List<ProductVariation>>> = _variationsList
+    private val _isInternetAvailable = isInternetAvailableUseCase()
 
-    init {
-        viewModelScope.launch {
-            _variationsList.value = Resource.Loading()
-            getVariationsUseCase(mainId).collect {
-                Timber.d("variations collected: $it")
-                _variationsList.value = it.toResource()
-            }
+    val variationsList = _isInternetAvailable
+        .flatMapLatest {
+            getVariationsUseCase(mainId, isInternetAvailable = it)
+                .map { it.toResource() }
+                .onStart { emit(Resource.Loading()) }
         }
-    }
+        .asLiveData()
+
 
 
     //      ----------------------------------------------------------------------------------------
