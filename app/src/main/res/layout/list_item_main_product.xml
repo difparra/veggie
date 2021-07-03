@@ -27,7 +27,7 @@
         android:elegantTextHeight="true"
         android:maxLines="1"
         android:ellipsize="end"
-        tools:text="Description" />
+        tools:text="$4800 /bdj" />
 
     <TextView
         android:id="@+id/name"
@@ -38,7 +38,7 @@
         android:alpha="?attr/alphaSecondaryText"
         android:maxLines="1"
         android:ellipsize="end"
-        tools:text="Name" />
+        tools:text="Arándanos" />
 
     <com.diegoparra.veggie.core.QtyButton
         android:id="@+id/btn_qty"
@@ -68,7 +68,7 @@
         android:textColor="?attr/colorOnSecondary"
         android:clickable="false"
         android:enabled="false"
-        tools:text="Label"
+        tools:text="10% Off"
         tools:visibility="visible" />
 
 </RelativeLayout>

@@ -12,15 +12,18 @@ class SendOrderUseCase @Inject constructor(
     private val cartRepository: CartRepository
 ) {
 
-    /*
-        TODO:
-            Check if it is better to use workManager to send the order to database.
-     */
-
     suspend operator fun invoke(
         shippingInfo: ShippingInfo, products: ProductsList, total: Total,
         paymentInfo: PaymentInfo, additionalNotes: String? = null
     ): Either<Failure, String> {
+        //  Cash and pos will be payment against delivery
+        val orderStatus =
+            if (paymentInfo.paymentMethod == PaymentMethod.CASH || paymentInfo.paymentMethod == PaymentMethod.POS) {
+                Order.Status.CREATED
+            } else {
+                Order.Status.STARTED
+            }
+        //  Creating order
         val order = Order(
             id = "",        //  Created in the repository
             shippingInfo = shippingInfo,
@@ -28,26 +31,18 @@ class SendOrderUseCase @Inject constructor(
             total = total,
             paymentInfo = paymentInfo,
             additionalNotes = additionalNotes,
-            status = Order.Status.CREATED,
+            status = orderStatus,
             updatedAt = BasicTime.now()
         )
+        //  Sending order
         val result = orderRepository.sendOrder(order)
+        //  If needed, here is the place to check payment
+        //  And then, update the payment info in the already created order in database
         if (result is Either.Right) {
             clearCartList()
         }
         return result
     }
-
-    fun createPaymentInfo(
-        paymentStatus: PaymentStatus, paymentMethod: PaymentMethod,
-        total: Double, paidAt: BasicTime?
-    ): PaymentInfo = PaymentInfo(
-        status = paymentStatus,
-        paymentMethod = paymentMethod,
-        total = total,
-        paidAt = paidAt
-    )
-
 
     private suspend fun clearCartList() {
         cartRepository.deleteAllItems()

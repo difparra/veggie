@@ -10,24 +10,28 @@
         android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.Veggie.Caption"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/quantity"
         app:layout_constraintBottom_toTopOf="@id/description"
         app:layout_constraintWidth_percent="0.5"
-        tools:text="Name" />
+        tools:text="Banano (20% dto) • Maduro" />
 
     <TextView
         android:id="@+id/description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.Veggie.Caption"
         app:layout_constraintTop_toBottomOf="@id/name"
         app:layout_constraintStart_toStartOf="@id/name"
         app:layout_constraintEnd_toEndOf="@id/name"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="Description" />
+        tools:text="Libra (±500g)" />
 
     <TextView
         android:id="@+id/quantity"

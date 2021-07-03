@@ -12,15 +12,6 @@ import java.time.ZoneOffset
 
 object OrderDtoTransformations {
 
-    //  Payment method constants
-    private const val cashPaymentMethod = "cash"
-    private const val posPaymentMethod = "pos"
-    private const val cardPaymentMethod = "card"
-
-    //  Additional info payment method constants
-    private const val keyCashPayWith = "payWith"
-    private const val keyPosTicket = "ticket"
-
     /*
         --------------------------------------------------------------------------------------------
             TRANSFORMATIONS FROM DOMAIN TO DTO
@@ -57,8 +48,6 @@ object OrderDtoTransformations {
     private fun ProductId.toProductOrderIdDto() = ProductOrderIdDto(mainId, varId, detail)
 
     private fun Total.toTotalDto() = TotalDto(
-        productsBeforeDiscount,
-        productsDiscount,
         subtotal,
         additionalDiscounts,
         deliveryCost,
@@ -68,28 +57,11 @@ object OrderDtoTransformations {
 
     private fun PaymentInfo.toPaymentInfoDto() = PaymentInfoDto(
         status = status.toString(),
-        paymentMethod = paymentMethod.toPaymentMethodDto(),
-        total = total,
-        paidAt = paidAt?.toTimestamp()
+        paymentMethod = paymentMethod.toString(),
+        details = details,
+        additionalInfo = additionalInfo,
+        updatedAt = Timestamp.now()
     )
-
-    private fun PaymentMethod.toPaymentMethodDto() =
-        when (this) {
-            is PaymentMethod.Cash -> PaymentMethodDto(
-                method = cashPaymentMethod, additionalInfo = mapOf(
-                    keyCashPayWith to payWith.toString()
-                )
-            )
-            is PaymentMethod.Pos -> PaymentMethodDto(
-                method = posPaymentMethod, additionalInfo = mapOf(
-                    keyPosTicket to ticket
-                )
-            )
-            is PaymentMethod.Card -> PaymentMethodDto(
-                method = cardPaymentMethod,
-                additionalInfo = mapOf()
-            )
-        }
 
 
     /*
@@ -132,8 +104,6 @@ object OrderDtoTransformations {
     private fun ProductOrderIdDto.toProductId() = ProductId(mainId, varId, detail)
 
     private fun TotalDto.toTotal() = Total(
-        productsBeforeDiscount,
-        productsDiscount,
         subtotal,
         additionalDiscounts,
         deliveryCost,
@@ -142,18 +112,9 @@ object OrderDtoTransformations {
 
     private fun PaymentInfoDto.toPaymentInfo() = PaymentInfo(
         status = PaymentStatus.valueOf(status),
-        paymentMethod = paymentMethod.toPaymentMethod(),
-        total = total,
-        paidAt = paidAt?.toBasicTime()
+        paymentMethod = PaymentMethod.valueOf(paymentMethod),
+        details = details,
+        additionalInfo = additionalInfo
     )
-
-    private fun PaymentMethodDto.toPaymentMethod(): PaymentMethod {
-        return when (this.method) {
-            cashPaymentMethod -> PaymentMethod.Cash(payWith = additionalInfo[keyCashPayWith])
-            posPaymentMethod -> PaymentMethod.Pos(ticket = additionalInfo[keyPosTicket] ?: "")
-            cardPaymentMethod -> PaymentMethod.Card()
-            else -> throw IllegalArgumentException("methodString saved in database is not valid")
-        }
-    }
 
 }

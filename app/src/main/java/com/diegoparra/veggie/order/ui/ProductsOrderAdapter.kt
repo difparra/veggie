@@ -33,7 +33,7 @@ class ProductsOrderAdapter :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return when(viewType) {
+        return when (viewType) {
             HEADER -> ViewHolder.HeaderViewHolder(
                 inflater.inflate(R.layout.list_item_product_order_header, parent, false)
             )
@@ -63,21 +63,26 @@ class ProductsOrderAdapter :
         class ItemViewHolder(private val binding: ListItemProductOrderBinding) :
             ViewHolder(binding.root) {
             override fun bind(product: ProductOrder) {
-                binding.name.text = getName(product.name, product.detail)
+                binding.name.text = getTitle(product.name, product.discount, product.detail)
                 binding.description.text =
                     getDescription(product.packet, product.weight, product.unit)
                 binding.quantity.text = product.quantity.toString()
                 binding.totalProd.text = product.total.addPriceFormat(showCurrencySign = false)
             }
 
-            private fun getName(name: String, detail: String?): String {
-                return name + (detail?.let { " • $it" } ?: "")
+            private fun getTitle(name: String, discount: Float, detail: String?): String {
+                val discountString = if (discount > 0) " (${(discount * 100).toInt()}% dto)" else ""
+                val detailString = detail?.let { " • $it" } ?: ""
+                return name + discountString + detailString
             }
 
-            private fun getDescription(packet: String, weight: Int, unit: String): String {
-                val weightString = if (weight < 0) "" else "(±$weight$unit)"
+            private fun getDescription(
+                packet: String, weight: Int, unit: String
+            ): String {
+                val weightString = if (weight > 0) "(±$weight$unit)" else ""
                 return "$packet $weightString"
             }
+
         }
     }
 

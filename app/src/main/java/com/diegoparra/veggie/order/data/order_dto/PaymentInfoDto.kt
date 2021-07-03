@@ -4,26 +4,19 @@ import com.google.firebase.Timestamp
 
 data class PaymentInfoDto(
     val status: String,
-    val paymentMethod: PaymentMethodDto,
-    val total: Double,
-    val paidAt: Timestamp?
+    val paymentMethod: String,
+    val details: String,                    //  Information shown to the user.
+    //  All information collected in the transaction.
+    //  May include info like cardNumber, paidAt, bank, buyerInfo, ticketImage, ...
+    val additionalInfo: Map<String, String>,
+    val updatedAt: Timestamp
 ) {
     //  Required empty constructor for firebase
     constructor(): this(
         status = "",
-        paymentMethod = PaymentMethodDto(),
-        total = -1.0,
-        paidAt = Timestamp(0,0)
-    )
-}
-
-data class PaymentMethodDto(
-    val method: String,
-    val additionalInfo: Map<String, String>
-) {
-    //  Required empty constructor for firebase
-    constructor(): this(
-        method = "",
-        additionalInfo = mapOf()
+        paymentMethod = "",
+        details = "",
+        additionalInfo = mapOf(),
+        updatedAt = Timestamp(0,0)
     )
 }

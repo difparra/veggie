@@ -13,13 +13,24 @@ data class Order(
     val updatedAt: BasicTime
 ) {
     enum class Status {
+        //  When payment is not CASH, it will be created as started, and when payment
+        //  has been confirmed it could be changed to created.
+        STARTED,
         CREATED,
         PREPARING,
         ON_THE_WAY,
-        //  ON_HOLD = WAITING FOR PAYMENT
         DELIVERED,
         CANCELLED,
         REFUNDED
     }
-
 }
+
+
+//  TODO:   Additional, configure firestore not to use cache.
+
+/*
+    Order No.                   Status
+    Price
+    DateTime
+    Details
+ */

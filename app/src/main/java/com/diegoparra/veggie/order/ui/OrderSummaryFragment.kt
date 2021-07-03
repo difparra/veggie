@@ -17,6 +17,7 @@ import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.databinding.FragmentOrderSummaryBinding
 import com.diegoparra.veggie.order.viewmodels.OrderViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -52,6 +53,9 @@ class OrderSummaryFragment: Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun subscribeUi() {
+        viewModel.failure.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_SHORT).show()
+        })
         viewModel.name.observe(viewLifecycleOwner) {
             binding.userName.text = it
         }
@@ -67,11 +71,6 @@ class OrderSummaryFragment: Fragment() {
                     it.date.formatApp(short = true) + "; " + Pair(it.timeRange.from, it.timeRange.to).formatApp()
             }
         }
-        //  Must observe this, in order to have some value for the liveData and make the makeOrder
-        //  button valid (it needs this products)
-        //  When not observing this, button will not work until user has opened
-        //  ProductsOrderSummaryFragment which attach an observer to viewModel
-        viewModel.productsList.observe(viewLifecycleOwner) {}
         viewModel.total.observe(viewLifecycleOwner) {
             it?.let {
                 binding.totalSubtotalValue.text = it.subtotal.addPriceFormat()

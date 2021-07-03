@@ -13,7 +13,7 @@
         android:alpha="?attr/alphaSecondaryText"
         android:maxLines="1"
         android:ellipsize="end"
-        tools:text="Title" />
+        tools:text="Libra (±500g)" />
 
     <View
         style="@style/Widget.Veggie.Divider" />

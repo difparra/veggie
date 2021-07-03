@@ -75,7 +75,7 @@ class VariationsAdapter(private val listener: OnItemClickListener) :
         abstract fun bind(item: VariationUi)
 
         protected fun getBasicDescription(packet: String, weight: Int, unit: String): String {
-            val weightString = if (weight < 0) "" else "(± $weight$unit)"
+            val weightString = if (weight > 0) "(± $weight$unit)" else ""
             return "$packet $weightString"
         }
 

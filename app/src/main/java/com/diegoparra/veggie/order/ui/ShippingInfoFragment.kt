@@ -40,7 +40,7 @@ class ShippingInfoFragment : Fragment() {
         ShippingScheduleAdapter { date: LocalDate, timeRange: TimeRange, cost: Int ->
             Timber.d("Date selected: date=$date, from=${timeRange.from}, to=${timeRange.to}")
             titleDeliveryDateTime.setAndExpandError(null)
-            viewModel.selectDeliverySchedule(
+            viewModel.selectDeliveryScheduleAndCost(
                 deliverySchedule = DeliverySchedule(date = date, timeRange = timeRange),
                 cost = cost
             )
@@ -118,17 +118,7 @@ class ShippingInfoFragment : Fragment() {
             )
         )
 
-        //  Must observe shippingInfo. Otherwise, value in buttonContinue clickListener will always be null
-        viewModel.shippingInfo.observe(viewLifecycleOwner) {}
-        binding.buttonContinue.setOnClickListener {
-            Timber.d("clickListener. viewModelShippingInfo.value = ${viewModel.shippingInfo.value}")
-            viewModel.shippingInfo.value?.let {
-                when (it) {
-                    is Either.Right -> navigateSuccess()
-                    is Either.Left -> handleBtnContinueFailures(it.a)
-                }
-            }
-        }
+        buttonContinueFunctionality()
     }
 
     private fun subscribeUi() {
@@ -145,9 +135,7 @@ class ShippingInfoFragment : Fragment() {
                     //  more than once (i.e. when fetching address) and cause a failure with navigation
                     //   component as current destination is not correct.
                 }
-                is Failure.NetworkConnection -> { /* TODO: Handle no network connection */ }
                 else -> {
-                    //  TODO:   Hide view and display error, possibly set a try again button
                     Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_SHORT).show()
                 }
             }
@@ -172,6 +160,17 @@ class ShippingInfoFragment : Fragment() {
             ----------------------------------------------------------------------------------------
      */
 
+    private fun buttonContinueFunctionality() {
+        binding.buttonContinue.setOnClickListener {
+            //  It should be a stateFlow which state is scoped to viewModel.
+            viewModel.shippingInfo.value.let {
+                when (it) {
+                    is Either.Right -> navigateSuccess()
+                    is Either.Left -> handleBtnContinueFailures(it.a)
+                }
+            }
+        }
+    }
 
     private fun navigateSuccess() {
         val action = ShippingInfoFragmentDirections.actionShippingInfoFragmentToOrderSummaryFragment()

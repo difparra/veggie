@@ -6,13 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.diegoparra.veggie.R
+import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.databinding.FragmentProductsOrderSummaryBinding
 import com.diegoparra.veggie.order.viewmodels.OrderViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -42,10 +47,23 @@ class ProductsOrderSummaryFragment : BottomSheetDialogFragment() {
     }
 
     private fun subscribeUi() {
-        viewModel.productsList.observe(viewLifecycleOwner) {
+        viewModel.failure.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_SHORT).show()
+        })
+        viewModel.productsList.asLiveData().observe(viewLifecycleOwner) {
+            Timber.d("productsList = $it, products = ${it?.products}")
             adapter.submitList(it?.products ?: listOf())
             setErrorIfEmptyList(it?.products.isNullOrEmpty())
         }
+        /*  //  There seems to be an issue when using value classes in suspend functions (i.e. inside collect),
+            //  and because of that I transformed to liveData, as code inside is not a suspend function.
+        lifecycleScope.launchWhenStarted {
+            viewModel.productsList.collect {
+                Timber.d("productsList = $it, products = ${it?.products}")
+                adapter.submitList(it?.products ?: listOf())
+                setErrorIfEmptyList(it?.products.isNullOrEmpty())
+            }
+        }*/
     }
 
     private fun setErrorIfEmptyList(emptyList: Boolean) {

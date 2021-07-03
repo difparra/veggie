@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:elegantTextHeight="true"
-        tools:text="Price" />
+        tools:text="$3800" />
 
     <TextView
         android:id="@+id/description"
@@ -30,7 +30,7 @@
         android:alpha="?attr/alphaSecondaryText"
         android:maxLines="1"
         android:ellipsize="end"
-        tools:text="Description" />
+        tools:text="Maduro / Unidad (±200g)" />
 
     <com.diegoparra.veggie.core.QtyButton
         android:id="@+id/btn_add"

@@ -34,7 +34,7 @@
         app:chipMinTouchTargetSize="0dp"
         android:clickable="false"
         android:enabled="false"
-        tools:text="10% Off"
+        tools:text="Recomendado"
         tools:visibility="visible" />
 
 
@@ -51,7 +51,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:maxLines="1"
         android:ellipsize="end"
-        tools:text="Name" />
+        tools:text="Fresa" />
 
     <TextView
         android:id="@+id/description"
@@ -64,7 +64,7 @@
         app:layout_constraintTop_toBottomOf="@+id/name"
         android:maxLines="1"
         android:ellipsize="end"
-        tools:text="Description" />
+        tools:text="Libra • Maduro" />
 
     <TextView
         android:id="@+id/price"
@@ -75,7 +75,7 @@
         app:layout_constraintStart_toStartOf="@id/name"
         app:layout_constraintEnd_toEndOf="@id/name"
         app:layout_constraintTop_toBottomOf="@+id/description"
-        tools:text="Price" />
+        tools:text="Total: $11400" />
 
     <com.diegoparra.veggie.core.QtyButton
         android:id="@+id/btn_add"
@@ -97,7 +97,7 @@
         android:backgroundTint="?attr/colorPrimary"
         android:minWidth="@dimen/qty_button_size"
         android:minHeight="@dimen/qty_button_size"
-        tools:text="1" />
+        tools:text="3" />
 
     <com.diegoparra.veggie.core.QtyButton
         android:id="@+id/btn_reduce"
