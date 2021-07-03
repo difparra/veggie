@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.ui
+package com.diegoparra.veggie.order.ui.order_flow
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -11,11 +11,11 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.android.EventObserver
-import com.diegoparra.veggie.core.formatApp
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.databinding.FragmentOrderSummaryBinding
+import com.diegoparra.veggie.order.ui.ui_utils.printFullWithShortFormat
 import com.diegoparra.veggie.order.viewmodels.OrderViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,10 +66,7 @@ class OrderSummaryFragment: Fragment() {
             binding.deliveryAddress.text = it?.fullAddress()
         }
         viewModel.deliverySchedule.observe(viewLifecycleOwner) {
-            it?.let {
-                binding.deliveryDateTime.text =
-                    it.date.formatApp(short = true) + "; " + Pair(it.timeRange.from, it.timeRange.to).formatApp()
-            }
+            binding.deliveryDateTime.text = it?.printFullWithShortFormat()
         }
         viewModel.total.observe(viewLifecycleOwner) {
             it?.let {

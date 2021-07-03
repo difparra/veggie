@@ -41,6 +41,7 @@ class UserApi @Inject constructor(
             //  Return Right if exceptions have not be thrown
             Either.Right(Unit)
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(Failure.ServerError(e))
         }
     }
@@ -60,6 +61,7 @@ class UserApi @Inject constructor(
                 Either.Left(Failure.NotFound)
             }
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(Failure.ServerError(e))
         }
     }
@@ -74,6 +76,7 @@ class UserApi @Inject constructor(
             //  Return Right if exceptions have not be thrown
             Either.Right(addressDto)
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(Failure.ServerError(e))
         }
     }
@@ -88,6 +91,7 @@ class UserApi @Inject constructor(
             //  Return Right if exceptions have not be thrown
             Either.Right(Unit)
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(Failure.ServerError(e))
         }
     }

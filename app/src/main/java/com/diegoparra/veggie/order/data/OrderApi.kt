@@ -5,9 +5,11 @@ import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.order.data.order_dto.OrderDto
 import com.diegoparra.veggie.order.domain.Order
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import javax.inject.Inject
 
 class OrderApi @Inject constructor(
@@ -22,6 +24,7 @@ class OrderApi @Inject constructor(
                 .await()
             Either.Right(update.id)
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(Failure.ServerError(exception = e))
         }
     }
@@ -31,7 +34,7 @@ class OrderApi @Inject constructor(
             val orders = database
                 .collection(OrderFirebaseConstants.Firestore.Collections.orders)
                 .whereEqualTo(OrderFirebaseConstants.Firestore.Fields.userIdComplete, userId)
-                .orderBy(OrderFirebaseConstants.Firestore.Fields.deliveryDateFrom)
+                .orderBy(OrderFirebaseConstants.Firestore.Fields.deliveryDateFrom, Query.Direction.DESCENDING)
                 .get()
                 .await()
                 .map {
@@ -41,6 +44,7 @@ class OrderApi @Inject constructor(
                 }
             Either.Right(orders)
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(Failure.ServerError(exception = e))
         }
     }

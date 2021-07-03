@@ -61,9 +61,11 @@ class AuthApi @Inject constructor(
                 })?.await()
             Either.Right(Unit)
         } catch (e1: FirebaseAuthInvalidUserException) {
+            Timber.e("Exception class=${e1.javaClass}, message=${e1.message}")
             //  Email does not exists or has been disabled
             Either.Left(e1.toFailure(null))
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(AuthFailure.ServerError(e))
         }
     }
@@ -75,6 +77,7 @@ class AuthApi @Inject constructor(
                 ?.await()
             Either.Right(Unit)
         } catch (e1: FirebaseAuthInvalidCredentialsException) {
+            Timber.e("Exception class=${e1.javaClass}, message=${e1.message}")
             val message = e1.message
             if (message != null) {
                 if (message.contains("invalid", ignoreCase = true)) {
@@ -88,6 +91,7 @@ class AuthApi @Inject constructor(
                 Either.Left(AuthFailure.ServerError(e1))
             }
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(AuthFailure.ServerError(e))
         }
 
@@ -102,8 +106,10 @@ class AuthApi @Inject constructor(
             }
             Either.Right(signInMethodList ?: emptyList())
         } catch (e1: FirebaseAuthInvalidCredentialsException) {
+            Timber.e("Exception class=${e1.javaClass}, message=${e1.message}")
             Either.Left(e1.toFailure(email = email))
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(AuthFailure.ServerError(e))
         }
     }
@@ -118,15 +124,19 @@ class AuthApi @Inject constructor(
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             Either.Right(result)
         } catch (e1: FirebaseAuthWeakPasswordException) {
+            Timber.e("Exception class=${e1.javaClass}, message=${e1.message}")
             //  Password is not strong enough
             Either.Left(e1.toFailure(password = password))
         } catch (e2: FirebaseAuthInvalidCredentialsException) {
+            Timber.e("Exception class=${e2.javaClass}, message=${e2.message}")
             //  Email address is malformed
             Either.Left(e2.toFailure(email = email))
         } catch (e3: FirebaseAuthUserCollisionException) {
+            Timber.e("Exception class=${e3.javaClass}, message=${e3.message}")
             //  Already exists an account with the given email address
             Either.Left(e3.toFailure(SignInMethod.EMAIL, getSignInMethodsForEmail(e3.email!!)))
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(AuthFailure.ServerError(e))
         }
     }
@@ -140,15 +150,19 @@ class AuthApi @Inject constructor(
             val result = auth.signInWithEmailAndPassword(email, password).await()
             Either.Right(result)
         } catch (e1: FirebaseAuthInvalidUserException) {
+            Timber.e("Exception class=${e1.javaClass}, message=${e1.message}")
             //  Email does not exists or has been disabled, or user/email does not exist
             Either.Left(e1.toFailure(email = email))
         } catch (e2: FirebaseAuthInvalidCredentialsException) {
+            Timber.e("Exception class=${e2.javaClass}, message=${e2.message}")
             //  Password is incorrect
             Either.Left(e2.toFailure(password = password))
         } catch (e3: FirebaseAuthUserCollisionException) {
+            Timber.e("Exception class=${e3.javaClass}, message=${e3.message}")
             //  If there already exists an account with the email address
             Either.Left(e3.toFailure(SignInMethod.EMAIL, getSignInMethodsForEmail(e3.email!!)))
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(AuthFailure.ServerError(e))
         }
     }
@@ -158,6 +172,7 @@ class AuthApi @Inject constructor(
             auth.sendPasswordResetEmail(email).await()
             Either.Right(Unit)
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(AuthFailure.ServerError(e))
         }
     }
@@ -170,15 +185,19 @@ class AuthApi @Inject constructor(
             val result = auth.signInWithCredential(credential).await()
             Either.Right(result)
         } catch (e1: FirebaseAuthInvalidUserException) {
+            Timber.e("Exception class=${e1.javaClass}, message=${e1.message}")
             //  If the user account has been disabled or is EmailAuthCredential for non-existent user/email
             Either.Left(e1.toFailure(null))
         } catch (e2: FirebaseAuthInvalidCredentialsException) {
+            Timber.e("Exception class=${e2.javaClass}, message=${e2.message}")
             //  If the credential is malformed or has been expired / Password is incorrect
             Either.Left(e2.toFailure(email = null))
         } catch (e3: FirebaseAuthUserCollisionException) {
+            Timber.e("Exception class=${e3.javaClass}, message=${e3.message}")
             //  If there already exists an account with the email address asserted by the credential
             Either.Left(e3.toFailure(SignInMethod.EMAIL, getSignInMethodsForEmail(e3.email!!)))
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(AuthFailure.ServerError(e))
         }
     }

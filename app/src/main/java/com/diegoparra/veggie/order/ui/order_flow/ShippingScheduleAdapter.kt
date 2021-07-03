@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.ui
+package com.diegoparra.veggie.order.ui.order_flow
 
 import android.view.LayoutInflater
 import android.view.View
@@ -40,12 +40,12 @@ class ShippingScheduleAdapter(private val onDateTimeSelected: (date: LocalDate, 
         submitList(listToSubmit)
     }
 
-    private fun List<Item.ShippingItem>.addHeaders(): List<ShippingScheduleAdapter.Item> {
-        val list = mutableListOf<ShippingScheduleAdapter.Item>()
+    private fun List<Item.ShippingItem>.addHeaders(): List<Item> {
+        val list = mutableListOf<Item>()
         var currentDay: LocalDate? = null
         this.forEach {
             if (it.date != currentDay) {
-                list.add(ShippingScheduleAdapter.Item.Header(it.date))
+                list.add(Item.Header(it.date))
                 currentDay = it.date
             }
             list.add(it)

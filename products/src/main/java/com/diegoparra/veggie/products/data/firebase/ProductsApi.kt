@@ -69,6 +69,7 @@ class ProductsApi @Inject constructor(
                 .toObjects<ProductDto>()
             Either.Right(prods)
         } catch (e: Exception) {
+            Timber.e("Exception class=${e.javaClass}, message=${e.message}")
             Either.Left(Failure.ServerError(exception = e))
         }
     }

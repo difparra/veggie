@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.ui
+package com.diegoparra.veggie.order.ui.order_flow
 
 import android.os.Bundle
 import android.view.LayoutInflater

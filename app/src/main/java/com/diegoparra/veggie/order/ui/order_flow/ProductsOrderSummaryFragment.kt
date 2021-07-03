@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.ui
+package com.diegoparra.veggie.order.ui.order_flow
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.databinding.FragmentProductsOrderSummaryBinding
@@ -17,7 +15,6 @@ import com.diegoparra.veggie.order.viewmodels.OrderViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 @AndroidEntryPoint

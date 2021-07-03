@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.ui
+package com.diegoparra.veggie.order.ui.order_flow
 
 import android.graphics.*
 import android.view.MotionEvent

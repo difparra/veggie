@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/shippingInfoFragment"
-        android:name="com.diegoparra.veggie.order.ui.ShippingInfoFragment"
+        android:name="com.diegoparra.veggie.order.ui.order_flow.ShippingInfoFragment"
         android:label="fragment_shipping_info"
         tools:layout="@layout/fragment_shipping_info" >
         <action
@@ -34,7 +34,7 @@
     <include app:graph="@navigation/nav_sign_in" />
     <fragment
         android:id="@+id/orderSummaryFragment"
-        android:name="com.diegoparra.veggie.order.ui.OrderSummaryFragment"
+        android:name="com.diegoparra.veggie.order.ui.order_flow.OrderSummaryFragment"
         android:label="fragment_order_summary"
         tools:layout="@layout/fragment_order_summary" >
         <action
@@ -46,12 +46,12 @@
     </fragment>
     <dialog
         android:id="@+id/productsOrderSummaryFragment"
-        android:name="com.diegoparra.veggie.order.ui.ProductsOrderSummaryFragment"
+        android:name="com.diegoparra.veggie.order.ui.order_flow.ProductsOrderSummaryFragment"
         android:label="fragment_products_order_summary"
         tools:layout="@layout/fragment_products_order_summary" />
     <dialog
         android:id="@+id/orderSendResultDialog"
-        android:name="com.diegoparra.veggie.order.ui.OrderSendResultDialog"
+        android:name="com.diegoparra.veggie.order.ui.order_flow.OrderSendResultDialog"
         android:label="dialog_order_send_result"
         tools:layout="@layout/dialog_order_send_result" >
         <argument

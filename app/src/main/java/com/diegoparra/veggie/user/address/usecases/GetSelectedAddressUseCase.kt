@@ -15,12 +15,8 @@ class GetSelectedAddressUseCase @Inject constructor(
         userId: String? = null,
         addressList: List<Address>? = null
     ): Either<Failure, Address?> {
-        val mUserId = userId ?: authRepository.getIdCurrentUser().let {
-            when (it) {
-                is Either.Left -> return@invoke Either.Left(it.a)
-                is Either.Right -> return@let it.b
-            }
-        }
+        val mUserId = userId
+            ?: authRepository.getIdCurrentUser().getOrElse { return@invoke Either.Left(it) }
         return addressRepository.getSelectedAddress(userId = mUserId, addressList = addressList)
     }
 

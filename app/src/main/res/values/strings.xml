@@ -52,6 +52,18 @@
     <string name="address_actions_dialog_check_address">Marcar como principal</string>
     <string name="address_actions_dialog_delete_address">Eliminar</string>
 
+    <!-- Orders user -->
+    <string name="order_no">Pedido No. %s</string>
+    <string name="no_orders_yet">Aún no has realizado pedidos.</string>
+
+    <string name="order_status_started">Iniciada</string>
+    <string name="order_status_created">Creado</string>
+    <string name="order_status_preparing">Perparando</string>
+    <string name="order_status_on_the_way">En camino</string>
+    <string name="order_status_delivered">Entregado</string>
+    <string name="order_status_cancelled">Cancelado</string>
+    <string name="order_status_refunded">Reembolsado</string>
+
 
 
 
@@ -81,6 +93,7 @@
     <string name="total_prod">Total</string>
     <string name="success_message_dialog_order_send">Hemos recibido tu pedido.\n\nTu número de orden es:\n%s</string>
     <string name="failure_message_dialog_order_send">Ha ocurrido un error:\n\n%s</string>
+
 
 
     <!-- Failures strings -->

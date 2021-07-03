@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="?attr/paddingSmall"
-    tools:context=".order.ui.OrderSendResultDialog">
+    tools:context=".order.ui.order_flow.OrderSendResultDialog">
 
     <ImageView
         android:id="@+id/order_result_dialog_image"

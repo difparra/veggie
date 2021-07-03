@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.ui
+package com.diegoparra.veggie.order.ui.order_flow
 
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.android.NavWithResultHelper

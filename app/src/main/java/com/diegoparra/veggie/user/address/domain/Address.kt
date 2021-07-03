@@ -6,7 +6,7 @@ data class Address(
     val details: String?,
     val instructions: String?
 ) {
-    fun fullAddress(): String {
-        return address + (details?.let { "\n" + it } ?: "")
+    fun fullAddress(singleLine: Boolean = false): String {
+        return address + (details?.let { (if (singleLine) " - " else "\n") + it } ?: "")
     }
 }
