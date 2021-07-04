@@ -58,11 +58,20 @@
 
     <string name="order_status_started">Iniciada</string>
     <string name="order_status_created">Creado</string>
-    <string name="order_status_preparing">Perparando</string>
+    <string name="order_status_preparing">Preparando</string>
     <string name="order_status_on_the_way">En camino</string>
     <string name="order_status_delivered">Entregado</string>
     <string name="order_status_cancelled">Cancelado</string>
     <string name="order_status_refunded">Reembolsado</string>
+
+    <string name="payment_method_cash">Efectivo - contraentrega</string>
+    <string name="payment_method_pos">Datáfono - contraentrega</string>
+    <string name="payment_method_card">Tarjeta</string>
+    <string name="payment_method_other">Otro</string>
+
+
+
+    <string name="delivery_programmed_for">Entrega programada:</string>
 
 
 

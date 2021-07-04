@@ -18,12 +18,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class ProductsOrderSummaryFragment : BottomSheetDialogFragment() {
+class OrderProdsFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentProductsOrderSummaryBinding? = null
     private val binding get() = _binding!!
     private val viewModel: OrderViewModel by hiltNavGraphViewModels(R.id.nav_order)
-    private val adapter by lazy { ProductsOrderAdapter() }
+    private val adapter by lazy { OrderProdsAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +37,7 @@ class ProductsOrderSummaryFragment : BottomSheetDialogFragment() {
         binding.productsList.adapter = adapter
         binding.btnClose.setOnClickListener { findNavController().popBackStack() }
         binding.goToCart.setOnClickListener {
-            val action = ProductsOrderSummaryFragmentDirections.actionNavOrderPop()
+            val action = OrderProdsFragmentDirections.actionNavOrderPop()
             findNavController().navigate(action)
         }
         subscribeUi()

@@ -7,29 +7,38 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
-import com.diegoparra.veggie.databinding.FragmentOrdersHistoryBinding
+import com.diegoparra.veggie.databinding.FragmentOrderHistoryBinding
 import com.diegoparra.veggie.order.domain.Order
-import com.diegoparra.veggie.order.viewmodels.OrdersHistoryViewModel
-import com.google.android.material.snackbar.Snackbar
+import com.diegoparra.veggie.order.viewmodels.OrderHistoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class OrdersHistoryFragment : Fragment() {
+class OrderHistoryFragment : Fragment() {
 
-    private var _binding: FragmentOrdersHistoryBinding? = null
+    private var _binding: FragmentOrderHistoryBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: OrdersHistoryViewModel by viewModels()
-    private val adapter by lazy { OrdersListAdapter() }
+    private val viewModel: OrderHistoryViewModel by hiltNavGraphViewModels(R.id.nav_user_order)
+    private val adapter by lazy {
+        OrderHistoryAdapter {
+            viewModel.selectOrder(orderId = it)
+            findNavController().navigate(
+                OrderHistoryFragmentDirections.actionOrderHistoryFragmentToOrderDetailsFragment(
+                    orderId = it
+                )
+            )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentOrdersHistoryBinding.inflate(inflater, container, false)
+        _binding = FragmentOrderHistoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 

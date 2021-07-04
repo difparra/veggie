@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".order.ui.order_flow.ProductsOrderSummaryFragment"
+    tools:context=".order.ui.order_flow.OrderProdsFragment"
     android:paddingBottom="?attr/paddingBig">
 
     <com.google.android.material.appbar.AppBarLayout

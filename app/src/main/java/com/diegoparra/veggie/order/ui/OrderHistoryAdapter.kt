@@ -12,7 +12,8 @@ import com.diegoparra.veggie.order.domain.Order
 import com.diegoparra.veggie.order.ui.ui_utils.print
 import com.diegoparra.veggie.order.ui.ui_utils.printFullWithShortFormat
 
-class OrdersListAdapter : ListAdapter<Order, OrdersListAdapter.ViewHolder>(DiffCallback) {
+class OrderHistoryAdapter(private val onItemClick: (orderId: String) -> Unit) :
+    ListAdapter<Order, OrderHistoryAdapter.ViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -20,7 +21,8 @@ class OrdersListAdapter : ListAdapter<Order, OrdersListAdapter.ViewHolder>(DiffC
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            onItemClick
         )
     }
 
@@ -29,9 +31,22 @@ class OrdersListAdapter : ListAdapter<Order, OrdersListAdapter.ViewHolder>(DiffC
     }
 
 
-    class ViewHolder(private val binding: ListItemOrderHistoryBinding) :
+    class ViewHolder(
+        private val binding: ListItemOrderHistoryBinding,
+        private val onClickListener: (orderId: String) -> Unit
+    ) :
         RecyclerView.ViewHolder(binding.root) {
+
+        private var order: Order? = null
+
+        init {
+            binding.root.setOnClickListener {
+                order?.let { onClickListener(it.id) }
+            }
+        }
+
         fun bind(order: Order) {
+            this.order = order
             val context = binding.root.context
             binding.orderId.text = context.getString(R.string.order_no, order.id)
             binding.deliveryDateTime.text =

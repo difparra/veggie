@@ -71,7 +71,7 @@ class UserFragment : Fragment() {
         }
 
         binding.itemOrders.setOnClickListener {
-            val action = UserFragmentDirections.actionNavUserToOrdersHistoryFragment()
+            val action = UserFragmentDirections.actionNavUserToNavUserOrder()
             findNavController().navigate(action)
         }
 

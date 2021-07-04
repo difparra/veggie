@@ -5,6 +5,8 @@ import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.formatApp
 import com.diegoparra.veggie.order.domain.DeliverySchedule
 import com.diegoparra.veggie.order.domain.Order
+import com.diegoparra.veggie.order.domain.PaymentInfo
+import com.diegoparra.veggie.order.domain.PaymentMethod
 
 fun DeliverySchedule.printFullWithShortFormat(): String {
     return this.date.formatApp(short = true) + "; " +
@@ -22,4 +24,15 @@ fun Order.Status.print(context: Context): String {
         Order.Status.REFUNDED -> R.string.order_status_refunded
     }
     return context.getString(resource)
+}
+
+fun PaymentInfo.print(context: Context): String {
+    val paymentMethodResource = when(paymentMethod) {
+        PaymentMethod.CASH -> R.string.payment_method_cash
+        PaymentMethod.POS -> R.string.payment_method_pos
+        PaymentMethod.CARD -> R.string.payment_method_card
+        PaymentMethod.OTHER -> R.string.payment_method_other
+    }
+    val paymentMethod = context.getString(paymentMethodResource)
+    return paymentMethod + "\n" + details
 }

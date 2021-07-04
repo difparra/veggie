@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="?attr/paddingSmall">
+
+    <TextView
+        android:id="@+id/subtotal_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/subtotal_value"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/delivery_title"
+        android:text="@string/subtotal" />
+
+    <TextView
+        android:id="@+id/subtotal_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.3"
+        app:layout_constraintTop_toTopOf="@id/subtotal_title"
+        app:layout_constraintBottom_toBottomOf="@id/subtotal_title"
+        app:layout_constraintStart_toEndOf="@id/subtotal_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="end"
+        tools:text="$84,000" />
+
+    <TextView
+        android:id="@+id/delivery_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/subtotal_title"
+        app:layout_constraintEnd_toEndOf="@id/subtotal_title"
+        app:layout_constraintTop_toBottomOf="@id/subtotal_title"
+        app:layout_constraintBottom_toTopOf="@id/total_title"
+        android:text="@string/delivery_fee" />
+
+    <TextView
+        android:id="@+id/delivery_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/subtotal_value"
+        app:layout_constraintEnd_toEndOf="@id/subtotal_value"
+        app:layout_constraintTop_toTopOf="@id/delivery_title"
+        app:layout_constraintBottom_toBottomOf="@id/delivery_title"
+        android:gravity="end"
+        tools:text="$3,000" />
+
+    <TextView
+        android:id="@+id/total_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/subtotal_title"
+        app:layout_constraintEnd_toEndOf="@id/subtotal_title"
+        app:layout_constraintTop_toBottomOf="@id/delivery_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/total" />
+
+    <TextView
+        android:id="@+id/total_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/subtotal_value"
+        app:layout_constraintEnd_toEndOf="@id/subtotal_value"
+        app:layout_constraintTop_toTopOf="@id/total_title"
+        app:layout_constraintBottom_toBottomOf="@id/total_title"
+        android:gravity="end"
+        tools:text="$87,000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

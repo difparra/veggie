@@ -73,8 +73,8 @@
             android:id="@+id/action_nav_user_to_nav_user_address"
             app:destination="@id/nav_user_address" />
         <action
-            android:id="@+id/action_nav_user_to_ordersHistoryFragment"
-            app:destination="@id/ordersHistoryFragment" />
+            android:id="@+id/action_nav_user_to_nav_user_order"
+            app:destination="@id/nav_user_order" />
     </fragment>
     <include app:graph="@navigation/nav_sign_in" />
 
@@ -91,10 +91,6 @@
     <action
         android:id="@+id/action_global_nav_user"
         app:destination="@id/nav_user" />
-    <fragment
-        android:id="@+id/ordersHistoryFragment"
-        android:name="com.diegoparra.veggie.order.ui.OrdersHistoryFragment"
-        android:label="fragment_orders_history"
-        tools:layout="@layout/fragment_orders_history" />
+    <include app:graph="@navigation/nav_user_order" />
 
 </navigation>

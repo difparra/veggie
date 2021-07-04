@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".order.ui.OrdersHistoryFragment">
+    tools:context=".order.ui.OrderDetailsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -23,35 +22,24 @@
                 android:importantForAccessibility="no"
                 app:tint="?attr/colorPrimary" />
             <TextView
+                android:id="@+id/title"
                 style="@style/Widget.Veggie.AppBarLayout.Title"
                 android:paddingStart="?attr/paddingSmall"
-                android:text="@string/user_orders"/>
+                android:text="@string/order_no"/>
         </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/orders_list"
+        android:id="@+id/order_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/appBarHeight"
+        android:paddingHorizontal="?attr/paddingSmall"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="10"
-        tools:listitem="@layout/list_item_order_history"
+        tools:listitem="@layout/list_item_order_details_header"
         android:paddingVertical="?attr/paddingSmall"
         android:clipToPadding="false" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-
-    <TextView
-        android:id="@+id/error_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Widget.Veggie.ErrorText"
-        android:layout_gravity="center" />
 
 </FrameLayout>

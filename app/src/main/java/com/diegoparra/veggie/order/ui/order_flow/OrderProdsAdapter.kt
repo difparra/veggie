@@ -16,8 +16,8 @@ import java.lang.IllegalArgumentException
 private const val HEADER = R.layout.list_item_product_order_header
 private const val ITEM = R.layout.list_item_product_order
 
-class ProductsOrderAdapter :
-    ListAdapter<ProductOrder, ProductsOrderAdapter.ViewHolder>(DiffCallback) {
+class OrderProdsAdapter :
+    ListAdapter<ProductOrder, OrderProdsAdapter.ViewHolder>(DiffCallback) {
 
     override fun getItemViewType(position: Int): Int {
         return if (position == 0) HEADER else ITEM
