@@ -16,4 +16,7 @@ abstract class OrderModule {
         orderRepositoryImpl: OrderRepositoryImpl
     ): OrderRepository
 
+
+    //      Requires also orderDao, but was inserted in the same appModule with the veggieDatabase
+
 }

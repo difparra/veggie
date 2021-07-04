@@ -42,15 +42,10 @@ interface ProductsRepository {
         fun getDefaultSourceForInternetAccessState(
             isInternetAvailable: Boolean
         ): Source {
-            return if (!isInternetAvailable) {
-                return Source.CACHE
-            } else {
-                if (DEFAULT_FETCH_INTERVAL_MILLIS > 0) {
-                    Source.RemoteIfExpired(DEFAULT_FETCH_INTERVAL_MILLIS)
-                } else {
-                    Source.SERVER
-                }
-            }
+            return Source.getDefaultSourceForInternetAccessState(
+                isInternetAvailable = isInternetAvailable,
+                fetchIntervalMillis = DEFAULT_FETCH_INTERVAL_MILLIS
+            )
         }
     }
 }

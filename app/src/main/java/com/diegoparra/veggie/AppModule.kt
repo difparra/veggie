@@ -2,6 +2,7 @@ package com.diegoparra.veggie
 
 import android.content.Context
 import androidx.room.Room
+import com.diegoparra.veggie.order.data.room.OrderDao
 import com.diegoparra.veggie.products.cart.data.room.CartDao
 import com.diegoparra.veggie.products.data.room.ProductsDao
 import com.google.firebase.auth.FirebaseAuth
@@ -84,6 +85,11 @@ object AppModule {
     @Provides
     fun providesCartDao(veggieDatabase: VeggieDatabase): CartDao {
         return veggieDatabase.cartDao()
+    }
+
+    @Provides
+    fun providesOrderDao(veggieDatabase: VeggieDatabase): OrderDao {
+        return veggieDatabase.orderDao()
     }
 
 }

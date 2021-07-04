@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.data
+package com.diegoparra.veggie.order.data.firebase
 
 object OrderFirebaseConstants {
 
@@ -22,6 +22,7 @@ object OrderFirebaseConstants {
             private const val deliverySchedule = "deliverySchedule"
             private const val from = "from"
             const val deliveryDateFrom = "$shippingInfo.$deliverySchedule.$from"
+            const val updatedAt = "updatedAt"
         }
     }
 

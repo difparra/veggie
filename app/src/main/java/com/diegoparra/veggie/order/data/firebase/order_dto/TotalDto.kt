@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.data.order_dto
+package com.diegoparra.veggie.order.data.firebase.order_dto
 
 data class TotalDto(
     val subtotal: Int,

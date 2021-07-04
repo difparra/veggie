@@ -4,20 +4,19 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.diegoparra.veggie.core.internet_check.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.kotlin.toResource
 import com.diegoparra.veggie.order.domain.Order
 import com.diegoparra.veggie.order.usecases.GetOrdersListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class OrderHistoryViewModel @Inject constructor(
+    private val isInternetAvailableUseCase: IsInternetAvailableUseCase,
     private val getOrdersListUseCase: GetOrdersListUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -25,15 +24,14 @@ class OrderHistoryViewModel @Inject constructor(
     private val _orderId = savedStateHandle.getLiveData<String>(ORDER_ID)
 
 
-    private val _ordersList: MutableStateFlow<Resource<List<Order>>> =
-        MutableStateFlow(Resource.Loading())
-    val ordersList = _ordersList.asLiveData()
+    private val _isInternetAvailable = isInternetAvailableUseCase()
 
-    init {
-        viewModelScope.launch {
-            _ordersList.value = getOrdersListUseCase.forCurrentUser().toResource()
+    private val _ordersList = _isInternetAvailable
+        .map {
+            getOrdersListUseCase.forCurrentUser(isInternetAvailable = it).toResource()
         }
-    }
+        .onStart { emit(Resource.Loading()) }
+    val ordersList = _ordersList.asLiveData()
 
 
     val selectedOrder = _ordersList

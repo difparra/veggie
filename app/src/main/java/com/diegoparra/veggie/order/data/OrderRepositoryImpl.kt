@@ -1,24 +1,30 @@
 package com.diegoparra.veggie.order.data
 
 import com.diegoparra.veggie.core.android.IoDispatcher
-import com.diegoparra.veggie.core.kotlin.Either
-import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.core.kotlin.combineMap
-import com.diegoparra.veggie.core.kotlin.map
-import com.diegoparra.veggie.order.data.order_dto.OrderDtoTransformations.toOrder
-import com.diegoparra.veggie.order.data.order_dto.OrderDtoTransformations.toOrderDto
+import com.diegoparra.veggie.core.kotlin.*
+import com.diegoparra.veggie.order.data.DtoToEntityTransformations.toOrderUpdateEntity
+import com.diegoparra.veggie.order.data.firebase.OrderApi
+import com.diegoparra.veggie.order.data.firebase.OrderConfigApi
+import com.diegoparra.veggie.order.data.firebase.order_dto.OrderDtoTransformations.toOrderDto
+import com.diegoparra.veggie.order.data.prefs.OrderPrefs
+import com.diegoparra.veggie.order.data.room.OrderDao
+import com.diegoparra.veggie.order.data.room.OrderEntityTransformations.toOrder
 import com.diegoparra.veggie.order.domain.DeliveryBaseCosts
 import com.diegoparra.veggie.order.domain.DeliveryScheduleConfig
 import com.diegoparra.veggie.order.domain.Order
 import com.diegoparra.veggie.order.domain.OrderRepository
+import com.diegoparra.veggie.products.data.toTimestamp
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class OrderRepositoryImpl @Inject constructor(
     private val orderConfigApi: OrderConfigApi,
     private val orderApi: OrderApi,
+    private val orderDao: OrderDao,
+    private val orderPrefs: OrderPrefs,
     @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : OrderRepository {
 
@@ -52,12 +58,43 @@ class OrderRepositoryImpl @Inject constructor(
     override suspend fun sendOrder(order: Order): Either<Failure, String> =
         withContext(dispatcher) {
             orderApi.sendOrder(order.toOrderDto())
+                .onSuccess {
+                    //  Call orders to be updated from server, as soon as some order is sent
+                    updateLocalOrdersIfExpired(Source.SERVER)
+                }
         }
 
-    override suspend fun getOrdersForUser(userId: String): Either<Failure, List<Order>> =
+
+    override suspend fun getOrdersForUser(
+        userId: String,
+        source: Source
+    ): Either<Failure, List<Order>> =
         withContext(dispatcher) {
-            orderApi.getOrdersUser(userId)
-                .map { it.map { it.second.toOrder(it.first) } }
+            updateLocalOrdersIfExpired(source).onFailure {
+                return@withContext Either.Left(it)
+            }
+            val localOrders = orderDao.getOrdersForUser(userId)
+            return@withContext Either.Right(localOrders.map { it.toOrder() })
         }
+
+
+    private suspend fun updateLocalOrdersIfExpired(source: Source): Either<Failure, Unit> {
+        val ordersUpdatedAt = orderPrefs.getOrdersUpdatedAt() ?: BasicTime(0)
+        return if (source.isDataExpired(ordersUpdatedAt)) {
+            Timber.d("Orders data is expired. Calling to update...")
+            updateLocalOrders().onSuccess { orderPrefs.saveOrdersUpdatedAt(BasicTime.now()) }
+        } else {
+            Timber.d("Orders data is up to date. Returning...")
+            Either.Right(Unit)
+        }
+    }
+
+    private suspend fun updateLocalOrders(): Either<Failure, Unit> {
+        val actualOrdersUpdatedAt = BasicTime(orderDao.getLastUpdatedTime() ?: 0)
+        return orderApi.getOrdersUpdatedAfter(actualOrdersUpdatedAt.toTimestamp())
+            .map {
+                orderDao.updateOrders(it.map { it.second.toOrderUpdateEntity(it.first) })
+            }
+    }
 
 }

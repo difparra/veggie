@@ -22,4 +22,21 @@ sealed class Source(val fetchIntervalInMillis: Long) {
                 BasicTime.now().millisEpochUTC - lastUpdatedAt.millisEpochUTC > fetchIntervalInMillis
         }
     }
+
+    companion object {
+        fun getDefaultSourceForInternetAccessState(
+            isInternetAvailable: Boolean,
+            fetchIntervalMillis: Long
+        ): Source {
+            return if (!isInternetAvailable) {
+                return CACHE
+            } else {
+                if (fetchIntervalMillis > 0) {
+                    RemoteIfExpired(fetchIntervalMillis)
+                } else {
+                    SERVER
+                }
+            }
+        }
+    }
 }

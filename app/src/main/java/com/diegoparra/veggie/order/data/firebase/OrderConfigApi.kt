@@ -1,9 +1,9 @@
-package com.diegoparra.veggie.order.data
+package com.diegoparra.veggie.order.data.firebase
 
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
-import com.diegoparra.veggie.order.data.DeliveryTimetableDtoTransformations.toDeliveryTimetable
-import com.diegoparra.veggie.order.data.OrderFirebaseConstants.RemoteConfigKeys
+import com.diegoparra.veggie.order.data.firebase.DeliveryTimetableDtoTransformations.toDeliveryTimetable
+import com.diegoparra.veggie.order.data.firebase.OrderFirebaseConstants.RemoteConfigKeys
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue
 import com.google.firebase.remoteconfig.ktx.get

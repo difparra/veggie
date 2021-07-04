@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.data
+package com.diegoparra.veggie.order.data.firebase
 
 import android.annotation.SuppressLint
 import com.diegoparra.veggie.order.domain.DeliveryScheduleConfig

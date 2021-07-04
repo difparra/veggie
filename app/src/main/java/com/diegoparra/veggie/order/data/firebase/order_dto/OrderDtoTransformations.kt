@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.data.order_dto
+package com.diegoparra.veggie.order.data.firebase.order_dto
 
 import com.diegoparra.veggie.order.domain.*
 import com.diegoparra.veggie.products.cart.domain.ProductId
@@ -8,7 +8,6 @@ import com.diegoparra.veggie.user.data.DtosTransformations.toAddress
 import com.diegoparra.veggie.user.data.DtosTransformations.toAddressDto
 import com.google.firebase.Timestamp
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 object OrderDtoTransformations {
 

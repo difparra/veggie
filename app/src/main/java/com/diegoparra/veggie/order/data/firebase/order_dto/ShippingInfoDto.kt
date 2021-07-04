@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.order.data.order_dto
+package com.diegoparra.veggie.order.data.firebase.order_dto
 
 import com.diegoparra.veggie.user.data.firebase.AddressDto
 import com.google.firebase.Timestamp
