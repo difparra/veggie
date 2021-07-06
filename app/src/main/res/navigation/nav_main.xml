@@ -82,7 +82,7 @@
     <!--    .....   SUPPORT    .....   -->
     <fragment
         android:id="@+id/nav_support"
-        android:name="com.diegoparra.veggie.SupportFragment"
+        android:name="com.diegoparra.veggie.support.SupportFragment"
         android:label="fragment_support"
         tools:layout="@layout/fragment_support" />
     <include app:graph="@navigation/nav_edit_profile" />

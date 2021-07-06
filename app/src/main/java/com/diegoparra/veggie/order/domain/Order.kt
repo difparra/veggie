@@ -24,13 +24,3 @@ data class Order(
         REFUNDED
     }
 }
-
-
-//  TODO:   Additional, configure firestore not to use cache.
-
-/*
-    Order No.                   Status
-    Price
-    DateTime
-    Details
- */

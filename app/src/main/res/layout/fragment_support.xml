@@ -1,14 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SupportFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".support.SupportFragment">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/menu_support" />
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="?attr/paddingBig">
+
+            <TextView
+                android:id="@+id/support_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="?attr/paddingBig"
+                android:layout_marginBottom="?attr/paddingStandard"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                app:layout_constraintBottom_toTopOf="@+id/support_secondary_text"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                android:text="@string/support_title" />
+
+            <TextView
+                android:id="@+id/support_secondary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="?attr/paddingStandard"
+                android:layout_marginBottom="?attr/paddingBig"
+                android:alpha="?attr/alphaSecondaryText"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceBody1"
+                app:layout_constraintBottom_toTopOf="@+id/card_whatsapp"
+                app:layout_constraintTop_toBottomOf="@+id/support_title"
+                android:text="@string/support_description" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_whatsapp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="?attr/paddingSmall"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="?attr/paddingSmall"
+                app:contentPadding="?attr/paddingStandard"
+                app:layout_constraintBottom_toTopOf="@+id/card_email"
+                app:layout_constraintTop_toBottomOf="@+id/support_secondary_text"
+                app:cardBackgroundColor="?attr/colorGrayDefault">
+
+                <TextView
+                    android:id="@+id/card_whatsapp_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:text="Whatsapp\n+57 317 487 7055"
+                    android:textColor="?attr/colorOnGrayDefault"
+                    app:drawableTint="?attr/colorOnGrayDefault"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_gravity="center"
+                    app:drawableStartCompat="@drawable/ic_whatsapp"
+                    app:drawableEndCompat="@drawable/ic_arrow_forward_ios" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="?attr/paddingSmall"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="?attr/paddingSmall"
+                app:contentPadding="?attr/paddingStandard"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_whatsapp"
+                app:cardBackgroundColor="?attr/colorGrayDefault">
+
+                <TextView
+                    android:id="@+id/card_email_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="?attr/colorOnGrayDefault"
+                    app:drawableTint="?attr/colorOnGrayDefault"
+                    tools:text="Email\nveggie@gmail.com"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_gravity="center"
+                    app:drawableStartCompat="@drawable/ic_email_outline"
+                    app:drawableEndCompat="@drawable/ic_arrow_forward_ios" />
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

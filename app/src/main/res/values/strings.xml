@@ -108,6 +108,12 @@
     <string name="failure_message_dialog_order_send">Ha ocurrido un error:\n\n%s</string>
 
 
+    <!-- ............................       SUPPORT        ............................    -->
+    <string name="support_title">¿Necesitas ayuda?</string>
+    <string name="support_description">Contáctanos a través de los siguientes canales:</string>
+    <string name="whatsapp_button">Whatsapp\n%s</string>
+    <string name="email_button">Email\n%s</string>
+    <string name="email_subject">Soporte veggie app</string>
 
 
     <!-- ............................       FAILURES        ............................    -->
