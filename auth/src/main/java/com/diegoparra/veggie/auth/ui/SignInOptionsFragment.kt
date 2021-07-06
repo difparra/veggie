@@ -10,9 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.auth.databinding.FragmentSignInOptionsBinding
-import com.diegoparra.veggie.auth.utils.AuthFailure
-import com.diegoparra.veggie.auth.ui_utils.AuthResultNavigation
-import com.diegoparra.veggie.auth.ui_utils.getDefaultErrorMessage
+import com.diegoparra.veggie.auth.utils.AuthResultNavigation
 import com.diegoparra.veggie.auth.viewmodels.SignInOptionsViewModel
 import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.core.kotlin.Either
@@ -110,11 +108,11 @@ class SignInOptionsFragment : Fragment() {
         })
 
         viewModel.failure.observe(viewLifecycleOwner) {
-            val errorMessage = when (it) {
-                is AuthFailure -> it.getDefaultErrorMessage(binding.root.context)
-                else -> it.toString()
-            }
-            Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                binding.root,
+                it.getContextMessage(binding.root.context),
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
 
         viewModel.loading.observe(viewLifecycleOwner) {

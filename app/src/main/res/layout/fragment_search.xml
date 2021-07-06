@@ -101,7 +101,7 @@
             android:gravity="center"
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:alpha="?attr/alphaSecondaryText"
-            android:text="@string/failure_no_search_result"
+            android:text="@string/no_search_results"
             android:layout_marginHorizontal="?attr/paddingBig"/>
 
     </LinearLayout>

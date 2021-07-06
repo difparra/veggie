@@ -2,7 +2,6 @@ package com.diegoparra.veggie.auth.ui
 
 import android.os.Bundle
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.diegoparra.veggie.auth.databinding.FragmentEmailSignUpBinding
-import com.diegoparra.veggie.auth.ui_utils.AuthResultNavigation
-import com.diegoparra.veggie.auth.ui_utils.getDefaultErrorMessage
-import com.diegoparra.veggie.auth.ui_utils.handleAuthError
-import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.auth.utils.AuthResultNavigation
 import com.diegoparra.veggie.auth.viewmodels.EmailSignUpViewModel
-import com.diegoparra.veggie.core.android.EventObserver
-import com.diegoparra.veggie.core.android.addTextChangedListenerDistinctChanged
-import com.diegoparra.veggie.core.android.hideKeyboard
+import com.diegoparra.veggie.core.android.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -59,6 +53,7 @@ class EmailSignUpFragment : Fragment() {
             Timber.d("password changed to: ${it.toString()}")
             viewModel.setPassword(it.toString())
         }
+        binding.password.setOnEnterListener(btnContinue = binding.btnSignUp)
 
         binding.btnSignUp.setOnClickListener {
             Timber.d("onViewCreated() called")
@@ -73,11 +68,11 @@ class EmailSignUpFragment : Fragment() {
     private fun subscribeUi() {
         viewModel.name.observe(viewLifecycleOwner) {
             Timber.d("name resource received: $it")
-            binding.nameLayout.handleAuthError(resource = it, femaleGenderString = false)
+            binding.nameLayout.setErrorMessageFromResource(resource = it)
         }
         viewModel.password.observe(viewLifecycleOwner) {
             Timber.d("password resource received: $it")
-            binding.passwordLayout.handleAuthError(resource = it, femaleGenderString = true)
+            binding.passwordLayout.setErrorMessageFromResource(resource = it)
         }
 
         viewModel.btnContinueEnabled.observe(viewLifecycleOwner) {
@@ -95,7 +90,7 @@ class EmailSignUpFragment : Fragment() {
             Timber.d("toastMessage failure received: $it")
             Snackbar.make(
                 binding.root,
-                if (it is AuthFailure) it.getDefaultErrorMessage(binding.root.context) else it.toString(),
+                it.getContextMessage(binding.root.context),
                 Snackbar.LENGTH_SHORT
             ).show()
         })

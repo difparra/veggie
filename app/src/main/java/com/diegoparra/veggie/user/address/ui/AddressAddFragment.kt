@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
-import com.diegoparra.veggie.R
-import com.diegoparra.veggie.auth.ui_utils.getDefaultErrorMessage
 import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.databinding.FragmentAddressAddBinding
 import com.diegoparra.veggie.user.address.domain.AddressConstants
@@ -70,11 +68,7 @@ class AddressAddFragment : Fragment() {
         })
 
         viewModel.addressFailure.observe(viewLifecycleOwner, EventObserver {
-            binding.addressLayout.error = it.getDefaultErrorMessage(
-                context = binding.root.context,
-                field = getString(R.string.address),
-                femaleString = true
-            )
+            binding.addressLayout.error = it.getContextMessage(binding.addressLayout.context)
         })
 
         viewModel.failure.observe(viewLifecycleOwner, EventObserver {

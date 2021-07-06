@@ -5,13 +5,14 @@ import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.flatMap
 import com.diegoparra.veggie.auth.domain.SignInMethod
 import com.diegoparra.veggie.auth.domain.AuthRepository
+import com.diegoparra.veggie.core.kotlin.Failure
 import timber.log.Timber
 
 class EmailCollisionValidation(
     private val authRepository: AuthRepository
 ) {
 
-    suspend fun isValidForSignIn(email: String, signInMethod: SignInMethod): Either<AuthFailure, Unit> {
+    suspend fun isValidForSignIn(email: String, signInMethod: SignInMethod): Either<Failure, Unit> {
         return getSignInMethodsForEmail(email).flatMap {
             Timber.d("email: $email - signInMethodsList: ${it.joinToString()}")
             if (signInMethod in it) {
@@ -29,7 +30,7 @@ class EmailCollisionValidation(
         }
     }
 
-    suspend fun isValidForSignUp(email: String, signInMethod: SignInMethod): Either<AuthFailure, Unit> {
+    suspend fun isValidForSignUp(email: String, signInMethod: SignInMethod): Either<Failure, Unit> {
         return getSignInMethodsForEmail(email).flatMap {
             Timber.d("email: $email - signInMethodsList: ${it.joinToString()}")
             if (it.isEmpty()) {
@@ -48,7 +49,7 @@ class EmailCollisionValidation(
     }
 
 
-    private suspend fun getSignInMethodsForEmail(email: String): Either<AuthFailure, List<SignInMethod>> {
+    private suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>> {
         return authRepository.getSignInMethodsForEmail(email)
     }
 

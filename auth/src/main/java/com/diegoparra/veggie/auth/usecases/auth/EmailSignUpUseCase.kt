@@ -3,9 +3,11 @@ package com.diegoparra.veggie.auth.usecases.auth
 import com.diegoparra.veggie.auth.domain.*
 import com.diegoparra.veggie.auth.usecases.utils.EmailCollisionValidation
 import com.diegoparra.veggie.auth.utils.AuthCallbacks
-import com.diegoparra.veggie.auth.utils.AuthFailure
-import com.diegoparra.veggie.auth.utils.TextInputValidation
 import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.input_validation.TextInputValidation
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure
+import com.diegoparra.veggie.core.kotlin.onFailure
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -23,38 +25,28 @@ class EmailSignUpUseCase @Inject constructor(
     )
 
 
-    override suspend fun validate(params: Params): Either<AuthFailure.ValidationFailures, Unit> {
+    override suspend fun validate(params: Params): Either<InputFailure.InputFailuresList, Unit> {
         Timber.d("validate() called with: params = $params")
-        val validationFailures = mutableSetOf<AuthFailure>()
+        val validationFailures = mutableSetOf<InputFailure>()
 
-        val emailInputValidation = validateEmailInput(params.email)
-        if (emailInputValidation is Either.Left) {
-            validationFailures.add(emailInputValidation.a)
-        } else {
-            val emailCollisionValidation = validateNotEmailCollision(params.email)
-            if (emailCollisionValidation is Either.Left) {
-                validationFailures.add(emailCollisionValidation.a)
-            }
+        validateEmailInput(params.email).onFailure {
+            validationFailures.add(it)
         }
-
-        val passwordInputValidation = validatePasswordInput(params.password)
-        if (passwordInputValidation is Either.Left) {
-            validationFailures.add(passwordInputValidation.a)
+        validatePasswordInput(params.password).onFailure {
+            validationFailures.add(it)
         }
-
-        val nameInputValidation = validateNameInput(params.name)
-        if (nameInputValidation is Either.Left) {
-            validationFailures.add(nameInputValidation.a)
+        validateNameInput(params.name).onFailure {
+            validationFailures.add(it)
         }
 
         return if (validationFailures.isEmpty()) {
             Either.Right(Unit)
         } else {
-            Either.Left(AuthFailure.ValidationFailures(validationFailures))
+            Either.Left(InputFailure.InputFailuresList(validationFailures))
         }
     }
 
-    private fun validateEmailInput(email: String): Either<AuthFailure.WrongInput, String> =
+    private fun validateEmailInput(email: String): Either<InputFailure, String> =
         TextInputValidation.forEmail(email)
 
     fun validatePasswordInput(password: String) =
@@ -63,9 +55,10 @@ class EmailSignUpUseCase @Inject constructor(
     fun validateNameInput(name: String) =
         TextInputValidation.forName(name)
 
-    private suspend fun validateNotEmailCollision(email: String): Either<AuthFailure, Unit> {
+
+    override suspend fun additionalValidations(params: Params): Either<Failure, Unit> {
         return emailCollisionValidation.isValidForSignUp(
-            email = email,
+            email = params.email,
             signInMethod = SignInMethod.EMAIL
         )
     }
@@ -73,7 +66,7 @@ class EmailSignUpUseCase @Inject constructor(
 
     //      ----------------------------------------------------------------------------------------
 
-    override suspend fun authenticate(params: Params): Either<AuthFailure, AuthResults> {
+    override suspend fun authenticate(params: Params): Either<Failure, AuthResults> {
         Timber.d("authenticate() called with: params = $params")
         val profile = Profile(
             id = "",        //  Will be actually created by the repository

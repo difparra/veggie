@@ -10,6 +10,7 @@ import com.diegoparra.veggie.auth.domain.*
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.android.IoDispatcher
+import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.flatMap
 import com.diegoparra.veggie.core.kotlin.map
 import com.facebook.login.LoginManager
@@ -60,36 +61,36 @@ class AuthRepositoryImpl @Inject constructor(
 
     //      ----------      BASIC INFORMATION        -----------------------------------------------
 
-    override suspend fun getIdCurrentUser(): Either<AuthFailure, String> = withContext(dispatcher) {
+    override suspend fun getIdCurrentUser(): Either<Failure, String> = withContext(dispatcher) {
         getProfile().map { it.id }
     }
 
-    override fun getIdCurrentUserAsFlow(): Flow<Either<AuthFailure, String>> {
+    override fun getIdCurrentUserAsFlow(): Flow<Either<Failure, String>> {
         return getProfileAsFlow().map { it.map { it.id } }.flowOn(dispatcher)
     }
 
-    override suspend fun getProfile(): Either<AuthFailure, Profile> = withContext(dispatcher) {
+    override suspend fun getProfile(): Either<Failure, Profile> = withContext(dispatcher) {
         authApi.getCurrentUser().toProfile()
     }
 
-    override fun getProfileAsFlow(): Flow<Either<AuthFailure, Profile>> {
+    override fun getProfileAsFlow(): Flow<Either<Failure, Profile>> {
         return authApi
             .getCurrentUserAsFlow()
             .map { it.toProfile() }
             .flowOn(dispatcher)
     }
 
-    override suspend fun getSignInMethodsForEmail(email: String): Either<AuthFailure, List<SignInMethod>> =
+    override suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>> =
         withContext(dispatcher) {
             authApi.getSignInMethodsForEmail(email)
         }
 
-    override suspend fun updateProfile(name: String?, photoUrl: Uri?): Either<AuthFailure, Unit> =
+    override suspend fun updateProfile(name: String?, photoUrl: Uri?): Either<Failure, Unit> =
         withContext(dispatcher) {
             authApi.updateProfile(name, photoUrl)
         }
 
-    override suspend fun updatePhoneNumber(credential: PhoneAuthCredential): Either<AuthFailure, Unit> =
+    override suspend fun updatePhoneNumber(credential: PhoneAuthCredential): Either<Failure, Unit> =
         withContext(dispatcher) {
             authApi.updatePhoneNumber(credential)
         }
@@ -99,7 +100,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signUpWithEmailAndPassword(
         profile: Profile, password: String
-    ): Either<AuthFailure, AuthResults> = withContext(dispatcher) {
+    ): Either<Failure, AuthResults> = withContext(dispatcher) {
         authApi
             .createUserWithEmailAndPassword(profile.email, password)
             .saveLastSignedInWith(SignInMethod.EMAIL)
@@ -115,7 +116,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signInWithEmailAndPassword(
         email: String, password: String
-    ): Either<AuthFailure, AuthResults> = withContext(dispatcher) {
+    ): Either<Failure, AuthResults> = withContext(dispatcher) {
         authApi
             .signInWithEmailAndPassword(email, password)
             .saveLastSignedInWith(SignInMethod.EMAIL)
@@ -126,7 +127,7 @@ class AuthRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun sendPasswordResetEmail(email: String): Either<AuthFailure, Unit> =
+    override suspend fun sendPasswordResetEmail(email: String): Either<Failure, Unit> =
         withContext(dispatcher) {
             authApi.resetPassword(email)
         }
@@ -134,7 +135,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     //      ----------      SIGNIN/UP GOOGLE & FACEBOOK        -------------------------------------
 
-    override suspend fun signInWithGoogleAccount(account: GoogleSignInAccount): Either<AuthFailure, AuthResults> =
+    override suspend fun signInWithGoogleAccount(account: GoogleSignInAccount): Either<Failure, AuthResults> =
         withContext(dispatcher) {
             val credential = account.getAuthCredential()
             authApi
@@ -151,7 +152,7 @@ class AuthRepositoryImpl @Inject constructor(
                 }
         }
 
-    override suspend fun signInWithFacebookResult(result: LoginResult): Either<AuthFailure, AuthResults> =
+    override suspend fun signInWithFacebookResult(result: LoginResult): Either<Failure, AuthResults> =
         withContext(dispatcher) {
             val credential = result.getAuthCredential()
             authApi

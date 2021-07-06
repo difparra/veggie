@@ -1,10 +1,11 @@
 package com.diegoparra.veggie.auth.data.firebase
 
-import com.diegoparra.veggie.auth.utils.Fields.EMAIL
-import com.diegoparra.veggie.auth.utils.Fields.PASSWORD
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.auth.domain.SignInMethod
 import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure.Companion.Field
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -23,8 +24,8 @@ object FirebaseAuthExceptionsTransformations {
 
     fun FirebaseAuthUserCollisionException.toFailure(
         signInMethod: SignInMethod,
-        linkedSignInMethods: Either<AuthFailure, List<SignInMethod>>
-    ): AuthFailure {
+        linkedSignInMethods: Either<Failure, List<SignInMethod>>
+    ): Failure {
         //  createUserWithEmailAndPassword - Already exists an account with the given email address
         return when (linkedSignInMethods) {
             is Either.Left -> linkedSignInMethods.a
@@ -38,35 +39,36 @@ object FirebaseAuthExceptionsTransformations {
 
     fun FirebaseAuthInvalidCredentialsException.toFailure(
         email: String? = null, password: String? = null
-    ): AuthFailure {
+    ): Failure {
         return if (this is FirebaseAuthWeakPasswordException) {
             if (password != null) {
-                AuthFailure.WrongInput.Unknown(
-                    field = PASSWORD, input = password,
-                    message = this.message ?: "Password is weak"
+                InputFailure.Unknown(
+                    field = Field.PASSWORD, input = password,
+                    debugMessage = this.message ?: "Password is weak"
                 )
             } else {
-                AuthFailure.ServerError(exception = this, message = this.message ?: "Password is weak")
+                Failure.ServerError(exception = this, message = this.message ?: "Password is weak")
             }
         } else {
             if (password != null) {
-                AuthFailure.WrongInput.Incorrect(field = PASSWORD, input = password)
+                InputFailure.Incorrect(field = Field.PASSWORD, input = password)
             } else if (email != null) {
-                AuthFailure.WrongInput.Incorrect(field = EMAIL, input = email)
+                InputFailure.Incorrect(field = Field.EMAIL, input = email)
             } else {
-                AuthFailure.ServerError(this)
+                Failure.ServerError(this)
             }
         }
     }
 
-    fun FirebaseAuthInvalidUserException.toFailure(email: String?): AuthFailure {
+    fun FirebaseAuthInvalidUserException.toFailure(email: String?): Failure {
         return if (email != null) {
-            AuthFailure.WrongInput.Unknown(
-                field = EMAIL, input = email,
-                message = this.localizedMessage ?: "Email does not exists or has been disabled."
+            InputFailure.Unknown(
+                field = Field.EMAIL, input = email,
+                debugMessage = this.localizedMessage
+                    ?: "Email does not exists or has been disabled."
             )
         } else {
-            AuthFailure.ServerError(
+            Failure.ServerError(
                 exception = this,
                 message = this.message ?: "Email does not exists or has been disabled."
             )

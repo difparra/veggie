@@ -166,7 +166,7 @@
             android:layout_marginHorizontal="?attr/paddingBig"
             android:alpha="?attr/alphaSecondaryText"
             android:gravity="center"
-            android:text="@string/failure_empty_cart_list"
+            android:text="@string/empty_cart_list"
             android:textAppearance="?attr/textAppearanceSubtitle1" />
 
     </LinearLayout>

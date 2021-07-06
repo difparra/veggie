@@ -1,48 +1,53 @@
 package com.diegoparra.veggie.auth.utils
 
+import com.diegoparra.veggie.auth.R
 import com.diegoparra.veggie.core.kotlin.Failure
-import java.lang.Exception
 
-sealed class AuthFailure: Failure.FeatureFailure() {
+sealed class AuthFailure : Failure.FeatureFailure() {
 
-    class ServerError(val exception: Exception, override val message: String? = exception.message): AuthFailure()
 
-    sealed class SignInState : AuthFailure() {
-        object NotSignedIn : SignInState()
-        object Anonymous : SignInState()
+    sealed class SignInState(override val strRes: Int? = null) : AuthFailure() {
+
+        object NotSignedIn :
+            SignInState(strRes = R.string.failure_not_signed_in)
+
+        object Anonymous :
+            SignInState(strRes = R.string.failure_not_signed_in)
     }
 
-    sealed class WrongSignInMethod(val email: String) : AuthFailure() {
-        class NewUser(email: String) : WrongSignInMethod(email)
-        class ExistentUser(email: String) : WrongSignInMethod(email)
+
+    sealed class WrongSignInMethod(
+        val email: String,
+        override val strRes: Int? = null, override val formatArgs: Array<out Any> = emptyArray()
+    ) : AuthFailure() {
+
+        class NewUser(email: String) :
+            WrongSignInMethod(email, strRes = R.string.failure_new_user)
+
+        class ExistentUser(email: String) :
+            WrongSignInMethod(email, strRes = R.string.failure_existent_user)
+
         class SignInMethodNotLinked(
             email: String,
             val signInMethod: String,
-            val linkedSignInMethods: List<String>
-        ) : WrongSignInMethod(email)
+            val linkedSignInMethods: List<String>,
+        ) : WrongSignInMethod(
+            email,
+            strRes = R.string.failure_not_linked_sign_in_method,
+            formatArgs = arrayOf(linkedSignInMethods.joinToString(","))
+        )
 
-        class Unknown(email: String, override val message: String) : WrongSignInMethod(email)
+        class Unknown(email: String, override val debugMessage: String) :
+            WrongSignInMethod(email)
     }
 
-    sealed class WrongInput(val field: String, val input: String) : AuthFailure() {
-        class Empty(field: String, input: String) : WrongInput(field, input)
-        class Short(field: String, input: String, val minLength: Int) : WrongInput(field, input)
-        class Invalid(field: String, input: String) : WrongInput(field, input)        //  Email
-        class Incorrect(field: String, input: String) :
-            WrongInput(field, input)      //  Password or when authenticating
 
-        class Unknown(field: String, input: String, override val message: String) :
-            WrongInput(field, input)
-    }
-
-    class ValidationFailures(val failures: Set<AuthFailure>) : AuthFailure()
-
-
-
-    sealed class PhoneAuthFailures: AuthFailure() {
-        object InvalidRequest: PhoneAuthFailures()
-        object TooManyRequests: PhoneAuthFailures()
-        object InvalidSmsCode: PhoneAuthFailures()
-        object ExpiredSmsCode: PhoneAuthFailures()
+    sealed class PhoneAuthFailures(
+        override val strRes: Int? = null
+    ) : AuthFailure() {
+        object InvalidRequest : PhoneAuthFailures(R.string.failure_invalid_request_phone_number)
+        object TooManyRequests : PhoneAuthFailures(R.string.failure_too_many_requests)
+        object InvalidSmsCode : PhoneAuthFailures(R.string.failure_invalid_sms_code)
+        object ExpiredSmsCode : PhoneAuthFailures(R.string.failure_code_has_expired)
     }
 }

@@ -27,7 +27,7 @@ class PhoneNumberViewModel @Inject constructor(
         savedStateHandle.getLiveData<String>(VERIFICATION_ID_SAVED_STATE_KEY)
     private var forceResendingToken: PhoneAuthProvider.ForceResendingToken? = null
 
-    private val _loading = MutableLiveData<Boolean>(false)
+    private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
     private val _failure = MutableLiveData<Event<Failure>>()
     val failure: LiveData<Event<Failure>> = _failure
@@ -42,7 +42,7 @@ class PhoneNumberViewModel @Inject constructor(
     fun sendVerificationCode(phoneNumber: String, activity: Activity) {
         _loading.value = true
         savePhoneNumberUseCase.validatePhoneNumber(phoneNumber).fold(
-            { _failure.value = Event(it); Unit },
+            { _failure.value = Event(it) },
             {
                 savedStateHandle.set(PHONE_NUMBER_SAVED_STATE_KEY, it)
                 val options =
@@ -126,12 +126,10 @@ class PhoneNumberViewModel @Inject constructor(
                 {
                     _loading.value = false
                     _failure.value = Event(it)
-                    Unit
                 },
                 {
                     _loading.value = false
                     _navigateSuccess.value = Event(true)
-                    Unit
                 }
             )
         }

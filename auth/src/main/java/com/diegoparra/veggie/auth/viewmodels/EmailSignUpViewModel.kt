@@ -1,12 +1,12 @@
 package com.diegoparra.veggie.auth.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.auth.utils.AuthFailure
-import com.diegoparra.veggie.auth.utils.Fields
 import com.diegoparra.veggie.auth.usecases.auth.EmailSignUpUseCase
 import com.diegoparra.veggie.core.kotlin.Event
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure.Companion.Field
 import com.diegoparra.veggie.core.kotlin.toResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -83,16 +83,16 @@ class EmailSignUpViewModel @Inject constructor(
         Timber.d("handleFailure() called with: failure = $failure")
         _loading.value = false
         when(failure) {
-            is AuthFailure.ValidationFailures -> failure.failures.forEach { handleFailure(it) }
-            is AuthFailure.WrongInput -> handleInputFailure(failure)
+            is InputFailure.InputFailuresList -> failure.failures.forEach { handleInputFailure(it) }
+            is InputFailure -> handleInputFailure(failure)
             else -> _toastFailure.value = Event(failure)
         }
     }
 
-    private fun handleInputFailure(failure: AuthFailure.WrongInput) {
+    private fun handleInputFailure(failure: InputFailure) {
         when (failure.field) {
-            Fields.PASSWORD -> _password.value = Resource.Error(failure)
-            Fields.NAME -> _name.value = Resource.Error(failure)
+            Field.PASSWORD -> _password.value = Resource.Error(failure)
+            Field.NAME -> _name.value = Resource.Error(failure)
             else -> _toastFailure.value = Event(failure)
         }
     }

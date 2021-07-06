@@ -4,7 +4,9 @@ import androidx.lifecycle.*
 import com.diegoparra.veggie.auth.usecases.auth.ValidateEmailAuthUseCase
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.core.kotlin.Event
+import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure
 import com.diegoparra.veggie.core.kotlin.toResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +25,8 @@ class EmailViewModel @Inject constructor(
     private val _loading = MutableLiveData<Boolean>(false)
     val loading: LiveData<Boolean> = _loading
 
-    private val _toastFailure = MutableLiveData<Event<AuthFailure>>()
-    val toastFailure: LiveData<Event<AuthFailure>> = _toastFailure
+    private val _toastFailure = MutableLiveData<Event<Failure>>()
+    val toastFailure: LiveData<Event<Failure>> = _toastFailure
 
     val btnContinueEnabled: LiveData<Boolean> =
         _email.map { it is Resource.Success }.asLiveData()
@@ -53,10 +55,10 @@ class EmailViewModel @Inject constructor(
         _navigateSuccess.value = Event(emailAuthMethod)
     }
 
-    private fun handleFailure(failure: AuthFailure) {
+    private fun handleFailure(failure: Failure) {
         _loading.value = false
         when(failure) {
-            is AuthFailure.WrongInput -> _email.value = Resource.Error(failure)
+            is InputFailure -> _email.value = Resource.Error(failure)
             else -> _toastFailure.value = Event(failure)
         }
     }

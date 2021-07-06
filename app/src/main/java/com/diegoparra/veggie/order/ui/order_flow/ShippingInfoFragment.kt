@@ -10,13 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.auth.ui_utils.getDefaultErrorMessage
 import com.diegoparra.veggie.auth.utils.AuthConstants
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.core.android.getColorFromAttr
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure.Companion.Field
 import com.diegoparra.veggie.core.kotlin.runIfTrue
 import com.diegoparra.veggie.databinding.FragmentShippingInfoBinding
 import com.diegoparra.veggie.order.domain.DeliverySchedule
@@ -75,7 +76,10 @@ class ShippingInfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentShippingInfoBinding.inflate(inflater, container, false)
-        titleDeliveryDateTime = DeliveryScheduleTitle(title = binding.titleDeliveryDateTime, errorView = binding.errorDeliveryDateTime)
+        titleDeliveryDateTime = DeliveryScheduleTitle(
+            title = binding.titleDeliveryDateTime,
+            errorView = binding.errorDeliveryDateTime
+        )
         return binding.root
     }
 
@@ -123,12 +127,12 @@ class ShippingInfoFragment : Fragment() {
 
     private fun subscribeUi() {
         viewModel.isSignedIn.observe(viewLifecycleOwner, EventObserver {
-            if(!it){
+            if (!it) {
                 findNavController().navigate(ShippingInfoFragmentDirections.actionShippingInfoFragmentToNavSignIn())
             }
         })
         viewModel.failure.observe(viewLifecycleOwner, EventObserver {
-            when(it) {
+            when (it) {
                 is AuthFailure.SignInState -> {
                     // Do nothing it has already be handled in isSignedIn observer
                     //  It is important to don't try to navigate from here, as it could be triggered
@@ -173,7 +177,8 @@ class ShippingInfoFragment : Fragment() {
     }
 
     private fun navigateSuccess() {
-        val action = ShippingInfoFragmentDirections.actionShippingInfoFragmentToOrderSummaryFragment()
+        val action =
+            ShippingInfoFragmentDirections.actionShippingInfoFragmentToOrderSummaryFragment()
         findNavController().navigate(action)
     }
 
@@ -181,18 +186,23 @@ class ShippingInfoFragment : Fragment() {
         binding.nestedScrollView?.scrollTo(0, 0)
         binding.phoneNumberLayout.isEndIconVisible = false
         failures.forEach {
-            if (it is AuthFailure.WrongInput.Empty) {
+            if (it is InputFailure.Empty) {
                 when (it.field) {
-                    OrderViewModel.PHONE_NUMBER -> binding.phoneNumberLayout.setAndExpandError(
+                    Field.PHONE_NUMBER -> binding.phoneNumberLayout.setAndExpandError(
                         getString(R.string.failure_no_selected_phone_number)
                     )
-                    OrderViewModel.ADDRESS -> binding.addressLayout.setAndExpandError(getString(R.string.failure_no_selected_address))
-                    OrderViewModel.DELIVERY_DATE_TIME -> titleDeliveryDateTime.setAndExpandError(getString(R.string.failure_no_selected_address))
+                    Field.ADDRESS -> binding.addressLayout.setAndExpandError(
+                        getString(R.string.failure_no_selected_address)
+                    )
+                    is Field.OTHER -> titleDeliveryDateTime.setAndExpandError(
+                        getString(R.string.failure_no_selected_date)
+                    )
+                    else -> Timber.e("Not handle case when field is ${it.field}")
                 }
             } else {
                 Snackbar.make(
                     binding.root,
-                    if (it is AuthFailure) it.getDefaultErrorMessage(binding.root.context) else it.toString(),
+                    it.getContextMessage(binding.root.context),
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
@@ -224,20 +234,24 @@ private class DeliveryScheduleTitle(private val title: TextView, private val err
     private val context get() = title.context
     private val originalColor = title.currentTextColor
     private val errorColor = context.getColorFromAttr(R.attr.colorError)
-    init { errorView.setTextColor(errorColor) }
+
+    init {
+        errorView.setTextColor(errorColor)
+    }
 
     fun setAndExpandError(error: String?) {
         errorView.text = error
         setErrorUi(error != null)
     }
+
     private fun setErrorUi(error: Boolean) {
-        if(errorUiState == error){
+        if (errorUiState == error) {
             return
         }
-        if(error) {
+        if (error) {
             errorView.isVisible = true
             title.setTextColor(errorColor)
-        }else {
+        } else {
             errorView.isVisible = false
             title.setTextColor(originalColor)
         }

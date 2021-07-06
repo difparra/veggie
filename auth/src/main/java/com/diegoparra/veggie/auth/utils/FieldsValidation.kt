@@ -4,6 +4,7 @@ import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.validateEmail
 import timber.log.Timber
 
+/*
 object Fields {
     const val EMAIL = "email"
     const val PASSWORD = "password"
@@ -84,4 +85,4 @@ object TextInputValidation {
         }
     }
 
-}
+}*/

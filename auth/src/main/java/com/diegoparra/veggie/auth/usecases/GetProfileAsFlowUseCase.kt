@@ -5,6 +5,7 @@ import com.diegoparra.veggie.core.kotlin.map
 import com.diegoparra.veggie.auth.domain.AuthRepository
 import com.diegoparra.veggie.auth.domain.Profile
 import com.diegoparra.veggie.auth.utils.AuthFailure
+import com.diegoparra.veggie.core.kotlin.Failure
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -18,7 +19,7 @@ class GetProfileAsFlowUseCase @Inject constructor(
     //  it should be only visible in domain layer and only when necessary
     private val profile = authRepository.getProfileAsFlow()
 
-    operator fun invoke(): Flow<Either<AuthFailure, Profile>> {
+    operator fun invoke(): Flow<Either<Failure, Profile>> {
         return profile
     }
 

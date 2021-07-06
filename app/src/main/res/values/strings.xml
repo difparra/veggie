@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Veggie</string>
-
     <string name="no_internet_connection">-- Sin conexión a internet --</string>
-
 
     <!-- Auth -->
     <!-- Facebook -->
@@ -18,26 +16,34 @@
     <string name="menu_user">Usuario</string>
     <string name="menu_support">Soporte</string>
 
-    <!-- Dialog messages -->
-    <string name="dialog_clear_cart">¿Vaciar carrito?</string>
 
-    <!-- Cart -->
-    <string name="btn_make_order">Hacer pedido</string>
-    <string name="total_empty_cart">Tu carrito está vacío</string>
-    <string name="total_x_to_complete_min_order">Te faltan %s para el pedido mínimo</string>
-    <string name="total_order">Vas %s</string>
 
+
+    <!-- ............................       HOME        ............................    -->
     <!-- Labels -->
     <string name="label_no_stock">Agotado</string>
     <string name="label_discounted">%s Off</string>     <!-- use percentage sign in the string %s as app will
                                                         crash if used here as \% or simply % because of the formats -->
+    <!-- Search -->
+    <string name="empty_search_query">Ingresa un valor en la barra de búsqueda.</string>
+    <string name="no_search_results">No hay productos que coincidan con tu búsqueda.</string>
 
 
-    <!-- User -->
-    <!--<string name="user_profile">Mi cuenta</string>  - In auth module-->
+
+    <!-- ............................       CART        ............................    -->
+    <string name="empty_cart_list">Tu carrito está vacío</string>
+    <string name="btn_make_order">Hacer pedido</string>
+    <string name="total_x_to_complete_min_order">Te faltan %s para el pedido mínimo</string>
+    <string name="dialog_clear_cart">¿Vaciar carrito?</string>
+
+
+    <!-- ............................       USER        ............................    -->
+
+    <!-- User menu -->
+    <!--<string name="user_profile">Mi cuenta</string>          Already in auth module -->
+    <!--<string name="user_sign_out">Cerrar sesión</string>     Already in auth module -->
     <string name="user_orders">Pedidos</string>
     <string name="user_addresses">Direcciones</string>
-    <string name="user_sign_out">Cerrar sesión</string>
 
     <!-- address strings -->
     <string name="address">Dirección</string>
@@ -52,7 +58,11 @@
     <string name="address_actions_dialog_check_address">Marcar como principal</string>
     <string name="address_actions_dialog_delete_address">Eliminar</string>
 
-    <!-- Orders user -->
+
+
+    <!-- ............................       ORDERS        ............................    -->
+
+    <!-- Orders - User -->
     <string name="order_no">Pedido No. %s</string>
     <string name="no_orders_yet">Aún no has realizado pedidos.</string>
 
@@ -69,25 +79,19 @@
     <string name="payment_method_card">Tarjeta</string>
     <string name="payment_method_other">Otro</string>
 
-
-
     <string name="delivery_programmed_for">Entrega programada:</string>
 
 
-
-
-    <!-- Order flow in cart -->
+    <!-- Orders - Order flow in cart -->
     <string name="shipping_info">Datos de envío</string>
     <string name="schedule_your_delivery">Fecha y hora de entrega</string>
-    <!-- Show to add address or phoneNumber in order flow -->
-    <string name="add">Agregar…</string>
 
     <string name="order_summary">Resumen de orden</string>
     <string name="contact_data">Datos de contacto</string>
     <string name="shipping_data">Datos de envío</string>
     <string name="payment_data">Método de pago</string>
     <string name="payment_cash">Efectivo, contraentrega</string>
-    <string name="summary">Resumen</string>
+
     <string name="products_summary_btn">Ver productos >></string>
     <string name="subtotal">Subtotal</string>
     <string name="delivery_fee">Domicilio</string>
@@ -105,16 +109,14 @@
 
 
 
+
+    <!-- ............................       FAILURES        ............................    -->
+
     <!-- Failures strings -->
-    <string name="failure_generic">Ha ocurrido un error.</string>
+    <string name="failure_generic">Ha ocurrido un error. Intenta de nuevo más tarde.</string>
 
     <!-- Products -->
-    <string name="failure_no_tags">Ha ocurrido un error. Intenta de nuevo más tarde.</string>
     <string name="failure_no_products_for_tag">No hay productos para mostrar. Intenta en otra categoría.</string>
-    <string name="failure_no_variations_found">Ha ocurrido un error. Intenta de nuevo más tarde.</string> <!-- Should never occur -->
-    <string name="failure_empty_search_query">Ingresa un valor en la barra de búsqueda.</string>
-    <string name="failure_no_search_result">No hay productos que coincidan con tu búsqueda.</string>
-    <string name="failure_empty_cart_list">El carrito está vacío.</string>
 
     <!-- OrderFlow -->
     <string name="failure_no_selected_phone_number">Debes agregar un teléfono para continuar.</string>

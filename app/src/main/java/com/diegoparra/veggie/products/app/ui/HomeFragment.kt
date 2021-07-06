@@ -15,6 +15,7 @@ import com.diegoparra.veggie.products.domain.Tag
 import com.diegoparra.veggie.products.app.viewmodels.TagsViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -62,7 +63,8 @@ class HomeFragment : Fragment() {
     private fun renderTags(tags: List<Tag>) {
         //  Dealing with empty list
         if (tags.isEmpty()) {
-            binding.errorText.text = getString(R.string.failure_no_tags)
+            Timber.wtf("Tags list is empty")
+            binding.errorText.text = getString(R.string.failure_generic)
             binding.errorText.isVisible = true
         }
 

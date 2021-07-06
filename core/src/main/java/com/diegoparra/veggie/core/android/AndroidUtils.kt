@@ -3,7 +3,13 @@ package com.diegoparra.veggie.core.android
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.TextView
+import com.diegoparra.veggie.core.kotlin.Resource
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import timber.log.Timber
 
 /**
@@ -57,4 +63,28 @@ fun SpannableStringBuilder.appendMultipleSpans(
         setSpan(style, start, this.length, flags)
     }
     return this
+}
+
+/**
+ * Display or blank error depending on resource type (success or error)
+ */
+fun TextInputLayout.setErrorMessageFromResource(resource: Resource<*>){
+    error = when (resource) {
+        is Resource.Success -> null
+        is Resource.Error -> resource.failure.getContextMessage(this.context)
+        else -> null
+    }
+}
+
+/**
+ * Call btnContinue listener when done is pressed on this TextInputEditText
+ */
+fun TextInputEditText.setOnEnterListener(btnContinue: Button) {
+    this.setOnEditorActionListener { v, actionId, event ->
+        if(actionId == EditorInfo.IME_ACTION_DONE) {
+            btnContinue.callOnClick()
+            return@setOnEditorActionListener true
+        }
+        false
+    }
 }

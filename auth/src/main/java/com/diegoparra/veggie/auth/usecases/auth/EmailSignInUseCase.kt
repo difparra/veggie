@@ -3,10 +3,11 @@ package com.diegoparra.veggie.auth.usecases.auth
 import com.diegoparra.veggie.auth.domain.*
 import com.diegoparra.veggie.auth.usecases.utils.EmailCollisionValidation
 import com.diegoparra.veggie.auth.utils.AuthCallbacks
-import com.diegoparra.veggie.auth.utils.AuthFailure
-import com.diegoparra.veggie.auth.utils.Fields
-import com.diegoparra.veggie.auth.utils.TextInputValidation
 import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.core.kotlin.input_validation.TextInputValidation
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure
+import com.diegoparra.veggie.core.kotlin.onFailure
 import javax.inject.Inject
 
 class EmailSignInUseCase @Inject constructor(
@@ -21,40 +22,37 @@ class EmailSignInUseCase @Inject constructor(
         val password: String
     )
 
-    override suspend fun validate(params: Params): Either<AuthFailure.ValidationFailures, Unit> {
-        val validationFailures = mutableSetOf<AuthFailure>()
+    override suspend fun validate(params: Params): Either<InputFailure.InputFailuresList, Unit> {
+        val validationFailures = mutableSetOf<InputFailure>()
 
-        val emailInputValidation = validateEmailInput(params.email)
-        if (emailInputValidation is Either.Left) {
-            validationFailures.add(emailInputValidation.a)
-        } else {
-            val emailCollisionValidation = validateNotEmailCollision(params.email)
-            if (emailCollisionValidation is Either.Left) {
-                validationFailures.add(emailCollisionValidation.a)
-            }
+        validateEmailInput(params.email).onFailure {
+            validationFailures.add(it)
         }
-
-        val passwordInputValidation = validatePasswordInput(params.password)
-        if (passwordInputValidation is Either.Left) {
-            validationFailures.add(passwordInputValidation.a)
+        validatePasswordInput(params.password).onFailure {
+            validationFailures.add(it)
         }
 
         return if (validationFailures.isEmpty()) {
             Either.Right(Unit)
         } else {
-            Either.Left(AuthFailure.ValidationFailures(validationFailures))
+            Either.Left(InputFailure.InputFailuresList(validationFailures))
         }
     }
 
-    private fun validateEmailInput(email: String): Either<AuthFailure.WrongInput, String> =
+    private fun validateEmailInput(email: String): Either<InputFailure, String> =
         TextInputValidation.forEmail(email)
 
     fun validatePasswordInput(password: String) =
-        TextInputValidation.validateNotEmpty(str = password, field = Fields.PASSWORD)
+        TextInputValidation.validateNotEmpty(
+            str = password,
+            field = InputFailure.Companion.Field.PASSWORD
+        )
 
-    private suspend fun validateNotEmailCollision(email: String): Either<AuthFailure, Unit> {
+
+    override suspend fun additionalValidations(params: Params): Either<Failure, Unit> {
+        //  Validate not email collision
         return emailCollisionValidation.isValidForSignIn(
-            email = email,
+            email = params.email,
             signInMethod = SignInMethod.EMAIL
         )
     }
@@ -62,7 +60,7 @@ class EmailSignInUseCase @Inject constructor(
 
     //      ----------------------------------------------------------------------------------------
 
-    override suspend fun authenticate(params: Params): Either<AuthFailure, AuthResults> {
+    override suspend fun authenticate(params: Params): Either<Failure, AuthResults> {
         return authRepository.signInWithEmailAndPassword(params.email, params.password)
     }
 

@@ -107,9 +107,9 @@ class SearchFragment : Fragment() {
         if (productsList.isEmpty()) {
             Timber.d("Products list search results is empty")
             binding.textNoSearchResults.text = if (binding.searchQuery.text.isNullOrEmpty()) {
-                getString(R.string.failure_empty_search_query)
+                getString(R.string.empty_search_query)
             } else {
-                getString(R.string.failure_no_search_result)
+                getString(R.string.no_search_results)
             }
             binding.layoutNoSearchResults.isVisible = true
         }

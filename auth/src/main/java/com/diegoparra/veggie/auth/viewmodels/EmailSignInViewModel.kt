@@ -4,8 +4,9 @@ import androidx.lifecycle.*
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.auth.usecases.auth.SendPasswordResetEmailUseCase
 import com.diegoparra.veggie.auth.usecases.auth.EmailSignInUseCase
-import com.diegoparra.veggie.auth.utils.Fields
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure.Companion.Field
 import com.diegoparra.veggie.core.kotlin.*
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -77,15 +78,15 @@ class EmailSignInViewModel @Inject constructor(
     private fun handleFailure(failure: Failure) {
         _loading.value = false
         when(failure) {
-            is AuthFailure.ValidationFailures -> failure.failures.forEach { handleFailure(it) }
-            is AuthFailure.WrongInput -> handleInputFailure(failure)
+            is InputFailure.InputFailuresList -> failure.failures.forEach { handleInputFailure(it) }
+            is InputFailure -> handleInputFailure(failure)
             else -> _toastFailure.value = Event(failure)
         }
     }
 
-    private fun handleInputFailure(failure: AuthFailure.WrongInput) {
+    private fun handleInputFailure(failure: InputFailure) {
         when (failure.field) {
-            Fields.PASSWORD -> _password.value = Resource.Error(failure)
+            Field.PASSWORD -> _password.value = Resource.Error(failure)
             else -> _toastFailure.value = Event(failure)
         }
     }

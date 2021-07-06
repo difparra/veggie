@@ -10,8 +10,6 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.diegoparra.veggie.auth.R
-import com.diegoparra.veggie.auth.additional_features.phone_number.ui.PhoneNumberViewModel
-import com.diegoparra.veggie.auth.additional_features.phone_number.ui.PhoneResultNavigation
 import com.diegoparra.veggie.auth.databinding.FragmentPhoneNumberVerifySmsCodeBinding
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.core.android.EventObserver
@@ -61,15 +59,18 @@ class PhoneNumberVerifySmsCodeFragment : Fragment() {
             binding.progressBar.isVisible = it
         }
         viewModel.failure.observe(viewLifecycleOwner, EventObserver {
-            val message = when(it) {
-                is AuthFailure.PhoneAuthFailures.InvalidSmsCode -> getString(R.string.failure_incorrect_field_m, getString(R.string.sms_code))
-                is AuthFailure.PhoneAuthFailures.ExpiredSmsCode -> getString(R.string.failure_code_has_expired)
-                else -> it.toString()
-            }
-            Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+            //  Default phoneAuthFailures messages with string resources defined in AuthFailure can be used.
+            Snackbar.make(
+                binding.root,
+                it.getContextMessage(binding.root.context),
+                Snackbar.LENGTH_SHORT
+            ).show()
         })
         viewModel.navigateSuccess.observe(viewLifecycleOwner, EventObserver {
-            PhoneResultNavigation.setResultAndNavigate(navController = findNavController(), result = it)
+            PhoneResultNavigation.setResultAndNavigate(
+                navController = findNavController(),
+                result = it
+            )
         })
         viewModel.codeSent.observe(viewLifecycleOwner, EventObserver {
             Snackbar.make(binding.root, R.string.code_has_been_resent, Snackbar.LENGTH_SHORT).show()

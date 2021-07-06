@@ -71,7 +71,10 @@ class PhoneNumberAddFragment : Fragment() {
             findNavController().navigate(action)
         })
         viewModel.navigateSuccess.observe(viewLifecycleOwner, EventObserver {
-            PhoneResultNavigation.setResultAndNavigate(navController = findNavController(), result = it)
+            PhoneResultNavigation.setResultAndNavigate(
+                navController = findNavController(),
+                result = it
+            )
         })
     }
 
@@ -80,13 +83,12 @@ class PhoneNumberAddFragment : Fragment() {
             binding.progressBar.isVisible = it
         }
         viewModel.failure.observe(viewLifecycleOwner, EventObserver {
-            val message = when (it) {
-                is AuthFailure.PhoneAuthFailures.InvalidRequest -> getString(R.string.failure_invalid_request_phone_number)
-                is AuthFailure.PhoneAuthFailures.TooManyRequests -> getString(R.string.failure_too_many_requests)
-                is AuthFailure.WrongInput -> getString(R.string.failure_invalid_request_phone_number)
-                else -> it.toString()
-            }
-            Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+            //  I can use the default messages (got from context) for AuthPhoneFailures.
+            Snackbar.make(
+                binding.root,
+                it.getContextMessage(binding.root.context),
+                Snackbar.LENGTH_SHORT
+            ).show()
         })
     }
 

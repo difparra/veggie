@@ -82,7 +82,7 @@ class ProductDetailsFragment : BottomSheetDialogFragment() {
         //  Dealing with empty list
         if (variationsList.isEmpty()) {
             Timber.wtf("Got empty list in variations after selecting a main product.")
-            binding.errorText.text = getString(R.string.failure_no_variations_found)
+            binding.errorText.text = getString(R.string.failure_generic)
             binding.errorText.isVisible = true
         }
         adapter.submitVariationsList(variationsList)

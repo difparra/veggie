@@ -1,9 +1,9 @@
 package com.diegoparra.veggie.user.address.usecases
 
 import com.diegoparra.veggie.auth.domain.AuthRepository
-import com.diegoparra.veggie.auth.utils.AuthFailure
-import com.diegoparra.veggie.auth.utils.TextInputValidation
 import com.diegoparra.veggie.core.kotlin.*
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure
+import com.diegoparra.veggie.core.kotlin.input_validation.TextInputValidation
 import com.diegoparra.veggie.user.address.domain.Address
 import com.diegoparra.veggie.user.address.domain.AddressRepository
 import javax.inject.Inject
@@ -27,7 +27,7 @@ class SaveAddressUseCase @Inject constructor(
             .map { selectNewAddressAsMain(it.id) }
     }
 
-    private fun validateAddress(address: String): Either<AuthFailure.WrongInput, String> {
+    private fun validateAddress(address: String): Either<InputFailure, String> {
         return TextInputValidation.forAddress(address)
     }
 

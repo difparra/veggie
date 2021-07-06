@@ -6,6 +6,8 @@ import com.diegoparra.veggie.auth.data.AuthTransformations.fromSignInMethod
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.auth.domain.SignInMethod
 import com.diegoparra.veggie.core.kotlin.Either
+import com.diegoparra.veggie.core.kotlin.Failure
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import kotlinx.coroutines.channels.awaitClose
@@ -42,7 +44,7 @@ class AuthApi @Inject constructor(
 
     suspend fun updateProfile(
         name: String? = null, photoUrl: Uri? = null
-    ): Either<AuthFailure, Unit> {
+    ): Either<Failure, Unit> {
         if (name == null && photoUrl == null) {
             Timber.w("Nothing updated. Name and photoUrl are null or forceUpdates were false.")
             return Either.Right(Unit)
@@ -64,13 +66,16 @@ class AuthApi @Inject constructor(
             Timber.e("Exception class=${e1.javaClass}, message=${e1.message}")
             //  Email does not exists or has been disabled
             Either.Left(e1.toFailure(null))
+        } catch (e2: FirebaseNetworkException) {
+            Timber.e("Exception class=${e2.javaClass}, message=${e2.message}")
+            Either.Left(Failure.NetworkConnection)
         } catch (e: Exception) {
             Timber.e("Exception class=${e.javaClass}, message=${e.message}")
-            Either.Left(AuthFailure.ServerError(e))
+            Either.Left(Failure.ServerError(e))
         }
     }
 
-    suspend fun updatePhoneNumber(credential: PhoneAuthCredential): Either<AuthFailure, Unit> {
+    suspend fun updatePhoneNumber(credential: PhoneAuthCredential): Either<Failure, Unit> {
         return try {
             auth.currentUser
                 ?.updatePhoneNumber(credential)
@@ -85,19 +90,22 @@ class AuthApi @Inject constructor(
                 } else if (message.contains("expired", ignoreCase = true)) {
                     Either.Left(AuthFailure.PhoneAuthFailures.ExpiredSmsCode)
                 } else {
-                    Either.Left(AuthFailure.ServerError(e1))
+                    Either.Left(Failure.ServerError(e1))
                 }
             } else {
-                Either.Left(AuthFailure.ServerError(e1))
+                Either.Left(Failure.ServerError(e1))
             }
+        } catch (e2: FirebaseNetworkException) {
+            Timber.e("Exception class=${e2.javaClass}, message=${e2.message}")
+            Either.Left(Failure.NetworkConnection)
         } catch (e: Exception) {
             Timber.e("Exception class=${e.javaClass}, message=${e.message}")
-            Either.Left(AuthFailure.ServerError(e))
+            Either.Left(Failure.ServerError(e))
         }
 
     }
 
-    suspend fun getSignInMethodsForEmail(email: String): Either<AuthFailure, List<SignInMethod>> {
+    suspend fun getSignInMethodsForEmail(email: String): Either<Failure, List<SignInMethod>> {
         return try {
             val result = auth.fetchSignInMethodsForEmail(email).await()
             Timber.d("email: $email - signInMethods = ${result.signInMethods}")
@@ -108,9 +116,12 @@ class AuthApi @Inject constructor(
         } catch (e1: FirebaseAuthInvalidCredentialsException) {
             Timber.e("Exception class=${e1.javaClass}, message=${e1.message}")
             Either.Left(e1.toFailure(email = email))
+        } catch (e2: FirebaseNetworkException) {
+            Timber.e("Exception class=${e2.javaClass}, message=${e2.message}")
+            Either.Left(Failure.NetworkConnection)
         } catch (e: Exception) {
             Timber.e("Exception class=${e.javaClass}, message=${e.message}")
-            Either.Left(AuthFailure.ServerError(e))
+            Either.Left(Failure.ServerError(e))
         }
     }
 
@@ -119,7 +130,7 @@ class AuthApi @Inject constructor(
 
     suspend fun createUserWithEmailAndPassword(
         email: String, password: String
-    ): Either<AuthFailure, AuthResult> {
+    ): Either<Failure, AuthResult> {
         return try {
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             Either.Right(result)
@@ -131,20 +142,19 @@ class AuthApi @Inject constructor(
             Timber.e("Exception class=${e2.javaClass}, message=${e2.message}")
             //  Email address is malformed
             Either.Left(e2.toFailure(email = email))
-        } catch (e3: FirebaseAuthUserCollisionException) {
+        } catch (e3: FirebaseNetworkException) {
             Timber.e("Exception class=${e3.javaClass}, message=${e3.message}")
-            //  Already exists an account with the given email address
-            Either.Left(e3.toFailure(SignInMethod.EMAIL, getSignInMethodsForEmail(e3.email!!)))
+            Either.Left(Failure.NetworkConnection)
         } catch (e: Exception) {
             Timber.e("Exception class=${e.javaClass}, message=${e.message}")
-            Either.Left(AuthFailure.ServerError(e))
+            Either.Left(Failure.ServerError(e))
         }
     }
 
     suspend fun signInWithEmailAndPassword(
         email: String,
         password: String
-    ): Either<AuthFailure, AuthResult> {
+    ): Either<Failure, AuthResult> {
         return try {
             //  Equivalent to call signInWithCredential with an EmailAuthCredential generated by EmailAuthProvider.getCredential(String, String)
             val result = auth.signInWithEmailAndPassword(email, password).await()
@@ -161,26 +171,32 @@ class AuthApi @Inject constructor(
             Timber.e("Exception class=${e3.javaClass}, message=${e3.message}")
             //  If there already exists an account with the email address
             Either.Left(e3.toFailure(SignInMethod.EMAIL, getSignInMethodsForEmail(e3.email!!)))
+        } catch (e4: FirebaseNetworkException) {
+            Timber.e("Exception class=${e4.javaClass}, message=${e4.message}")
+            Either.Left(Failure.NetworkConnection)
         } catch (e: Exception) {
             Timber.e("Exception class=${e.javaClass}, message=${e.message}")
-            Either.Left(AuthFailure.ServerError(e))
+            Either.Left(Failure.ServerError(e))
         }
     }
 
-    suspend fun resetPassword(email: String): Either<AuthFailure, Unit> {
+    suspend fun resetPassword(email: String): Either<Failure, Unit> {
         return try {
             auth.sendPasswordResetEmail(email).await()
             Either.Right(Unit)
+        } catch (e1: FirebaseNetworkException) {
+            Timber.e("Exception class=${e1.javaClass}, message=${e1.message}")
+            Either.Left(Failure.NetworkConnection)
         } catch (e: Exception) {
             Timber.e("Exception class=${e.javaClass}, message=${e.message}")
-            Either.Left(AuthFailure.ServerError(e))
+            Either.Left(Failure.ServerError(e))
         }
     }
 
 
     //      ----------      SIGNIN/UP GOOGLE & FACEBOOK       --------------------------------------
 
-    suspend fun signInWithCredential(credential: AuthCredential): Either<AuthFailure, AuthResult> {
+    suspend fun signInWithCredential(credential: AuthCredential): Either<Failure, AuthResult> {
         return try {
             val result = auth.signInWithCredential(credential).await()
             Either.Right(result)
@@ -196,9 +212,12 @@ class AuthApi @Inject constructor(
             Timber.e("Exception class=${e3.javaClass}, message=${e3.message}")
             //  If there already exists an account with the email address asserted by the credential
             Either.Left(e3.toFailure(SignInMethod.EMAIL, getSignInMethodsForEmail(e3.email!!)))
+        } catch (e4: FirebaseNetworkException) {
+            Timber.e("Exception class=${e4.javaClass}, message=${e4.message}")
+            Either.Left(Failure.NetworkConnection)
         } catch (e: Exception) {
             Timber.e("Exception class=${e.javaClass}, message=${e.message}")
-            Either.Left(AuthFailure.ServerError(e))
+            Either.Left(Failure.ServerError(e))
         }
     }
 

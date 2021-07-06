@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.auth.ui_utils
+package com.diegoparra.veggie.auth.utils
 
 import com.diegoparra.veggie.auth.R
 import com.diegoparra.veggie.auth.utils.AuthConstants

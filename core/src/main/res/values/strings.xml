@@ -11,4 +11,34 @@
     <string name="understood">Entendido</string>
     <string name="try_again">Reintentar</string>
     <string name="returnn">Volver</string>
+    <string name="verify">Verificar</string>
+    <string name="add">Agregar</string>
+    <string name="summary">Resumen</string>
+
+
+
+    <!-- Failures -->
+    <string name="failure_network_connection">No puedes realizar esta operación sin conexión a internet</string>
+
+
+    <!-- Fields -->
+    <string name="name">Nombre</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="phone_number">Teléfono</string>
+    <string name="address">Dirección</string>
+
+    <!-- WrongInput -->
+    <string name="failure_empty_field">Campo vacío.</string>
+    <string name="failure_short_field_m">El %1$s debe tener al menos %2$d caracteres.</string>
+    <string name="failure_short_field_f">La %1$s debe tener al menos %2$d caracteres.</string>
+    <string name="failure_invalid_field_m">Por favor ingresa un %s válido.</string>
+    <string name="failure_invalid_field_f">Por favor ingresa una %s válida.</string>
+    <string name="failure_incorrect_field_m">El %s es incorrecto.</string>
+    <string name="failure_incorrect_field_f">La %s es incorrecta.</string>
+
+
+
+
+
 </resources>

@@ -203,7 +203,7 @@ private class WarningLabel(
     private var isInternetAvailable: Boolean? = null
 
     private val context get() = textView.context
-    private val stringEmpty = context.getString(R.string.total_empty_cart)
+    private val stringEmpty = context.getString(R.string.empty_cart_list)
     private val colorError = context.getColorFromAttr(R.attr.colorError)
     private val colorOnError = context.getColorFromAttr(R.attr.colorOnError)
     private val colorWarning = context.getColorFromAttr(R.attr.colorWarning)

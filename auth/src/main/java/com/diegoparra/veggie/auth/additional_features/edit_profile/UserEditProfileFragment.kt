@@ -10,14 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diegoparra.veggie.auth.R
-import com.diegoparra.veggie.auth.utils.AuthFailure
-import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.android.EventObserver
 import com.diegoparra.veggie.core.kotlin.runIfTrue
 import com.diegoparra.veggie.auth.additional_features.phone_number.domain.PhoneConstants
 import com.diegoparra.veggie.auth.databinding.FragmentUserEditProfileBinding
-import com.diegoparra.veggie.auth.ui_utils.getDefaultErrorMessage
-import com.diegoparra.veggie.auth.ui_utils.handleAuthError
+import com.diegoparra.veggie.core.android.setErrorMessageFromResource
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -90,12 +87,7 @@ class UserEditProfileFragment : Fragment() {
 
     private fun subscribeUi() {
         viewModel.name.observe(viewLifecycleOwner) {
-            binding.nameLayout.handleAuthError(resource = it,
-                failureMessage = {
-                    Timber.e("Should not get a failure different from WrongInput")
-                    it.getDefaultErrorMessage(binding.nameLayout.context)
-                }
-            )
+            binding.nameLayout.setErrorMessageFromResource(resource = it)
         }
         viewModel.nameIsChanged.observe(viewLifecycleOwner) {
             binding.btnSave.isEnabled = it

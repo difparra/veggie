@@ -1,12 +1,14 @@
 package com.diegoparra.veggie.order.viewmodels
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.diegoparra.veggie.R
 import com.diegoparra.veggie.auth.usecases.GetProfileAsFlowUseCase
 import com.diegoparra.veggie.auth.utils.AuthFailure
 import com.diegoparra.veggie.core.kotlin.*
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure
+import com.diegoparra.veggie.core.kotlin.input_validation.InputFailure.Companion.Field
 import com.diegoparra.veggie.order.domain.*
 import com.diegoparra.veggie.order.usecases.GetDeliveryCostUseCase
 import com.diegoparra.veggie.order.usecases.GetDeliveryScheduleOptionsUseCase
@@ -180,12 +182,6 @@ class OrderViewModel @Inject constructor(
         )
 
 
-    companion object Fields {
-        const val ADDRESS = com.diegoparra.veggie.auth.utils.Fields.ADDRESS
-        const val PHONE_NUMBER = com.diegoparra.veggie.auth.utils.Fields.PHONE_NUMBER
-        const val DELIVERY_DATE_TIME = "deliveryDateTime"
-    }
-
     private fun validateShippingInfoComplete(
         userId: String?,
         phoneNumber: String?,
@@ -198,13 +194,13 @@ class OrderViewModel @Inject constructor(
         }
         val failures: MutableList<Failure> = mutableListOf()
         if (phoneNumber == null) {
-            failures.add(AuthFailure.WrongInput.Empty(field = PHONE_NUMBER, ""))
+            failures.add(InputFailure.Empty(field = Field.PHONE_NUMBER, ""))
         }
         if (address == null) {
-            failures.add(AuthFailure.WrongInput.Empty(field = ADDRESS, ""))
+            failures.add(InputFailure.Empty(field = Field.ADDRESS, ""))
         }
         if (deliverySchedule == null || deliveryCost == null) {
-            failures.add(AuthFailure.WrongInput.Empty(field = DELIVERY_DATE_TIME, ""))
+            failures.add(InputFailure.Empty(field = Field.OTHER("deliveryDateTime", R.string.schedule_your_delivery, true), ""))
         }
         if (failures.isNotEmpty()) {
             return Either.Left(failures)
