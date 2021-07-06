@@ -3,15 +3,12 @@ package com.diegoparra.veggie.order.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
-import com.diegoparra.veggie.core.internet_check.IsInternetAvailableUseCase
+import com.diegoparra.veggie.core.internet.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.kotlin.toResource
-import com.diegoparra.veggie.order.domain.Order
 import com.diegoparra.veggie.order.usecases.GetOrdersListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

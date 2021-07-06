@@ -16,19 +16,14 @@ class GetOrdersListUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        userId: String,
-        isInternetAvailable: Boolean
+        userId: String
     ): Either<Failure, List<Order>> {
-        val source = Source.getDefaultSourceForInternetAccessState(
-            isInternetAvailable,
-            TimeUnit.MINUTES.toMillis(5)
-        )
-        return orderRepository.getOrdersForUser(userId, source)
+        return orderRepository.getOrdersForUser(userId)
     }
 
     suspend fun forCurrentUser(isInternetAvailable: Boolean): Either<Failure, List<Order>> {
         return authRepository.getIdCurrentUser().flatMap {
-            invoke(userId = it, isInternetAvailable = isInternetAvailable)
+            invoke(userId = it)
         }
     }
 

@@ -1,8 +1,8 @@
-package com.diegoparra.veggie.core.utils_repo
+package com.diegoparra.veggie.core.internet
 
 import kotlinx.coroutines.flow.Flow
 
-interface UtilsRepository {
+interface CoreRepository {
 
     suspend fun setInternetAvailable(value: Boolean)
     fun isInternetAvailable(): Flow<Boolean?>

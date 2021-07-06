@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.app.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.internet_check.IsInternetAvailableUseCase
+import com.diegoparra.veggie.core.internet.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.kotlin.toResource
 import com.diegoparra.veggie.products.cart.domain.ProductId
@@ -31,7 +31,7 @@ class ProductDetailsViewModel @Inject constructor(
 
     val variationsList = _isInternetAvailable
         .flatMapLatest {
-            getVariationsUseCase(mainId, isInternetAvailable = it)
+            getVariationsUseCase(mainId)
                 .map { it.toResource() }
                 .onStart { emit(Resource.Loading()) }
         }

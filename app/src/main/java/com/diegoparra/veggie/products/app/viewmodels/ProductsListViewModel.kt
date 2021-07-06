@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.app.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.internet_check.IsInternetAvailableUseCase
+import com.diegoparra.veggie.core.internet.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.kotlin.toResource
 import com.diegoparra.veggie.products.app.usecases.GetMainProductsUseCase
@@ -22,10 +22,11 @@ class ProductsListViewModel @Inject constructor(
 
     private val _isInternetAvailable = isInternetAvailableUseCase()
 
+    //  Combine with isInternetAvailable so that list will be reloaded on internetAccess change.
     val productsList = _isInternetAvailable
         .flatMapLatest {
             Timber.d("isInternetAvailable = $it, Calling getMainProductsUseCase")
-            getMainProductsUseCase(GetMainProductsUseCase.Params.ForTag(tagId), isInternetAvailable = it)
+            getMainProductsUseCase(GetMainProductsUseCase.Params.ForTag(tagId))
                 .map { it.toResource() }
                 .onStart { emit(Resource.Loading()) }
         }

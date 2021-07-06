@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.app.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.internet_check.IsInternetAvailableUseCase
+import com.diegoparra.veggie.core.internet.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.kotlin.toResource
 import com.diegoparra.veggie.products.app.usecases.GetMainProductsUseCase
@@ -40,9 +40,11 @@ class SearchViewModel @Inject constructor(
 
     //      ---------------------------------------------------------------
 
+    //  Internet access is not really necessary, but should be included in combine flows, so that
+    //  list is reloaded on any internetAccess change.
     val productsList = _paramsPair
-        .flatMapLatest { (query, netAvailable) ->
-            getMainProductsUseCase(GetMainProductsUseCase.Params.ForSearch(query), netAvailable)
+        .flatMapLatest { (query, _) ->
+            getMainProductsUseCase(GetMainProductsUseCase.Params.ForSearch(query))
                 .map { it.toResource() }
                 .onStart { emit(Resource.Loading()) }
         }

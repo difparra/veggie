@@ -1,7 +1,7 @@
 package com.diegoparra.veggie.products.app.viewmodels
 
 import androidx.lifecycle.*
-import com.diegoparra.veggie.core.internet_check.IsInternetAvailableUseCase
+import com.diegoparra.veggie.core.internet.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
 import com.diegoparra.veggie.core.kotlin.map
@@ -39,10 +39,12 @@ class CartViewModel @Inject constructor(
      * The only way btnMakeOrder is enabled is when isInternetAvailable is true, and if it is true,
      * it means products has been recently collected (products will be reloaded on every change
      * of isInternetAvailable).
+     *
+     * Combine with isInternetAvailable, so products are reloaded when internet state has changed.
      */
     private val _products = _isInternetAvailable
         .flatMapLatest {
-            getCartProductsUseCase(isInternetAvailable = it)
+            getCartProductsUseCase()
                 .map { it.toResource() }
                 .onStart { emit(Resource.Loading()) }
         }

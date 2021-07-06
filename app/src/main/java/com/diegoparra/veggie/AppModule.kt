@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -34,7 +35,11 @@ object AppModule {
     @Singleton
     @Provides
     fun providesFirebaseDatabase(): FirebaseFirestore {
-        return Firebase.firestore
+        return Firebase.firestore.apply {
+            firestoreSettings = firestoreSettings {
+                isPersistenceEnabled = false
+            }
+        }
     }
 
     @Singleton

@@ -1,6 +1,7 @@
 package com.diegoparra.veggie.order.data
 
 import com.diegoparra.veggie.core.android.IoDispatcher
+import com.diegoparra.veggie.core.internet.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.order.data.DtoToEntityTransformations.toOrderUpdateEntity
 import com.diegoparra.veggie.order.data.firebase.OrderApi
@@ -16,6 +17,7 @@ import com.diegoparra.veggie.order.domain.OrderRepository
 import com.diegoparra.veggie.products.data.toTimestamp
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,6 +27,7 @@ class OrderRepositoryImpl @Inject constructor(
     private val orderApi: OrderApi,
     private val orderDao: OrderDao,
     private val orderPrefs: OrderPrefs,
+    private val isInternetAvailableUseCase: IsInternetAvailableUseCase,
     @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : OrderRepository {
 
@@ -60,7 +63,7 @@ class OrderRepositoryImpl @Inject constructor(
             orderApi.sendOrder(order.toOrderDto())
                 .onSuccess {
                     //  Call orders to be updated from server, as soon as some order is sent
-                    updateLocalOrdersIfExpired(Source.SERVER)
+                    updateLocalOrders()
                 }
         }
 
@@ -70,7 +73,7 @@ class OrderRepositoryImpl @Inject constructor(
         source: Source
     ): Either<Failure, List<Order>> =
         withContext(dispatcher) {
-            updateLocalOrdersIfExpired(source).onFailure {
+            updateLocalOrdersIfRequired(source).onFailure {
                 return@withContext Either.Left(it)
             }
             val localOrders = orderDao.getOrdersForUser(userId)
@@ -78,13 +81,18 @@ class OrderRepositoryImpl @Inject constructor(
         }
 
 
-    private suspend fun updateLocalOrdersIfExpired(source: Source): Either<Failure, Unit> {
-        val ordersUpdatedAt = orderPrefs.getOrdersUpdatedAt() ?: BasicTime(0)
-        return if (source.isDataExpired(ordersUpdatedAt)) {
-            Timber.d("Orders data is expired. Calling to update...")
-            updateLocalOrders().onSuccess { orderPrefs.saveOrdersUpdatedAt(BasicTime.now()) }
+    private suspend fun updateLocalOrdersIfRequired(source: Source): Either<Failure, Unit> {
+        val lastSuccessfulFetch = orderPrefs.getOrdersLastSuccessfulFetchAt() ?: BasicTime(0)
+        Timber.d("updateLocalOrdersIfRequired called with source = $source, lastSuccessfulFetch = $lastSuccessfulFetch")
+        return if (source.mustFetchFromServer(
+                lastSuccessfulFetch = lastSuccessfulFetch,
+                isInternetAvailable = isInternetAvailableUseCase.invoke().first()
+            )
+        ) {
+            Timber.d("Source says: Data must be collected from server. Updating data...")
+            updateLocalOrders()
         } else {
-            Timber.d("Orders data is up to date. Returning...")
+            Timber.d("Source says: Don't collect products from server. Possible reasons: There is no internet access, data is not expired, source was set as cache. Returning without failure...")
             Either.Right(Unit)
         }
     }
@@ -94,6 +102,10 @@ class OrderRepositoryImpl @Inject constructor(
         return orderApi.getOrdersUpdatedAfter(actualOrdersUpdatedAt.toTimestamp())
             .map {
                 orderDao.updateOrders(it.map { it.second.toOrderUpdateEntity(it.first) })
+            }
+            .onSuccess {
+                Timber.d("Fetch from firebase was successful and orders have been updated locally.")
+                orderPrefs.saveOrdersLastSuccessfulFetchAt(BasicTime.now())
             }
     }
 

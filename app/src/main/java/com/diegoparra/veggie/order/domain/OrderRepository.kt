@@ -16,6 +16,6 @@ interface OrderRepository {
 
     suspend fun sendOrder(order: Order): Either<Failure, String>
 
-    suspend fun getOrdersForUser(userId: String, source: Source): Either<Failure, List<Order>>
+    suspend fun getOrdersForUser(userId: String, source: Source = Source.DEFAULT(0)): Either<Failure, List<Order>>
 
 }

@@ -48,6 +48,9 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
 
+    //  To have single source for internet connectivity state
+    implementation "androidx.datastore:datastore-preferences:$dataStoreVersion"
+
     //  Navigation Helpers
     implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navVersion"

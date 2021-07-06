@@ -1,6 +1,7 @@
 package com.diegoparra.veggie.products.data
 
 import com.diegoparra.veggie.core.android.IoDispatcher
+import com.diegoparra.veggie.core.internet.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.*
 import com.diegoparra.veggie.products.data.firebase.ProductsApi
 import com.diegoparra.veggie.products.data.prefs.ProductPrefs
@@ -13,6 +14,7 @@ import com.diegoparra.veggie.products.data.DtoToEntityTransformations.getMainPro
 import com.diegoparra.veggie.products.data.DtoToEntityTransformations.toTagEntity
 import com.diegoparra.veggie.products.domain.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -21,6 +23,7 @@ class ProductsRepositoryImpl @Inject constructor(
     private val productsDao: ProductsDao,
     private val productsApi: ProductsApi,
     private val prefs: ProductPrefs,
+    private val isInternetAvailableUseCase: IsInternetAvailableUseCase,
     @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ProductsRepository {
 
@@ -31,11 +34,18 @@ class ProductsRepositoryImpl @Inject constructor(
 
     override suspend fun getTags(source: Source): Either<Failure, List<Tag>> =
         withContext(dispatcher) {
-            if (source.isDataExpired(prefs.getTagsUpdatedAt() ?: BasicTime(0))) {
+            if (source.mustFetchFromServer(
+                    lastSuccessfulFetch = prefs.getTagsFetchAt() ?: BasicTime(0),
+                    isInternetAvailable = isInternetAvailableUseCase.invoke().first()
+                )
+            ) {
                 productsApi.getTags()
                     .map {
                         productsDao.updateAllTags(tags = it.map { it.toTagEntity() })
-                        prefs.saveTagsUpdatedAt(BasicTime.now())
+                    }
+                    .onSuccess {
+                        Timber.d("Tags collected from server and updated locally.")
+                        prefs.saveTagsFetchAt(BasicTime.now())
                     }
                     .onFailure {
                         Timber.e("Error while fetching tags from server (remoteConfig). Failure=${it}")
@@ -56,7 +66,7 @@ class ProductsRepositoryImpl @Inject constructor(
         source: Source
     ): Either<Failure, List<Product>> = withContext(dispatcher) {
         Timber.d("getMainProductsByTagId called with tagId=$tagId, source=$source")
-        updateLocalProductsIfExpired(source).onFailure {
+        updateLocalProductsIfRequired(source).onFailure {
             Timber.d("getMainProductsByTagId - Failure while updatingProducts")
             return@withContext Either.Left(it)
         }
@@ -70,7 +80,7 @@ class ProductsRepositoryImpl @Inject constructor(
         query: String,
         source: Source
     ): Either<Failure, List<Product>> = withContext(dispatcher) {
-        updateLocalProductsIfExpired(source).onFailure {
+        updateLocalProductsIfRequired(source).onFailure {
             return@withContext Either.Left(it)
         }
         val localSearchResults = productsDao.searchMainProdByName(query)
@@ -81,7 +91,7 @@ class ProductsRepositoryImpl @Inject constructor(
         mainId: String,
         source: Source
     ): Either<Failure, List<VariationData>> = withContext(dispatcher) {
-        updateLocalProductsIfExpired(source).onFailure {
+        updateLocalProductsIfRequired(source).onFailure {
             return@withContext Either.Left(it)
         }
         val variationsLocal = productsDao.getProductVariationsByMainId(mainId)
@@ -97,7 +107,7 @@ class ProductsRepositoryImpl @Inject constructor(
         mainId: String, varId: String,
         source: Source
     ): Either<Failure, Product> = withContext(dispatcher) {
-        updateLocalProductsIfExpired(source).onFailure {
+        updateLocalProductsIfRequired(source).onFailure {
             return@withContext Either.Left(it)
         }
         val productLocal = productsDao.getProduct(mainId, varId)
@@ -116,16 +126,18 @@ class ProductsRepositoryImpl @Inject constructor(
             ----------------------------------------------------------------------------------------
      */
 
-    private suspend fun updateLocalProductsIfExpired(source: Source): Either<Failure, Unit> {
-        Timber.d("updateLocalProductsIfExpired called with source = $source")
-        val productsUpdatedAt = prefs.getProductsUpdatedAt() ?: BasicTime(0)
-        Timber.d("updateLocalProductsIfExpired - productsUpdatedAt = $productsUpdatedAt")
-        return if (source.isDataExpired(productsUpdatedAt)) {
-            Timber.d("updateLocalProductsIfExpired - Data is expired. Calling to update...")
+    private suspend fun updateLocalProductsIfRequired(source: Source): Either<Failure, Unit> {
+        val lastSuccessfulFetch = prefs.getProdsLastSuccessfulFetchAt() ?: BasicTime(0)
+        Timber.d("updateLocalProductsIfRequired called with source = $source, lastSuccessfulFetch = $lastSuccessfulFetch")
+        return if (source.mustFetchFromServer(
+                lastSuccessfulFetch = lastSuccessfulFetch,
+                isInternetAvailable = isInternetAvailableUseCase.invoke().first()
+            )
+        ) {
+            Timber.d("Source says: Data must be collected from server. Updating data...")
             updateLocalProducts()
-                    .onSuccess { prefs.saveProductsUpdatedAt(BasicTime.now()) }
         } else {
-            Timber.d("updateLocalProductsIfExpired - Data is updated. Returning...")
+            Timber.d("Source says: Don't collect products from server. Possible reasons: There is no internet access, data is not expired, source was set as cache. Returning without failure...")
             Either.Right(Unit)
         }
     }
@@ -140,17 +152,19 @@ class ProductsRepositoryImpl @Inject constructor(
     //  products immediately to display in app.
     private suspend fun updateLocalProducts(): Either<Failure, Unit> {
         //  Will get the last time a product was actually updated rather than the last time firebase was successfully called.
-        Timber.d("updateLocalProducts called!")
         val actualProductsUpdatedAt = BasicTime(productsDao.getLastProdUpdatedAtInMillis() ?: 0)
         Timber.d("updateLocalProducts - actualProductsUpdatedAt = $actualProductsUpdatedAt")
-        return productsApi.getProductsUpdatedAfter(actualProductsUpdatedAt.toTimestamp())
+        return productsApi
+            .getProductsUpdatedAfter(actualProductsUpdatedAt.toTimestamp())
             .map {
-                Timber.d("updateLocalProducts - Fetch from firebase was successfult. Products = $it")
                 productsDao.updateProducts(
                     mainProdsIdToDelete = it.getMainProdIdsToDelete(),
                     prodsToUpdate = it.getListProdUpdateRoom()
                 )
-                Timber.d("updateLocalProducts - ProductsUpdated!")
+            }
+            .onSuccess {
+                Timber.d("Fetch from firebase was successful and products have been updated locally.")
+                prefs.saveProdsSuccessfulFetchAt(BasicTime.now())
             }
     }
 

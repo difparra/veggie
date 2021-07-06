@@ -19,8 +19,8 @@ class ProductPrefsImpl @Inject constructor(
 ) : ProductPrefs {
 
     companion object {
-        val TAGS_UPDATED_AT_MILLIS = longPreferencesKey("tags_updated_at_millis")
-        val PRODUCTS_UPDATED_AT_MILLIS = longPreferencesKey("products_update_at_millis")
+        val TAGS_FETCHED_AT_MILLIS = longPreferencesKey("tags_fetched_at_millis")
+        val PRODS_FETCHED_AT_MILLIS = longPreferencesKey("prods_fetched_at_millis")
     }
 
 
@@ -43,18 +43,18 @@ class ProductPrefsImpl @Inject constructor(
 
     //      TAGS
 
-    override suspend fun saveTagsUpdatedAt(value: BasicTime) =
-        saveUpdatedAt(TAGS_UPDATED_AT_MILLIS, value.millisEpochUTC)
+    override suspend fun saveTagsFetchAt(value: BasicTime) =
+        saveUpdatedAt(TAGS_FETCHED_AT_MILLIS, value.millisEpochUTC)
 
-    override suspend fun getTagsUpdatedAt(): BasicTime? =
-        getUpdatedAt(TAGS_UPDATED_AT_MILLIS)?.let { BasicTime(it) }
+    override suspend fun getTagsFetchAt(): BasicTime? =
+        getUpdatedAt(TAGS_FETCHED_AT_MILLIS)?.let { BasicTime(it) }
 
     //      PRODUCTS
 
-    override suspend fun saveProductsUpdatedAt(value: BasicTime) =
-        saveUpdatedAt(PRODUCTS_UPDATED_AT_MILLIS, value.millisEpochUTC)
+    override suspend fun saveProdsSuccessfulFetchAt(value: BasicTime) =
+        saveUpdatedAt(PRODS_FETCHED_AT_MILLIS, value.millisEpochUTC)
 
-    override suspend fun getProductsUpdatedAt(): BasicTime? =
-        getUpdatedAt(PRODUCTS_UPDATED_AT_MILLIS)?.let { BasicTime(it) }
+    override suspend fun getProdsLastSuccessfulFetchAt(): BasicTime? =
+        getUpdatedAt(PRODS_FETCHED_AT_MILLIS)?.let { BasicTime(it) }
 
 }

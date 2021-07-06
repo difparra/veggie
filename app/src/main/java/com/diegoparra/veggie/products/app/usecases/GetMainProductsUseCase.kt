@@ -16,10 +16,9 @@ class GetMainProductsUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        params: Params,
-        isInternetAvailable: Boolean
+        params: Params
     ): Flow<Either<Failure, List<ProductMain>>> {
-        return getProducts(params, isInternetAvailable).fold(
+        return getProducts(params).fold(
             {
                 Timber.d("productsList returned failure: $it")
                 createSingleFlowEither(failure = it)
@@ -45,19 +44,17 @@ class GetMainProductsUseCase @Inject constructor(
     }
 
     private suspend fun getProducts(
-        params: Params,
-        isInternetAvailable: Boolean
+        params: Params
     ): Either<Failure, List<Product>> {
-        val source = ProductsRepository.getDefaultSourceForInternetAccessState(isInternetAvailable)
         return when (params) {
-            is Params.ForTag -> productsRepository.getMainProductsByTagId(params.tagId, source)
+            is Params.ForTag -> productsRepository.getMainProductsByTagId(params.tagId)
             is Params.ForSearch -> {
                 if (params.nameQuery.isEmpty()) {
                     Timber.d("nameQuery is empty")
                     Either.Right(listOf())
                 } else {
                     Timber.d("nameQuery = ${params.nameQuery}")
-                    productsRepository.searchMainProductsByName(params.nameQuery, source)
+                    productsRepository.searchMainProductsByName(params.nameQuery)
                 }
             }
         }

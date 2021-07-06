@@ -10,7 +10,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.diegoparra.veggie.R
-import com.diegoparra.veggie.core.internet_check.ConnectionLiveData
+import com.diegoparra.veggie.core.ConnectionLiveData
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

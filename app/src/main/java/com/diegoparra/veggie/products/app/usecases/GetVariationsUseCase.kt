@@ -16,10 +16,9 @@ class GetVariationsUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        mainId: String,
-        isInternetAvailable: Boolean
+        mainId: String
     ): Flow<Either<Failure, List<ProductVariation>>> {
-        return when (val variations = getVariations(mainId, isInternetAvailable)) {
+        return when (val variations = getVariations(mainId)) {
             is Either.Left -> flow { emit(variations) }
             is Either.Right -> {
                 //  Check if variationsList is empty before returning combine.
@@ -38,11 +37,9 @@ class GetVariationsUseCase @Inject constructor(
     }
 
     private suspend fun getVariations(
-        mainId: String,
-        isInternetAvailable: Boolean
+        mainId: String
     ): Either<Failure, List<VariationData>> {
-        val source = ProductsRepository.getDefaultSourceForInternetAccessState(isInternetAvailable)
-        return productsRepository.getVariationsByMainId(mainId = mainId, source = source)
+        return productsRepository.getVariationsByMainId(mainId = mainId)
     }
 
     private fun getProductVariation(

@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.diegoparra.veggie.core.kotlin.BasicTime
-import com.diegoparra.veggie.products.data.prefs.ProductPrefs
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -20,19 +19,19 @@ class OrderPrefs @Inject constructor(
 ) {
 
     companion object {
-        val ORDERS_UPDATED_AT_MILLIS = longPreferencesKey("orders_updated_at_millis")
+        val ORDER_FETCHED_AT_MILLIS = longPreferencesKey("order_fetched_at_millis")
     }
 
-    suspend fun saveOrdersUpdatedAt(value: BasicTime) {
+    suspend fun saveOrdersLastSuccessfulFetchAt(value: BasicTime) {
         context.dataStore.edit { prefs ->
-            prefs[ORDERS_UPDATED_AT_MILLIS] = value.millisEpochUTC
+            prefs[ORDER_FETCHED_AT_MILLIS] = value.millisEpochUTC
         }
     }
 
-    suspend fun getOrdersUpdatedAt(): BasicTime? {
+    suspend fun getOrdersLastSuccessfulFetchAt(): BasicTime? {
         return context.dataStore.data
             .map { prefs ->
-                prefs[ORDERS_UPDATED_AT_MILLIS]?.let {
+                prefs[ORDER_FETCHED_AT_MILLIS]?.let {
                     BasicTime(it)
                 }
             }

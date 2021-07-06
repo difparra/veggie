@@ -3,7 +3,9 @@ package com.diegoparra.veggie.main_activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.diegoparra.veggie.core.internet_check.IsInternetAvailableUseCase
+import com.diegoparra.veggie.core.internet.IsInternetAvailableUseCase
+import com.diegoparra.veggie.core.internet.SetIsInternetAvailableUseCase
+
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -12,7 +14,7 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
         private val getCartSizeUseCase: GetCartSizeUseCase,
         private val isInternetAvailableUseCase: IsInternetAvailableUseCase,
-        private val setInternetAvailableUseCase: SetInternetAvailableUseCase
+        private val setIsInternetAvailableUseCase: SetIsInternetAvailableUseCase
 ) : ViewModel() {
 
     val cartSize = getCartSizeUseCase().asLiveData()
@@ -21,7 +23,7 @@ class MainActivityViewModel @Inject constructor(
 
     fun setInternetAvailable(isInternetAvailable: Boolean) {
         viewModelScope.launch {
-            setInternetAvailableUseCase(isInternetAvailable)
+            setIsInternetAvailableUseCase(isInternetAvailable)
         }
     }
 
