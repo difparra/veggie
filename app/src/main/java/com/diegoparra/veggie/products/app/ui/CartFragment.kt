@@ -102,32 +102,21 @@ class CartFragment : Fragment() {
 
     private fun subscribeProductsList() {
         viewModel.products.observe(viewLifecycleOwner) {
+            //  Set views visibility based on Resource state
+            binding.progressBar.isVisible = it is Resource.Loading
+            binding.cartList.isVisible = it is Resource.Success
+            binding.layoutEmptyCart.isVisible = false
+                //  Set always not visible, and just set visible if necessary
+                //  It should be more frequent to have it false than same as Success.
+            binding.errorText.isVisible = it is Resource.Error
+
+            //  Display list on error based on data
             when (it) {
-                is Resource.Loading ->
-                    setViewsVisibility(loadingViews = true, cartList = false, errorViews = false)
-                is Resource.Success -> {
-                    setViewsVisibility(loadingViews = false, cartList = true, errorViews = false)
-                    renderProducts(it.data)
-                }
-                is Resource.Error -> {
-                    setViewsVisibility(loadingViews = false, cartList = false, errorViews = true)
-                    renderFailure(it.failure)
-                }
+                is Resource.Loading -> {}
+                is Resource.Success -> renderProducts(it.data)
+                is Resource.Error -> renderFailure(it.failure)
             }
         }
-    }
-
-    private fun setViewsVisibility(loadingViews: Boolean, cartList: Boolean, errorViews: Boolean) {
-        binding.progressBar.isVisible = loadingViews
-        binding.cartList.isVisible = cartList
-        binding.layoutEmptyCart.isVisible = false
-        binding.errorText.isVisible = errorViews
-        //  It is important to set layoutEmptyCart to false on every state and just set visible when
-        //  necessary. Otherwise it could be set true in renderProducts, and then a failure occur
-        //  but it was still visible and now overlapped with a failure text.
-        //  Could be modified at the same time with cartList, but the use case should be more common
-        //  to be set to false, so it makes no sense making this layout true onSuccess, and then
-        //  in renderProducts realize that the layout should be false
     }
 
     private fun renderProducts(products: List<ProductCart>) {

@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginTop="?attr/paddingSmall"
+    android:layout_marginBottom="?attr/paddingBig">
 
     <TextView
         android:id="@+id/status"
@@ -53,13 +55,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Efectivo - Contraentrega" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/products_order_list_title"
-        android:layout_marginTop="?attr/paddingStandard"
-        android:layout_marginBottom="?attr/paddingSmall"
-        android:textAppearance="@style/TextAppearance.Veggie.Caption"/>
 
 </LinearLayout>

@@ -57,25 +57,17 @@ class ProductDetailsFragment : BottomSheetDialogFragment() {
 
     private fun subscribeUi() {
         viewModel.variationsList.observe(viewLifecycleOwner) {
+            //  Set views visibility based on Resource state
+            binding.progressBar.isVisible = it is Resource.Loading
+            binding.variationsList.isVisible = it is Resource.Success
+            binding.errorText.isVisible = it is Resource.Error
+
             when (it) {
-                is Resource.Loading ->
-                    setViewsVisibility(loadingViews = true, mainViews = false, errorViews = false)
-                is Resource.Success -> {
-                    setViewsVisibility(loadingViews = false, mainViews = true, errorViews = false)
-                    renderVariationsList(it.data)
-                }
-                is Resource.Error -> {
-                    setViewsVisibility(loadingViews = false, mainViews = false, errorViews = true)
-                    renderFailureVariations(it.failure)
-                }
+                is Resource.Loading -> {}
+                is Resource.Success -> renderVariationsList(it.data)
+                is Resource.Error -> renderFailureVariations(it.failure)
             }
         }
-    }
-
-    private fun setViewsVisibility(loadingViews: Boolean, mainViews: Boolean, errorViews: Boolean) {
-        binding.progressBar.isVisible = loadingViews
-        binding.variationsList.isVisible = mainViews
-        binding.errorText.isVisible = errorViews
     }
 
     private fun renderVariationsList(variationsList: List<ProductVariation>) {

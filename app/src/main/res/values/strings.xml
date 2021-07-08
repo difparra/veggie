@@ -81,6 +81,8 @@
 
     <string name="delivery_programmed_for">Entrega programada:</string>
 
+    <string name="order_details_products">Ver detalles</string>
+
 
     <!-- Orders - Order flow in cart -->
     <string name="shipping_info">Datos de envío</string>

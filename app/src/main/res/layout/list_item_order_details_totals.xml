@@ -4,7 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="?attr/paddingSmall">
+    android:layout_marginTop="?attr/paddingStandard"
+    android:layout_marginBottom="?attr/paddingSmall">
+
+    <View
+        android:id="@+id/divider"
+        style="@style/Widget.Veggie.Divider"
+        android:layout_marginBottom="?attr/paddingStandard"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/subtotal_title" />
+
 
     <TextView
         android:id="@+id/subtotal_title"
@@ -13,7 +24,7 @@
         app:layout_constraintWidth_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/subtotal_value"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintBottom_toTopOf="@id/delivery_title"
         android:text="@string/subtotal" />
 

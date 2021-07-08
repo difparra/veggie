@@ -37,26 +37,18 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.tags.observe(viewLifecycleOwner) {
+            //  Set views visibility based on Resource state
+            binding.progressBar.isVisible = it is Resource.Loading
+            binding.tabLayout.isVisible = it is Resource.Success
+            binding.viewPager.isVisible = it is Resource.Success
+            binding.errorText.isVisible = it is Resource.Error
+
             when (it) {
-                is Resource.Loading ->
-                    setViewsVisibility(loadingViews = true, mainViews = false, errorViews = false)
-                is Resource.Success -> {
-                    setViewsVisibility(loadingViews = false, mainViews = true, errorViews = false)
-                    renderTags(it.data)
-                }
-                is Resource.Error -> {
-                    setViewsVisibility(loadingViews = false, mainViews = false, errorViews = true)
-                    renderFailure(it.failure)
-                }
+                is Resource.Loading -> {}
+                is Resource.Success -> renderTags(it.data)
+                is Resource.Error -> renderFailure(it.failure)
             }
         }
-    }
-
-    private fun setViewsVisibility(loadingViews: Boolean, mainViews: Boolean, errorViews: Boolean) {
-        binding.progressBar.isVisible = loadingViews
-        binding.tabLayout.isVisible = mainViews
-        binding.viewPager.isVisible = mainViews
-        binding.errorText.isVisible = errorViews
     }
 
 

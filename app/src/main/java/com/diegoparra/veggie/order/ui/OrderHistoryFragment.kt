@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.core.kotlin.Resource
@@ -50,30 +51,23 @@ class OrderHistoryFragment : Fragment() {
         }
 
         binding.ordersList.setHasFixedSize(true)
+        binding.ordersList.addItemDecoration(DividerItemDecoration(binding.root.context, DividerItemDecoration.VERTICAL))
         binding.ordersList.adapter = adapter
     }
 
     private fun subscribeUi() {
         viewModel.ordersList.observe(viewLifecycleOwner) {
+            //  Set views visibility based on Resource state
+            binding.progressBar.isVisible = it is Resource.Loading
+            binding.ordersList.isVisible = it is Resource.Success
+            binding.errorText.isVisible = it is Resource.Error
+
             when (it) {
-                is Resource.Loading ->
-                    setViewsVisibility(loading = true, mainViews = false, errorViews = false)
-                is Resource.Success -> {
-                    setViewsVisibility(loading = false, mainViews = true, errorViews = false)
-                    renderOrdersList(it.data)
-                }
-                is Resource.Error -> {
-                    setViewsVisibility(loading = false, mainViews = false, errorViews = true)
-                    renderFailure(it.failure)
-                }
+                is Resource.Loading -> {}
+                is Resource.Success -> renderOrdersList(it.data)
+                is Resource.Error -> renderFailure(it.failure)
             }
         }
-    }
-
-    private fun setViewsVisibility(loading: Boolean, mainViews: Boolean, errorViews: Boolean) {
-        binding.progressBar.isVisible = loading
-        binding.ordersList.isVisible = mainViews
-        binding.errorText.isVisible = errorViews
     }
 
     private fun renderOrdersList(ordersList: List<Order>) {

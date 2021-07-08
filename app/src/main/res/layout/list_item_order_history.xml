@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingHorizontal="?attr/paddingStandard"
-    android:paddingVertical="?attr/paddingSmall">
+    android:paddingVertical="?attr/paddingStandard">
 
     <TextView
         android:id="@+id/order_id"
@@ -13,9 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="?attr/paddingSmall"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="2"
         android:textAppearance="@style/TextAppearance.Veggie.Subtitle2"
         app:layout_constraintBottom_toTopOf="@id/delivery_date_time"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Pedido No. __________" />
 
@@ -50,21 +51,36 @@
 
     <TextView
         android:id="@+id/total_cost"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="?attr/paddingSmall"
-        android:layout_marginEnd="?attr/paddingSmall"
         android:drawablePadding="?attr/paddingSmall"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.Veggie.Caption"
         app:drawableStartCompat="@drawable/ic_money_outline"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/order_status"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/order_details"
         app:layout_constraintTop_toBottomOf="@id/delivery_address"
         tools:text="$87,000" />
+
+    <!-- No need to set clickable as all the card will perform click listener -->
+    <TextView
+        android:id="@+id/order_details"
+        android:clickable="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="?attr/paddingSmall"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Veggie.Subtitle2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/order_status"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/total_cost"
+        android:text="@string/order_details_products"
+        android:textColor="?attr/colorPrimary"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"/>
 
     <TextView
         android:id="@+id/order_status"
@@ -75,10 +91,11 @@
         android:gravity="end"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.Veggie.Subtitle2"
-        app:layout_constraintBottom_toBottomOf="@id/total_cost"
+        app:layout_constraintBottom_toBottomOf="@id/order_details"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/total_cost"
-        app:layout_constraintTop_toTopOf="@id/total_cost"
+        app:layout_constraintStart_toEndOf="@id/order_details"
+        app:layout_constraintTop_toTopOf="@id/order_details"
         tools:text="Completado" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

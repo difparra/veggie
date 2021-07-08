@@ -43,25 +43,17 @@ class ProductsListFragment : Fragment() {
     private fun subscribeUi() {
         viewModel.productsList.observe(viewLifecycleOwner) {
             Timber.d("productsList collected = $it")
+            //  Set views visibility based on Resource state
+            binding.progressBar.isVisible = it is Resource.Loading
+            binding.productsList.isVisible = it is Resource.Success
+            binding.errorText.isVisible = it is Resource.Error
+
             when (it) {
-                is Resource.Loading ->
-                    setViewsVisibility(loadingViews = true, mainViews = false, errorViews = false)
-                is Resource.Success -> {
-                    setViewsVisibility(loadingViews = false, mainViews = true, errorViews = false)
-                    renderProductsList(it.data)
-                }
-                is Resource.Error -> {
-                    setViewsVisibility(loadingViews = false, mainViews = false, errorViews = true)
-                    renderFailure(it.failure)
-                }
+                is Resource.Loading -> {}
+                is Resource.Success -> renderProductsList(it.data)
+                is Resource.Error -> renderFailure(it.failure)
             }
         }
-    }
-
-    private fun setViewsVisibility(loadingViews: Boolean, mainViews: Boolean, errorViews: Boolean) {
-        binding.progressBar.isVisible = loadingViews
-        binding.productsList.isVisible = mainViews
-        binding.errorText.isVisible = errorViews
     }
 
     private fun renderProductsList(productsList: List<ProductMain>) {
