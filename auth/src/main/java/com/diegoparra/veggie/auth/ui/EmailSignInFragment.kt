@@ -58,7 +58,7 @@ class EmailSignInFragment : Fragment() {
 
         binding.forgotPassword.setOnClickListener {
             val action =
-                EmailSignInFragmentDirections.actionEmailSignInFragmentToForgotPasswordDialogFragment(
+                EmailSignInFragmentDirections.actionEmailSignInToForgotPasswordDialog(
                     email = args.email
                 )
             findNavController().navigate(action)

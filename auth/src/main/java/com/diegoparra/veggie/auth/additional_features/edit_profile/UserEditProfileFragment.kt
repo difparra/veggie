@@ -31,7 +31,7 @@ class UserEditProfileFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val navController = findNavController()
         val userEditProfileFragmentAsBackStackEntry =
-            navController.getBackStackEntry(R.id.userEditProfileFragment)
+            navController.getBackStackEntry(R.id.user_edit_profile_fragment)
         val savedStateHandle = userEditProfileFragmentAsBackStackEntry.savedStateHandle
         savedStateHandle.getLiveData<Boolean>(PhoneConstants.PHONE_VERIFIED_SUCCESSFUL)
             .observe(userEditProfileFragmentAsBackStackEntry) {

@@ -35,7 +35,7 @@ class AddressListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val navController = findNavController()
         val addressFragmentAsBackStackEntry =
-            navController.getBackStackEntry(R.id.addressListFragment)
+            navController.getBackStackEntry(R.id.address_list_fragment)
         val savedStateHandle = addressFragmentAsBackStackEntry.savedStateHandle
         savedStateHandle.getLiveData<Boolean>(AddressConstants.ADDRESS_ADDED_SUCCESSFUL)
             .observe(addressFragmentAsBackStackEntry) {
@@ -66,7 +66,7 @@ class AddressListFragment : Fragment() {
         }
         binding.btnAddAddress.setOnClickListener {
             val action =
-                AddressListFragmentDirections.actionAddressFragmentNavAddressToAddressAddFragmentNavAddress()
+                AddressListFragmentDirections.actionAddressListFragmentToAddressAddFragment()
             findNavController().navigate(action)
         }
     }
@@ -179,7 +179,7 @@ class AddressListFragment : Fragment() {
 
     private fun showActionsDialogForAddress(address: Address) {
         val action =
-            AddressListFragmentDirections.actionAddressFragmentNavAddressToAddressActionsDialogFragmentNavAddress(
+            AddressListFragmentDirections.actionAddressListFragmentToAddressActionsDialog(
                 addressId = address.id,
                 addressString = getAddressString(address)
             )

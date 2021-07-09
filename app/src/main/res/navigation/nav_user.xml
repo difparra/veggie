@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_user"
+    app:startDestination="@id/user_fragment">
+
+    <fragment
+        android:id="@+id/user_fragment"
+        android:name="com.diegoparra.veggie.user.ui_main_screen.UserFragment"
+        android:label="fragment_user"
+        tools:layout="@layout/fragment_user" >
+        <action
+            android:id="@+id/action_user_fragment_to_nav_sign_in"
+            app:destination="@id/nav_sign_in" />
+        <action
+            android:id="@+id/action_user_fragment_to_nav_edit_profile"
+            app:destination="@id/nav_edit_profile" />
+        <action
+            android:id="@+id/action_user_fragment_to_nav_user_address"
+            app:destination="@id/nav_user_address" />
+        <action
+            android:id="@+id/action_user_fragment_to_nav_user_order"
+            app:destination="@id/nav_user_order" />
+    </fragment>
+    <include app:graph="@navigation/nav_sign_in" />
+    <include app:graph="@navigation/nav_edit_profile" />
+    <include app:graph="@navigation/nav_user_address" />
+    <include app:graph="@navigation/nav_user_order" />
+
+</navigation>

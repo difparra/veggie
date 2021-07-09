@@ -1,6 +1,5 @@
 package com.diegoparra.veggie.order.ui.order_flow
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,9 +8,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.navigation.NavDeepLink
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.auth.utils.AuthConstants
 import com.diegoparra.veggie.auth.utils.AuthFailure
@@ -56,7 +53,7 @@ class ShippingInfoFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val navController = findNavController()
         val shippingInfoFragmentAsBackStackEntry =
-            navController.getBackStackEntry(R.id.shippingInfoFragment)
+            navController.getBackStackEntry(R.id.shipping_info_fragment)
         val savedStateHandle = shippingInfoFragmentAsBackStackEntry.savedStateHandle
         savedStateHandle.getLiveData<Boolean>(AuthConstants.LOGIN_SUCCESSFUL)
             .observe(shippingInfoFragmentAsBackStackEntry) {
@@ -86,14 +83,7 @@ class ShippingInfoFragment : Fragment() {
         return binding.root
     }
 
-    private fun setUpToSendBackOrderSendResult() {
-        val navController = findNavController()
-        OrderResultNavigation.setPreviousDestinationAsOriginal(navController)
-        OrderResultNavigation.setResult(navController, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setUpToSendBackOrderSendResult()
         subscribeUi()
 
         binding.btnBack.setOnClickListener {
@@ -169,10 +159,6 @@ class ShippingInfoFragment : Fragment() {
 
     private fun buttonContinueFunctionality() {
         binding.buttonContinue.setOnClickListener {
-            /*//  TODO:   This was an attempt to check how deepLinks work in order to later implement
-                          on sendOrderResult
-            val deepLink = Uri.parse("myapp://veggie.com/user/orders")
-            findNavController().navigate(deepLink, navOptions { popUpTo = R.id.nav_cart })*/
             //  It should be a stateFlow which state is scoped to viewModel.
             viewModel.shippingInfo.value.let {
                 when (it) {

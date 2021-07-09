@@ -29,7 +29,7 @@ class UserFragment : Fragment() {
         //  as long as it is in the backStack.
         super.onCreate(savedInstanceState)
         val navController = findNavController()
-        val userFragmentAsBackStackEntry = navController.getBackStackEntry(R.id.nav_user)
+        val userFragmentAsBackStackEntry = navController.getBackStackEntry(R.id.user_fragment)
         //  Must use nav_destination_id, because when rotating screen in SignInOptionsFragment,
         //  as UserFragment is in the backStack, onCreate will be recalled, but this time
         //  currentBackStackEntry is not userFragment but signInOptions. It will cause some error.
@@ -40,6 +40,7 @@ class UserFragment : Fragment() {
                 //  OK, it is just being called when view is visible, not only if rotating device.
                 Timber.d("LOGIN_SUCCESSFUL = $it")
                 if (!it) {
+                    //  It is working fine, it gets out from user_fragment and nav_user, and goes to startDestination bottomNav.
                     navController.popBackStack()
                 }
             }
@@ -59,24 +60,24 @@ class UserFragment : Fragment() {
         //  when the original screen is not correct and app will crash.
         viewModel.isSignedIn.observe(viewLifecycleOwner, EventObserver {
             if (!it) {
-                findNavController().navigate(UserFragmentDirections.actionNavUserToNavSignIn())
+                findNavController().navigate(UserFragmentDirections.actionUserFragmentToNavSignIn())
             }
         })
 
         subscribeViewsTitle()
 
         binding.itemProfile.setOnClickListener {
-            val action = UserFragmentDirections.actionNavUserToNavEditProfile()
+            val action = UserFragmentDirections.actionUserFragmentToNavEditProfile()
             findNavController().navigate(action)
         }
 
         binding.itemOrders.setOnClickListener {
-            val action = UserFragmentDirections.actionNavUserToNavUserOrder()
+            val action = UserFragmentDirections.actionUserFragmentToNavUserOrder()
             findNavController().navigate(action)
         }
 
         binding.itemAddress.setOnClickListener {
-            val action = UserFragmentDirections.actionNavUserToNavUserAddress()
+            val action = UserFragmentDirections.actionUserFragmentToNavUserAddress()
             findNavController().navigate(action)
         }
 

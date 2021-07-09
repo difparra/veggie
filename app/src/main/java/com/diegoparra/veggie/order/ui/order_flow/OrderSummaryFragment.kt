@@ -39,7 +39,7 @@ class OrderSummaryFragment: Fragment() {
         subscribeUi()
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
         binding.totalProducts.setOnClickListener {
-            val action = OrderSummaryFragmentDirections.actionOrderSummaryFragmentToProductsOrderSummaryFragment()
+            val action = OrderSummaryFragmentDirections.actionOrderSummaryFragmentToOrderProdsFragment()
             findNavController().navigate(action)
         }
         binding.btnOrder.setOnClickListener {
@@ -97,7 +97,6 @@ class OrderSummaryFragment: Fragment() {
     }
 
     private fun navigateOnOrderSentSuccessfully(orderId: String) {
-        OrderResultNavigation.setResult(navController = findNavController(), result = true)
         val action = OrderSummaryFragmentDirections.actionOrderSummaryFragmentToOrderSendResultDialog(
             success = true,
             successString = orderId,
@@ -107,7 +106,6 @@ class OrderSummaryFragment: Fragment() {
     }
 
     private fun renderFailureSendingOrder(failure: Failure) {
-        OrderResultNavigation.setResult(navController = findNavController(), result = false)
         val action = OrderSummaryFragmentDirections.actionOrderSummaryFragmentToOrderSendResultDialog(
             success = true,
             successString = null,

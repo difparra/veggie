@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_order"
-    app:startDestination="@id/shippingInfoFragment">
+    app:startDestination="@id/shipping_info_fragment">
 
     <!-- Global action to get out of nav_order -->
     <action
@@ -11,46 +11,50 @@
         app:popUpTo="@id/nav_order"
         app:popUpToInclusive="true" />
 
+
+    <include app:graph="@navigation/nav_sign_in" />
+
     <fragment
-        android:id="@+id/shippingInfoFragment"
+        android:id="@+id/shipping_info_fragment"
         android:name="com.diegoparra.veggie.order.ui.order_flow.ShippingInfoFragment"
         android:label="fragment_shipping_info"
         tools:layout="@layout/fragment_shipping_info" >
         <action
-            android:id="@+id/action_shippingInfoFragment_to_nav_user_address"
+            android:id="@+id/action_shipping_info_fragment_to_nav_user_address"
             app:destination="@id/nav_user_address" />
         <action
-            android:id="@+id/action_shippingInfoFragment_to_nav_verify_phone_number"
+            android:id="@+id/action_shipping_info_fragment_to_nav_verify_phone_number"
             app:destination="@id/nav_verify_phone_number" />
         <action
-            android:id="@+id/action_shippingInfoFragment_to_nav_sign_in"
+            android:id="@+id/action_shipping_info_fragment_to_nav_sign_in"
             app:destination="@id/nav_sign_in" />
         <action
-            android:id="@+id/action_shippingInfoFragment_to_orderSummaryFragment"
-            app:destination="@id/orderSummaryFragment" />
+            android:id="@+id/action_shipping_info_fragment_to_order_summary_fragment"
+            app:destination="@id/order_summary_fragment" />
     </fragment>
+
     <include app:graph="@navigation/nav_user_address" />
     <include app:graph="@navigation/nav_verify_phone_number" />
-    <include app:graph="@navigation/nav_sign_in" />
+
     <fragment
-        android:id="@+id/orderSummaryFragment"
+        android:id="@+id/order_summary_fragment"
         android:name="com.diegoparra.veggie.order.ui.order_flow.OrderSummaryFragment"
         android:label="fragment_order_summary"
         tools:layout="@layout/fragment_order_summary" >
         <action
-            android:id="@+id/action_orderSummaryFragment_to_productsOrderSummaryFragment"
-            app:destination="@id/productsOrderSummaryFragment" />
+            android:id="@+id/action_order_summary_fragment_to_order_prods_fragment"
+            app:destination="@id/order_prods_fragment" />
         <action
-            android:id="@+id/action_orderSummaryFragment_to_orderSendResultDialog"
-            app:destination="@id/orderSendResultDialog" />
+            android:id="@+id/action_order_summary_fragment_to_order_send_result_dialog"
+            app:destination="@id/order_send_result_dialog" />
     </fragment>
     <dialog
-        android:id="@+id/productsOrderSummaryFragment"
+        android:id="@+id/order_prods_fragment"
         android:name="com.diegoparra.veggie.order.ui.order_flow.OrderProdsFragment"
         android:label="fragment_products_order_summary"
         tools:layout="@layout/fragment_products_order_summary" />
     <dialog
-        android:id="@+id/orderSendResultDialog"
+        android:id="@+id/order_send_result_dialog"
         android:name="com.diegoparra.veggie.order.ui.order_flow.OrderSendResultDialog"
         android:label="dialog_order_send_result"
         tools:layout="@layout/dialog_order_send_result" >

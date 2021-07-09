@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_user_order"
-    app:startDestination="@id/orderHistoryFragment">
+    app:startDestination="@id/order_history_fragment">
 
     <fragment
-        android:id="@+id/orderHistoryFragment"
+        android:id="@+id/order_history_fragment"
         android:name="com.diegoparra.veggie.order.ui.OrderHistoryFragment"
         android:label="fragment_order_history"
         tools:layout="@layout/fragment_order_history">
         <action
-            android:id="@+id/action_orderHistoryFragment_to_orderDetailsFragment"
-            app:destination="@id/orderDetailsFragment" />
-        <!--    Still an attempt that will be tried in the next commit
+            android:id="@+id/action_order_history_fragment_to_order_details_fragment"
+            app:destination="@id/order_details_fragment" />
+        <!-- Used to navigate from OrderSendResultDialog -->
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="myapp://veggie.com/user/orders" />-->
+            app:uri="myapp://veggie.com/user/orders" />
     </fragment>
     <fragment
-        android:id="@+id/orderDetailsFragment"
+        android:id="@+id/order_details_fragment"
         android:name="com.diegoparra.veggie.order.ui.OrderDetailsFragment"
         android:label="fragment_order_details"
         tools:layout="@layout/fragment_order_details" >

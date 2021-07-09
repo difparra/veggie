@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_edit_profile"
-    app:startDestination="@id/userEditProfileFragment">
+    app:startDestination="@id/user_edit_profile_fragment">
 
     <fragment
-        android:id="@+id/userEditProfileFragment"
+        android:id="@+id/user_edit_profile_fragment"
         android:name="com.diegoparra.veggie.auth.additional_features.edit_profile.UserEditProfileFragment"
         android:label="fragment_user_edit_profile"
         tools:layout="@layout/fragment_user_edit_profile" >
         <action
-            android:id="@+id/action_userEditProfileFragment_to_nav_verify_phone_number"
+            android:id="@+id/action_user_edit_profile_fragment_to_nav_verify_phone_number"
             app:destination="@id/nav_verify_phone_number" />
     </fragment>
     <include app:graph="@navigation/nav_verify_phone_number" />

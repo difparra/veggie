@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_cart"
+    app:startDestination="@id/cart_fragment">
+
+    <fragment
+        android:id="@+id/cart_fragment"
+        android:name="com.diegoparra.veggie.products.app.ui.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cart_fragment_to_clear_cart_dialog"
+            app:destination="@id/clear_cart_dialog" />
+        <action
+            android:id="@+id/action_cart_fragment_to_nav_order"
+            app:destination="@id/nav_order" />
+    </fragment>
+    <dialog
+        android:id="@+id/clear_cart_dialog"
+        android:name="com.diegoparra.veggie.products.app.ui.ClearCartDialogFragment"
+        android:label="dialog_clear_cart"
+        tools:layout="@layout/dialog_generic" />
+    <include app:graph="@navigation/nav_order" />
+
+</navigation>

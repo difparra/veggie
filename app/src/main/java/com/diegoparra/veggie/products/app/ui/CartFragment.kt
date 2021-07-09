@@ -20,8 +20,6 @@ import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.databinding.FragmentCartBinding
 import com.diegoparra.veggie.products.app.entities.ProductCart
 import com.diegoparra.veggie.products.cart.domain.ProductId
-import com.diegoparra.veggie.core.kotlin.runIfTrue
-import com.diegoparra.veggie.order.domain.OrderConstants
 import com.diegoparra.veggie.products.app.viewmodels.CartViewModel
 import com.diegoparra.veggie.products.app.viewmodels.CartViewModel.Total
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,20 +47,6 @@ class CartFragment : Fragment() {
         })
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val navController = findNavController()
-        val cartFragmentAsBackStackEntry = navController.getBackStackEntry(R.id.nav_cart)
-        val savedStateHandle = cartFragmentAsBackStackEntry.savedStateHandle
-        savedStateHandle.getLiveData<Boolean>(OrderConstants.ORDER_SENT_SUCCESSFUL)
-            .observe(cartFragmentAsBackStackEntry) {
-                Timber.d("${OrderConstants.ORDER_SENT_SUCCESSFUL} = $it")
-                it.runIfTrue {
-                    findNavController().navigate(CartFragmentDirections.actionGlobalNavUser())
-                }
-            }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -83,7 +67,7 @@ class CartFragment : Fragment() {
 
     private fun clearCartFunctionality() {
         binding.clearCart.setOnClickListener {
-            val action = CartFragmentDirections.actionNavCartToClearCartDialogFragment()
+            val action = CartFragmentDirections.actionCartFragmentToClearCartDialog()
             findNavController().navigate(action)
         }
         viewModel.clearCartEnabledState.observe(viewLifecycleOwner) {
@@ -112,7 +96,7 @@ class CartFragment : Fragment() {
 
             //  Display list on error based on data
             when (it) {
-                is Resource.Loading -> {}
+                is Resource.Loading -> { /* no-op */ }
                 is Resource.Success -> renderProducts(it.data)
                 is Resource.Error -> renderFailure(it.failure)
             }
@@ -162,7 +146,7 @@ class CartFragment : Fragment() {
     private fun makeOrderListener() {
         binding.btnMakeOrder.setOnClickListener {
             if (viewModel.total.value is Total.OK) {
-                val action = CartFragmentDirections.actionNavCartToNavOrder()
+                val action = CartFragmentDirections.actionCartFragmentToNavOrder()
                 findNavController().navigate(action)
             } else {
                 Timber.wtf("Error while getting total from viewModel. Check, it should be Total.OK")

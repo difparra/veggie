@@ -76,9 +76,7 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(bottomNavView, navController)
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             bottomNavView.isVisible =
-                !isNavGraphIdParentOf(navGraph = R.id.nav_order, destination = destination)
-                        && destination.id != R.id.nav_cart
-                        && destination.id != R.id.clearCartDialogFragment
+                !isNavGraphIdParentOf(navGraph = R.id.nav_cart, destination = destination)
         }
     }
 

@@ -2,14 +2,18 @@ package com.diegoparra.veggie.order.ui.order_flow
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.Navigator
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navOptions
 import com.diegoparra.veggie.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,8 +62,12 @@ class OrderSendResultDialog : DialogFragment() {
     }
 
     private fun navigateSuccess() {
-        val action = OrderSendResultDialogDirections.actionNavOrderPop()
-        this@OrderSendResultDialog.findNavController().navigate(action)
+        //  It is currently working, but be careful because this may be improved
+        //  (Didn't work correctly when setting popUpTo inclusive false, app crashed on navigation
+        //  after sending order)
+        val deepLink = Uri.parse("myapp://veggie.com/user/orders")
+        this@OrderSendResultDialog.findNavController()
+            .navigate(deepLink, navOptions { this.popUpTo(R.id.nav_cart) { inclusive = true } })
     }
 
     private fun renderFailure(

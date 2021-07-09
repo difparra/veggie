@@ -3,18 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/nav_home">
+    app:startDestination="@id/nav_home_fragment">
 
     <!--    .....   PRODUCTS    .....   -->
     <fragment
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_home_fragment"
         android:name="com.diegoparra.veggie.products.app.ui.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+
+    <!--    .....   SEARCH    .....   -->
+    <fragment
+        android:id="@+id/nav_search_fragment"
+        android:name="com.diegoparra.veggie.products.app.ui.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+
+    <!--    .....   PRODUCTS & SEARCH    .....   -->
     <dialog
-        android:id="@+id/productDetailsFragment"
+        android:id="@+id/product_details_fragment"
         android:name="com.diegoparra.veggie.products.app.ui.ProductDetailsFragment"
-        android:label="ProductDetailsFragment"
+        android:label="fragment_product_details"
         tools:layout="@layout/fragment_product_details" >
         <argument
             android:name="mainId"
@@ -25,72 +34,25 @@
     </dialog>
     <!-- Global action - navigate to productDetails -->
     <action
-        android:id="@+id/action_global_to_productDetailsFragment"
-        app:destination="@id/productDetailsFragment" />
+        android:id="@+id/action_global_to_product_details_fragment"
+        app:destination="@id/product_details_fragment" />
 
-
-    <!--    .....   SEARCH    .....   -->
-    <fragment
-        android:id="@+id/nav_search"
-        android:name="com.diegoparra.veggie.products.app.ui.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
 
 
     <!--    .....   CART    .....   -->
-    <fragment
-        android:id="@+id/nav_cart"
-        android:name="com.diegoparra.veggie.products.app.ui.CartFragment"
-        android:label="fragment_cart"
-        tools:layout="@layout/fragment_cart" >
-        <action
-            android:id="@+id/action_nav_cart_to_clearCartDialogFragment"
-            app:destination="@id/clearCartDialogFragment" />
-        <action
-            android:id="@+id/action_nav_cart_to_nav_order"
-            app:destination="@id/nav_order" />
-    </fragment>
-    <dialog
-        android:id="@+id/clearCartDialogFragment"
-        android:name="com.diegoparra.veggie.products.app.ui.ClearCartDialogFragment"
-        android:label="ClearCartDialogFragment"
-        tools:layout="@layout/dialog_generic" />
+    <include app:graph="@navigation/nav_cart" />
 
 
     <!--    .....   USER    .....   -->
-    <fragment
-        android:id="@+id/nav_user"
-        android:name="com.diegoparra.veggie.user.ui_main_screen.UserFragment"
-        android:label="fragment_user"
-        tools:layout="@layout/fragment_user" >
-        <action
-            android:id="@+id/action_nav_user_to_nav_sign_in"
-            app:destination="@id/nav_sign_in" />
-        <action
-            android:id="@+id/action_nav_user_to_nav_edit_profile"
-            app:destination="@id/nav_edit_profile" />
-        <action
-            android:id="@+id/action_nav_user_to_nav_user_address"
-            app:destination="@id/nav_user_address" />
-        <action
-            android:id="@+id/action_nav_user_to_nav_user_order"
-            app:destination="@id/nav_user_order" />
-    </fragment>
-    <include app:graph="@navigation/nav_sign_in" />
+    <include app:graph="@navigation/nav_user" />
 
 
     <!--    .....   SUPPORT    .....   -->
     <fragment
-        android:id="@+id/nav_support"
+        android:id="@+id/nav_support_fragment"
         android:name="com.diegoparra.veggie.support.SupportFragment"
         android:label="fragment_support"
         tools:layout="@layout/fragment_support" />
-    <include app:graph="@navigation/nav_edit_profile" />
-    <include app:graph="@navigation/nav_user_address" />
-    <include app:graph="@navigation/nav_order" />
-    <action
-        android:id="@+id/action_global_nav_user"
-        app:destination="@id/nav_user" />
-    <include app:graph="@navigation/nav_user_order" />
+
 
 </navigation>

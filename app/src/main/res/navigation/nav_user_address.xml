@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_user_address"
-    app:startDestination="@id/addressListFragment">
+    app:startDestination="@id/address_list_fragment">
 
     <fragment
-        android:id="@+id/addressListFragment"
+        android:id="@+id/address_list_fragment"
         android:name="com.diegoparra.veggie.user.address.ui.AddressListFragment"
         android:label="fragment_address"
         tools:layout="@layout/fragment_address_list" >
         <action
-            android:id="@+id/action_addressFragment_navAddress_to_addressActionsDialogFragment_navAddress"
-            app:destination="@id/addressActionsDialogFragment" />
+            android:id="@+id/action_address_list_fragment_to_address_actions_dialog"
+            app:destination="@id/address_actions_dialog" />
         <action
-            android:id="@+id/action_addressFragment_navAddress_to_addressAddFragment_navAddress"
-            app:destination="@id/addressAddFragment" />
+            android:id="@+id/action_address_list_fragment_to_address_add_fragment"
+            app:destination="@id/address_add_fragment" />
     </fragment>
     <dialog
-        android:id="@+id/addressActionsDialogFragment"
+        android:id="@+id/address_actions_dialog"
         android:name="com.diegoparra.veggie.user.address.ui.AddressActionsDialogFragment"
         android:label="AddressActionsDialogFragment"
         tools:layout="@layout/dialog_generic" >
@@ -30,7 +30,7 @@
             app:argType="string" />
     </dialog>
     <fragment
-        android:id="@+id/addressAddFragment"
+        android:id="@+id/address_add_fragment"
         android:name="com.diegoparra.veggie.user.address.ui.AddressAddFragment"
         android:label="fragment_address_add"
         tools:layout="@layout/fragment_address_add" />
