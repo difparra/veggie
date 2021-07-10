@@ -3,8 +3,6 @@ package com.diegoparra.veggie.order.data.firebase
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.order.data.firebase.order_dto.OrderDto
-import com.diegoparra.veggie.products.data.firebase.ProdsFirebaseConstants
-import com.diegoparra.veggie.products.data.firebase.ProductDto
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -52,18 +50,14 @@ class OrderApi @Inject constructor(
         }
     }
 
-    suspend fun getOrdersUpdatedAfter(timestamp: Timestamp): Either<Failure, List<Pair<String, OrderDto>>> {
+    suspend fun getOrdersUpdatedAfter(timestamp: Timestamp): Either<Failure, List<OrderDto>> {
         return try {
             val orders = database
                 .collection(OrderFirebaseConstants.Firestore.Collections.orders)
                 .whereGreaterThan(OrderFirebaseConstants.Firestore.Fields.updatedAt, timestamp)
                 .get(Source.SERVER)
                 .await()
-                .map {
-                    val id = it.id
-                    val order = it.toObject<OrderDto>()
-                    Pair(id, order)
-                }
+                .toObjects<OrderDto>()
             Either.Right(orders)
         } catch (e: Exception) {
             Timber.e("Exception class=${e.javaClass}, message=${e.message}")

@@ -46,7 +46,7 @@ class CartViewModel @Inject constructor(
         .flatMapLatest {
             getCartProductsUseCase()
                 .map { it.toResource() }
-                .onStart { emit(Resource.Loading()) }
+                .onStart { emit(Resource.Loading) }
         }
         .combine(_editablePosition) { prodsList, position ->
             //  Map the Resource to add the editable position to the list

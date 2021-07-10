@@ -28,7 +28,7 @@ class ProductsListViewModel @Inject constructor(
             Timber.d("isInternetAvailable = $it, Calling getMainProductsUseCase")
             getMainProductsUseCase(GetMainProductsUseCase.Params.ForTag(tagId))
                 .map { it.toResource() }
-                .onStart { emit(Resource.Loading()) }
+                .onStart { emit(Resource.Loading) }
         }
         .asLiveData()
 

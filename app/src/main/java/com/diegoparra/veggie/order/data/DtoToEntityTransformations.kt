@@ -7,13 +7,13 @@ import com.diegoparra.veggie.user.data.firebase.AddressDto
 
 object DtoToEntityTransformations {
 
-    fun OrderDto.toOrderUpdateEntity(orderId: String) = OrderUpdate(
-        orderDetails = this.toOrderDetailsEntity(orderId),
-        productsOrder = this.products.map { it.toProductOrderEntity(orderId) }
+    fun OrderDto.toOrderUpdateEntity() = OrderUpdate(
+        orderDetails = this.toOrderDetailsEntity(),
+        productsOrder = this.products.map { it.toProductOrderEntity(this.id) }
     )
 
-    private fun OrderDto.toOrderDetailsEntity(orderId: String) = OrderDetailsEntity(
-        id = orderId,
+    private fun OrderDto.toOrderDetailsEntity() = OrderDetailsEntity(
+        id = id,
         shippingInfo = shippingInfo.toShippingInfoRoomHelper(),
         total = total.toTotalRoomHelper(),
         paymentInfo = paymentInfo.toPaymentInfoRoomHelper(),

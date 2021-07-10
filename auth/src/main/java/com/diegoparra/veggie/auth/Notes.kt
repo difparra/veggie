@@ -59,9 +59,8 @@ package com.diegoparra.veggie.auth
     //  --------------------------------------------------------------------------------------------
 
     TODO:
-        Inject appIcon and appTitle with hilt, and use them to set the theme in signInOptionsFragment.
-        AppIcon
-            requireContext().packageManager.getApplicationIcon(requireContext().packageName)
-            requireContext().applicationInfo.icon
+        appTitle and appIcon can be injected with hilt, or they can be created into AuthCallbacks
+        (configuration to effectively add and reuse module).
+
         
  */

@@ -33,7 +33,7 @@ class ProductDetailsViewModel @Inject constructor(
         .flatMapLatest {
             getVariationsUseCase(mainId)
                 .map { it.toResource() }
-                .onStart { emit(Resource.Loading()) }
+                .onStart { emit(Resource.Loading) }
         }
         .asLiveData()
 

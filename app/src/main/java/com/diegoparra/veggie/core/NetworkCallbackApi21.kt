@@ -51,7 +51,7 @@ class NetworkCallbackApi21(
         }
     }
 
-    /*  TODO: Test on devices with api lower than 23 and over 21.
+    /*  TODO: May be necessary to test this code on api lower than 23 and above 21.
 
         It may be necessary to add network configuration to manifest:
           android:usesCleartextTraffic="true"

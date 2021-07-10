@@ -46,7 +46,7 @@ class SearchViewModel @Inject constructor(
         .flatMapLatest { (query, _) ->
             getMainProductsUseCase(GetMainProductsUseCase.Params.ForSearch(query))
                 .map { it.toResource() }
-                .onStart { emit(Resource.Loading()) }
+                .onStart { emit(Resource.Loading) }
         }
         .asLiveData()
 

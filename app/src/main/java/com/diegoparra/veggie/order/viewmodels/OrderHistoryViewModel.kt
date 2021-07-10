@@ -27,7 +27,7 @@ class OrderHistoryViewModel @Inject constructor(
         .map {
             getOrdersListUseCase.forCurrentUser(isInternetAvailable = it).toResource()
         }
-        .onStart { emit(Resource.Loading()) }
+        .onStart { emit(Resource.Loading) }
     val ordersList = _ordersList.asLiveData()
 
 

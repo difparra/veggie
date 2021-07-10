@@ -23,10 +23,10 @@ class EmailSignUpViewModel @Inject constructor(
 
     private val _email = savedStateHandle.get<String>("email")!!    //  Come from navArgs
 
-    private val _password = MutableStateFlow<Resource<String>>(Resource.Loading())
+    private val _password = MutableStateFlow<Resource<String>>(Resource.Loading)
     val password: LiveData<Resource<String>> = _password.asLiveData()
 
-    private val _name = MutableStateFlow<Resource<String>>(Resource.Loading())
+    private val _name = MutableStateFlow<Resource<String>>(Resource.Loading)
     val name: LiveData<Resource<String>> = _name.asLiveData()
 
     val btnContinueEnabled: LiveData<Boolean> = combine(_password, _name) { it ->
@@ -67,8 +67,8 @@ class EmailSignUpViewModel @Inject constructor(
     private fun setLoadingState() {
         Timber.d("setLoadingState() called")
         _loading.value = true
-        _password.value = Resource.Loading()
-        _name.value = Resource.Loading()
+        _password.value = Resource.Loading
+        _name.value = Resource.Loading
     }
 
     private fun handleSuccess(params: EmailSignUpUseCase.Params) {

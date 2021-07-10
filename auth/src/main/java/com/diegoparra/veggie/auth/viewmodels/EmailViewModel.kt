@@ -19,7 +19,7 @@ class EmailViewModel @Inject constructor(
     private val validateEmailAuthUseCase: ValidateEmailAuthUseCase
 ) : ViewModel() {
 
-    private val _email = MutableStateFlow<Resource<String>>(Resource.Loading())
+    private val _email = MutableStateFlow<Resource<String>>(Resource.Loading)
     val email: LiveData<Resource<String>> = _email.asLiveData()
 
     private val _loading = MutableLiveData<Boolean>(false)

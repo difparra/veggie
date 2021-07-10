@@ -20,8 +20,6 @@ import timber.log.Timber
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
-    //  TODO:   Add banner
-
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val viewModel: TagsViewModel by viewModels()

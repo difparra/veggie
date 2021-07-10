@@ -101,7 +101,7 @@ class OrderRepositoryImpl @Inject constructor(
         val actualOrdersUpdatedAt = BasicTime(orderDao.getLastUpdatedTime() ?: 0)
         return orderApi.getOrdersUpdatedAfter(actualOrdersUpdatedAt.toTimestamp())
             .map {
-                orderDao.updateOrders(it.map { it.second.toOrderUpdateEntity(it.first) })
+                orderDao.updateOrders(it.map { it.toOrderUpdateEntity() })
             }
             .onSuccess {
                 Timber.d("Fetch from firebase was successful and orders have been updated locally.")

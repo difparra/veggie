@@ -18,12 +18,12 @@ class TagsViewModel @Inject constructor(
     private val getTagsUseCase: GetTagsUseCase
 ) : ViewModel() {
 
-    private val _tags = MutableLiveData<Resource<List<Tag>>>(Resource.Loading())
+    private val _tags = MutableLiveData<Resource<List<Tag>>>(Resource.Loading)
     val tags: LiveData<Resource<List<Tag>>> = _tags
 
     init {
         viewModelScope.launch {
-            _tags.value = Resource.Loading()
+            _tags.value = Resource.Loading
             _tags.value = getTagsUseCase().toResource()
         }
     }

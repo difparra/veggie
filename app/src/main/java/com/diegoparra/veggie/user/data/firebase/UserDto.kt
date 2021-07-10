@@ -1,7 +1,9 @@
 package com.diegoparra.veggie.user.data.firebase
 
+import com.google.firebase.firestore.DocumentId
+
 data class UserDto(
-    val id: String,
+    @DocumentId val id: String,
     val email: String,
     val name: String,
     val phoneNumber: String?,

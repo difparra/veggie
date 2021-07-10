@@ -30,7 +30,7 @@ class EmailSignInViewModel @Inject constructor(
         savedStateHandle.set(EMAIL_SAVED_STATE_KEY, email)
     }
 
-    private val _password = MutableStateFlow<Resource<String>>(Resource.Loading())
+    private val _password = MutableStateFlow<Resource<String>>(Resource.Loading)
     val password: LiveData<Resource<String>> = _password.asLiveData()
 
     val btnContinueEnabled = _password.map { it is Resource.Success }.asLiveData()
@@ -66,7 +66,7 @@ class EmailSignInViewModel @Inject constructor(
 
     private fun setLoadingState() {
         _loading.value = true
-        _password.value = Resource.Loading()
+        _password.value = Resource.Loading
     }
 
     private fun handleSuccess(params: EmailSignInUseCase.Params) {

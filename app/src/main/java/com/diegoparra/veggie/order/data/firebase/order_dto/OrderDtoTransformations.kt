@@ -18,6 +18,7 @@ object OrderDtoTransformations {
      */
 
     fun Order.toOrderDto() = OrderDto(
+        id = "",    //  When creating firestore document this parameter won't be taken into account
         shippingInfo = shippingInfo.toShippingInfoDto(),
         products = products.products.map { it.toProductOrderDto() },
         total = total.toTotalDto(),
@@ -66,11 +67,12 @@ object OrderDtoTransformations {
     /*
         --------------------------------------------------------------------------------------------
             TRANSFORMATIONS FROM DTO TO DOMAIN
+            This was necessary when data was not implemented offline, only from server
         --------------------------------------------------------------------------------------------
      */
 
-    fun OrderDto.toOrder(orderId: String) = Order(
-        id = orderId,
+    fun OrderDto.toOrder() = Order(
+        id = id,
         shippingInfo = shippingInfo.toShippingInfo(),
         products = ProductsList(products.map { it.toProductOrder() }),
         total = total.toTotal(),

@@ -25,7 +25,7 @@ class AddressListViewModel @Inject constructor(
      *      ADDRESS LIST        --------------------------------------------------------------------
      */
 
-    private val _addressList = MutableStateFlow<Resource<List<Address>>>(Resource.Loading())
+    private val _addressList = MutableStateFlow<Resource<List<Address>>>(Resource.Loading)
     val addressList: LiveData<Resource<List<Address>>> = _addressList.asLiveData()
 
     init {

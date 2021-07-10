@@ -47,8 +47,7 @@ object AppModule {
     fun providesFirebaseRemoteConfig(): FirebaseRemoteConfig {
         return Firebase.remoteConfig.apply {
             setConfigSettingsAsync(remoteConfigSettings {
-                //  TODO:   Change minimumFetchInterval for RemoteConfig when in production
-                minimumFetchIntervalInSeconds = 20
+                minimumFetchIntervalInSeconds = TimeUnit.HOURS.toSeconds(8)
             })
             setDefaultsAsync(R.xml.remote_config_defaults)
         }

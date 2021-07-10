@@ -284,7 +284,7 @@ class OrderViewModel @Inject constructor(
                     return@launch
                 }
                 is Either.Right -> {
-                    _sendOrderResult.value = Event(Resource.Loading())
+                    _sendOrderResult.value = Event(Resource.Loading)
                     val result = sendOrderUseCase(
                         shippingInfo = shippingInfo.value.getOrNull()!!,
                         products = productsList.value!!,
