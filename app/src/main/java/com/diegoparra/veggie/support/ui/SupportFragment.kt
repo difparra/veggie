@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.support
+package com.diegoparra.veggie.support.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.diegoparra.veggie.R
 import com.diegoparra.veggie.databinding.FragmentSupportBinding
+import com.diegoparra.veggie.support.domain.SupportConstants
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -18,6 +20,7 @@ class SupportFragment : Fragment() {
 
     private var _binding: FragmentSupportBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: SupportViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,17 +31,19 @@ class SupportFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.cardWhatsappText.text = getString(R.string.whatsapp_button, SupportConstants.contactPhoneNumber)
-        binding.cardWhatsapp.setOnClickListener {
-            Timber.d("btnWhatsapp clicked")
-            openWhatsapp(SupportConstants.contactPhoneNumber)
+        viewModel.contactNumber.observe(viewLifecycleOwner) {
+            binding.cardWhatsappText.text = getString(R.string.whatsapp_button, it)
+            binding.cardWhatsapp.setOnClickListener {
+                openWhatsapp(SupportConstants.contactPhoneNumber)
+            }
         }
 
-        val emailSubject = getString(R.string.email_subject)
-        binding.cardEmailText.text = getString(R.string.email_button, SupportConstants.contactEmail)
-        binding.cardEmail.setOnClickListener {
-            Timber.d("btnEmail clicked")
-            composeEmail(arrayOf(SupportConstants.contactEmail), emailSubject)
+        viewModel.contactEmail.observe(viewLifecycleOwner) {
+            val emailSubject = getString(R.string.email_subject)
+            binding.cardEmailText.text = getString(R.string.email_button, it)
+            binding.cardEmail.setOnClickListener {
+                composeEmail(arrayOf(SupportConstants.contactEmail), emailSubject)
+            }
         }
     }
 

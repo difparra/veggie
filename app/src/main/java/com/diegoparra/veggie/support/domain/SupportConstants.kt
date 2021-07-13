@@ -1,4 +1,4 @@
-package com.diegoparra.veggie.support
+package com.diegoparra.veggie.support.domain
 
 object SupportConstants {
 

@@ -41,10 +41,11 @@ class ProductsRepositoryImpl @Inject constructor(
             ) {
                 productsApi.getTags()
                     .map {
+                        Timber.d("Tags collected from server: $it")
                         productsDao.updateAllTags(tags = it.map { it.toTagEntity() })
                     }
                     .onSuccess {
-                        Timber.d("Tags collected from server and updated locally.")
+                        Timber.d("Tags successfully updated in local database")
                         prefs.saveTagsFetchAt(BasicTime.now())
                     }
                     .onFailure {

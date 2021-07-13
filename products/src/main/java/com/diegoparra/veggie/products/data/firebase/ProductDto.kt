@@ -1,10 +1,11 @@
 package com.diegoparra.veggie.products.data.firebase
 
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentId
 
 data class ProductDto (
+    @DocumentId val mainId: String,
     val tagId: String,
-    val mainId: String,
     val mainVarId: String,
     val name: String,
     val imageUrl: String,
@@ -14,8 +15,8 @@ data class ProductDto (
 ){
     //  Required empty constructor for firebase
     constructor() : this(
-            tagId = "",
             mainId = "",
+            tagId = "",
             mainVarId = "",
             name = "",
             imageUrl = "",

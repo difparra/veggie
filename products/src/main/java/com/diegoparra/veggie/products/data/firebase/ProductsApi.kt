@@ -5,12 +5,12 @@ import com.diegoparra.veggie.core.kotlin.Failure
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue
 import com.google.firebase.remoteconfig.ktx.get
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
@@ -27,7 +27,11 @@ class ProductsApi @Inject constructor(
         parseConfigValue: (FirebaseRemoteConfigValue) -> T
     ): Either<Failure, T> {
         return try {
-            remoteConfig.fetchAndActivate().await()
+            //  I have already implemented cache logic in repository and this function
+            //  will be called just when I want to get server values.
+            //  It is safe to put 0 as minimumFetchIntervalInSeconds here.
+            remoteConfig.fetch(0).await()
+            remoteConfig.activate().await()
             Timber.d("key = $configKey, lastFetchTime = ${remoteConfig.info.fetchTimeMillis}")
             val configValue = remoteConfig[configKey]
             val parsedConfigValue = parseConfigValue(configValue)
@@ -41,7 +45,10 @@ class ProductsApi @Inject constructor(
 
     suspend fun getTags(): Either<Failure, List<TagDto>> = getValueFromRemoteConfig(
         configKey = ProdsFirebaseConstants.RemoteConfigKeys.categories,
-        parseConfigValue = { gson.fromJson(it.asString(), TagDtoList::class.java).tagsArray }
+        parseConfigValue = {
+            val type = object : TypeToken<List<TagDto>>() {}.type
+            gson.fromJson<List<TagDto>>(it.asString(), type)
+        }
     )
 
 
@@ -67,6 +74,7 @@ class ProductsApi @Inject constructor(
                 .get(Source.SERVER)
                 .await()
                 .toObjects<ProductDto>()
+            Timber.d("products: $prods")
             Either.Right(prods)
         } catch (e: Exception) {
             Timber.e("Exception class=${e.javaClass}, message=${e.message}")

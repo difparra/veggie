@@ -3,22 +3,20 @@
     <entry>
         <key>categories</key>
         <value>
-            {
-                "tags_array": [
-                    {
-                        "id": "fruits",
-                        "name": "Frutas"
-                    },
-                    {
-                        "id": "vegetables",
-                        "name": "Verduras"
-                    },
-                    {
-                        "id": "meats",
-                        "name": "Carnes"
-                    }
-                ]
-            }
+            [
+                {
+                    "id": "fruits",
+                    "name": "Frutas"
+                },
+                {
+                    "id": "vegetables",
+                    "name": "Verduras"
+                },
+                {
+                    "id": "meats",
+                    "name": "Carnes"
+                }
+            ]
         </value>
     </entry>
     <entry>
@@ -54,5 +52,13 @@
     <entry>
         <key>delivery_time_max_days_ahead</key>
         <value>3</value>
+    </entry>
+    <entry>
+        <key>contact_number</key>
+        <value>+573174877055</value>
+    </entry>
+    <entry>
+        <key>contact_email</key>
+        <value>veggie@gmail.com</value>
     </entry>
 </defaultsMap>
