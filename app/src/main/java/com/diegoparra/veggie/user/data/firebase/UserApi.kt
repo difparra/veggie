@@ -26,7 +26,6 @@ class UserApi @Inject constructor(
         return try {
             //  Build the map with the data to be updated in user
             val data = mutableMapOf<String, Any>()
-            data.putIfNotNull(Keys.id, id)
             data.putIfNotNull(Keys.email, email)
             data.putIfNotNull(Keys.name, name)
             data.putIfNotNull(Keys.phoneNumber, phoneNumber)
