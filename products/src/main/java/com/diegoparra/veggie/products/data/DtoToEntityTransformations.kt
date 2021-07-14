@@ -46,7 +46,7 @@ object DtoToEntityTransformations {
             weight = weight,
             unit = unit,
             price = price,
-            discount = discount/100,
+            discount = discount,
             stock = stock,
             maxOrder = maxOrder,
             label = label,
