@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.diegoparra.veggie.products.data.firebase.ProductDto
+-keep class com.diegoparra.veggie.products.data.firebase.TagDto
+-keep class com.diegoparra.veggie.order.data.firebase.order_dto.*
+-keep class com.diegoparra.veggie.order.data.firebase.DeliveryTimetableDto
+-keep class com.diegoparra.veggie.user.data.firebase.AddressDto
+-keep class com.diegoparra.veggie.user.data.firebase.UserDto

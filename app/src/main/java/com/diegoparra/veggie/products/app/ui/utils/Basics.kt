@@ -14,6 +14,7 @@ import com.diegoparra.veggie.core.android.getColorFromAttr
 import com.diegoparra.veggie.core.android.getColorWithAlphaFromAttrs
 import com.diegoparra.veggie.core.kotlin.addPriceFormat
 import com.diegoparra.veggie.core.kotlin.getValueBeforeDiscount
+import timber.log.Timber
 
 
 fun abbreviatedPacket(packet: String) =
@@ -56,7 +57,8 @@ fun getFormattedPrice(
     @AttrRes alphaStrike: Int? = R.attr.alphaSecondaryText,
     @AttrRes colorPriceFinal: Int = R.attr.colorSecondary
 ): SpannableStringBuilder {
-    if (finalPrice > priceBeforeDiscount) {
+    //  Check they are not the same, and price before discount (the one stroked) has sense (is greater than discounted one)
+    if (priceBeforeDiscount > finalPrice) {
         ssb.appendMultipleSpans(
             priceBeforeDiscount.addPriceFormat() + " ",
             listOf(
