@@ -1,9 +1,11 @@
 package com.diegoparra.veggie.order.data.firebase
 
+import com.diegoparra.veggie.core.android.LocalUpdateHelper
+import com.diegoparra.veggie.core.kotlin.BasicTime
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
 import com.diegoparra.veggie.order.data.firebase.order_dto.OrderDto
-import com.google.firebase.Timestamp
+import com.diegoparra.veggie.products.data.toTimestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
@@ -15,7 +17,7 @@ import javax.inject.Inject
 
 class OrderApi @Inject constructor(
     private val database: FirebaseFirestore
-) {
+): LocalUpdateHelper.ServerApi<OrderDto> {
 
     suspend fun sendOrder(order: OrderDto): Either<Failure, String> {
         return try {
@@ -50,11 +52,15 @@ class OrderApi @Inject constructor(
         }
     }
 
-    suspend fun getOrdersUpdatedAfter(timestamp: Timestamp): Either<Failure, List<OrderDto>> {
+    override suspend fun getItemsUpdatedAfter(
+        basicTime: BasicTime,
+        userId: String?
+    ): Either<Failure, List<OrderDto>> {
         return try {
             val orders = database
                 .collection(OrderFirebaseConstants.Firestore.Collections.orders)
-                .whereGreaterThan(OrderFirebaseConstants.Firestore.Fields.updatedAt, timestamp)
+                .whereEqualTo(OrderFirebaseConstants.Firestore.Fields.userIdComplete, userId)
+                .whereGreaterThan(OrderFirebaseConstants.Firestore.Fields.updatedAt, basicTime.toTimestamp())
                 .get(Source.SERVER)
                 .await()
                 .toObjects<OrderDto>()

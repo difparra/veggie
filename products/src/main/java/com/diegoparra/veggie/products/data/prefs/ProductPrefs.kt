@@ -7,7 +7,4 @@ interface ProductPrefs {
     suspend fun saveTagsFetchAt(value: BasicTime)
     suspend fun getTagsFetchAt(): BasicTime?
 
-    suspend fun saveProdsSuccessfulFetchAt(value: BasicTime)
-    suspend fun getProdsLastSuccessfulFetchAt(): BasicTime?
-
 }

@@ -12,45 +12,39 @@ import com.diegoparra.veggie.products.data.room.VariationEntity
 object DtoToEntityTransformations {
 
     fun TagDto.toTagEntity() = TagEntity(
-            tagId = id,
-            tagName = name
+        tagId = id,
+        tagName = name
     )
 
-    fun List<ProductDto>.getMainProdIdsToDelete() : List<String> {
-        return this.filter { it.deleted }.map { it.mainId }
-    }
-
-    fun List<ProductDto>.getListProdUpdateRoom() : List<ProductUpdateRoom> {
-        return this.filterNot { it.deleted }.map { prodDto ->
-            ProductUpdateRoom(
-                    mainEntity = prodDto.toMainEntity(),
-                    variations = prodDto.variations.map { it.toVariationEntity(prodDto.mainId) }
-            )
-        }
+    fun ProductDto.toProductUpdateRoom(): ProductUpdateRoom {
+        return ProductUpdateRoom(
+            mainEntity = this.toMainEntity(),
+            variations = this.variations.map { it.toVariationEntity(this.mainId) }
+        )
     }
 
     private fun ProductDto.toMainEntity() = MainEntity(
-            mainId = mainId,
-            relatedTagId = tagId,
-            mainVarId = mainVarId,
-            name = name,
-            normalised_name = name.removeCaseAndAccents(),
-            imageUrl = imageUrl,
-            updatedAtInMillis = updatedAt.toBasicTime().millisEpochUTC
+        mainId = mainId,
+        relatedTagId = tagId,
+        mainVarId = mainVarId,
+        name = name,
+        normalised_name = name.removeCaseAndAccents(),
+        imageUrl = imageUrl,
+        updatedAtInMillis = updatedAt.toBasicTime().millisEpochUTC
     )
 
     private fun VariationDto.toVariationEntity(mainId: String) = VariationEntity(
-            varId = varId,
-            relatedMainId = mainId,
-            packet = packet,
-            weight = weight,
-            unit = unit,
-            price = price,
-            discount = discount,
-            stock = stock,
-            maxOrder = maxOrder,
-            label = label,
-            details = details
+        varId = varId,
+        relatedMainId = mainId,
+        packet = packet,
+        weight = weight,
+        unit = unit,
+        price = price,
+        discount = discount,
+        stock = stock,
+        maxOrder = maxOrder,
+        label = label,
+        details = details
     )
 
 }

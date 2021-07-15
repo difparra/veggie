@@ -1,7 +1,10 @@
 package com.diegoparra.veggie.products.data.firebase
 
+import com.diegoparra.veggie.core.android.LocalUpdateHelper
+import com.diegoparra.veggie.core.kotlin.BasicTime
 import com.diegoparra.veggie.core.kotlin.Either
 import com.diegoparra.veggie.core.kotlin.Failure
+import com.diegoparra.veggie.products.data.toTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
@@ -19,7 +22,7 @@ class ProductsApi @Inject constructor(
     private val database: FirebaseFirestore,
     private val remoteConfig: FirebaseRemoteConfig,
     private val gson: Gson
-) {
+): LocalUpdateHelper.ServerApi<ProductDto> {
 
     //  Same function as in OrderConfigApi
     private suspend fun <T> getValueFromRemoteConfig(
@@ -63,14 +66,14 @@ class ProductsApi @Inject constructor(
         implement cache also for userData, and losing some advantages as pending tasks to
         update database when app is offline.
      */
-    suspend fun getProductsUpdatedAfter(timestamp: Timestamp): Either<Failure, List<ProductDto>> {
+    override suspend fun getItemsUpdatedAfter(basicTime: BasicTime, userId: String?): Either<Failure, List<ProductDto>> {
         //  It is not really important to get products sorted in here, as long as local database
         //  run its update in a transaction, so that if update was not completed, revert the products
         //  that were updated at that time, having a consistent lastUpdateTime in local database.
         return try {
             val prods = database
                 .collection(ProdsFirebaseConstants.Collections.products)
-                .whereGreaterThan(ProdsFirebaseConstants.Keys.updatedAt, timestamp)
+                .whereGreaterThan(ProdsFirebaseConstants.Keys.updatedAt, basicTime.toTimestamp())
                 .get(Source.SERVER)
                 .await()
                 .toObjects<ProductDto>()

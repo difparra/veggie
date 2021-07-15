@@ -1,10 +1,11 @@
 package com.diegoparra.veggie.products.data.room
 
 import androidx.room.*
+import com.diegoparra.veggie.core.android.LocalUpdateHelper
 import com.diegoparra.veggie.core.kotlin.removeCaseAndAccents
 
 @Dao
-abstract class ProductsDao {
+abstract class ProductsDao : LocalUpdateHelper.RoomDb<ProductUpdateRoom> {
 
     @Transaction
     @Query("Select * from Tags")
@@ -48,7 +49,8 @@ abstract class ProductsDao {
 
 
     @Query("Select MAX(updatedAtInMillis) from Main")
-    abstract suspend fun getLastProdUpdatedAtInMillis(): Long?
+    abstract override suspend fun getLastUpdatedTime(): Long?
+
 
     //      ----------------------------------------
 
@@ -66,7 +68,6 @@ abstract class ProductsDao {
 
     @Query("Select varId from Variations where relatedMainId = :relatedMainId")
     protected abstract suspend fun getVariationIdsInMainId(relatedMainId: String): List<String>
-
 
 
     /*
@@ -87,15 +88,15 @@ abstract class ProductsDao {
      */
 
     @Transaction
-    open suspend fun updateProducts(
-        mainProdsIdToDelete: List<String>,
-        prodsToUpdate: List<ProductUpdateRoom>
+    open override suspend fun updateItems(
+        itemsUpdated: List<ProductUpdateRoom>,
+        itemsDeleted: List<String>
     ) {
-        if (!mainProdsIdToDelete.isNullOrEmpty()) {
-            deleteMains(mainProdsIdToDelete)
+        if (!itemsDeleted.isNullOrEmpty()) {
+            deleteMains(itemsDeleted)
         }
-        if (!prodsToUpdate.isNullOrEmpty()) {
-            insertOrUpdateProducts(prodsToUpdate)
+        if (!itemsUpdated.isNullOrEmpty()) {
+            insertOrUpdateProducts(itemsUpdated)
         }
     }
 

@@ -20,7 +20,6 @@ class ProductPrefsImpl @Inject constructor(
 
     companion object {
         val TAGS_FETCHED_AT_MILLIS = longPreferencesKey("tags_fetched_at_millis")
-        val PRODS_FETCHED_AT_MILLIS = longPreferencesKey("prods_fetched_at_millis")
     }
 
 
@@ -48,13 +47,5 @@ class ProductPrefsImpl @Inject constructor(
 
     override suspend fun getTagsFetchAt(): BasicTime? =
         getUpdatedAt(TAGS_FETCHED_AT_MILLIS)?.let { BasicTime(it) }
-
-    //      PRODUCTS
-
-    override suspend fun saveProdsSuccessfulFetchAt(value: BasicTime) =
-        saveUpdatedAt(PRODS_FETCHED_AT_MILLIS, value.millisEpochUTC)
-
-    override suspend fun getProdsLastSuccessfulFetchAt(): BasicTime? =
-        getUpdatedAt(PRODS_FETCHED_AT_MILLIS)?.let { BasicTime(it) }
 
 }
