@@ -33,7 +33,7 @@ abstract class OrderDao: LocalUpdateHelper.RoomDb<OrderUpdate> {
         }
     }
 
-    @Query("Select MAX(updatedAtInMillis) from OrderDetails")
-    abstract override suspend fun getLastUpdatedTime(): Long?
+    @Query("Select MAX(updatedAtInMillis) from OrderDetails where shipping_userId = :userId")
+    abstract override suspend fun getLastUpdatedTime(userId: String?): Long?
 
 }

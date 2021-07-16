@@ -51,7 +51,7 @@ class LocalUpdateHelper<out Dto, out Entity>(
     }
 
     interface RoomDb<Entity> {
-        suspend fun getLastUpdatedTime(): Long?
+        suspend fun getLastUpdatedTime(userId: String?): Long?
         suspend fun updateItems(itemsUpdated: List<@JvmSuppressWildcards Entity>, itemsDeleted: List<String>)
     }
 
@@ -72,7 +72,7 @@ class LocalUpdateHelper<out Dto, out Entity>(
                 isInternetAvailable = isInternetAvailableUseCase.invoke().first()
             )
         ) {
-            val actualLastUpdate = BasicTime(room.getLastUpdatedTime() ?: 0)
+            val actualLastUpdate = BasicTime(room.getLastUpdatedTime(userId) ?: 0)
             Timber.d("Source says: Data must be collected from server. ActualLastUpdate = $actualLastUpdate")
             serverApi.getItemsUpdatedAfter(actualLastUpdate, userId)
                 .map {

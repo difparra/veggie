@@ -49,8 +49,11 @@ abstract class ProductsDao : LocalUpdateHelper.RoomDb<ProductUpdateRoom> {
 
 
     @Query("Select MAX(updatedAtInMillis) from Main")
-    abstract override suspend fun getLastUpdatedTime(): Long?
+    abstract suspend fun getLastUpdatedTime(): Long?
 
+    override suspend fun getLastUpdatedTime(userId: String?): Long? {
+        return getLastUpdatedTime()
+    }
 
     //      ----------------------------------------
 
