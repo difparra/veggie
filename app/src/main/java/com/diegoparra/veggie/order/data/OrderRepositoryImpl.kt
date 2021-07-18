@@ -74,7 +74,10 @@ class OrderRepositoryImpl @Inject constructor(
             orderApi.sendOrder(order.toOrderDto())
                 .onSuccess {
                     //  Call orders to be updated from server, as soon as some order is sent
-                    localUpdateHelper.update(Source.SERVER)
+                    localUpdateHelper.update(
+                        source = Source.SERVER,
+                        userId = order.shippingInfo.userId
+                    )
                 }
         }
 
