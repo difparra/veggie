@@ -23,7 +23,6 @@
 -keep class com.diegoparra.veggie.products.data.firebase.ProductDto { *; }
 -keep class com.diegoparra.veggie.products.data.firebase.VariationDto { *; }
 -keep class com.diegoparra.veggie.products.data.firebase.TagDto { *; }
--keep class com.diegoparra.veggie.order.data.firebase.order_dto.* { *; }
 -keep class com.diegoparra.veggie.order.data.retrofit.order_dto.* { *; }
 -keep class com.diegoparra.veggie.order.data.firebase.DeliveryTimetableDto { *; }
 -keep class com.diegoparra.veggie.user.data.firebase.AddressDto { *; }

@@ -11,19 +11,4 @@ object OrderFirebaseConstants {
         const val deliveryTimeMaxDaysAhead = "delivery_time_max_days_ahead"
     }
 
-    object Firestore {
-        object Collections {
-            const val orders = "orders"
-        }
-        object Fields {
-            private const val shippingInfo = "shippingInfo"
-            private const val userId = "userId"
-            const val userIdComplete = "$shippingInfo.$userId"
-            private const val deliverySchedule = "deliverySchedule"
-            private const val from = "from"
-            const val deliveryDateFrom = "$shippingInfo.$deliverySchedule.$from"
-            const val updatedAt = "updatedAt"
-        }
-    }
-
 }

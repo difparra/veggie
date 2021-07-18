@@ -1,13 +1,11 @@
 package com.diegoparra.veggie.order.data.room
 
 import com.diegoparra.veggie.core.kotlin.BasicTime
-import com.diegoparra.veggie.order.data.firebase.order_dto.*
+import com.diegoparra.veggie.core.toLocalDateTime
 import com.diegoparra.veggie.order.data.room.entities.*
 import com.diegoparra.veggie.order.domain.*
 import com.diegoparra.veggie.products.cart.domain.ProductId
-import com.diegoparra.veggie.products.data.toBasicTime
 import com.diegoparra.veggie.user.address.domain.Address
-import com.diegoparra.veggie.user.data.DtosTransformations.toAddress
 
 object OrderEntityTransformations {
 
