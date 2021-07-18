@@ -2,6 +2,8 @@ package com.diegoparra.veggie
 
 import android.content.Context
 import androidx.room.Room
+import com.diegoparra.veggie.core.Exclude
+import com.diegoparra.veggie.order.data.retrofit.OrderService
 import com.diegoparra.veggie.order.data.room.OrderDao
 import com.diegoparra.veggie.products.cart.data.room.CartDao
 import com.diegoparra.veggie.products.data.room.ProductsDao
@@ -14,12 +16,19 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.google.gson.ExclusionStrategy
+import com.google.gson.FieldAttributes
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -66,6 +75,47 @@ object AppModule {
             //  OK: It will be the languge set on the phone (e.g. German)
             useAppLanguage()
         }
+    }
+
+
+    /*
+                RETROFIT         -------------------------------------------------------------------
+     */
+
+    @Singleton
+    @Provides
+    fun providesRetrofit(): Retrofit {
+        //  Gson configuration
+        val gson = GsonBuilder()
+            .addSerializationExclusionStrategy(object : ExclusionStrategy {
+                override fun shouldSkipField(f: FieldAttributes?): Boolean {
+                    return f?.getAnnotation(Exclude::class.java) != null
+                }
+                override fun shouldSkipClass(clazz: Class<*>?): Boolean {
+                    return false
+                }
+            })
+            .create()
+
+        //  Retrofit Logging
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+        //  Retrofit
+        return Retrofit.Builder()
+            .baseUrl("https://veggie-co-default-rtdb.firebaseio.com/")
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    fun providesOrderService(retrofit: Retrofit): OrderService {
+        return retrofit.create(OrderService::class.java)
     }
 
 

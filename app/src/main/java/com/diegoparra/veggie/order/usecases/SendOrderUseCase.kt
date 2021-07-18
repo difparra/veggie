@@ -25,14 +25,14 @@ class SendOrderUseCase @Inject constructor(
             }
         //  Creating order
         val order = Order(
-            id = "",        //  Created in the repository
+            id = "",                    //  Set in the repository
             shippingInfo = shippingInfo,
             products = products,
             total = total,
             paymentInfo = paymentInfo,
             additionalNotes = additionalNotes,
             status = orderStatus,
-            updatedAt = BasicTime.now()
+            updatedAt = BasicTime.now() //  Set in the repository
         )
         //  Sending order
         val result = orderRepository.sendOrder(order)

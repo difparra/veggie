@@ -100,6 +100,11 @@ dependencies {
     implementation "com.facebook.android:facebook-login:$facebookAuth"          //  For facebook auth
     //  More firebase products https://firebase.google.com/docs/android/setup#available-libraries
 
+    //  Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    //  Gson has been already added in some library (maybe firebase), but be careful, if not added add in here for retrofit
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttpLoggingInterceptorVersion"
 
     //  UI DEPENDENCIES
 

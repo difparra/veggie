@@ -5,11 +5,11 @@ import com.diegoparra.veggie.core.android.IoDispatcher
 import com.diegoparra.veggie.core.android.LocalUpdateHelper
 import com.diegoparra.veggie.core.internet.IsInternetAvailableUseCase
 import com.diegoparra.veggie.core.kotlin.*
-import com.diegoparra.veggie.order.data.DtoToEntityTransformations.toOrderUpdateEntity
-import com.diegoparra.veggie.order.data.firebase.OrderApi
+import com.diegoparra.veggie.order.data.DtoToEntityTransformationsRetrofit.toOrderUpdateEntity
 import com.diegoparra.veggie.order.data.firebase.OrderConfigApi
-import com.diegoparra.veggie.order.data.firebase.order_dto.OrderDtoTransformations.toOrderDto
-import com.diegoparra.veggie.order.data.firebase.order_dto.OrderDto
+import com.diegoparra.veggie.order.data.retrofit.order_dto.OrderDto
+import com.diegoparra.veggie.order.data.retrofit.OrderService
+import com.diegoparra.veggie.order.data.retrofit.order_dto.OrderDtoTransformations.toOrderDto
 import com.diegoparra.veggie.order.data.room.OrderDao
 import com.diegoparra.veggie.order.data.room.OrderEntityTransformations.toOrder
 import com.diegoparra.veggie.order.data.room.entities.OrderUpdate
@@ -21,11 +21,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class OrderRepositoryImpl @Inject constructor(
     private val orderConfigApi: OrderConfigApi,
-    private val orderApi: OrderApi,
+    private val orderService: OrderService,
     private val orderDao: OrderDao,
     isInternetAvailableUseCase: IsInternetAvailableUseCase,
     @ApplicationContext context: Context,
@@ -71,11 +72,20 @@ class OrderRepositoryImpl @Inject constructor(
 
     override suspend fun sendOrder(order: Order): Either<Failure, String> =
         withContext(dispatcher) {
-            orderApi.sendOrder(order.toOrderDto())
-                .onSuccess {
-                    //  Call orders to be updated from server, as soon as some order is sent
-                    localUpdateHelper.update(Source.SERVER)
-                }
+            val sendOrderResult = try {
+                val result = orderService.sendOrder(order.toOrderDto())
+                Timber.d("sendOrderResult = $result")
+                Either.Right(result.id)
+            } catch (e: Exception) {
+                Timber.d("sendOrderResult = exception -> class: ${e.javaClass}, message: ${e.message}")
+                Either.Left(Failure.ServerError(exception = e))
+            }
+            sendOrderResult.onSuccess {
+                localUpdateHelper.update(
+                    source = Source.SERVER,
+                    userId = order.shippingInfo.userId
+                )
+            }
         }
 
 
@@ -102,7 +112,29 @@ class OrderRepositoryImpl @Inject constructor(
             context = context
         ),
         room = orderDao,
-        serverApi = orderApi,
+        serverApi = object : LocalUpdateHelper.ServerApi<OrderDto> {
+            override suspend fun getItemsUpdatedAfter(
+                basicTime: BasicTime,
+                userId: String?
+            ): Either<Failure, List<OrderDto>> {
+                return try {
+                    val ordersMap = orderService.getOrdersUser("\"$userId\"")
+                    Timber.d("ordersFetchedFromServer = $ordersMap")
+                    val ordersList = ordersMap
+                        .asIterable()
+                        .map { it.value.copy(id = it.key) }
+                    Timber.d("ordersListTransformedFromServerFetched = $ordersList")
+                    val filteredOrders = ordersList
+                        .filter { it.updatedAt >= basicTime.millisEpochUTC }
+                        .sortedByDescending { it.shippingInfo.deliverySchedule.from }
+                    Timber.d("filteredOrdersFetchedFromServer = $filteredOrders")
+                    Either.Right(filteredOrders)
+                } catch (e: Exception) {
+                    Timber.d("ordersFetchException -> class: ${e.javaClass}, message: ${e.message}")
+                    Either.Left(Failure.ServerError(exception = e))
+                }
+            }
+        },
         mapper = object : LocalUpdateHelper.Mapper<OrderDto, OrderUpdate> {
             override fun mapToEntity(dto: OrderDto): OrderUpdate = dto.toOrderUpdateEntity()
             override fun isDtoDeleted(dto: OrderDto): Boolean = false
